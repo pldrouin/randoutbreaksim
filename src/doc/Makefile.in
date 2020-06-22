@@ -1,0 +1,13 @@
+HDIR	=	src/doc
+
+html: html/index.html
+html/index.html: $(LSRCS) $(ALLINCS) $(HDIR)/configfile.doxygen
+	echo $(LSRCS)
+	echo $(ALLINCS)
+	rm -rf html
+	mkdir -p html
+	cd $(HDIR) && doxygen configfile.doxygen
+
+clear: hclear
+hclear:
+	rm -rf html	
