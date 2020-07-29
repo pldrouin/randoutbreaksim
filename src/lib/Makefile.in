@@ -11,7 +11,7 @@ LOBJS		=	$(LSRCS:.c=.o) #LOBJS set by substituting .c extension in listed files 
 LHDS		=	$(LSRCS:.c=.h)
 LDEPS		=	$(LOBJS:.o=.d)
 
-LIB		=	lib/liboutbreak.so
+LIB		=	lib/libbranchoutbreak.so
 
 AllLibs: $(LIB) $(ALLINCS)
 

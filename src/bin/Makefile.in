@@ -1,7 +1,7 @@
 EDIR	=	src/bin
 
 EINCLUDEDIRS	=	-Iinclude
-ELIBS	=	-Llib -loutbreak -lpthread
+ELIBS	=	-Llib -lbranchoutbreak -lpthread -lgsl
 
 ECFLAGS	=	$(LCFLAGS) $(EINCLUDEDIRS)
 ELDFLAGS	=	$(LDFLAGS) $(ELIBS)
@@ -11,14 +11,14 @@ EOBJS	=	$(ESRCS:.c=.o)
 EHDS	=	$(ESRCS:.c=.h)
 EDEPS	=	$(EOBJS:.o=.d)
 
-EXEC	=	bin/outbreaksim
+EXEC	=	bin/branchoutbreaksim
 
 AllExecs: $(EXEC)
 
 $(EDEPS): %.d: %.c %.h $(ALLINCS)
 	@echo "Generating dependency file $@"
 	@set -e; rm -f $@
-	@$(CC) -M $(ECFLAGS) $< > $@.tmp
+	@$(CC) -M $(ECFLAGS) -MT $(<:.c=.o) $< > $@.tmp
 	@sed 's,\($*\)\.o[:]*,\1.o $@ : ,g' < $@.tmp > $@
 	@rm -f $@.tmp
 
