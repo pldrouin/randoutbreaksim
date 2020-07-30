@@ -1,6 +1,7 @@
 #include "simulation.h"
 
-#define INITIAL_LAYER_NUMBER (1)
+#define INIT_N_LAYERS (16)
+#define II_ARRAY_GROW_FACT (1.5)
 
 int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
 {
@@ -19,133 +20,132 @@ int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
 
 int simulate(struct sim_pars const* sim, const gsl_rng* r)
 {
-  struct iillist list;
-  int i,j;
-  double t, m;
-  struct sim_vars sv={.pars=sim, .r=r, .layer=INITIAL_LAYER_NUMBER};
-  double t_infect=0;
-
-  iillist_init(&list);
+  int i;
+  double m;
+  struct sim_vars sv={.pars=sim, .r=r, .iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual)), .nlayers=INIT_N_LAYERS};
+  void (*gen_comm_period_func)(struct sim_vars*)=(sim->q?gen_comm_period_isolation:gen_comm_period);
+  sv.iis[0].event_time=0;
 
   for(i=sim->nstart-1; i>=0; --i) {
     printf("initial individual %i\n",i);
-    sv.ii=iillist_new_element(&list);
-    printf("New individual %p\n",sv.ii);
-    t=gsl_ran_gamma(r, sim->kappa*sim->tbar, 1./sim->kappa);
+    sv.iis[1].comm_period=gsl_ran_gamma(r, sim->kappa*sim->tbar, 1./sim->kappa);
 
     if(sim->q && gsl_rng_uniform(r) >= sim->q) {
 
       if(isinf(sim->kappaq)) m=sim->mbar;
       else m=gsl_ran_gamma(r, sim->kappaq*sim->mbar, 1./sim->kappaq);
 
-      if(m<t) t=m;
+      if(m<sv.iis[1].comm_period) sv.iis[1].comm_period=m;
     }
-    printf("Time is %f\n",t);
-    sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*t);
+    printf("Comm period is %f\n",sv.iis[1].comm_period);
+    sv.ii=sv.iis+1;
+    sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->comm_period);
     printf("Nevents is %i\n",sv.ii->nevents);
 
+    //If events for the current individual in the primary layer
     if(sv.ii->nevents) {
-      sv.ii->etimes=(float*)realloc(sv.ii->etimes,sv.ii->nevents*sizeof(float));
+      sv.ii->curevent=0;
+      sv.ii->event_time=sv.ii->comm_period*gsl_rng_uniform(r);
+      printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
 
-      for(j=sv.ii->nevents-1; j>=0; --j) sv.ii->etimes[j]=t_infect+t*gsl_rng_uniform(r); //Note: unsorted
-      sv.ii->etimesptr=sv.ii->etimes-INITIAL_LAYER_NUMBER-1;
-      iillist_add_element(&list, sv.ii);
+      //Skip the events exceeding the limit
+      while(sv.ii->event_time > sv.pars->tmax) {
+	++(sv.ii->curevent);
 
-    } else iillist_recycle_detached_element(&list, sv.ii);
-  }
-
-  int (*infect_func)(struct sim_vars const*, struct iillist*)=(sim->q?infect_attendees_isolation:infect_attendees);
-  struct infindividual* prev_ii=NULL;
-  struct infindividual* next_ii=NULL;
-
-  do {
-    ++(sv.layer);
-    printf("Layer is %i\n",sv.layer);
-    sv.ii=list.head;
-    printf("Head is %p\n",sv.ii);
-
-    do {
-      infect_func(&sv, &list);
-
-      if(sv.ii->etimesptr+sv.layer-sv.ii->etimes==sv.ii->nevents-1) {
-	next_ii=sv.ii->next;
-	iillist_recycle_element(&list, prev_ii, sv.ii);
-        prev_ii=sv.ii;
-	sv.ii=next_ii;
-
-      } else {
-        prev_ii=sv.ii;
-        sv.ii=sv.ii->next;
+	//If all events have been exhausted, continue with the next individual
+	//in the primary layer
+	if(sv.ii->curevent == sv.ii->nevents) goto next_pri_ii;
+	sv.ii->event_time=sv.ii->comm_period*gsl_rng_uniform(r);
+        printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
       }
-      printf("Next individual is %p\n",sv.ii);
+      sv.ii->ninfections=gsl_ran_logarithmic(r, sv.pars->p);
+      sv.ii->curinfection=0;
+      printf("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
 
-    } while(sv.ii);
+      //Create a new infected individual
+      for(;;) {
+next_layer:
+	printf("Move to next layer\n");
+	++sv.ii;
 
-  } while(list.head);
+	//If reaching the end of the allocated array, increase its size
+	if(sv.ii==sv.iis+sv.nlayers) {
+	  sv.nlayers*=II_ARRAY_GROW_FACT;
+	  sv.iis=(struct infindividual*)realloc(sv.iis,sv.nlayers*sizeof(struct infindividual));
+	}
+	//Generate the communicable period appropriately
+	gen_comm_period_func(&sv);
 
-  iillist_clear(&list);
+	//Generate the number of events
+	sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->comm_period);
+	printf("Nevents is %i\n",sv.ii->nevents);
 
-  return 0;
-}
+	//If the number of events is non-zero
+	if(sv.ii->nevents) {
+	  sv.ii->curevent=0;
+	  //Generate the event time
+gen_event:
+	  sv.ii->event_time=(sv.ii-1)->event_time+sv.ii->comm_period*gsl_rng_uniform(r);
+          printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
 
-int infect_attendees(struct sim_vars const* sv, struct iillist* list)
-{
-  int ninf=gsl_ran_logarithmic(sv->r, sv->pars->p);
-  int i,j;
-  struct infindividual* ii;
-  double t,m;
+	  //Loop over the events
+	  for(;;) {
 
-  for(i=ninf-1; i>=0; --i) {
-    ii=iillist_new_element(list);
-    printf("New individual %p\n",ii);
-    t=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
+	    //If the event time does not exceed the limit
+	    if(sv.ii->event_time <= sv.pars->tmax) {
+	      //Generate the number of infections and the associated index for
+	      //the current event
+	      //Move to the next layer
+	      sv.ii->ninfections=gsl_ran_logarithmic(r, sv.pars->p);
+	      sv.ii->curinfection=0;
+              printf("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+	      goto next_layer;
+	    }
+	    //Otherwise if the limit was exceeded, look at the next event
+	    ++(sv.ii->curevent);
 
-    if(gsl_rng_uniform(sv->r) >= sv->pars->q) {
+	    //If all events have been exhausted, exit the loop
+	    if(sv.ii->curevent == sv.ii->nevents) break;
+	    //Otherwise, generate the event time for the next event
+	    sv.ii->event_time=(sv.ii-1)->event_time+sv.ii->comm_period*gsl_rng_uniform(r);
+            printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
+	  }
+	}
 
-      if(isinf(sv->pars->kappaq)) m=sv->pars->mbar;
-      else m=gsl_ran_gamma(sv->r, sv->pars->kappaq*sv->pars->mbar, 1./sv->pars->kappaq);
+	//All events for the current individual have been exhausted
+	for(;;) {
+	  //Move down one layer
+	  printf("Move to previous layer\n");
+	  --sv.ii;
 
-      if(m<t) t=m;
+	  //If done processing, exit
+	  if(sv.ii == sv.iis) goto done_parsing;
+
+	  //Look at the next infected individual in the current event
+	  ++(sv.ii->curinfection);
+
+	  //If the infections have been exhausted
+	  if(sv.ii->curinfection == sv.ii->ninfections) {
+	    //Move to the next event for the individual
+	    ++(sv.ii->curevent);
+
+	    //If the events have been exhausted, go down another layer
+	    if(sv.ii->curevent == sv.ii->nevents) continue;
+
+	    //Else
+	    //Generate the number of infections for the event and the associated
+	    //index
+	    goto gen_event;
+	  }
+          printf("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+	  break;
+	}
+      }
     }
-    printf("Time is %f\n",t);
-    ii->nevents=gsl_ran_poisson(sv->r, sv->pars->lambda*t);
-    printf("Nevents is %i\n",ii->nevents);
-
-    if(ii->nevents) {
-      ii->etimes=(float*)realloc(ii->etimes,ii->nevents*sizeof(float));
-
-      for(j=ii->nevents-1; j>=0; --j) ii->etimes[j]=sv->ii->etimesptr[sv->layer]+t*gsl_rng_uniform(sv->r); //Note: unsorted
-      ii->etimesptr=ii->etimes-sv->layer-1;
-      iillist_add_element(list, ii);
-
-    } else iillist_recycle_detached_element(list, ii);
+next_pri_ii:
+    ;
   }
-  return 0;
-}
+done_parsing:
 
-int infect_attendees_isolation(struct sim_vars const* sv, struct iillist* list)
-{
-  int ninf=gsl_ran_logarithmic(sv->r, sv->pars->p);
-  int i,j;
-  struct infindividual* ii;
-  double t;
-
-  for(i=ninf-1; i>=0; --i) {
-    ii=iillist_new_element(list);
-    printf("New individual %p\n",ii);
-    t=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
-    printf("Time is %f\n",t);
-    ii->nevents=gsl_ran_poisson(sv->r, sv->pars->lambda*t);
-    printf("Nevents is %i\n",ii->nevents);
-
-    if(ii->nevents) {
-      ii->etimes=(float*)realloc(ii->etimes,ii->nevents*sizeof(float));
-
-      for(j=ii->nevents-1; j>=0; --j) ii->etimes[j]=sv->ii->etimesptr[sv->layer]+t*gsl_rng_uniform(sv->r); //Note: unsorted
-      ii->etimesptr=ii->etimes-sv->layer-1;
-      iillist_add_element(list, ii);
-
-    } else iillist_recycle_detached_element(list, ii);
-  }
   return 0;
 }
