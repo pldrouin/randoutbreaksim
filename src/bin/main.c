@@ -4,18 +4,77 @@
 
 int main(const int nargs, const char* args[])
 {
-    gsl_rng_env_setup();
+  gsl_rng_env_setup();
 
-    gsl_rng* r = gsl_rng_alloc(gsl_rng_taus2);
-    struct sim_vars sv;
-    //sim_init(&sv,.lambda=0.5,.p=0.8,.tmax=6);
-    sim_init(&sv,r,.nstart=1,.tmax=25,.tbar=3,.lambda=0.1,.p=0.91,.kappa=0.47,.q=0); //"B5"
+  gsl_rng* r = gsl_rng_alloc(gsl_rng_taus2);
+  struct sim_vars sv;
+  //sim_init(&sv,.lambda=0.5,.p=0.8,.tmax=6);
+  sim_init(&sv,r,.nstart=1,.tmax=25,.tbar=3,.lambda=0.1,.p=0.91,.kappa=0.47,.q=0); //"B5"
 
-    //printf("Min is %lu, max is %lu\n",gsl_rng_min(r),gsl_rng_max(r));
+  struct std_summary_stats stats={0,0,0,0,true};
 
-    for(int i=999999; i>=0; --i) simulate(&sv);
+  sim_set_proc_data(&sv, &stats);
+  sim_set_pri_inf_proc_func(&sv, std_stats_pri_inf);
+  sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
+  sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
+  sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
 
-    sim_free(&sv);
-    gsl_rng_free(r);
-    return 0;
+  //printf("Min is %lu, max is %lu\n",gsl_rng_min(r),gsl_rng_max(r));
+
+  const int npaths=1000000;
+  double commper_mean=0;
+  double nevents_mean=0;
+  double r_mean=0;
+  uint32_t nr=0;
+  double pe=0;
+  double ne_mean=0, ne_std=0;
+  double te_mean=0, te_std=0;
+  double ng_mean=0, ng_std=0;
+
+  for(int i=npaths-1; i>=0; --i) {
+    simulate(&sv);
+    r_mean+=stats.rsum;
+    commper_mean+=stats.commpersum;
+    nevents_mean+=stats.neventssum;
+    nr+=stats.n_ended_infections;
+
+    if(stats.extinction) {
+      pe+=stats.extinction;
+      ne_mean+=stats.total_n_infections;
+      ne_std+=stats.total_n_infections*stats.total_n_infections;
+      te_mean+=stats.extinction_time;
+      te_std+=stats.extinction_time*stats.extinction_time;
+
+    } else {
+      ng_mean+=stats.total_n_infections;
+      ng_std+=stats.total_n_infections*=stats.total_n_infections;
+    }
+    memset(&stats,0,sizeof(struct std_summary_stats));
+    stats.extinction=true;
+  }
+  r_mean/=nr;
+  commper_mean/=nr;
+  nevents_mean/=nr;
+  ne_mean/=pe;
+  ne_std/=pe;
+  ne_std=sqrt(pe/(pe-1)*(ne_std-ne_mean*ne_mean));
+  te_mean/=pe;
+  te_std/=pe;
+  te_std=sqrt(pe/(pe-1)*(te_std-te_mean*te_mean));
+  ng_mean/=(npaths-pe);
+  ng_std/=(npaths-pe);
+  ng_std=sqrt((npaths-pe)/(npaths-pe-1)*(ng_std-ng_mean*ng_mean));
+  pe/=npaths;
+
+  printf("Mean R is %f\n",r_mean);
+  printf("Uninterrupted communication period is %f\n",commper_mean);
+  printf("Number of events per infectious individual is %f\n",nevents_mean);
+  printf("Probability of extinction is %f\n",pe);
+  printf("Total number of infected at extinction is %f +- %f\n",ne_mean,ne_std);
+  printf("Extinction time, when it occurs is %f +- %f\n",te_mean,te_std);
+  printf("Total number of infected if no extinction is %f +- %f\n",ng_mean,ng_std);
+
+  sim_free(&sv);
+  gsl_rng_free(r);
+  return 0;
 }

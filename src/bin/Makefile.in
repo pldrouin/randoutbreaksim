@@ -1,7 +1,7 @@
 EDIR	=	src/bin
 
 EINCLUDEDIRS	=	-Iinclude
-ELIBS	=	-Llib -lbranchoutbreak -lpthread -lgsl
+ELIBS	=	-Llib -lbranchoutbreak -lpthread -lgsl -lm
 
 ECFLAGS	=	$(LCFLAGS) $(EINCLUDEDIRS)
 ELDFLAGS	=	$(LDFLAGS) $(ELIBS)

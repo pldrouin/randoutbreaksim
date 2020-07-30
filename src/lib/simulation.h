@@ -11,8 +11,8 @@
 
 #define INIT_N_LAYERS (16)
 
-#define DEBUG_PRINTF(fmt, ...)
-//#define DEBUG_PRINTF(fmt, ...) printf(fmt,__VA_ARGS__)
+#define DEBUG_PRINTF(...)
+//#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 
 struct sim_pars
 {
@@ -37,9 +37,10 @@ struct sim_vars
   uint32_t nlayers;
   void* dataptr;
   void (*gen_trunc_comm_period_func)(struct sim_vars*);
+  void (*pri_inf_proc_func)(struct infindividual* priinf);
   void (*new_inf_proc_func)(struct infindividual* newinf);
   void (*end_inf_proc_func)(struct infindividual* inf, void* dataptr);
-  void (*end_inf_proc_func_noevent)(struct infindividual* inf, void* dataptr);
+  void (*inf_proc_func_noevent)(struct infindividual* inf, void* dataptr);
 };
 
 void var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in);
@@ -48,16 +49,17 @@ void sim_vars_init(struct sim_vars* sv, const gsl_rng* r);
 #define sim_init(handle, r, ...) {var_sim_init(&(handle)->pars, (const struct sim_pars){__VA_ARGS__}); sim_vars_init(handle,r);}
 
 inline static void sim_set_proc_data(struct sim_vars* sv, void* dataptr){sv->dataptr=dataptr;}
+inline static void sim_set_pri_inf_proc_func(struct sim_vars* sv, void (*pri_inf_proc_func)(struct infindividual* priinf)){sv->pri_inf_proc_func=pri_inf_proc_func;}
 inline static void sim_set_new_inf_proc_func(struct sim_vars* sv, void (*new_inf_proc_func)(struct infindividual* newinf)){sv->new_inf_proc_func=new_inf_proc_func;}
-inline static void sim_set_end_inf_proc_func(struct sim_vars* sv, void (*end_inf_proc_func)(struct infindividual* inf, void* dataptr)){sv->end_inf_proc_func_noevent=sv->end_inf_proc_func=end_inf_proc_func;}
-inline static void sim_set_end_inf_proc_noevent_func(struct sim_vars* sv, void (*end_inf_proc_func)(struct infindividual* inf, void* dataptr)){sv->end_inf_proc_func_noevent=end_inf_proc_func;}
+inline static void sim_set_end_inf_proc_func(struct sim_vars* sv, void (*end_inf_proc_func)(struct infindividual* inf, void* dataptr)){sv->end_inf_proc_func=end_inf_proc_func;}
+inline static void sim_set_inf_proc_noevent_func(struct sim_vars* sv, void (*inf_proc_func_noevent)(struct infindividual* inf, void* dataptr)){sv->inf_proc_func_noevent=inf_proc_func_noevent;}
 void sim_free(struct sim_vars* sim){free(sim->iis);}
 
 int simulate(struct sim_vars* sv);
 
 static inline void gen_trunc_comm_period(struct sim_vars* sv)
 {
-  sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
+  sv->ii->comm_period=sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
   double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
 
   if(sv->ii->trunc_comm_period > time_left) {

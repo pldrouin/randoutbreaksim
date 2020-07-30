@@ -9,6 +9,7 @@
 struct infindividual
 {
     void* dataptr;
+    double comm_period;       //Communicable period
     double trunc_comm_period; //Communicable period truncated at tmax
     double event_time;
     uint32_t nevents;
