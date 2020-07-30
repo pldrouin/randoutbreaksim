@@ -1,6 +1,5 @@
 #include "simulation.h"
 
-#define INIT_N_LAYERS (16)
 #define II_ARRAY_GROW_FACT (1.5)
 
 int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
@@ -18,88 +17,88 @@ int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
   return 0;
 }
 
-int simulate(struct sim_pars const* sim, const gsl_rng* r)
+int simulate(struct sim_vars* sv, const gsl_rng* r)
 {
   int i;
-  struct sim_vars sv={.pars=sim, .r=r, .iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual)), .nlayers=INIT_N_LAYERS};
+  struct sim_pars const* sim=sv->pars;
   void (*gen_trunc_comm_period_func)(struct sim_vars*)=(sim->q?gen_trunc_comm_period_isolation:gen_trunc_comm_period);
-  sv.iis[0].event_time=0;
+  sv->iis[0].event_time=0;
 
   for(i=sim->nstart-1; i>=0; --i) {
     DEBUG_PRINTF("initial individual %i\n",i);
-    sv.ii=sv.iis+1;
+    sv->ii=sv->iis+1;
     //Generate the communicable period appropriately
-    gen_trunc_comm_period_func(&sv);
-    sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->trunc_comm_period);
-    DEBUG_PRINTF("Nevents is %i\n",sv.ii->nevents);
+    gen_trunc_comm_period_func(sv);
+    sv->ii->nevents=gsl_ran_poisson(r, sim->lambda*sv->ii->trunc_comm_period);
+    DEBUG_PRINTF("Nevents is %i\n",sv->ii->nevents);
 
     //If events for the current individual in the primary layer
-    if(sv.ii->nevents) {
-      sv.ii->curevent=0;
-      sv.ii->event_time=sv.ii->trunc_comm_period*(1-gsl_rng_uniform(r));
-      DEBUG_PRINTF("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
+    if(sv->ii->nevents) {
+      sv->ii->curevent=0;
+      sv->ii->event_time=sv->ii->trunc_comm_period*(1-gsl_rng_uniform(r));
+      DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
-      sv.ii->ninfections=gsl_ran_logarithmic(r, sv.pars->p);
-      sv.ii->curinfection=0;
-      DEBUG_PRINTF("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+      sv->ii->ninfections=gsl_ran_logarithmic(r, sv->pars->p);
+      sv->ii->curinfection=0;
+      DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
 
       //Create a new infected individual
       for(;;) {
-	++sv.ii;
-	DEBUG_PRINTF("Move to next layer (%li)\n",sv.ii-sv.iis);
+	++sv->ii;
+	DEBUG_PRINTF("Move to next layer (%li)\n",sv->ii-sv->iis);
 
 	//If reaching the end of the allocated array, increase its size
-	if(sv.ii==sv.iis+sv.nlayers) {
-	  sv.nlayers*=II_ARRAY_GROW_FACT;
-	  sv.iis=(struct infindividual*)realloc(sv.iis,sv.nlayers*sizeof(struct infindividual));
+	if(sv->ii==sv->iis+sv->nlayers) {
+	  sv->nlayers*=II_ARRAY_GROW_FACT;
+	  sv->iis=(struct infindividual*)realloc(sv->iis,sv->nlayers*sizeof(struct infindividual));
 	}
 	//Generate the communicable period appropriately
-	gen_trunc_comm_period_func(&sv);
+	gen_trunc_comm_period_func(sv);
 
 	//Generate the number of events
-	sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->trunc_comm_period);
-	DEBUG_PRINTF("Nevents is %i\n",sv.ii->nevents);
+	sv->ii->nevents=gsl_ran_poisson(r, sim->lambda*sv->ii->trunc_comm_period);
+	DEBUG_PRINTF("Nevents is %i\n",sv->ii->nevents);
 
 	//If the number of events is non-zero
-	if(sv.ii->nevents) {
-	  sv.ii->curevent=0;
+	if(sv->ii->nevents) {
+	  sv->ii->curevent=0;
 	  //Generate the event time
 gen_event:
-	  sv.ii->event_time=(sv.ii-1)->event_time+sv.ii->trunc_comm_period*(1-gsl_rng_uniform(r));
-	  DEBUG_PRINTF("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
+	  sv->ii->event_time=(sv->ii-1)->event_time+sv->ii->trunc_comm_period*(1-gsl_rng_uniform(r));
+	  DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
 	  //Generate the number of infections and the associated index for
 	  //the current event
 	  //Move to the next layer
-	  sv.ii->ninfections=gsl_ran_logarithmic(r, sv.pars->p);
-	  sv.ii->curinfection=0;
-	  DEBUG_PRINTF("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+	  sv->ii->ninfections=gsl_ran_logarithmic(r, sv->pars->p);
+	  sv->ii->curinfection=0;
+	  DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
 	  continue;
 	}
 
 	//All events for the current individual have been exhausted
 	for(;;) {
 
-	  if(sv.ii == sv.iis+1) goto done_parsing;
+	  if(sv->ii == sv->iis+1) goto done_parsing;
 	  //Move down one layer
-	  --sv.ii;
-	  DEBUG_PRINTF("Move to previous layer (%li)\n",sv.ii-sv.iis);
+	  --sv->ii;
+	  DEBUG_PRINTF("Move to previous layer (%li)\n",sv->ii-sv->iis);
 
 	  //If the infections have been exhausted
-	  if(sv.ii->curinfection == sv.ii->ninfections-1) {
+	  if(sv->ii->curinfection == sv->ii->ninfections-1) {
 
 	    //If the events have been exhausted, go down another layer
-	    if(sv.ii->curevent == sv.ii->nevents-1) continue;
+	    if(sv->ii->curevent == sv->ii->nevents-1) continue;
 
 	    //Else
 	    //Move to the next event for the individual
-	    ++(sv.ii->curevent);
+	    ++(sv->ii->curevent);
 	    goto gen_event;
 	  }
 
 	  //Look at the next infected individual in the current event
-	  ++(sv.ii->curinfection);
-	  DEBUG_PRINTF("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+	  ++(sv->ii->curinfection);
+	  DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
 	  break;
 	}
       }

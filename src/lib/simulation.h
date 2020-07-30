@@ -9,6 +9,8 @@
 
 #include "infindividual.h"
 
+#define INIT_N_LAYERS (16)
+
 #define DEBUG_PRINTF(fmt, ...)
 //#define DEBUG_PRINTF(fmt, ...) printf(fmt,__VA_ARGS__)
 
@@ -28,7 +30,7 @@ struct sim_pars
 
 struct sim_vars
 {
-  struct sim_pars const* pars;
+  struct sim_pars* pars;
   gsl_rng const* r;
   struct infindividual* iis;
   struct infindividual* ii;
@@ -37,9 +39,10 @@ struct sim_vars
 
 int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in);
 
-#define sim_init(handle, ...) var_sim_init(handle, (const struct sim_pars){__VA_ARGS__});
+#define sim_init(handle, r, ...) {var_sim_init((handle)->pars, (const struct sim_pars){__VA_ARGS__}); (handle)->r=r; (handle)->iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual)); (handle)->nlayers=INIT_N_LAYERS;}
+void sim_free(struct sim_vars* sim){free(sim->iis);}
 
-int simulate(struct sim_pars const* sim, const gsl_rng* r);
+int simulate(struct sim_vars* sv, const gsl_rng* r);
 
 static inline void gen_trunc_comm_period(struct sim_vars* sv)
 {
