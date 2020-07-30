@@ -2,12 +2,14 @@
 #define _SIMULATION_
 
 #include <stdint.h>
+#include <math.h>
 
 #include <gsl/gsl_rng.h>
+#include <gsl/gsl_randist.h>
 
 #include "infindividual.h"
 
-struct simulation
+struct sim_pars
 {
   double tbar;
   double p;
@@ -16,15 +18,26 @@ struct simulation
   double q;
   double mbar;
   double kappaq;
+  double tmax;
   uint32_t nsim;
   uint32_t nstart;
-  uint32_t tmax;
 };
 
-int var_sim_init(struct simulation* sim, const struct simulation sim_in);
+struct sim_vars
+{
+  struct sim_pars const* pars;
+  gsl_rng const* r;
+  struct infindividual* ii;
+  int layer;
+};
 
-#define sim_init(handle, ...) var_sim_init(handle, (const struct simulation){__VA_ARGS__});
+int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in);
 
-int simulate(struct simulation* sim, const gsl_rng* r);
+#define sim_init(handle, ...) var_sim_init(handle, (const struct sim_pars){__VA_ARGS__});
+
+int simulate(struct sim_pars const* sim, const gsl_rng* r);
+
+int infect_attendees(struct sim_vars const* sv, struct iillist* list);
+int infect_attendees_isolation(struct sim_vars const* sv, struct iillist* list);
 
 #endif
