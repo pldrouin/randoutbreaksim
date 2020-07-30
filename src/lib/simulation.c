@@ -95,10 +95,10 @@ gen_event:
 	    //Move to the next event for the individual
 	    ++(sv.ii->curevent);
 	    goto gen_event;
+	  }
 
-	    //Look at the next infected individual in the current event
-	  } else ++(sv.ii->curinfection);
-
+	  //Look at the next infected individual in the current event
+	  ++(sv.ii->curinfection);
 	  DEBUG_PRINTF("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
 	  break;
 	}
