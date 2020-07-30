@@ -2,7 +2,7 @@
 
 #define II_ARRAY_GROW_FACT (1.5)
 
-int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
+void var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
 {
   sim->tbar=(sim_in.tbar?sim_in.tbar:10);
   sim->p=(sim_in.p?sim_in.p:0.5);
@@ -14,31 +14,37 @@ int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
   sim->nsim=(sim_in.nsim?sim_in.nsim:10);
   sim->nstart=(sim_in.nstart?sim_in.nstart:1);
   sim->tmax=(sim_in.tmax?sim_in.tmax:100);
-  return 0;
 }
 
-int simulate(struct sim_vars* sv, const gsl_rng* r)
+void sim_vars_init(struct sim_vars* sv, const gsl_rng* r)
+{
+  sv->r=r;
+  sv->iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual));
+  sv->nlayers=INIT_N_LAYERS;
+  sv->gen_trunc_comm_period_func=(sv->pars.q?gen_trunc_comm_period_isolation:gen_trunc_comm_period);
+  sv->iis[0].event_time=0;
+}
+
+int simulate(struct sim_vars* sv)
 {
   int i;
-  struct sim_pars const* sim=sv->pars;
-  void (*gen_trunc_comm_period_func)(struct sim_vars*)=(sim->q?gen_trunc_comm_period_isolation:gen_trunc_comm_period);
-  sv->iis[0].event_time=0;
+  struct sim_pars const* sim=&(sv->pars);
 
   for(i=sim->nstart-1; i>=0; --i) {
     DEBUG_PRINTF("initial individual %i\n",i);
     sv->ii=sv->iis+1;
     //Generate the communicable period appropriately
-    gen_trunc_comm_period_func(sv);
-    sv->ii->nevents=gsl_ran_poisson(r, sim->lambda*sv->ii->trunc_comm_period);
+    sv->gen_trunc_comm_period_func(sv);
+    sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->trunc_comm_period);
     DEBUG_PRINTF("Nevents is %i\n",sv->ii->nevents);
 
     //If events for the current individual in the primary layer
     if(sv->ii->nevents) {
       sv->ii->curevent=0;
-      sv->ii->event_time=sv->ii->trunc_comm_period*(1-gsl_rng_uniform(r));
+      sv->ii->event_time=sv->ii->trunc_comm_period*(1-gsl_rng_uniform(sv->r));
       DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
-      sv->ii->ninfections=gsl_ran_logarithmic(r, sv->pars->p);
+      sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
       sv->ii->curinfection=0;
       DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
 
@@ -53,10 +59,10 @@ int simulate(struct sim_vars* sv, const gsl_rng* r)
 	  sv->iis=(struct infindividual*)realloc(sv->iis,sv->nlayers*sizeof(struct infindividual));
 	}
 	//Generate the communicable period appropriately
-	gen_trunc_comm_period_func(sv);
+	sv->gen_trunc_comm_period_func(sv);
 
 	//Generate the number of events
-	sv->ii->nevents=gsl_ran_poisson(r, sim->lambda*sv->ii->trunc_comm_period);
+	sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->trunc_comm_period);
 	DEBUG_PRINTF("Nevents is %i\n",sv->ii->nevents);
 
 	//If the number of events is non-zero
@@ -64,13 +70,13 @@ int simulate(struct sim_vars* sv, const gsl_rng* r)
 	  sv->ii->curevent=0;
 	  //Generate the event time
 gen_event:
-	  sv->ii->event_time=(sv->ii-1)->event_time+sv->ii->trunc_comm_period*(1-gsl_rng_uniform(r));
+	  sv->ii->event_time=(sv->ii-1)->event_time+sv->ii->trunc_comm_period*(1-gsl_rng_uniform(sv->r));
 	  DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
 	  //Generate the number of infections and the associated index for
 	  //the current event
 	  //Move to the next layer
-	  sv->ii->ninfections=gsl_ran_logarithmic(r, sv->pars->p);
+	  sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
 	  sv->ii->curinfection=0;
 	  DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
 	  continue;

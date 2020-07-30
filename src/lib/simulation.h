@@ -30,24 +30,26 @@ struct sim_pars
 
 struct sim_vars
 {
-  struct sim_pars* pars;
+  struct sim_pars pars;
   gsl_rng const* r;
   struct infindividual* iis;
   struct infindividual* ii;
-  int nlayers;
+  uint32_t nlayers;
+  void (*gen_trunc_comm_period_func)(struct sim_vars*);
 };
 
-int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in);
+void var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in);
+void sim_vars_init(struct sim_vars* sv, const gsl_rng* r);
 
-#define sim_init(handle, r, ...) {var_sim_init((handle)->pars, (const struct sim_pars){__VA_ARGS__}); (handle)->r=r; (handle)->iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual)); (handle)->nlayers=INIT_N_LAYERS;}
+#define sim_init(handle, r, ...) {var_sim_init(&(handle)->pars, (const struct sim_pars){__VA_ARGS__}); sim_vars_init(handle,r);}
 void sim_free(struct sim_vars* sim){free(sim->iis);}
 
-int simulate(struct sim_vars* sv, const gsl_rng* r);
+int simulate(struct sim_vars* sv);
 
 static inline void gen_trunc_comm_period(struct sim_vars* sv)
 {
-  sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
-  double time_left=sv->pars->tmax-(sv->ii-1)->event_time;
+  sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
+  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
 
   if(sv->ii->trunc_comm_period > time_left) {
     sv->ii->trunc_comm_period=time_left;
@@ -61,16 +63,16 @@ static inline void gen_trunc_comm_period_isolation(struct sim_vars* sv)
 {
   double m;
 
-  sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
+  sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
 
-  if(gsl_rng_uniform(sv->r) >= sv->pars->q) {
+  if(gsl_rng_uniform(sv->r) >= sv->pars.q) {
 
-    if(isinf(sv->pars->kappaq)) m=sv->pars->mbar;
-    else m=gsl_ran_gamma(sv->r, sv->pars->kappaq*sv->pars->mbar, 1./sv->pars->kappaq);
+    if(isinf(sv->pars.kappaq)) m=sv->pars.mbar;
+    else m=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq);
 
     if(m<sv->ii->trunc_comm_period) sv->ii->trunc_comm_period=m;
   }
-  double time_left=sv->pars->tmax-(sv->ii-1)->event_time;
+  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
 
   if(sv->ii->trunc_comm_period > time_left) {
     sv->ii->trunc_comm_period=time_left;
