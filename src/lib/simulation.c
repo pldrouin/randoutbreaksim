@@ -21,52 +21,32 @@ int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in)
 int simulate(struct sim_pars const* sim, const gsl_rng* r)
 {
   int i;
-  double m;
   struct sim_vars sv={.pars=sim, .r=r, .iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual)), .nlayers=INIT_N_LAYERS};
-  void (*gen_comm_period_func)(struct sim_vars*)=(sim->q?gen_comm_period_isolation:gen_comm_period);
+  void (*gen_trunc_comm_period_func)(struct sim_vars*)=(sim->q?gen_trunc_comm_period_isolation:gen_trunc_comm_period);
   sv.iis[0].event_time=0;
 
   for(i=sim->nstart-1; i>=0; --i) {
-    printf("initial individual %i\n",i);
-    sv.iis[1].comm_period=gsl_ran_gamma(r, sim->kappa*sim->tbar, 1./sim->kappa);
-
-    if(sim->q && gsl_rng_uniform(r) >= sim->q) {
-
-      if(isinf(sim->kappaq)) m=sim->mbar;
-      else m=gsl_ran_gamma(r, sim->kappaq*sim->mbar, 1./sim->kappaq);
-
-      if(m<sv.iis[1].comm_period) sv.iis[1].comm_period=m;
-    }
-    printf("Comm period is %f\n",sv.iis[1].comm_period);
+    DEBUG_PRINTF("initial individual %i\n",i);
     sv.ii=sv.iis+1;
-    sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->comm_period);
-    printf("Nevents is %i\n",sv.ii->nevents);
+    //Generate the communicable period appropriately
+    gen_trunc_comm_period_func(&sv);
+    sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->trunc_comm_period);
+    DEBUG_PRINTF("Nevents is %i\n",sv.ii->nevents);
 
     //If events for the current individual in the primary layer
     if(sv.ii->nevents) {
       sv.ii->curevent=0;
-      sv.ii->event_time=sv.ii->comm_period*gsl_rng_uniform(r);
-      printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
+      sv.ii->event_time=sv.ii->trunc_comm_period*(1-gsl_rng_uniform(r));
+      DEBUG_PRINTF("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
 
-      //Skip the events exceeding the limit
-      while(sv.ii->event_time > sv.pars->tmax) {
-	++(sv.ii->curevent);
-
-	//If all events have been exhausted, continue with the next individual
-	//in the primary layer
-	if(sv.ii->curevent == sv.ii->nevents) goto next_pri_ii;
-	sv.ii->event_time=sv.ii->comm_period*gsl_rng_uniform(r);
-        printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
-      }
       sv.ii->ninfections=gsl_ran_logarithmic(r, sv.pars->p);
       sv.ii->curinfection=0;
-      printf("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+      DEBUG_PRINTF("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
 
       //Create a new infected individual
       for(;;) {
-next_layer:
-	printf("Move to next layer\n");
 	++sv.ii;
+	DEBUG_PRINTF("Move to next layer (%li)\n",sv.ii-sv.iis);
 
 	//If reaching the end of the allocated array, increase its size
 	if(sv.ii==sv.iis+sv.nlayers) {
@@ -74,78 +54,59 @@ next_layer:
 	  sv.iis=(struct infindividual*)realloc(sv.iis,sv.nlayers*sizeof(struct infindividual));
 	}
 	//Generate the communicable period appropriately
-	gen_comm_period_func(&sv);
+	gen_trunc_comm_period_func(&sv);
 
 	//Generate the number of events
-	sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->comm_period);
-	printf("Nevents is %i\n",sv.ii->nevents);
+	sv.ii->nevents=gsl_ran_poisson(r, sim->lambda*sv.ii->trunc_comm_period);
+	DEBUG_PRINTF("Nevents is %i\n",sv.ii->nevents);
 
 	//If the number of events is non-zero
 	if(sv.ii->nevents) {
 	  sv.ii->curevent=0;
 	  //Generate the event time
 gen_event:
-	  sv.ii->event_time=(sv.ii-1)->event_time+sv.ii->comm_period*gsl_rng_uniform(r);
-          printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
+	  sv.ii->event_time=(sv.ii-1)->event_time+sv.ii->trunc_comm_period*(1-gsl_rng_uniform(r));
+	  DEBUG_PRINTF("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
 
-	  //Loop over the events
-	  for(;;) {
-
-	    //If the event time does not exceed the limit
-	    if(sv.ii->event_time <= sv.pars->tmax) {
-	      //Generate the number of infections and the associated index for
-	      //the current event
-	      //Move to the next layer
-	      sv.ii->ninfections=gsl_ran_logarithmic(r, sv.pars->p);
-	      sv.ii->curinfection=0;
-              printf("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
-	      goto next_layer;
-	    }
-	    //Otherwise if the limit was exceeded, look at the next event
-	    ++(sv.ii->curevent);
-
-	    //If all events have been exhausted, exit the loop
-	    if(sv.ii->curevent == sv.ii->nevents) break;
-	    //Otherwise, generate the event time for the next event
-	    sv.ii->event_time=(sv.ii-1)->event_time+sv.ii->comm_period*gsl_rng_uniform(r);
-            printf("Event %i/%i at time %f\n",sv.ii->curevent,sv.ii->nevents,sv.ii->event_time);
-	  }
+	  //Generate the number of infections and the associated index for
+	  //the current event
+	  //Move to the next layer
+	  sv.ii->ninfections=gsl_ran_logarithmic(r, sv.pars->p);
+	  sv.ii->curinfection=0;
+	  DEBUG_PRINTF("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+	  continue;
 	}
 
 	//All events for the current individual have been exhausted
 	for(;;) {
+
+	  if(sv.ii == sv.iis+1) goto done_parsing;
 	  //Move down one layer
-	  printf("Move to previous layer\n");
 	  --sv.ii;
-
-	  //If done processing, exit
-	  if(sv.ii == sv.iis) goto done_parsing;
-
-	  //Look at the next infected individual in the current event
-	  ++(sv.ii->curinfection);
+	  DEBUG_PRINTF("Move to previous layer (%li)\n",sv.ii-sv.iis);
 
 	  //If the infections have been exhausted
-	  if(sv.ii->curinfection == sv.ii->ninfections) {
-	    //Move to the next event for the individual
-	    ++(sv.ii->curevent);
+	  if(sv.ii->curinfection == sv.ii->ninfections-1) {
 
 	    //If the events have been exhausted, go down another layer
-	    if(sv.ii->curevent == sv.ii->nevents) continue;
+	    if(sv.ii->curevent == sv.ii->nevents-1) continue;
 
 	    //Else
-	    //Generate the number of infections for the event and the associated
-	    //index
+	    //Move to the next event for the individual
+	    ++(sv.ii->curevent);
 	    goto gen_event;
-	  }
-          printf("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
+
+	    //Look at the next infected individual in the current event
+	  } else ++(sv.ii->curinfection);
+
+	  DEBUG_PRINTF("Infection %i/%i\n",sv.ii->curinfection,sv.ii->ninfections);
 	  break;
 	}
       }
     }
-next_pri_ii:
+done_parsing:
     ;
   }
-done_parsing:
 
   return 0;
 }

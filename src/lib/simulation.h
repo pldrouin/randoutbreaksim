@@ -9,6 +9,9 @@
 
 #include "infindividual.h"
 
+#define DEBUG_PRINTF(fmt, ...)
+//#define DEBUG_PRINTF(fmt, ...) printf(fmt,__VA_ARGS__)
+
 struct sim_pars
 {
   double tbar;
@@ -38,26 +41,40 @@ int var_sim_init(struct sim_pars* sim, const struct sim_pars sim_in);
 
 int simulate(struct sim_pars const* sim, const gsl_rng* r);
 
-static inline void gen_comm_period(struct sim_vars* sv)
+static inline void gen_trunc_comm_period(struct sim_vars* sv)
+{
+  sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
+  double time_left=sv->pars->tmax-(sv->ii-1)->event_time;
+
+  if(sv->ii->trunc_comm_period > time_left) {
+    sv->ii->trunc_comm_period=time_left;
+    sv->ii->infectious_at_tmax=true;
+
+  } else sv->ii->infectious_at_tmax=false;
+  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->trunc_comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
+}
+
+static inline void gen_trunc_comm_period_isolation(struct sim_vars* sv)
 {
   double m;
 
-  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
+  sv->ii->trunc_comm_period=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
 
   if(gsl_rng_uniform(sv->r) >= sv->pars->q) {
 
     if(isinf(sv->pars->kappaq)) m=sv->pars->mbar;
     else m=gsl_ran_gamma(sv->r, sv->pars->kappaq*sv->pars->mbar, 1./sv->pars->kappaq);
 
-    if(m<sv->ii->comm_period) sv->ii->comm_period=m;
+    if(m<sv->ii->trunc_comm_period) sv->ii->trunc_comm_period=m;
   }
-  printf("Comm period is %f\n",sv->ii->comm_period);
-}
+  double time_left=sv->pars->tmax-(sv->ii-1)->event_time;
 
-static inline void gen_comm_period_isolation(struct sim_vars* sv)
-{
-  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars->kappa*sv->pars->tbar, 1./sv->pars->kappa);
-  printf("Comm period is %f\n",sv->ii->comm_period);
+  if(sv->ii->trunc_comm_period > time_left) {
+    sv->ii->trunc_comm_period=time_left;
+    sv->ii->infectious_at_tmax=true;
+
+  } else sv->ii->infectious_at_tmax=false;
+  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->trunc_comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
 }
 
 #endif

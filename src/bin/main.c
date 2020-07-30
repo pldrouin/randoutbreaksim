@@ -5,7 +5,8 @@
 int main(const int nargs, const char* args[])
 {
     struct sim_pars sim;
-    sim_init(&sim,.lambda=0.5,.p=0.8,.tmax=6);
+    //sim_init(&sim,.lambda=0.5,.p=0.8,.tmax=6);
+    sim_init(&sim,.nstart=1000000,.tmax=25,.tbar=3,.lambda=0.1,.p=0.91,.kappa=0.47,.q=0);
 
     gsl_rng_env_setup();
 
