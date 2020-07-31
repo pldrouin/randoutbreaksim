@@ -18,6 +18,7 @@ struct std_summary_stats
   double extinction_time;
   double commpersum;
   uint32_t* inf_timeline;
+  uint32_t* totinf_timeline;
   uint32_t npers;
   uint32_t rsum;
   uint32_t neventssum;
@@ -33,6 +34,7 @@ inline static void std_stats_path_init(struct std_summary_stats* stats)
   stats->extinction_time=0;
   stats->commpersum=0;
   memset(stats->inf_timeline,0,stats->npers*sizeof(uint32_t));
+  memset(stats->totinf_timeline,0,stats->npers*sizeof(uint32_t));
   stats->rsum=0;
   stats->neventssum=0;
   stats->total_n_infections=0;
@@ -80,6 +82,7 @@ inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
   if(end_comm_per>=((struct std_summary_stats*)ptr)->npers) end_comm_per=((struct std_summary_stats*)ptr)->npers-1;
 
   for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((struct std_summary_stats*)ptr)->inf_timeline[i]);
+  ++(((struct std_summary_stats*)ptr)->totinf_timeline[(int)((inf-1)->event_time)]);
 }
 
 inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)

@@ -8,6 +8,7 @@ void std_stats_init(struct sim_vars* sv, struct std_summary_stats* stats)
   }
   stats->npers=sv->pars.tmax+1;
   stats->inf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
+  stats->totinf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
 }
 
 void std_stats_increase_layers(struct infindividual* iis, uint32_t n)
@@ -25,4 +26,5 @@ void std_stats_free(struct sim_vars* sv, struct std_summary_stats* stats)
     free(sv->iis[i].dataptr);
   }
   free(stats->inf_timeline);
+  free(stats->totinf_timeline);
 }
