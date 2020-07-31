@@ -84,6 +84,7 @@ int simulate(struct sim_vars* sv)
       //If reaching the end of the allocated array, increase its size
       if(sv->ii==sv->iis+sv->nlayers) {
 	sv->nlayers*=II_ARRAY_GROW_FACT;
+	DEBUG_PRINTF("Growing layers to %i\n",sv->nlayers);
 	uint64_t layer=sv->ii-sv->iis;
 	sv->iis=(struct infindividual*)realloc(sv->iis,sv->nlayers*sizeof(struct infindividual));
 	sv->increase_layers_proc_func(sv->iis+layer,sv->nlayers-layer);
