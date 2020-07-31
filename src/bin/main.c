@@ -26,7 +26,7 @@ int main(const int nargs, const char* args[])
   double commper_mean=0;
   double nevents_mean=0;
   double r_mean=0;
-  uint32_t nr=0;
+  //uint32_t nr=0;
   double pe=0;
   double ne_mean=0, ne_std=0;
   double te_mean=0, te_std=0;
@@ -37,7 +37,7 @@ int main(const int nargs, const char* args[])
     r_mean+=stats.rsum;
     commper_mean+=stats.commpersum;
     nevents_mean+=stats.neventssum;
-    nr+=stats.n_ended_infections;
+    //nr+=stats.n_ended_infections;
 
     if(stats.extinction) {
       pe+=stats.extinction;

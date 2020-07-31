@@ -18,7 +18,7 @@ struct std_summary_stats
   double commpersum;
   uint32_t rsum;
   uint32_t neventssum;
-  uint32_t n_ended_infections;
+  //uint32_t n_ended_infections;
   uint32_t total_n_infections;
   bool extinction;
 };
@@ -58,7 +58,7 @@ inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
   if(inf->infectious_at_tmax) ((struct std_summary_stats*)ptr)->extinction=false;
 
   else {
-    ++((struct std_summary_stats*)ptr)->n_ended_infections;
+    //++((struct std_summary_stats*)ptr)->n_ended_infections;
     const double inf_end=(inf-1)->event_time+inf->comm_period;
 
     if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;
@@ -80,7 +80,7 @@ inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)
   if(inf->infectious_at_tmax) ((struct std_summary_stats*)ptr)->extinction=false;
 
   else {
-      ++((struct std_summary_stats*)ptr)->n_ended_infections;
+    //++((struct std_summary_stats*)ptr)->n_ended_infections;
     const double inf_end=(inf-1)->event_time+inf->comm_period;
 
     if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;

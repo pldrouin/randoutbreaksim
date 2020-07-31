@@ -36,7 +36,7 @@ struct sim_vars
   struct infindividual* ii;
   uint32_t nlayers;
   void* dataptr;
-  void (*gen_trunc_comm_period_func)(struct sim_vars*);
+  void (*gen_comm_period_func)(struct sim_vars*);
   void (*pri_inf_proc_func)(struct infindividual* priinf);
   void (*new_event_proc_func)(struct infindividual* inf);
   void (*new_inf_proc_func)(struct infindividual* newinf);
@@ -59,20 +59,20 @@ void sim_free(struct sim_vars* sim){free(sim->iis);}
 
 int simulate(struct sim_vars* sv);
 
-static inline void gen_trunc_comm_period(struct sim_vars* sv)
+static inline void gen_comm_period(struct sim_vars* sv)
 {
   sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
   double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
 
   if(sv->ii->comm_period > time_left) {
-    //sv->ii->trunc_comm_period=time_left;
+    //sv->ii->comm_period=time_left;
     sv->ii->infectious_at_tmax=true;
 
   } else sv->ii->infectious_at_tmax=false;
   DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
 }
 
-static inline void gen_trunc_comm_period_isolation(struct sim_vars* sv)
+static inline void gen_comm_period_isolation(struct sim_vars* sv)
 {
   double m;
 
@@ -88,7 +88,7 @@ static inline void gen_trunc_comm_period_isolation(struct sim_vars* sv)
   double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
 
   if(sv->ii->comm_period > time_left) {
-    //sv->ii->trunc_comm_period=time_left;
+    //sv->ii->comm_period=time_left;
     sv->ii->infectious_at_tmax=true;
 
   } else sv->ii->infectious_at_tmax=false;

@@ -21,7 +21,7 @@ void sim_vars_init(struct sim_vars* sv, const gsl_rng* r)
   sv->r=r;
   sv->iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual));
   sv->nlayers=INIT_N_LAYERS;
-  sv->gen_trunc_comm_period_func=(sv->pars.q?gen_trunc_comm_period_isolation:gen_trunc_comm_period);
+  sv->gen_comm_period_func=(sv->pars.q?gen_comm_period_isolation:gen_comm_period);
   sv->iis[0].event_time=0;
   sv->dataptr=NULL;
   sv->pri_inf_proc_func=dummy_proc_func_one_par;
@@ -40,7 +40,7 @@ int simulate(struct sim_vars* sv)
     DEBUG_PRINTF("initial individual %i\n",i);
     sv->ii=sv->iis+1;
     //Generate the communicable period appropriately
-    sv->gen_trunc_comm_period_func(sv);
+    sv->gen_comm_period_func(sv);
     sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->comm_period);
     DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->ii->comm_period, sv->ii->nevents);
 
@@ -90,7 +90,7 @@ int simulate(struct sim_vars* sv)
 	sv->ii=sv->iis+layer;
       }
       //Generate the communicable period appropriately
-      sv->gen_trunc_comm_period_func(sv);
+      sv->gen_comm_period_func(sv);
 
       //Generate the number of events
       sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->comm_period);
