@@ -74,9 +74,9 @@ int main(const int nargs, const char* args[])
   printf("Number of events per infectious individual is %f\n",nevents_mean);
   printf("Number of infections per event is %f\n",ninf_per_event_mean);
   printf("Probability of extinction is %f\n",pe);
-  printf("Total number of infected at extinction is %f +- %f\n",ne_mean,ne_std);
-  printf("Extinction time, when it occurs is %f +- %f\n",te_mean,te_std);
-  printf("Total number of infected if no extinction is %f +- %f\n",ng_mean,ng_std);
+  printf("Total number of infected individuals at extinction is %f +- %f\n",ne_mean,ne_std);
+  printf("Extinction time, if it occurs is %f +- %f\n",te_mean,te_std);
+  printf("Total number of infected individuals if no extinction is %f +- %f\n",ng_mean,ng_std);
 
   sim_free(&sv);
   gsl_rng_free(r);
