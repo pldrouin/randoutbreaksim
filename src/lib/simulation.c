@@ -25,6 +25,7 @@ void sim_vars_init(struct sim_vars* sv, const gsl_rng* r)
   sv->iis[0].event_time=0;
   sv->dataptr=NULL;
   sv->pri_inf_proc_func=dummy_proc_func_one_par;
+  sv->new_event_proc_func=dummy_proc_func_one_par;
   sv->new_inf_proc_func=dummy_proc_func_one_par;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
   sv->inf_proc_func_noevent=dummy_proc_func_two_pars;
@@ -40,8 +41,8 @@ int simulate(struct sim_vars* sv)
     sv->ii=sv->iis+1;
     //Generate the communicable period appropriately
     sv->gen_trunc_comm_period_func(sv);
-    sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->trunc_comm_period);
-    DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->ii->trunc_comm_period, sv->ii->nevents);
+    sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->comm_period);
+    DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->ii->comm_period, sv->ii->nevents);
 
     //If no event for the current individual in the primary layer
     if(!sv->ii->nevents) {
@@ -51,10 +52,28 @@ int simulate(struct sim_vars* sv)
 
     sv->pri_inf_proc_func(sv->ii);
     sv->ii->curevent=0;
-    sv->ii->event_time=sv->ii->trunc_comm_period*(1-gsl_rng_uniform(sv->r));
-    DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
-    sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
+    for(;;) {
+      sv->ii->event_time=sv->ii->comm_period*(1-gsl_rng_uniform(sv->r));
+      DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
+
+      sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
+      sv->new_event_proc_func(sv->ii);
+
+      if(sv->ii->event_time > sv->pars.tmax) {
+
+	//If the events have been exhausted, go down another layer
+	if(sv->ii->curevent == sv->ii->nevents-1) {
+	  sv->end_inf_proc_func(sv->ii, sv->dataptr);
+	  goto done_parsing;
+	}
+
+	//Else
+	//Move to the next event for the individual
+	++(sv->ii->curevent);
+
+      } else break;
+    }
     sv->ii->curinfection=0;
     DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
 
@@ -74,25 +93,39 @@ int simulate(struct sim_vars* sv)
       sv->gen_trunc_comm_period_func(sv);
 
       //Generate the number of events
-      sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->trunc_comm_period);
-      DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->ii->trunc_comm_period, sv->ii->nevents);
+      sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->comm_period);
+      DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->ii->comm_period, sv->ii->nevents);
 
       //If the number of events is non-zero
       if(sv->ii->nevents) {
-	sv->new_inf_proc_func(sv->ii);
 	sv->ii->curevent=0;
+	sv->new_inf_proc_func(sv->ii);
 	//Generate the event time
 gen_event:
-	sv->ii->event_time=(sv->ii-1)->event_time+sv->ii->trunc_comm_period*(1-gsl_rng_uniform(sv->r));
+	sv->ii->event_time=(sv->ii-1)->event_time+sv->ii->comm_period*(1-gsl_rng_uniform(sv->r));
 	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
 	//Generate the number of infections and the associated index for
 	//the current event
 	//Move to the next layer
 	sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
-	sv->ii->curinfection=0;
-	DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
-	continue;
+        sv->new_event_proc_func(sv->ii);
+
+	if(sv->ii->event_time <= sv->pars.tmax) {
+	  sv->ii->curinfection=0;
+	  DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
+	  continue;
+
+	} else {
+
+	  //If the events have not been exhausted
+	  if(sv->ii->curevent < sv->ii->nevents-1) {
+	    //Move to the next event for the individual
+	    ++(sv->ii->curevent);
+	    goto gen_event;
+	  }
+	  sv->end_inf_proc_func(sv->ii, sv->dataptr);
+	}
 
       } else sv->inf_proc_func_noevent(sv->ii, sv->dataptr);
 

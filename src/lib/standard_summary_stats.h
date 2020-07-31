@@ -30,29 +30,36 @@ inline static void std_stats_pri_inf(struct infindividual* inf)
   *(uint32_t*)inf->dataptr=0;
 }
 
+inline static void std_stats_new_event(struct infindividual* inf)
+{
+  (*(uint32_t*)inf->dataptr)+=inf->ninfections;
+  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)inf->dataptr);
+}
+
 inline static void std_stats_new_inf(struct infindividual* inf)
 {
   DEBUG_PRINTF("Alloc for %p\n",inf);
   inf->dataptr=malloc(sizeof(uint32_t));
   *(uint32_t*)inf->dataptr=0;
-  ++(*(uint32_t*)(inf-1)->dataptr);
-  DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
+  //++(*(uint32_t*)(inf-1)->dataptr);
+  //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
+
 }
 
 inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
 {
   ++((struct std_summary_stats*)ptr)->total_n_infections;
+  DEBUG_PRINTF("Number of infections was %u\n",*(uint32_t*)inf->dataptr);
+  ((struct std_summary_stats*)ptr)->rsum+=*(uint32_t*)inf->dataptr;
+  ((struct std_summary_stats*)ptr)->commpersum+=inf->comm_period;
+  ((struct std_summary_stats*)ptr)->neventssum+=inf->nevents;
 
   //If truncated by tmax
   if(inf->infectious_at_tmax) ((struct std_summary_stats*)ptr)->extinction=false;
 
   else {
-    DEBUG_PRINTF("Number of infections was %u\n",*(uint32_t*)inf->dataptr);
-    ((struct std_summary_stats*)ptr)->rsum+=*(uint32_t*)inf->dataptr;
-    ((struct std_summary_stats*)ptr)->commpersum+=inf->trunc_comm_period;
-    ((struct std_summary_stats*)ptr)->neventssum+=inf->nevents;
     ++((struct std_summary_stats*)ptr)->n_ended_infections;
-    const double inf_end=(inf-1)->event_time+inf->trunc_comm_period;
+    const double inf_end=(inf-1)->event_time+inf->comm_period;
 
     if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;
   }
@@ -62,17 +69,19 @@ inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
 
 inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)
 {
+  //++(*(uint32_t*)(inf-1)->dataptr);
+  //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
   ++((struct std_summary_stats*)ptr)->total_n_infections;
+  DEBUG_PRINTF("Number of infections was 0\n");
+  ((struct std_summary_stats*)ptr)->commpersum+=inf->comm_period;
+  ((struct std_summary_stats*)ptr)->neventssum+=inf->nevents;
 
   //If truncated by tmax
   if(inf->infectious_at_tmax) ((struct std_summary_stats*)ptr)->extinction=false;
 
   else {
-    DEBUG_PRINTF("Number of infections was 0\n");
-    ((struct std_summary_stats*)ptr)->commpersum+=inf->trunc_comm_period;
-    ((struct std_summary_stats*)ptr)->neventssum+=inf->nevents;
-    ++((struct std_summary_stats*)ptr)->n_ended_infections;
-    const double inf_end=(inf-1)->event_time+inf->trunc_comm_period;
+      ++((struct std_summary_stats*)ptr)->n_ended_infections;
+    const double inf_end=(inf-1)->event_time+inf->comm_period;
 
     if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;
   }

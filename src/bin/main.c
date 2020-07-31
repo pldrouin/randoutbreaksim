@@ -9,19 +9,20 @@ int main(const int nargs, const char* args[])
   gsl_rng* r = gsl_rng_alloc(gsl_rng_taus2);
   struct sim_vars sv;
   //sim_init(&sv,.lambda=0.5,.p=0.8,.tmax=6);
-  sim_init(&sv,r,.nstart=1,.tmax=25,.tbar=3,.lambda=0.1,.p=0.91,.kappa=0.47,.q=0); //"B5"
+  const int npaths=1000000;
+  sim_init(&sv,r,.nstart=1,.tmax=25,.tbar=3,.lambda=0.1,.p=0.913068,.kappa=0.466367,.q=0); //"B5"
 
   struct std_summary_stats stats={0,0,0,0,true};
 
   sim_set_proc_data(&sv, &stats);
   sim_set_pri_inf_proc_func(&sv, std_stats_pri_inf);
+  sim_set_new_event_proc_func(&sv, std_stats_new_event);
   sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
   sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
   sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
 
   //printf("Min is %lu, max is %lu\n",gsl_rng_min(r),gsl_rng_max(r));
 
-  const int npaths=1000000;
   double commper_mean=0;
   double nevents_mean=0;
   double r_mean=0;
@@ -52,9 +53,11 @@ int main(const int nargs, const char* args[])
     memset(&stats,0,sizeof(struct std_summary_stats));
     stats.extinction=true;
   }
-  r_mean/=nr;
-  commper_mean/=nr;
-  nevents_mean/=nr;
+  const double ninf=ne_mean+ng_mean;
+  const double ninf_per_event_mean=r_mean/nevents_mean;
+  r_mean/=ninf;
+  commper_mean/=ninf;
+  nevents_mean/=ninf;
   ne_mean/=pe;
   ne_std/=pe;
   ne_std=sqrt(pe/(pe-1)*(ne_std-ne_mean*ne_mean));
@@ -69,6 +72,7 @@ int main(const int nargs, const char* args[])
   printf("Mean R is %f\n",r_mean);
   printf("Uninterrupted communication period is %f\n",commper_mean);
   printf("Number of events per infectious individual is %f\n",nevents_mean);
+  printf("Number of infections per event is %f\n",ninf_per_event_mean);
   printf("Probability of extinction is %f\n",pe);
   printf("Total number of infected at extinction is %f +- %f\n",ne_mean,ne_std);
   printf("Extinction time, when it occurs is %f +- %f\n",te_mean,te_std);
