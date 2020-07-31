@@ -92,14 +92,11 @@ int main(const int nargs, const char* args[])
   for(j=stats.npers-1; j>=0; --j) {
     inf_timeline_mean_ext[j]/=pe;
     inf_timeline_std_ext[j]=sqrt(pe/(pe-1)*(inf_timeline_std_ext[j]/pe-inf_timeline_mean_ext[j]*inf_timeline_mean_ext[j]));
-  }
 
-  for(j=stats.npers-1; j>=0; --j) {
     inf_timeline_mean_noext[j]/=nnoe;
     inf_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1)*(inf_timeline_std_noext[j]/nnoe-inf_timeline_mean_noext[j]*inf_timeline_mean_noext[j]));
   }
   pe/=npaths;
-
 
   printf("Mean R is %f\n",r_mean);
   printf("Uninterrupted communication period is %f\n",commper_mean);
