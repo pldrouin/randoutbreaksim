@@ -31,11 +31,13 @@ int main(const int nargs, const char* args[])
   double ne_mean=0, ne_std=0;
   double te_mean=0, te_std=0;
   double ng_mean=0, ng_std=0;
-  double inf_timeline_mean[(int)sv.pars.tmax+1];
+  double inf_timeline_mean_ext[(int)sv.pars.tmax+1];
+  double inf_timeline_mean_noext[(int)sv.pars.tmax+1];
 
   std_stats_init(&sv, &stats);
 
-  memset(inf_timeline_mean, 0, stats.npers*sizeof(double));
+  memset(inf_timeline_mean_ext, 0, stats.npers*sizeof(double));
+  memset(inf_timeline_mean_noext, 0, stats.npers*sizeof(double));
   int j;
 
   for(int i=npaths-1; i>=0; --i) {
@@ -53,12 +55,15 @@ int main(const int nargs, const char* args[])
       te_mean+=stats.extinction_time;
       te_std+=stats.extinction_time*stats.extinction_time;
 
+      for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_ext[j]+=stats.inf_timeline[j];
+
     } else {
       ng_mean+=stats.total_n_infections;
       ng_std+=stats.total_n_infections*=stats.total_n_infections;
+
+      for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_noext[j]+=stats.inf_timeline[j];
     }
 
-    for(j=stats.npers-1; j>=0; --j) inf_timeline_mean[j]+=stats.inf_timeline[j];
   }
   std_stats_free(&sv, &stats);
   const double ninf=ne_mean+ng_mean;
@@ -75,9 +80,12 @@ int main(const int nargs, const char* args[])
   ng_mean/=(npaths-pe);
   ng_std/=(npaths-pe);
   ng_std=sqrt((npaths-pe)/(npaths-pe-1)*(ng_std-ng_mean*ng_mean));
+
+  for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_ext[j]/=pe;
+
+  for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_noext[j]/=(npaths-pe);
   pe/=npaths;
 
-  for(j=stats.npers-1; j>=0; --j) inf_timeline_mean[j]/=npaths;
 
   printf("Mean R is %f\n",r_mean);
   printf("Uninterrupted communication period is %f\n",commper_mean);
@@ -88,8 +96,8 @@ int main(const int nargs, const char* args[])
   printf("Extinction time, if it occurs is %f +- %f\n",te_mean,te_std);
   printf("Total number of infected individuals if no extinction is %f +- %f\n",ng_mean,ng_std);
 
-  printf("Average infection timeline is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%i: %f\n",j,inf_timeline_mean[j]);
+  printf("Average infection timeline, for paths with extinction vs no extinction is:\n");
+  for(j=0; j<stats.npers; ++j) printf("%3i: %8.4f\t%8.4f\n",j,inf_timeline_mean_ext[j],inf_timeline_mean_noext[j]);
 
   sim_free(&sv);
   gsl_rng_free(r);
