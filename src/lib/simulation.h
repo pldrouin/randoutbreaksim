@@ -38,7 +38,7 @@ struct sim_vars
   void* dataptr;
   void (*gen_comm_period_func)(struct sim_vars*);
   void (*pri_inf_proc_func)(struct infindividual* priinf);
-  void (*new_event_proc_func)(struct infindividual* inf);
+  bool (*new_event_proc_func)(struct sim_vars* sv);
   void (*new_inf_proc_func)(struct infindividual* newinf);
   void (*end_inf_proc_func)(struct infindividual* inf, void* dataptr);
   void (*inf_proc_func_noevent)(struct infindividual* inf, void* dataptr);
@@ -51,7 +51,7 @@ void sim_vars_init(struct sim_vars* sv, const gsl_rng* r);
 
 inline static void sim_set_proc_data(struct sim_vars* sv, void* dataptr){sv->dataptr=dataptr;}
 inline static void sim_set_pri_inf_proc_func(struct sim_vars* sv, void (*pri_inf_proc_func)(struct infindividual* priinf)){sv->pri_inf_proc_func=pri_inf_proc_func;}
-inline static void sim_set_new_event_proc_func(struct sim_vars* sv, void (*new_event_proc_func)(struct infindividual* inf)){sv->new_event_proc_func=new_event_proc_func;}
+inline static void sim_set_new_event_proc_func(struct sim_vars* sv, bool (*new_event_proc_func)(struct sim_vars* sv)){sv->new_event_proc_func=new_event_proc_func;}
 inline static void sim_set_new_inf_proc_func(struct sim_vars* sv, void (*new_inf_proc_func)(struct infindividual* newinf)){sv->new_inf_proc_func=new_inf_proc_func;}
 inline static void sim_set_end_inf_proc_func(struct sim_vars* sv, void (*end_inf_proc_func)(struct infindividual* inf, void* dataptr)){sv->end_inf_proc_func=end_inf_proc_func;}
 inline static void sim_set_inf_proc_noevent_func(struct sim_vars* sv, void (*inf_proc_func_noevent)(struct infindividual* inf, void* dataptr)){sv->inf_proc_func_noevent=inf_proc_func_noevent;}
@@ -95,6 +95,7 @@ static inline void gen_comm_period_isolation(struct sim_vars* sv)
   DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
 }
 
+inline static bool default_event_proc_func(struct sim_vars* sv){return (sv->ii->event_time <= sv->pars.tmax);}
 inline static void dummy_proc_func_one_par(struct infindividual* inf){}
 inline static void dummy_proc_func_two_pars(struct infindividual* inf, void* ptr){}
 

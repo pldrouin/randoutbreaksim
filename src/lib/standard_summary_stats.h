@@ -30,10 +30,11 @@ inline static void std_stats_pri_inf(struct infindividual* inf)
   *(uint32_t*)inf->dataptr=0;
 }
 
-inline static void std_stats_new_event(struct infindividual* inf)
+inline static bool std_stats_new_event(struct sim_vars* sv)
 {
-  (*(uint32_t*)inf->dataptr)+=inf->ninfections;
-  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)inf->dataptr);
+  (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
+  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
+  return (sv->ii->event_time <= sv->pars.tmax);
 }
 
 inline static void std_stats_new_inf(struct infindividual* inf)

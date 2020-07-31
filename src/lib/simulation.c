@@ -25,7 +25,7 @@ void sim_vars_init(struct sim_vars* sv, const gsl_rng* r)
   sv->iis[0].event_time=0;
   sv->dataptr=NULL;
   sv->pri_inf_proc_func=dummy_proc_func_one_par;
-  sv->new_event_proc_func=dummy_proc_func_one_par;
+  sv->new_event_proc_func=default_event_proc_func;
   sv->new_inf_proc_func=dummy_proc_func_one_par;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
   sv->inf_proc_func_noevent=dummy_proc_func_two_pars;
@@ -58,9 +58,8 @@ int simulate(struct sim_vars* sv)
       DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
       sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
-      sv->new_event_proc_func(sv->ii);
 
-      if(sv->ii->event_time > sv->pars.tmax) {
+      if(!sv->new_event_proc_func(sv)) {
 
 	//If the events have been exhausted, go down another layer
 	if(sv->ii->curevent == sv->ii->nevents-1) {
@@ -109,9 +108,8 @@ gen_event:
 	//the current event
 	//Move to the next layer
 	sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
-        sv->new_event_proc_func(sv->ii);
 
-	if(sv->ii->event_time <= sv->pars.tmax) {
+	if(sv->new_event_proc_func(sv)) {
 	  sv->ii->curinfection=0;
 	  DEBUG_PRINTF("Infection %i/%i\n",sv->ii->curinfection,sv->ii->ninfections);
 	  continue;
