@@ -36,6 +36,13 @@ int simulate(struct sim_vars* sv)
   int i;
   struct sim_pars const* sim=&(sv->pars);
 
+  sv->ii=sv->iis;
+  sv->ii->event_time=0;
+  sv->ii->nevents=1;
+  sv->ii->curevent=0;
+  sv->ii->ninfections=sim->nstart;
+  sv->new_event_proc_func(sv);
+
   for(i=sim->nstart-1; i>=0; --i) {
     DEBUG_PRINTF("initial individual %i\n",i);
     sv->ii=sv->iis+1;

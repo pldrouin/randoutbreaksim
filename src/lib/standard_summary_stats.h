@@ -48,6 +48,9 @@ inline static bool std_stats_new_event(struct sim_vars* sv)
 {
   (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
   DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
+
+  if((int)sv->ii->event_time <= (int)sv->pars.tmax) ((struct std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
+
   return (sv->ii->event_time <= sv->pars.tmax);
 }
 
@@ -82,7 +85,6 @@ inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
   if(end_comm_per>=((struct std_summary_stats*)ptr)->npers) end_comm_per=((struct std_summary_stats*)ptr)->npers-1;
 
   for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((struct std_summary_stats*)ptr)->inf_timeline[i]);
-  ++(((struct std_summary_stats*)ptr)->totinf_timeline[(int)((inf-1)->event_time)]);
 }
 
 inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)
@@ -110,7 +112,6 @@ inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)
   if(end_comm_per>=((struct std_summary_stats*)ptr)->npers) end_comm_per=((struct std_summary_stats*)ptr)->npers-1;
 
   for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((struct std_summary_stats*)ptr)->inf_timeline[i]);
-  ++(((struct std_summary_stats*)ptr)->totinf_timeline[(int)((inf-1)->event_time)]);
 }
 
 #endif
