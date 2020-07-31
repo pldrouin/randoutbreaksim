@@ -32,12 +32,16 @@ int main(const int nargs, const char* args[])
   double te_mean=0, te_std=0;
   double ng_mean=0, ng_std=0;
   double inf_timeline_mean_ext[(int)sv.pars.tmax+1];
+  double inf_timeline_std_ext[(int)sv.pars.tmax+1];
   double inf_timeline_mean_noext[(int)sv.pars.tmax+1];
+  double inf_timeline_std_noext[(int)sv.pars.tmax+1];
 
   std_stats_init(&sv, &stats);
 
   memset(inf_timeline_mean_ext, 0, stats.npers*sizeof(double));
+  memset(inf_timeline_std_ext, 0, stats.npers*sizeof(double));
   memset(inf_timeline_mean_noext, 0, stats.npers*sizeof(double));
+  memset(inf_timeline_std_noext, 0, stats.npers*sizeof(double));
   int j;
 
   for(int i=npaths-1; i>=0; --i) {
@@ -55,35 +59,45 @@ int main(const int nargs, const char* args[])
       te_mean+=stats.extinction_time;
       te_std+=stats.extinction_time*stats.extinction_time;
 
-      for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_ext[j]+=stats.inf_timeline[j];
+      for(j=stats.npers-1; j>=0; --j) {
+	inf_timeline_mean_ext[j]+=stats.inf_timeline[j];
+	inf_timeline_std_ext[j]+=stats.inf_timeline[j]*stats.inf_timeline[j];
+      }
 
     } else {
       ng_mean+=stats.total_n_infections;
       ng_std+=stats.total_n_infections*=stats.total_n_infections;
 
-      for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_noext[j]+=stats.inf_timeline[j];
+      for(j=stats.npers-1; j>=0; --j) {
+	inf_timeline_mean_noext[j]+=stats.inf_timeline[j];
+	inf_timeline_std_noext[j]+=stats.inf_timeline[j]*stats.inf_timeline[j];
+      }
     }
 
   }
   std_stats_free(&sv, &stats);
   const double ninf=ne_mean+ng_mean;
   const double ninf_per_event_mean=r_mean/nevents_mean;
+  const double nnoe=npaths-pe;
   r_mean/=ninf;
   commper_mean/=ninf;
   nevents_mean/=ninf;
   ne_mean/=pe;
-  ne_std/=pe;
-  ne_std=sqrt(pe/(pe-1)*(ne_std-ne_mean*ne_mean));
+  ne_std=sqrt(pe/(pe-1)*(ne_std/pe-ne_mean*ne_mean));
   te_mean/=pe;
-  te_std/=pe;
-  te_std=sqrt(pe/(pe-1)*(te_std-te_mean*te_mean));
-  ng_mean/=(npaths-pe);
-  ng_std/=(npaths-pe);
-  ng_std=sqrt((npaths-pe)/(npaths-pe-1)*(ng_std-ng_mean*ng_mean));
+  te_std=sqrt(pe/(pe-1)*(te_std/pe-te_mean*te_mean));
+  ng_mean/=nnoe;
+  ng_std=sqrt(nnoe/(nnoe-1)*(ng_std/nnoe-ng_mean*ng_mean));
 
-  for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_ext[j]/=pe;
+  for(j=stats.npers-1; j>=0; --j) {
+    inf_timeline_mean_ext[j]/=pe;
+    inf_timeline_std_ext[j]=sqrt(pe/(pe-1)*(inf_timeline_std_ext[j]/pe-inf_timeline_mean_ext[j]*inf_timeline_mean_ext[j]));
+  }
 
-  for(j=stats.npers-1; j>=0; --j) inf_timeline_mean_noext[j]/=(npaths-pe);
+  for(j=stats.npers-1; j>=0; --j) {
+    inf_timeline_mean_noext[j]/=nnoe;
+    inf_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1)*(inf_timeline_std_noext[j]/nnoe-inf_timeline_mean_noext[j]*inf_timeline_mean_noext[j]));
+  }
   pe/=npaths;
 
 
@@ -92,12 +106,12 @@ int main(const int nargs, const char* args[])
   printf("Number of events per infectious individual is %f\n",nevents_mean);
   printf("Number of infections per event is %f\n",ninf_per_event_mean);
   printf("Probability of extinction is %f\n",pe);
-  printf("Total number of infected individuals at extinction is %f +- %f\n",ne_mean,ne_std);
-  printf("Extinction time, if it occurs is %f +- %f\n",te_mean,te_std);
-  printf("Total number of infected individuals if no extinction is %f +- %f\n",ng_mean,ng_std);
+  printf("Total number of infected individuals at extinction is %f +/- %f\n",ne_mean,ne_std);
+  printf("Extinction time, if it occurs is %f +/- %f\n",te_mean,te_std);
+  printf("Total number of infected individuals if no extinction is %f +/- %f\n",ng_mean,ng_std);
 
   printf("Average infection timeline, for paths with extinction vs no extinction is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%3i: %8.4f\t%8.4f\n",j,inf_timeline_mean_ext[j],inf_timeline_mean_noext[j]);
+  for(j=0; j<stats.npers; ++j) printf("%3i: %8.4f +/- %8.4f\t%8.4f +/- %8.4f\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j]);
 
   sim_free(&sv);
   gsl_rng_free(r);
