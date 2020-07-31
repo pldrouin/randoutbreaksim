@@ -103,6 +103,14 @@ inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)
 
     if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;
   }
+
+  int i;
+  int end_comm_per=(int)((inf-1)->event_time+inf->comm_period);
+
+  if(end_comm_per>=((struct std_summary_stats*)ptr)->npers) end_comm_per=((struct std_summary_stats*)ptr)->npers-1;
+
+  for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((struct std_summary_stats*)ptr)->inf_timeline[i]);
+  ++(((struct std_summary_stats*)ptr)->totinf_timeline[(int)((inf-1)->event_time)]);
 }
 
 #endif
