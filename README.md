@@ -3,4 +3,4 @@ A C implementation of the branchsim simulation. It currently focusses only on th
 
 Depends only on libgsl. See src/bin/main.c for usage example.
 
-No API documentation yet.
+No API documentation yet. Planning to produce a Python package for typical data processing functions.
