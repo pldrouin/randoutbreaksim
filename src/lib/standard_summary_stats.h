@@ -23,7 +23,6 @@ struct std_summary_stats
   uint32_t rsum;
   uint32_t neventssum;
   //uint32_t n_ended_infections;
-  uint32_t total_n_infections;
   bool extinction;
 };
 
@@ -37,7 +36,6 @@ inline static void std_stats_path_init(struct std_summary_stats* stats)
   memset(stats->totinf_timeline,0,stats->npers*sizeof(uint32_t));
   stats->rsum=0;
   stats->neventssum=0;
-  stats->total_n_infections=0;
   stats->extinction=true;
 }
 
@@ -63,7 +61,6 @@ inline static void std_stats_new_inf(struct infindividual* inf)
 
 inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
 {
-  ++((struct std_summary_stats*)ptr)->total_n_infections;
   DEBUG_PRINTF("Number of infections was %u\n",*(uint32_t*)inf->dataptr);
   ((struct std_summary_stats*)ptr)->rsum+=*(uint32_t*)inf->dataptr;
   ((struct std_summary_stats*)ptr)->commpersum+=inf->comm_period;
@@ -91,7 +88,6 @@ inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)
 {
   //++(*(uint32_t*)(inf-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
-  ++((struct std_summary_stats*)ptr)->total_n_infections;
   DEBUG_PRINTF("Number of infections was 0\n");
   ((struct std_summary_stats*)ptr)->commpersum+=inf->comm_period;
   ((struct std_summary_stats*)ptr)->neventssum+=inf->nevents;
