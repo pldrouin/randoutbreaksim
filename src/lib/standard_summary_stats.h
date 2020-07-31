@@ -5,6 +5,7 @@
 #include <stdbool.h>
 
 #include "infindividual.h"
+#include "simulation.h"
 
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
@@ -23,13 +24,6 @@ struct std_summary_stats
   bool extinction;
 };
 
-inline static void std_stats_pri_inf(struct infindividual* inf)
-{
-  DEBUG_PRINTF("Alloc for primary %p\n",inf);
-  inf->dataptr=malloc(sizeof(uint32_t));
-  *(uint32_t*)inf->dataptr=0;
-}
-
 inline static bool std_stats_new_event(struct sim_vars* sv)
 {
   (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
@@ -37,10 +31,12 @@ inline static bool std_stats_new_event(struct sim_vars* sv)
   return (sv->ii->event_time <= sv->pars.tmax);
 }
 
+void std_stats_init(struct sim_vars* sv);
+void std_stats_increase_layers(struct infindividual* iis, uint32_t n);
+void std_stats_free(struct sim_vars* sv);
+
 inline static void std_stats_new_inf(struct infindividual* inf)
 {
-  DEBUG_PRINTF("Alloc for %p\n",inf);
-  inf->dataptr=malloc(sizeof(uint32_t));
   *(uint32_t*)inf->dataptr=0;
   //++(*(uint32_t*)(inf-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
@@ -64,8 +60,6 @@ inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
 
     if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;
   }
-  DEBUG_PRINTF("Free for %p\n",inf);
-  free(inf->dataptr);
 }
 
 inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)

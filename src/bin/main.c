@@ -15,7 +15,7 @@ int main(const int nargs, const char* args[])
   struct std_summary_stats stats={0,0,0,0,true};
 
   sim_set_proc_data(&sv, &stats);
-  sim_set_pri_inf_proc_func(&sv, std_stats_pri_inf);
+  sim_set_increase_layers_proc_func(&sv, std_stats_increase_layers);
   sim_set_new_event_proc_func(&sv, std_stats_new_event);
   sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
   sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
@@ -31,6 +31,8 @@ int main(const int nargs, const char* args[])
   double ne_mean=0, ne_std=0;
   double te_mean=0, te_std=0;
   double ng_mean=0, ng_std=0;
+
+  std_stats_init(&sv);
 
   for(int i=npaths-1; i>=0; --i) {
     simulate(&sv);
@@ -53,6 +55,7 @@ int main(const int nargs, const char* args[])
     memset(&stats,0,sizeof(struct std_summary_stats));
     stats.extinction=true;
   }
+  std_stats_free(&sv);
   const double ninf=ne_mean+ng_mean;
   const double ninf_per_event_mean=r_mean/nevents_mean;
   r_mean/=ninf;

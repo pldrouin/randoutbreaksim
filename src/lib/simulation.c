@@ -24,7 +24,7 @@ void sim_vars_init(struct sim_vars* sv, const gsl_rng* r)
   sv->gen_comm_period_func=(sv->pars.q?gen_comm_period_isolation:gen_comm_period);
   sv->iis[0].event_time=0;
   sv->dataptr=NULL;
-  sv->pri_inf_proc_func=dummy_proc_func_one_par;
+  sv->increase_layers_proc_func=default_increase_layers_proc_func;
   sv->new_event_proc_func=default_event_proc_func;
   sv->new_inf_proc_func=dummy_proc_func_one_par;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
@@ -50,7 +50,7 @@ int simulate(struct sim_vars* sv)
       continue;
     }
 
-    sv->pri_inf_proc_func(sv->ii);
+    sv->new_inf_proc_func(sv->ii);
     sv->ii->curevent=0;
 
     for(;;) {
@@ -86,6 +86,7 @@ int simulate(struct sim_vars* sv)
 	sv->nlayers*=II_ARRAY_GROW_FACT;
 	uint64_t layer=sv->ii-sv->iis;
 	sv->iis=(struct infindividual*)realloc(sv->iis,sv->nlayers*sizeof(struct infindividual));
+	sv->increase_layers_proc_func(sv->iis+layer,sv->nlayers-layer);
 	sv->ii=sv->iis+layer;
       }
       //Generate the communicable period appropriately
