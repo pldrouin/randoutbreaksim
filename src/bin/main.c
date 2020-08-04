@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <assert.h>
 
 #include "main.h"
 
@@ -123,10 +124,10 @@ int main(const int nargs, const char* args[])
   printf("Extinction time, if it occurs is %f +/- %f\n",te_mean,te_std);
 
   printf("Current infection timeline, for paths with extinction vs no extinction is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%3i: %8.4f +/- %8.4f\t%8.4f +/- %8.4f\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j]);
+  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j]);
 
   printf("Total infections timeline, for paths with extinction vs no extinction is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%3i: %8.4f +/- %8.4f\t%8.4f +/- %8.4f\n",j,totinf_timeline_mean_ext[j],totinf_timeline_std_ext[j],totinf_timeline_mean_noext[j],totinf_timeline_std_noext[j]);
+  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f\n",j,totinf_timeline_mean_ext[j],totinf_timeline_std_ext[j],totinf_timeline_mean_noext[j],totinf_timeline_std_noext[j]);
 
   sim_free(&sv);
   gsl_rng_free(r);

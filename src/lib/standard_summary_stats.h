@@ -1,3 +1,9 @@
+/**
+ * @file standard_summary_stats.h
+ * @brief User-defined functions to compute standard summary statistics.
+ * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
+ */
+
 #ifndef _STANDARD_SUMMARY_STATS_
 #define _STANDARD_SUMMARY_STATS_
 
@@ -13,21 +19,46 @@
 #define DEBUG_PRINTF(...)
 //#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
 
+/**
+ * Simulation-level standard summary statistics data struct.
+ */
 struct std_summary_stats
 {
-  double extinction_time;
-  double commpersum;
-  uint32_t* inf_timeline;
-  uint32_t* totinf_timeline;
-  uint32_t npers;
-  uint32_t rsum;
-  uint32_t neventssum;
+  double extinction_time;	//!< Path extinction time, if any.
+  double commpersum;		//!< Sum of communication periods for all infectious individuals whose communicable period does not occur after tmax.
+  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infectious at some point in this interval (lower bound included, upper bound excluded).
+  uint32_t* totinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
+  uint32_t npers;		//!< Number of integer intervals (floor(tmax)+1)
+  uint32_t rsum;		//!< Sum of the number of individuals that get infected during the simulation by the infectious individuals whose last transmission event does not occur after tmax.
+  uint32_t neventssum;		//!< Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax.
   //uint32_t n_ended_infections;
-  bool extinction;
+  bool extinction;		//!< Set to true if extinction does not occur before or at tmax.
 };
 
+/**
+ * @brief Initialises the standard summary statistics struct.
+ *
+ * This function must be called once to initialise the standard summary
+ * statistics struct, if used, as well as to allocate required memory in the
+ * simulation variables.
+ *
+ * @param sv: Pointer to the simulation variables were memory for the
+ * user-defined function data will be allocated.
+ * @param stats: Pointer to the standard summary statistics struct that will be
+ * initialised.
+ */
 void std_stats_init(struct sim_vars* sv, struct std_summary_stats* stats);
 
+/**
+ * @brief Initialises elements of the standard summary statistics struct
+ * before a path simulation.
+ *
+ * This function must be called before the simulation of each path to initialise
+ * elements of the standard summary statistics struct, if used
+ *
+ * @param stats: Pointer to the standard summary statistics struct whose
+ * elements will be initialised.
+ */
 inline static void std_stats_path_init(struct std_summary_stats* stats)
 {
   stats->extinction_time=0;
@@ -39,7 +70,27 @@ inline static void std_stats_path_init(struct std_summary_stats* stats)
   stats->extinction=true;
 }
 
+/**
+ * @brief Allocates additional memory for the user-defined function data.
+ *
+ * If used, this function must be assigned to the simulation engine through a call of
+ * sim_set_increase_layers_proc_func.
+ *
+ * @param iis: First newly allocated layer element of the infectious individuals array.
+ * @param n: Number of layers that have been added
+ * */
 void std_stats_increase_layers(struct infindividual* iis, uint32_t n);
+
+/**
+ * @brief Frees memory used by the standard summary statistics.
+ *
+ * This function must be called once to free the memory that was allocated by
+ * std_stats_init.
+ *
+ * @param sv: Pointer to the simulation variables were memory for the
+ * user-defined function data will be freed.
+ * @param stats: Pointer to the standard summary statistics struct.
+ */
 void std_stats_free(struct sim_vars* sv, struct std_summary_stats* stats);
 
 inline static bool std_stats_new_event(struct sim_vars* sv)
