@@ -15,9 +15,9 @@
 #include <stdbool.h>
 
 /**
- * Infected individual struct
+ * Infected individual
  */
-struct infindividual
+typedef struct
 {
     void* dataptr;	      //!< Data pointer for user-defined functions
     double comm_period;       //!< Communicable period
@@ -27,6 +27,6 @@ struct infindividual
     uint32_t ninfections;     //!< Number of infections for the current iteration event
     uint32_t curinfection;    //!< Index of the current iteration infection
     bool infectious_at_tmax;  //!< Is the infected individual still infectious at tmax?
-};
+} infindividual;
 
 #endif

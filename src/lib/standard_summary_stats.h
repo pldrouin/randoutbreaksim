@@ -22,7 +22,7 @@
 /**
  * Simulation-level standard summary statistics data struct.
  */
-struct std_summary_stats
+typedef struct
 {
   double extinction_time;	//!< Path extinction time, if any.
   double commpersum;		//!< Sum of communication periods for all infectious individuals whose communicable period does not occur after tmax.
@@ -33,33 +33,33 @@ struct std_summary_stats
   uint32_t neventssum;		//!< Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax.
   //uint32_t n_ended_infections;
   bool extinction;		//!< Set to true if extinction does not occur before or at tmax.
-};
+} std_summary_stats;
 
 /**
- * @brief Initialises the standard summary statistics struct.
+ * @brief Initialises the standard summary statistics.
  *
  * This function must be called once to initialise the standard summary
- * statistics struct, if used, as well as to allocate required memory in the
+ * statistics, if used, as well as to allocate required memory in the
  * simulation variables.
  *
  * @param sv: Pointer to the simulation variables were memory for the
  * user-defined function data will be allocated.
- * @param stats: Pointer to the standard summary statistics struct that will be
+ * @param stats: Pointer to the standard summary statistics that will be
  * initialised.
  */
-void std_stats_init(struct sim_vars* sv, struct std_summary_stats* stats);
+void std_stats_init(sim_vars* sv, std_summary_stats* stats);
 
 /**
- * @brief Initialises elements of the standard summary statistics struct
+ * @brief Initialises elements of the standard summary statistics
  * before a path simulation.
  *
  * This function must be called before the simulation of each path to initialise
- * elements of the standard summary statistics struct, if used
+ * elements of the standard summary statistics, if used
  *
- * @param stats: Pointer to the standard summary statistics struct whose
+ * @param stats: Pointer to the standard summary statistics whose
  * elements will be initialised.
  */
-inline static void std_stats_path_init(struct std_summary_stats* stats)
+inline static void std_stats_path_init(std_summary_stats* stats)
 {
   stats->extinction_time=0;
   stats->commpersum=0;
@@ -79,7 +79,7 @@ inline static void std_stats_path_init(struct std_summary_stats* stats)
  * @param iis: First newly allocated layer element of the infectious individuals array.
  * @param n: Number of layers that have been added
  * */
-void std_stats_increase_layers(struct infindividual* iis, uint32_t n);
+void std_stats_increase_layers(infindividual* iis, uint32_t n);
 
 /**
  * @brief Frees memory used by the standard summary statistics.
@@ -89,76 +89,76 @@ void std_stats_increase_layers(struct infindividual* iis, uint32_t n);
  *
  * @param sv: Pointer to the simulation variables were memory for the
  * user-defined function data will be freed.
- * @param stats: Pointer to the standard summary statistics struct.
+ * @param stats: Pointer to the standard summary statistics.
  */
-void std_stats_free(struct sim_vars* sv, struct std_summary_stats* stats);
+void std_stats_free(sim_vars* sv, std_summary_stats* stats);
 
-inline static bool std_stats_new_event(struct sim_vars* sv)
+inline static bool std_stats_new_event(sim_vars* sv)
 {
   (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
   DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
 
-  if((int)sv->ii->event_time <= (int)sv->pars.tmax) ((struct std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
+  if((int)sv->ii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
 
   return (sv->ii->event_time <= sv->pars.tmax);
 }
 
-inline static void std_stats_new_inf(struct infindividual* inf)
+inline static void std_stats_new_inf(infindividual* inf)
 {
   *(uint32_t*)inf->dataptr=0;
   //++(*(uint32_t*)(inf-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
 }
 
-inline static void std_stats_end_inf(struct infindividual* inf, void* ptr)
+inline static void std_stats_end_inf(infindividual* inf, void* ptr)
 {
   DEBUG_PRINTF("Number of infections was %u\n",*(uint32_t*)inf->dataptr);
-  ((struct std_summary_stats*)ptr)->rsum+=*(uint32_t*)inf->dataptr;
-  ((struct std_summary_stats*)ptr)->commpersum+=inf->comm_period;
-  ((struct std_summary_stats*)ptr)->neventssum+=inf->nevents;
+  ((std_summary_stats*)ptr)->rsum+=*(uint32_t*)inf->dataptr;
+  ((std_summary_stats*)ptr)->commpersum+=inf->comm_period;
+  ((std_summary_stats*)ptr)->neventssum+=inf->nevents;
 
   //If truncated by tmax
-  if(inf->infectious_at_tmax) ((struct std_summary_stats*)ptr)->extinction=false;
+  if(inf->infectious_at_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
-    //++((struct std_summary_stats*)ptr)->n_ended_infections;
+    //++((std_summary_stats*)ptr)->n_ended_infections;
     const double inf_end=(inf-1)->event_time+inf->comm_period;
 
-    if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;
+    if(inf_end > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf_end;
   }
 
   int i;
   int end_comm_per=(int)((inf-1)->event_time+inf->comm_period);
 
-  if(end_comm_per>=((struct std_summary_stats*)ptr)->npers) end_comm_per=((struct std_summary_stats*)ptr)->npers-1;
+  if(end_comm_per>=((std_summary_stats*)ptr)->npers) end_comm_per=((std_summary_stats*)ptr)->npers-1;
 
-  for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((struct std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
-inline static void std_stats_noevent_inf(struct infindividual* inf, void* ptr)
+inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
 {
   //++(*(uint32_t*)(inf-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
   DEBUG_PRINTF("Number of infections was 0\n");
-  ((struct std_summary_stats*)ptr)->commpersum+=inf->comm_period;
-  ((struct std_summary_stats*)ptr)->neventssum+=inf->nevents;
+  ((std_summary_stats*)ptr)->commpersum+=inf->comm_period;
+  ((std_summary_stats*)ptr)->neventssum+=inf->nevents;
 
   //If truncated by tmax
-  if(inf->infectious_at_tmax) ((struct std_summary_stats*)ptr)->extinction=false;
+  if(inf->infectious_at_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
-    //++((struct std_summary_stats*)ptr)->n_ended_infections;
+    //++((std_summary_stats*)ptr)->n_ended_infections;
     const double inf_end=(inf-1)->event_time+inf->comm_period;
 
-    if(inf_end > ((struct std_summary_stats*)ptr)->extinction_time) ((struct std_summary_stats*)ptr)->extinction_time=inf_end;
+    if(inf_end > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf_end;
   }
 
   int i;
   int end_comm_per=(int)((inf-1)->event_time+inf->comm_period);
 
-  if(end_comm_per>=((struct std_summary_stats*)ptr)->npers) end_comm_per=((struct std_summary_stats*)ptr)->npers-1;
+  if(end_comm_per>=((std_summary_stats*)ptr)->npers) end_comm_per=((std_summary_stats*)ptr)->npers-1;
 
-  for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((struct std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
 #endif

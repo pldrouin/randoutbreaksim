@@ -10,23 +10,68 @@
 
 #define II_ARRAY_GROW_FACT (1.5)
 
-void sim_pars_init(struct sim_pars* sim, const struct sim_pars sim_in)
+int sim_pars_check(sim_pars const* pars)
 {
-  sim->tbar=(sim_in.tbar?sim_in.tbar:10);
-  sim->p=(sim_in.p?sim_in.p:0.5);
-  sim->lambda=(sim_in.lambda?sim_in.lambda:0.11);
-  sim->kappa=(sim_in.kappa?sim_in.kappa:1);
-  sim->q=(sim_in.q?sim_in.q:0);
-  sim->mbar=(sim_in.mbar?sim_in.mbar:5);
-  sim->kappaq=(sim_in.kappaq?sim_in.kappaq:3);
-  sim->nstart=(sim_in.nstart?sim_in.nstart:1);
-  sim->tmax=(sim_in.tmax?sim_in.tmax:100);
+  int ret=0;
+
+  if(pars->tbar<=0) {
+    fprintf(stderr,"%s: Error: tbar must be greater than 0\n",__func__);
+    ret-=1;
+  }
+
+  if(pars->p<=0) {
+    fprintf(stderr,"%s: Error: p must be greater than 0\n",__func__);
+    ret-=2;
+  }
+
+  if(pars->lambda<=0) {
+    fprintf(stderr,"%s: Error: lambda must be greater than 0\n",__func__);
+    ret-=4;
+  }
+
+  if(pars->kappa<=0) {
+    fprintf(stderr,"%s: Error: kappa must be greater than 0\n",__func__);
+    ret-=8;
+  }
+
+  if(pars->q<0) {
+    fprintf(stderr,"%s: Error: q must be non-negative\n",__func__);
+    ret-=16;
+
+  } else if(pars->q>0) {
+
+    if(pars->mbar<=0) {
+      fprintf(stderr,"%s: Error: mbar must be greater than 0\n",__func__);
+      ret-=32;
+    }
+
+    if(pars->kappaq<=0) {
+      fprintf(stderr,"%s: Error: kappaq must be greater than 0\n",__func__);
+      ret-=64;
+    }
+  }
+
+  if(pars->tmax<=0) {
+    fprintf(stderr,"%s: Error: tmax must be greater than 0\n",__func__);
+    ret-=128;
+  }
+
+  if(pars->nstart<=0) {
+    fprintf(stderr,"%s: Error: nstart must be greater than 0\n",__func__);
+    ret-=256;
+  }
+  return ret;
 }
 
-void sim_vars_init(struct sim_vars* sv, const gsl_rng* r)
+int sim_init(sim_vars* sv, sim_pars* pars, const gsl_rng* r)
 {
+  int ret=sim_pars_check(pars);
+
+  if(ret) return ret;
+
+  sv->pars=*pars;
   sv->r=r;
-  sv->iis=(struct infindividual*)malloc(INIT_N_LAYERS*sizeof(struct infindividual));
+  sv->iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));
   sv->nlayers=INIT_N_LAYERS;
   sv->gen_comm_period_func=(sv->pars.q?gen_comm_period_isolation:gen_comm_period);
   sv->iis[0].event_time=0;
@@ -36,12 +81,13 @@ void sim_vars_init(struct sim_vars* sv, const gsl_rng* r)
   sv->new_inf_proc_func=dummy_proc_func_one_par;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
   sv->inf_proc_func_noevent=dummy_proc_func_two_pars;
+  return 0;
 }
 
-int simulate(struct sim_vars* sv)
+int simulate(sim_vars* sv)
 {
   int i;
-  struct sim_pars const* sim=&(sv->pars);
+  sim_pars const* sim=&(sv->pars);
 
   sv->ii=sv->iis;
   sv->ii->event_time=0;
@@ -100,7 +146,7 @@ int simulate(struct sim_vars* sv)
 	sv->nlayers*=II_ARRAY_GROW_FACT;
 	DEBUG_PRINTF("Growing layers to %i\n",sv->nlayers);
 	uint64_t layer=sv->ii-sv->iis;
-	sv->iis=(struct infindividual*)realloc(sv->iis,sv->nlayers*sizeof(struct infindividual));
+	sv->iis=(infindividual*)realloc(sv->iis,sv->nlayers*sizeof(infindividual));
 	sv->increase_layers_proc_func(sv->iis+layer,sv->nlayers-layer);
 	sv->ii=sv->iis+layer;
       }

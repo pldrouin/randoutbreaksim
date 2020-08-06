@@ -1,19 +1,30 @@
 #include <stdio.h>
 #include <assert.h>
+#include <stdint.h>
+#include <math.h>
 
 #include "main.h"
 
 int main(const int nargs, const char* args[])
 {
+  sim_pars pars={.tbar=0, .p=0, .lambda=0, .kappa=0, .q=0, .mbar=0, .kappaq=0, .tmax=INFINITY, .nstart=1};
+  uint32_t npaths=10000;
+  int oout=STDOUT_FILENO;
+  int eout=STDERR_FILENO;
+
+  if(config(&pars, &npaths, &oout, &eout, nargs-1, args+1)) return 1;
   gsl_rng_env_setup();
 
   gsl_rng* r = gsl_rng_alloc(gsl_rng_taus2);
-  struct sim_vars sv;
+  sim_vars sv;
   //sim_init(&sv,.lambda=0.5,.p=0.8,.tmax=6);
-  const int npaths=1000000;
-  sim_init(&sv,r,.nstart=1,.tmax=25,.tbar=3,.lambda=0.1,.p=0.913068,.kappa=0.466367,.q=0); //"B5"
 
-  struct std_summary_stats stats;
+  if(sim_init(&sv,&pars,r)) {
+    fprintf(stderr,"%s: Error: While attempting to initialise the simulation\n",args[0]);
+    return 1;
+  }
+
+  std_summary_stats stats;
 
   sim_set_proc_data(&sv, &stats);
   sim_set_increase_layers_proc_func(&sv, std_stats_increase_layers);
@@ -131,5 +142,7 @@ int main(const int nargs, const char* args[])
 
   sim_free(&sv);
   gsl_rng_free(r);
+  close(oout);
+  close(eout);
   return 0;
 }
