@@ -142,14 +142,14 @@ int main(const int nargs, const char* args[])
   printf("Uninterrupted communicable period is %f\n",commper_mean);
   printf("Number of events per infectious individual is %f\n",nevents_mean);
   printf("Number of infections per event is %f\n",ninf_per_event_mean);
-  printf("Probability of extinction is %f +/- %f\n",pe,sqrt(npaths/(npaths-1)*pe*(1-pe)));
-  printf("Extinction time, if it occurs is %f +/- %f\n",te_mean,te_std);
+  printf("Probability of extinction and its statistical uncertainty: %f +/- %f%s\n",pe,sqrt(1/(npaths-1)*pe*(1-pe)),(j<nimaxedoutmintimeindex?"":" (nimax reached, could be biased)"));
+  printf("Extinction time, if it occurs is %f +/- %f%s\n",te_mean,te_std,(j<nimaxedoutmintimeindex?"":" (nimax reached, could be biased)"));
 
   printf("Current infection timeline, for paths with extinction vs no extinction is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f%s\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j],(j<nimaxedoutmintimeindex?"":" (maxed out)"));
+  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f%s\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j],(j<nimaxedoutmintimeindex?"":" (nimax reached, biased)"));
 
   printf("Total infections timeline, for paths with extinction vs no extinction is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f%s\n",j,totinf_timeline_mean_ext[j],totinf_timeline_std_ext[j],totinf_timeline_mean_noext[j],totinf_timeline_std_noext[j],(j<nimaxedoutmintimeindex?"":" (maxed out)"));
+  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f%s\n",j,totinf_timeline_mean_ext[j],totinf_timeline_std_ext[j],totinf_timeline_mean_noext[j],totinf_timeline_std_noext[j],(j<nimaxedoutmintimeindex?"":" (nimax reached, biased)"));
 
   sim_free(&sv);
   gsl_rng_free(r);
