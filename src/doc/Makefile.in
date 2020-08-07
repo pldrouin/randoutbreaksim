@@ -1,9 +1,10 @@
 HDIR	=	src/doc
+ALLDOCINCS	=	$(ALLINCS) $(wildcard src/bin/*.h)
 
 html: html/index.html
-html/index.html: $(LSRCS) $(ALLINCS) $(HDIR)/configfile.doxygen
+html/index.html: $(LSRCS) $(ALLDOCINCS) $(HDIR)/configfile.doxygen
 	echo $(LSRCS)
-	echo $(ALLINCS)
+	echo $(ALLDOCINCS)
 	rm -rf html
 	mkdir -p html
 	cd $(HDIR) && doxygen configfile.doxygen

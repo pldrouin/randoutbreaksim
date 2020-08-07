@@ -1,3 +1,9 @@
+/**
+ * @file main.c
+ * @brief Main function for the simulation executable.
+ * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
+ */
+
 #include <stdio.h>
 #include <assert.h>
 #include <stdint.h>

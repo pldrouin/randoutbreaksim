@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['init_5fn_5flayers_135',['INIT_N_LAYERS',['../simulation_8h.html#a5655a86be72747864aa32dadb4fa6b49',1,'simulation.h']]]
+  ['debug_5fprintf_151',['DEBUG_PRINTF',['../simulation_8h.html#a5c8ef3c24dad2c469a42784a9a39403b',1,'DEBUG_PRINTF():&#160;simulation.h'],['../standard__summary__stats_8h.html#a5c8ef3c24dad2c469a42784a9a39403b',1,'DEBUG_PRINTF():&#160;standard_summary_stats.h']]]
 ];

@@ -1,4 +1,6 @@
 <map id="standard_summary_stats.h" name="standard_summary_stats.h">
-<area shape="rect" id="node1" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="5,5,185,32"/>
+<area shape="rect" id="node1" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="77,5,257,32"/>
 <area shape="rect" id="node2" href="$standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="5,80,185,107"/>
+<area shape="rect" id="node3" href="$main_8h.html" title="Main function for the simulation executable." alt="" coords="210,80,271,107"/>
+<area shape="rect" id="node4" href="$main_8c.html" title="Main function for the simulation executable." alt="" coords="210,155,271,181"/>
 </map>

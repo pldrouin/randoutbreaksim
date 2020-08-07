@@ -16,8 +16,8 @@
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
 #endif
-#define DEBUG_PRINTF(...)
-//#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#define DEBUG_PRINTF(...) //!< Debug print function
+//#define DEBUG_PRINTF(...) printf(__VA_ARGS__) //!< Debug print function
 
 /**
  * Simulation-level standard summary statistics data struct.
@@ -73,7 +73,7 @@ inline static void std_stats_path_init(std_summary_stats* stats)
 /**
  * @brief Allocates additional memory for the user-defined function data.
  *
- * If used, this function must be assigned to the simulation engine through a call of
+ * This function must be assigned to the simulation engine through a call of
  * sim_set_increase_layers_proc_func.
  *
  * @param iis: First newly allocated layer element of the infectious individuals array.
@@ -93,6 +93,17 @@ void std_stats_increase_layers(infindividual* iis, uint32_t n);
  */
 void std_stats_free(sim_vars* sv, std_summary_stats* stats);
 
+/**
+ * @brief Processes the number of infections for this new event.
+ *
+ * Adds the number of infections for this new event to the number of infections from
+ * the current infectious individual, and to the total infection timeline if the event
+ * time does not exceed tmax. This function must be assigned to the simulation engine
+ * through a call of sim_set_new_event_proc_func.
+ *
+ * @param sv: Pointer to the simulation variables.
+ * @return true if the event time does not exceed tmax and false otherwise.
+ * */
 inline static bool std_stats_new_event(sim_vars* sv)
 {
   (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
@@ -103,6 +114,15 @@ inline static bool std_stats_new_event(sim_vars* sv)
   return (sv->ii->event_time <= sv->pars.tmax);
 }
 
+/**
+ * @brief Initialises the processing variable for a new infectious individual.
+ *
+ * This function initialises the number of infectins from a new infectious
+ * individual to zero. It is only called for infectious individuals that
+ * participate to a non-zero number of transmission events.
+ *
+ * @param inf: Pointer to the new infectious individual.
+ * */
 inline static void std_stats_new_inf(infindividual* inf)
 {
   *(uint32_t*)inf->dataptr=0;
@@ -110,6 +130,24 @@ inline static void std_stats_new_inf(infindividual* inf)
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
 }
 
+/**
+ * @brief Process the statistics after the last transmission event for an
+ * infectious individual that participates to some transmission events.
+ *
+ * After an infectious infectious individual participated to its last
+ * transmission event, this function adds the total number of infections from
+ * the individual to the R sum, the individual's communicable period to the sum
+ * of communicable periods and the number of transmission events this individual
+ * participated to to the sum of events. If the individual was still infectious
+ * at tmax, then the path is set to not go extinct. Otherwise, the
+ * extinction time for the generating path is updated if its current value was
+ * exceeded, using the current event time for the individual's parent and the
+ * individual's communicable period. The timeline for the number of infectious
+ * individuals is also updated.
+ *
+ * @param inf: Pointer to the infectious individual.
+ * @param ptr: Pointer to the summary statistics.
+ * */
 inline static void std_stats_end_inf(infindividual* inf, void* ptr)
 {
   DEBUG_PRINTF("Number of infections was %u\n",*(uint32_t*)inf->dataptr);
@@ -117,46 +155,58 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
   ((std_summary_stats*)ptr)->commpersum+=inf->comm_period;
   ((std_summary_stats*)ptr)->neventssum+=inf->nevents;
 
+  const double inf_end=(inf-1)->event_time+inf->comm_period;
+
   //If truncated by tmax
   if(inf->infectious_at_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
     //++((std_summary_stats*)ptr)->n_ended_infections;
-    const double inf_end=(inf-1)->event_time+inf->comm_period;
 
     if(inf_end > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf_end;
   }
 
   int i;
-  int end_comm_per=(int)((inf-1)->event_time+inf->comm_period);
-
-  if(end_comm_per>=((std_summary_stats*)ptr)->npers) end_comm_per=((std_summary_stats*)ptr)->npers-1;
+  const int end_comm_per=(inf_end >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : (int)inf_end);
 
   for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
+/**
+ * @brief Process the statistics for an infectious individual that does not
+ * participate to any transmission event.
+ *
+ * This function adds the individual's communicable period to the sum
+ * of communicable periods. If the individual was still infectious
+ * at tmax, then the path is set to not go extinct. Otherwise, the
+ * extinction time for the generating path is updated if its current value was
+ * exceeded, using the current event time for the individual's parent and the
+ * individual's communicable period. The timeline for the number of infectious
+ * individuals is also updated.
+ *
+ * @param inf: Pointer to the infectious individual.
+ * @param ptr: Pointer to the summary statistics.
+ * */
 inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
 {
   //++(*(uint32_t*)(inf-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
   DEBUG_PRINTF("Number of infections was 0\n");
   ((std_summary_stats*)ptr)->commpersum+=inf->comm_period;
-  ((std_summary_stats*)ptr)->neventssum+=inf->nevents;
+
+  const double inf_end=(inf-1)->event_time+inf->comm_period;
 
   //If truncated by tmax
   if(inf->infectious_at_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
     //++((std_summary_stats*)ptr)->n_ended_infections;
-    const double inf_end=(inf-1)->event_time+inf->comm_period;
 
     if(inf_end > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf_end;
   }
 
   int i;
-  int end_comm_per=(int)((inf-1)->event_time+inf->comm_period);
-
-  if(end_comm_per>=((std_summary_stats*)ptr)->npers) end_comm_per=((std_summary_stats*)ptr)->npers-1;
+  const int end_comm_per=(inf_end >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : (int)inf_end);
 
   for(i=(int)((inf-1)->event_time); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }

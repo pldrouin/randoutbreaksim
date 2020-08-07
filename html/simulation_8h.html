@@ -123,10 +123,13 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="simulation_8h__dep__incl.png" border="0" usemap="#simulation_8hdep" alt=""/></div>
 <map name="simulation_8hdep" id="simulation_8hdep">
-<area shape="rect" title="Simulation data structures and functions." alt="" coords="85,5,177,32"/>
+<area shape="rect" title="Simulation data structures and functions." alt="" coords="229,5,321,32"/>
 <area shape="rect" href="simulation_8c.html" title="Simulation functions." alt="" coords="5,80,97,107"/>
 <area shape="rect" href="standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="121,80,301,107"/>
-<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="121,155,301,181"/>
+<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="318,155,379,181"/>
+<area shape="rect" href="config_8h_source.html" title=" " alt="" coords="377,80,445,107"/>
+<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="113,155,293,181"/>
+<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="318,229,379,256"/>
 </map>
 </div>
 </div>
@@ -146,7 +149,8 @@ Macros</h2></td></tr>
 <tr class="memdesc:a5655a86be72747864aa32dadb4fa6b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial number of simulation layers. <br /></td></tr>
 <tr class="separator:a5655a86be72747864aa32dadb4fa6b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memItemLeft" align="right" valign="top"><a id="a5c8ef3c24dad2c469a42784a9a39403b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEBUG_PRINTF</b>(...)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">DEBUG_PRINTF</a>(...)</td></tr>
+<tr class="memdesc:a5c8ef3c24dad2c469a42784a9a39403b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug print function. <br /></td></tr>
 <tr class="separator:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
@@ -156,9 +160,9 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a86ebd37262a5cffe3550bf64bf6bb870"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a86ebd37262a5cffe3550bf64bf6bb870">sim_pars_check</a> (<a class="el" href="structsim__pars.html">sim_pars</a> const *sim)</td></tr>
-<tr class="memdesc:a86ebd37262a5cffe3550bf64bf6bb870"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies the validity of simulation parameters.  <a href="simulation_8h.html#a86ebd37262a5cffe3550bf64bf6bb870">More...</a><br /></td></tr>
-<tr class="separator:a86ebd37262a5cffe3550bf64bf6bb870"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e9b3d32f328788778fff13cbdf6dd57"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a2e9b3d32f328788778fff13cbdf6dd57">sim_pars_check</a> (<a class="el" href="structsim__pars.html">sim_pars</a> const *pars)</td></tr>
+<tr class="memdesc:a2e9b3d32f328788778fff13cbdf6dd57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies the validity of simulation parameters.  <a href="simulation_8h.html#a2e9b3d32f328788778fff13cbdf6dd57">More...</a><br /></td></tr>
+<tr class="separator:a2e9b3d32f328788778fff13cbdf6dd57"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac390bfd4185b26248b9ea2990e075964"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#ac390bfd4185b26248b9ea2990e075964">sim_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structsim__pars.html">sim_pars</a> *pars, const gsl_rng *r)</td></tr>
 <tr class="memdesc:ac390bfd4185b26248b9ea2990e075964"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the simulation.  <a href="simulation_8h.html#ac390bfd4185b26248b9ea2990e075964">More...</a><br /></td></tr>
 <tr class="separator:ac390bfd4185b26248b9ea2990e075964"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -558,8 +562,8 @@ Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="a86ebd37262a5cffe3550bf64bf6bb870"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a86ebd37262a5cffe3550bf64bf6bb870">&#9670;&nbsp;</a></span>sim_pars_check()</h2>
+<a id="a2e9b3d32f328788778fff13cbdf6dd57"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2e9b3d32f328788778fff13cbdf6dd57">&#9670;&nbsp;</a></span>sim_pars_check()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -568,7 +572,7 @@ Functions</h2></td></tr>
           <td class="memname">int sim_pars_check </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="structsim__pars.html">sim_pars</a> const *&#160;</td>
-          <td class="paramname"><em>sim</em></td><td>)</td>
+          <td class="paramname"><em>pars</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -578,7 +582,7 @@ Functions</h2></td></tr>
 <p>This internal function verifies if the set of provided simulation parameter values are valid.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">vars</td><td>Pointer to the simulation parameters. </td></tr>
+    <tr><td class="paramname">pars</td><td>Pointer to the simulation parameters. </td></tr>
   </table>
   </dd>
 </dl>

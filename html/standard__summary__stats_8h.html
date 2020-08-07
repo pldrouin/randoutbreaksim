@@ -121,8 +121,10 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="standard__summary__stats_8h__dep__incl.png" border="0" usemap="#standard__summary__stats_8hdep" alt=""/></div>
 <map name="standard__summary__stats_8hdep" id="standard__summary__stats_8hdep">
-<area shape="rect" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="5,5,185,32"/>
+<area shape="rect" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="77,5,257,32"/>
 <area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="5,80,185,107"/>
+<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="210,80,271,107"/>
+<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="210,155,271,181"/>
 </map>
 </div>
 </div>
@@ -136,7 +138,8 @@ Data Structures</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memItemLeft" align="right" valign="top"><a id="a5c8ef3c24dad2c469a42784a9a39403b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DEBUG_PRINTF</b>(...)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">DEBUG_PRINTF</a>(...)</td></tr>
+<tr class="memdesc:a5c8ef3c24dad2c469a42784a9a39403b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug print function. <br /></td></tr>
 <tr class="separator:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
@@ -153,23 +156,69 @@ Functions</h2></td></tr>
 <tr class="memitem:ac4f441dbc08661402ae6ee49f09bcd01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#ac4f441dbc08661402ae6ee49f09bcd01">std_stats_free</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structstd__summary__stats.html">std_summary_stats</a> *stats)</td></tr>
 <tr class="memdesc:ac4f441dbc08661402ae6ee49f09bcd01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory used by the standard summary statistics.  <a href="standard__summary__stats_8h.html#ac4f441dbc08661402ae6ee49f09bcd01">More...</a><br /></td></tr>
 <tr class="separator:ac4f441dbc08661402ae6ee49f09bcd01"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec5a65871a38a80d6a609baef1c314fe"><td class="memItemLeft" align="right" valign="top"><a id="aec5a65871a38a80d6a609baef1c314fe"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>std_stats_new_event</b> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memitem:aec5a65871a38a80d6a609baef1c314fe"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#aec5a65871a38a80d6a609baef1c314fe">std_stats_new_event</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:aec5a65871a38a80d6a609baef1c314fe"><td class="mdescLeft">&#160;</td><td class="mdescRight">Processes the number of infections for this new event.  <a href="standard__summary__stats_8h.html#aec5a65871a38a80d6a609baef1c314fe">More...</a><br /></td></tr>
 <tr class="separator:aec5a65871a38a80d6a609baef1c314fe"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:acc025c857b60d98e0afbdcfa3a329734"><td class="memItemLeft" align="right" valign="top"><a id="acc025c857b60d98e0afbdcfa3a329734"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>std_stats_new_inf</b> (<a class="el" href="structinfindividual.html">infindividual</a> *inf)</td></tr>
+<tr class="memitem:acc025c857b60d98e0afbdcfa3a329734"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#acc025c857b60d98e0afbdcfa3a329734">std_stats_new_inf</a> (<a class="el" href="structinfindividual.html">infindividual</a> *inf)</td></tr>
+<tr class="memdesc:acc025c857b60d98e0afbdcfa3a329734"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the processing variable for a new infectious individual.  <a href="standard__summary__stats_8h.html#acc025c857b60d98e0afbdcfa3a329734">More...</a><br /></td></tr>
 <tr class="separator:acc025c857b60d98e0afbdcfa3a329734"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad535aa342b3069ac685a6882e901e7cd"><td class="memItemLeft" align="right" valign="top"><a id="ad535aa342b3069ac685a6882e901e7cd"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>std_stats_end_inf</b> (<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *ptr)</td></tr>
+<tr class="memitem:ad535aa342b3069ac685a6882e901e7cd"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#ad535aa342b3069ac685a6882e901e7cd">std_stats_end_inf</a> (<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *ptr)</td></tr>
+<tr class="memdesc:ad535aa342b3069ac685a6882e901e7cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process the statistics after the last transmission event for an infectious individual that participates to some transmission events.  <a href="standard__summary__stats_8h.html#ad535aa342b3069ac685a6882e901e7cd">More...</a><br /></td></tr>
 <tr class="separator:ad535aa342b3069ac685a6882e901e7cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afbbab0fad0dc015775ee28834dfb2477"><td class="memItemLeft" align="right" valign="top"><a id="afbbab0fad0dc015775ee28834dfb2477"></a>
-static void&#160;</td><td class="memItemRight" valign="bottom"><b>std_stats_noevent_inf</b> (<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *ptr)</td></tr>
+<tr class="memitem:afbbab0fad0dc015775ee28834dfb2477"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#afbbab0fad0dc015775ee28834dfb2477">std_stats_noevent_inf</a> (<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *ptr)</td></tr>
+<tr class="memdesc:afbbab0fad0dc015775ee28834dfb2477"><td class="mdescLeft">&#160;</td><td class="mdescRight">Process the statistics for an infectious individual that does not participate to any transmission event.  <a href="standard__summary__stats_8h.html#afbbab0fad0dc015775ee28834dfb2477">More...</a><br /></td></tr>
 <tr class="separator:afbbab0fad0dc015775ee28834dfb2477"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>User-defined functions to compute standard summary statistics. </p>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="ad535aa342b3069ac685a6882e901e7cd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad535aa342b3069ac685a6882e901e7cd">&#9670;&nbsp;</a></span>std_stats_end_inf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void std_stats_end_inf </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td>
+          <td class="paramname"><em>inf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Process the statistics after the last transmission event for an infectious individual that participates to some transmission events. </p>
+<p>After an infectious infectious individual participated to its last transmission event, this function adds the total number of infections from the individual to the R sum, the individual's communicable period to the sum of communicable periods and the number of transmission events this individual participated to to the sum of events. If the individual was still infectious at tmax, then the path is set to not go extinct. Otherwise, the extinction time for the generating path is updated if its current value was exceeded, using the current event time for the individual's parent and the individual's communicable period. The timeline for the number of infectious individuals is also updated.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inf</td><td>Pointer to the infectious individual. </td></tr>
+    <tr><td class="paramname">ptr</td><td>Pointer to the summary statistics. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="ac4f441dbc08661402ae6ee49f09bcd01"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ac4f441dbc08661402ae6ee49f09bcd01">&#9670;&nbsp;</a></span>std_stats_free()</h2>
 
@@ -235,7 +284,7 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>std_stats_noev
 </div><div class="memdoc">
 
 <p>Allocates additional memory for the user-defined function data. </p>
-<p>If used, this function must be assigned to the simulation engine through a call of sim_set_increase_layers_proc_func.</p>
+<p>This function must be assigned to the simulation engine through a call of sim_set_increase_layers_proc_func.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">iis</td><td>First newly allocated layer element of the infectious individuals array. </td></tr>
@@ -278,6 +327,123 @@ static void&#160;</td><td class="memItemRight" valign="bottom"><b>std_stats_noev
   <table class="params">
     <tr><td class="paramname">sv</td><td>Pointer to the simulation variables were memory for the user-defined function data will be allocated. </td></tr>
     <tr><td class="paramname">stats</td><td>Pointer to the standard summary statistics that will be initialised. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aec5a65871a38a80d6a609baef1c314fe"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aec5a65871a38a80d6a609baef1c314fe">&#9670;&nbsp;</a></span>std_stats_new_event()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool std_stats_new_event </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Processes the number of infections for this new event. </p>
+<p>Adds the number of infections for this new event to the number of infections from the current infectious individual, and to the total infection timeline if the event time does not exceed tmax. This function must be assigned to the simulation engine through a call of sim_set_new_event_proc_func.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>true if the event time does not exceed tmax and false otherwise. </dd></dl>
+
+</div>
+</div>
+<a id="acc025c857b60d98e0afbdcfa3a329734"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc025c857b60d98e0afbdcfa3a329734">&#9670;&nbsp;</a></span>std_stats_new_inf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void std_stats_new_inf </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td>
+          <td class="paramname"><em>inf</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Initialises the processing variable for a new infectious individual. </p>
+<p>This function initialises the number of infectins from a new infectious individual to zero. It is only called for infectious individuals that participate to a non-zero number of transmission events.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inf</td><td>Pointer to the new infectious individual. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="afbbab0fad0dc015775ee28834dfb2477"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afbbab0fad0dc015775ee28834dfb2477">&#9670;&nbsp;</a></span>std_stats_noevent_inf()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void std_stats_noevent_inf </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td>
+          <td class="paramname"><em>inf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>ptr</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Process the statistics for an infectious individual that does not participate to any transmission event. </p>
+<p>This function adds the individual's communicable period to the sum of communicable periods. If the individual was still infectious at tmax, then the path is set to not go extinct. Otherwise, the extinction time for the generating path is updated if its current value was exceeded, using the current event time for the individual's parent and the individual's communicable period. The timeline for the number of infectious individuals is also updated.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inf</td><td>Pointer to the infectious individual. </td></tr>
+    <tr><td class="paramname">ptr</td><td>Pointer to the summary statistics. </td></tr>
   </table>
   </dd>
 </dl>

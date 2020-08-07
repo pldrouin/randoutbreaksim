@@ -8,7 +8,7 @@
 
 #include "simulation.h"
 
-#define II_ARRAY_GROW_FACT (1.5)
+#define II_ARRAY_GROW_FACT (1.5)  //!< Growing factor for the array of current infectious individuals across all layers.
 
 int sim_pars_check(sim_pars const* pars)
 {

@@ -1,7 +1,7 @@
-INPUT=../../src/lib
+INPUT=../../src/lib ../../src/bin
 OUTPUT_DIRECTORY=../../
 FULL_PATH_NAMES=YES
-STRIP_FROM_PATH=../../src/lib
+STRIP_FROM_PATH=../../src/lib ../../src/bin
 GENERATE_TREEVIEW=YES
 SEARCHENGINE=YES
 PROJECT_NAME=branchsimc

@@ -20,8 +20,8 @@
 
 #define INIT_N_LAYERS (16) //!< Initial number of simulation layers
 
-#define DEBUG_PRINTF(...)
-//#define DEBUG_PRINTF(...) printf(__VA_ARGS__)
+#define DEBUG_PRINTF(...) //!< Debug print function
+//#define DEBUG_PRINTF(...) printf(__VA_ARGS__) //!< Debug print function
 
 /**
  * Simulation input parameters.
@@ -46,8 +46,8 @@ typedef struct sim_vars_
 {
   sim_pars pars;		//!< Simulation input parameters
   gsl_rng const* r;		//!< Pointer to GSL random number generator
-  infindividual* iis;	//!< Array of current infected individuals across all layers
-  infindividual* ii;	//!< Pointer to current iteration infected individual
+  infindividual* iis;	//!< Array of current infectious individuals across all layers
+  infindividual* ii;	//!< Pointer to current iteration infectious individual
   uint32_t nlayers;		//!< Current maximum number of layers that has been used so far 
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
   void (*gen_comm_period_func)(struct sim_vars_*);				//!< Pointer to the function used to generate a communicable period for a given infectious individual
@@ -64,11 +64,11 @@ typedef struct sim_vars_
  * This internal function verifies if the set of provided simulation parameter values are
  * valid.
  *
- * @param vars: Pointer to the simulation parameters.
+ * @param pars: Pointer to the simulation parameters.
  * @return 0 if the parameters are valid. If the parameters are
  * invalid, an error is printed on stderr.
  */
-int sim_pars_check(sim_pars const* sim);
+int sim_pars_check(sim_pars const* pars);
 
 /**
  * @brief Initialises the simulation.
