@@ -1,7 +1,9 @@
 var files_dup =
 [
-    [ "args.h", "args_8h_source.html", null ],
-    [ "config.h", "config_8h_source.html", null ],
+    [ "args.c", "args_8c.html", "args_8c" ],
+    [ "args.h", "args_8h.html", "args_8h" ],
+    [ "config.c", "config_8c.html", "config_8c" ],
+    [ "config.h", "config_8h.html", "config_8h" ],
     [ "main.c", "main_8c.html", "main_8c" ],
     [ "main.h", "main_8h.html", "main_8h" ],
     [ "infindividual.h", "infindividual_8h.html", [

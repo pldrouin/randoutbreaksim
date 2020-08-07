@@ -1,3 +1,9 @@
+/**
+ * @file args.h
+ * @brief Generic functions to process configuration parameters.
+ * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
+ */
+
 #ifndef _ARGS_
 #define _ARGS_
 

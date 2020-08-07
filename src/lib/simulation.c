@@ -34,31 +34,40 @@ int sim_pars_check(sim_pars const* pars)
     ret-=8;
   }
 
+  if(pars->lbar<0) {
+    fprintf(stderr,"%s: Error: lbar must be non-negative\n",__func__);
+    ret-=16;
+
+  } else if(pars->lbar>0 && pars->kappal<=0) {
+      fprintf(stderr,"%s: Error: kappal must be greater than 0 if lbar>0\n",__func__);
+      ret-=32;
+  }
+
   if(pars->q<0) {
     fprintf(stderr,"%s: Error: q must be non-negative\n",__func__);
-    ret-=16;
+    ret-=64;
 
   } else if(pars->q>0) {
 
-    if(pars->mbar<=0) {
-      fprintf(stderr,"%s: Error: mbar must be greater than 0\n",__func__);
-      ret-=32;
+    if(pars->mbar<0) {
+      fprintf(stderr,"%s: Error: mbar must be non-negative if q>0\n",__func__);
+      ret-=128;
     }
 
     if(pars->kappaq<=0) {
-      fprintf(stderr,"%s: Error: kappaq must be greater than 0\n",__func__);
-      ret-=64;
+      fprintf(stderr,"%s: Error: kappaq must be greater than 0 if q>0\n",__func__);
+      ret-=256;
     }
   }
 
   if(pars->tmax<=0) {
     fprintf(stderr,"%s: Error: tmax must be greater than 0\n",__func__);
-    ret-=128;
+    ret-=512;
   }
 
   if(pars->nstart<=0) {
     fprintf(stderr,"%s: Error: nstart must be greater than 0\n",__func__);
-    ret-=256;
+    ret-=1024;
   }
   return ret;
 }
@@ -73,7 +82,10 @@ int sim_init(sim_vars* sv, sim_pars* pars, const gsl_rng* r)
   sv->r=r;
   sv->iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));
   sv->nlayers=INIT_N_LAYERS;
-  sv->gen_comm_period_func=(sv->pars.q?gen_comm_period_isolation:gen_comm_period);
+
+  if(sv->pars.lbar || sv->pars.kappal) sv->gen_time_periods_func=(sv->pars.q?gen_time_periods_isolation:gen_time_periods);
+
+  else sv->gen_time_periods_func=(sv->pars.q?gen_comm_period_isolation:gen_comm_period);
   sv->iis[0].event_time=0;
   sv->dataptr=NULL;
   sv->increase_layers_proc_func=default_increase_layers_proc_func;
@@ -100,7 +112,7 @@ int simulate(sim_vars* sv)
     DEBUG_PRINTF("initial individual %i\n",i);
     sv->ii=sv->iis+1;
     //Generate the communicable period appropriately
-    sv->gen_comm_period_func(sv);
+    sv->gen_time_periods_func(sv);
     sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->comm_period);
     DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->ii->comm_period, sv->ii->nevents);
 
@@ -114,7 +126,7 @@ int simulate(sim_vars* sv)
     sv->ii->curevent=0;
 
     for(;;) {
-      sv->ii->event_time=sv->ii->comm_period*(1-gsl_rng_uniform(sv->r));
+      sv->ii->event_time=sv->ii->latent_period+sv->ii->comm_period*(1-gsl_rng_uniform(sv->r));
       DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
       sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
@@ -151,7 +163,7 @@ int simulate(sim_vars* sv)
 	sv->ii=sv->iis+layer;
       }
       //Generate the communicable period appropriately
-      sv->gen_comm_period_func(sv);
+      sv->gen_time_periods_func(sv);
 
       //Generate the number of events
       sv->ii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->ii->comm_period);
@@ -163,7 +175,7 @@ int simulate(sim_vars* sv)
 	sv->new_inf_proc_func(sv->ii);
 	//Generate the event time
 gen_event:
-	sv->ii->event_time=(sv->ii-1)->event_time+sv->ii->comm_period*(1-gsl_rng_uniform(sv->r));
+	sv->ii->event_time=(sv->ii-1)->event_time+sv->ii->latent_period+sv->ii->comm_period*(1-gsl_rng_uniform(sv->r));
 	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->ii->curevent,sv->ii->nevents,sv->ii->event_time);
 
 	//Generate the number of infections and the associated index for

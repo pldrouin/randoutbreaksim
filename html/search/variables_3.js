@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['gen_5fcomm_5fperiod_5ffunc_123',['gen_comm_period_func',['../structsim__vars__.html#a8fe7e1efb13a193b600f104e5e4968fb',1,'sim_vars_']]]
+  ['gen_5ftime_5fperiods_5ffunc_142',['gen_time_periods_func',['../structsim__vars__.html#a512ad1b3e3afc84900cb0940bf31e5d3',1,'sim_vars_']]]
 ];

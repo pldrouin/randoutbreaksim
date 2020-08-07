@@ -1,3 +1,9 @@
+/**
+ * @file args.c
+ * @brief Generic functions to process configuration parameters.
+ * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
+ */
+
 #include "args.h"
 
 int getnextparam(FILE **fptra, int *fptri, const bool isarg, const int nargs, char const* const args[], int *parc, char *param)

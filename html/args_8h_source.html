@@ -87,27 +87,28 @@ $(document).ready(function(){initNavTree('args_8h_source.html',''); initResizabl
 <div class="title">args.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef _ARGS_</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define _ARGS_</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;ctype.h&gt;</span></div>
+<a href="args_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef _ARGS_</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define _ARGS_</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="keywordtype">int</span> getnextparam(FILE **fptra, <span class="keywordtype">int</span> *fptri, <span class="keyword">const</span> <span class="keywordtype">bool</span> isarg, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keywordtype">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> args[], <span class="keywordtype">int</span> *parc, <span class="keywordtype">char</span> *param);</div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keywordtype">void</span> safegetnextparam(FILE **fptra, <span class="keywordtype">int</span> *fptri, <span class="keyword">const</span> <span class="keywordtype">bool</span> isarg, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keywordtype">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> args[], <span class="keywordtype">int</span> *parc, <span class="keywordtype">char</span> *param);</div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">bool</span> argsdiffer(<span class="keyword">const</span> <span class="keywordtype">char</span>* arg1, <span class="keyword">const</span> <span class="keywordtype">char</span>* arg2) {<span class="keywordtype">int</span> i=0; <span class="keywordflow">while</span>(1) {<span class="keywordflow">if</span>(arg1[i]!=arg2[i]) <span class="keywordflow">return</span> <span class="keyword">true</span>; <span class="keywordflow">if</span>(!arg1[i]) <span class="keywordflow">return</span> <span class="keyword">false</span>; ++i;}}</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;stdlib.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;stdio.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;stdbool.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;string.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;ctype.h&gt;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="keywordtype">int</span> getnextparam(FILE **fptra, <span class="keywordtype">int</span> *fptri, <span class="keyword">const</span> <span class="keywordtype">bool</span> isarg, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keywordtype">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> args[], <span class="keywordtype">int</span> *parc, <span class="keywordtype">char</span> *param);</div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="keywordtype">void</span> safegetnextparam(FILE **fptra, <span class="keywordtype">int</span> *fptri, <span class="keyword">const</span> <span class="keywordtype">bool</span> isarg, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keywordtype">char</span> <span class="keyword">const</span>* <span class="keyword">const</span> args[], <span class="keywordtype">int</span> *parc, <span class="keywordtype">char</span> *param);</div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">bool</span> argsdiffer(<span class="keyword">const</span> <span class="keywordtype">char</span>* arg1, <span class="keyword">const</span> <span class="keywordtype">char</span>* arg2) {<span class="keywordtype">int</span> i=0; <span class="keywordflow">while</span>(1) {<span class="keywordflow">if</span>(arg1[i]!=arg2[i]) <span class="keywordflow">return</span> <span class="keyword">true</span>; <span class="keywordflow">if</span>(!arg1[i]) <span class="keywordflow">return</span> <span class="keyword">false</span>; ++i;}}</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>args.h</b></li>
+    <li class="navelem"><a class="el" href="args_8h.html">args.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>

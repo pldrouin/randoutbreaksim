@@ -32,6 +32,8 @@ typedef struct
   double p;		//!< Parameter for the logarithmic distribution used to draw number of new infections for a given transmission event
   double lambda;	//!< Rate of transmission events
   double kappa;		//!< branchim's kappa parameter for the gamma distribution used to generate the uninterrupted communicable period
+  double lbar;		//!< Mean latent pariod
+  double kappal;   	//!< kappa parameter for the gamma distribution used to generate the latent period
   double q;		//!< Probability of alternate communicable period
   double mbar;		//!< Mean period for the alternate communicable period
   double kappaq;	//!< branchim's kappa parameter for the gamma distribution used to generate the alternate communicable period
@@ -50,7 +52,7 @@ typedef struct sim_vars_
   infindividual* ii;	//!< Pointer to current iteration infectious individual
   uint32_t nlayers;		//!< Current maximum number of layers that has been used so far 
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
-  void (*gen_comm_period_func)(struct sim_vars_*);				//!< Pointer to the function used to generate a communicable period for a given infectious individual
+  void (*gen_time_periods_func)(struct sim_vars_*);				//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*increase_layers_proc_func)(infindividual* iis, uint32_t n);	//!< Pointer to the user-defined processing function that is called when the maximum number of layers is increased.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
   void (*new_inf_proc_func)(infindividual* newinf);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
@@ -177,17 +179,18 @@ inline static void sim_free(sim_vars* sv){free(sv->iis);}
 int simulate(sim_vars* sv);
 
 /**
- * @brief Generates an uninterrupted communicable period.
+ * @brief Generates an uninterrupted communicable period without latent period.
  *
  * This function generates the uninterrupted communicable period for the current
- * infectious individual, as determined by the simulation variables and
- * parameters. It also sets the infectious_at_tmax parameter for the current
- * infectious individual.
+ * infectious individual without a latent period, as determined by the simulation
+ * variables and parameters. It also sets the infectious_at_tmax parameter for
+ * the current infectious individual.
  *
  * @param sv: Pointer to the simulation variables.
  */
 static inline void gen_comm_period(sim_vars* sv)
 {
+  sv->ii->latent_period=0;
   sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
   double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
 
@@ -200,14 +203,15 @@ static inline void gen_comm_period(sim_vars* sv)
 }
 
 /**
- * @brief Generates a communicable period.
+ * @brief Generates a communicable period without a latent period.
  *
  * This function generates the communicable period for the current
- * infectious individual, as determined by the simulation variables and
- * parameters. It considers the alternate communicable period based on the q
- * simulation parameter, and selects the shortest period between the
- * uninterrupted period and the alternate period. It also sets the
- * infectious_at_tmax parameter for the current infectious individual.
+ * infectious individual without a latent period, as determined by the
+ * simulation variables and parameters. It considers the alternate
+ * communicable period based on the q simulation parameter, and selects
+ * the shortest period between the uninterrupted period and the alternate
+ * period. It also sets the infectious_at_tmax parameter for the current
+ * infectious individual.
  *
  * @param sv: Pointer to the simulation variables.
  */
@@ -215,6 +219,68 @@ static inline void gen_comm_period_isolation(sim_vars* sv)
 {
   double m;
 
+  sv->ii->latent_period=0;
+  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
+
+  if(gsl_rng_uniform(sv->r) >= sv->pars.q) {
+
+    if(isinf(sv->pars.kappaq)) m=sv->pars.mbar;
+    else m=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq);
+
+    if(m<sv->ii->comm_period) sv->ii->comm_period=m;
+  }
+  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
+
+  if(sv->ii->comm_period > time_left) {
+    //sv->ii->comm_period=time_left;
+    sv->ii->infectious_at_tmax=true;
+
+  } else sv->ii->infectious_at_tmax=false;
+  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
+}
+
+/**
+ * @brief Generates an uninterrupted communicable period and a latent period.
+ *
+ * This function generates the uninterrupted communicable period for the current
+ * infectious individual and a latent period, as determined by the simulation
+ * variables and parameters. It also sets the infectious_at_tmax parameter for
+ * the current infectious individual.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+static inline void gen_time_periods(sim_vars* sv)
+{
+  sv->ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
+  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
+  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
+
+  if(sv->ii->comm_period > time_left) {
+    //sv->ii->comm_period=time_left;
+    sv->ii->infectious_at_tmax=true;
+
+  } else sv->ii->infectious_at_tmax=false;
+  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
+}
+
+/**
+ * @brief Generates a communicable period and a latent period.
+ *
+ * This function generates the communicable period for the current
+ * infectious individual and a latent period, as determined by the
+ * simulation variables and parameters. It considers the alternate
+ * communicable period based on the q simulation parameter, and selects
+ * the shortest period between the uninterrupted period and the alternate
+ * period. It also sets the infectious_at_tmax parameter for the current
+ * infectious individual.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+static inline void gen_time_periods_isolation(sim_vars* sv)
+{
+  double m;
+
+  sv->ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
   sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
 
   if(gsl_rng_uniform(sv->r) >= sv->pars.q) {

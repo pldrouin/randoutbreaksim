@@ -12,6 +12,8 @@ var simulation_8h =
     [ "dummy_proc_func_two_pars", "simulation_8h.html#a84beb2084ff7239d40c304cee0506411", null ],
     [ "gen_comm_period", "simulation_8h.html#ae96c5576cb07eb625c14538051f0afd1", null ],
     [ "gen_comm_period_isolation", "simulation_8h.html#af1b123bb0bddf06a2a0001903ceb31b8", null ],
+    [ "gen_time_periods", "simulation_8h.html#aed5a49fbb45324e1dd02058122f6b70a", null ],
+    [ "gen_time_periods_isolation", "simulation_8h.html#abe890d83ca8cbe0b95d1c9eae6fd35c2", null ],
     [ "sim_free", "simulation_8h.html#a5bde1baf6ffdfb13173d7dd10983bb68", null ],
     [ "sim_init", "simulation_8h.html#ac390bfd4185b26248b9ea2990e075964", null ],
     [ "sim_pars_check", "simulation_8h.html#a2e9b3d32f328788778fff13cbdf6dd57", null ],

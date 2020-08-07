@@ -13,7 +13,7 @@
 
 int main(const int nargs, const char* args[])
 {
-  sim_pars pars={.tbar=0, .p=0, .lambda=0, .kappa=0, .q=0, .mbar=0, .kappaq=0, .tmax=INFINITY, .nstart=1};
+  sim_pars pars={.tbar=0, .p=0, .lambda=0, .kappa=0, .lbar=0, .kappal=0, .q=0, .mbar=0, .kappaq=0, .tmax=INFINITY, .nstart=1};
   uint32_t npaths=10000;
   int oout=STDOUT_FILENO;
   int eout=STDERR_FILENO;

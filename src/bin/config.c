@@ -1,3 +1,9 @@
+/**
+ * @file config.c
+ * @brief Configuration functions the simulation executable.
+ * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
+ */
+
 #include "config.h"
 
 int config(sim_pars* pars, uint32_t* npaths, int* oout, int* eout, const int nargs, const char* args[])
@@ -64,6 +70,14 @@ int config(sim_pars* pars, uint32_t* npaths, int* oout, int* eout, const int nar
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->kappa);
 
+      } else if(!argsdiffer(pbuf, "lbar")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->lbar);
+
+      } else if(!argsdiffer(pbuf, "kappal")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->kappal);
+
       } else if(!argsdiffer(pbuf, "q")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->q);
@@ -113,6 +127,8 @@ void printusage(const char* name)
   printf("\t--p VALUE\t\tbranchsim's tbar parameter (required)\n");
   printf("\t--lambda VALUE\t\tbranchsim's tbar parameter (required)\n");
   printf("\t--kappa VALUE\t\tbranchsim's tbar parameter (required)\n");
+  printf("\t--lbar VALUE\t\tlbar parameter (default value of 0)\n");
+  printf("\t--kappal VALUE\t\tlbar parameter (required if lbar>0)\n");
   printf("\t--q VALUE\t\tbranchsim's tbar parameter (default value of 0)\n");
   printf("\t--mbar VALUE\t\tbranchsim's tbar parameter (required if q>0)\n");
   printf("\t--kappaq VALUE\t\tbranchsim's tbar parameter (required if q>0)\n");

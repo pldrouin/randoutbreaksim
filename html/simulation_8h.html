@@ -126,10 +126,11 @@ This graph shows which files directly or indirectly include this file:</div>
 <area shape="rect" title="Simulation data structures and functions." alt="" coords="229,5,321,32"/>
 <area shape="rect" href="simulation_8c.html" title="Simulation functions." alt="" coords="5,80,97,107"/>
 <area shape="rect" href="standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="121,80,301,107"/>
-<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="318,155,379,181"/>
-<area shape="rect" href="config_8h_source.html" title=" " alt="" coords="377,80,445,107"/>
-<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="113,155,293,181"/>
-<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="318,229,379,256"/>
+<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="309,155,370,181"/>
+<area shape="rect" href="config_8h.html" title="Configuration functions the simulation executable." alt="" coords="377,80,445,107"/>
+<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="104,155,284,181"/>
+<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="309,229,370,256"/>
+<area shape="rect" href="config_8c.html" title="Configuration functions the simulation executable." alt="" coords="395,155,463,181"/>
 </map>
 </div>
 </div>
@@ -191,11 +192,17 @@ Functions</h2></td></tr>
 <tr class="memdesc:a25404969c762d39ee77eb67bc8611428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the simulation.  <a href="simulation_8h.html#a25404969c762d39ee77eb67bc8611428">More...</a><br /></td></tr>
 <tr class="separator:a25404969c762d39ee77eb67bc8611428"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae96c5576cb07eb625c14538051f0afd1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#ae96c5576cb07eb625c14538051f0afd1">gen_comm_period</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
-<tr class="memdesc:ae96c5576cb07eb625c14538051f0afd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an uninterrupted communicable period.  <a href="simulation_8h.html#ae96c5576cb07eb625c14538051f0afd1">More...</a><br /></td></tr>
+<tr class="memdesc:ae96c5576cb07eb625c14538051f0afd1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an uninterrupted communicable period without latent period.  <a href="simulation_8h.html#ae96c5576cb07eb625c14538051f0afd1">More...</a><br /></td></tr>
 <tr class="separator:ae96c5576cb07eb625c14538051f0afd1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af1b123bb0bddf06a2a0001903ceb31b8"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#af1b123bb0bddf06a2a0001903ceb31b8">gen_comm_period_isolation</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
-<tr class="memdesc:af1b123bb0bddf06a2a0001903ceb31b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a communicable period.  <a href="simulation_8h.html#af1b123bb0bddf06a2a0001903ceb31b8">More...</a><br /></td></tr>
+<tr class="memdesc:af1b123bb0bddf06a2a0001903ceb31b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a communicable period without a latent period.  <a href="simulation_8h.html#af1b123bb0bddf06a2a0001903ceb31b8">More...</a><br /></td></tr>
 <tr class="separator:af1b123bb0bddf06a2a0001903ceb31b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aed5a49fbb45324e1dd02058122f6b70a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#aed5a49fbb45324e1dd02058122f6b70a">gen_time_periods</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:aed5a49fbb45324e1dd02058122f6b70a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an uninterrupted communicable period and a latent period.  <a href="simulation_8h.html#aed5a49fbb45324e1dd02058122f6b70a">More...</a><br /></td></tr>
+<tr class="separator:aed5a49fbb45324e1dd02058122f6b70a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abe890d83ca8cbe0b95d1c9eae6fd35c2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#abe890d83ca8cbe0b95d1c9eae6fd35c2">gen_time_periods_isolation</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:abe890d83ca8cbe0b95d1c9eae6fd35c2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a communicable period and a latent period.  <a href="simulation_8h.html#abe890d83ca8cbe0b95d1c9eae6fd35c2">More...</a><br /></td></tr>
+<tr class="separator:abe890d83ca8cbe0b95d1c9eae6fd35c2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a881fb314fa7f96332cfe3f324287400f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a881fb314fa7f96332cfe3f324287400f">default_event_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
 <tr class="memdesc:a881fb314fa7f96332cfe3f324287400f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function that is called when a new transmission event is created.  <a href="simulation_8h.html#a881fb314fa7f96332cfe3f324287400f">More...</a><br /></td></tr>
 <tr class="separator:a881fb314fa7f96332cfe3f324287400f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -435,8 +442,8 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Generates an uninterrupted communicable period. </p>
-<p>This function generates the uninterrupted communicable period for the current infectious individual, as determined by the simulation variables and parameters. It also sets the infectious_at_tmax parameter for the current infectious individual.</p>
+<p>Generates an uninterrupted communicable period without latent period. </p>
+<p>This function generates the uninterrupted communicable period for the current infectious individual without a latent period, as determined by the simulation variables and parameters. It also sets the infectious_at_tmax parameter for the current infectious individual.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
@@ -470,8 +477,78 @@ Functions</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Generates a communicable period. </p>
-<p>This function generates the communicable period for the current infectious individual, as determined by the simulation variables and parameters. It considers the alternate communicable period based on the q simulation parameter, and selects the shortest period between the uninterrupted period and the alternate period. It also sets the infectious_at_tmax parameter for the current infectious individual.</p>
+<p>Generates a communicable period without a latent period. </p>
+<p>This function generates the communicable period for the current infectious individual without a latent period, as determined by the simulation variables and parameters. It considers the alternate communicable period based on the q simulation parameter, and selects the shortest period between the uninterrupted period and the alternate period. It also sets the infectious_at_tmax parameter for the current infectious individual.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="aed5a49fbb45324e1dd02058122f6b70a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aed5a49fbb45324e1dd02058122f6b70a">&#9670;&nbsp;</a></span>gen_time_periods()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gen_time_periods </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates an uninterrupted communicable period and a latent period. </p>
+<p>This function generates the uninterrupted communicable period for the current infectious individual and a latent period, as determined by the simulation variables and parameters. It also sets the infectious_at_tmax parameter for the current infectious individual.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="abe890d83ca8cbe0b95d1c9eae6fd35c2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abe890d83ca8cbe0b95d1c9eae6fd35c2">&#9670;&nbsp;</a></span>gen_time_periods_isolation()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gen_time_periods_isolation </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Generates a communicable period and a latent period. </p>
+<p>This function generates the communicable period for the current infectious individual and a latent period, as determined by the simulation variables and parameters. It considers the alternate communicable period based on the q simulation parameter, and selects the shortest period between the uninterrupted period and the alternate period. It also sets the infectious_at_tmax parameter for the current infectious individual.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>

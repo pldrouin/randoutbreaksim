@@ -87,30 +87,35 @@ $(document).ready(function(){initNavTree('config_8h_source.html',''); initResiza
 <div class="title">config.h</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#ifndef _CONFIG_</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#define _CONFIG_</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;sys/types.h&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;sys/stat.h&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;fcntl.h&gt;</span></div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
-<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#include &lt;inttypes.h&gt;</span></div>
+<a href="config_8h.html">Go to the documentation of this file.</a><div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160; </div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#ifndef _CONFIG_</span></div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160;<span class="preprocessor">#define _CONFIG_</span></div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
-<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &quot;args.h&quot;</span></div>
-<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="simulation_8h.html">simulation.h</a>&quot;</span></div>
-<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160; </div>
-<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="keywordtype">int</span> config(<a class="code" href="structsim__pars.html">sim_pars</a>* pars, uint32_t* npaths, <span class="keywordtype">int</span>* oout, <span class="keywordtype">int</span>* eout, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keyword">const</span> <span class="keywordtype">char</span>* args[]);</div>
-<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="keywordtype">void</span> printusage(<span class="keyword">const</span> <span class="keywordtype">char</span>* name);</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160;<span class="preprocessor">#include &lt;sys/types.h&gt;</span></div>
+<div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="preprocessor">#include &lt;sys/stat.h&gt;</span></div>
+<div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;fcntl.h&gt;</span></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;inttypes.h&gt;</span></div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="args_8h.html">args.h</a>&quot;</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="simulation_8h.html">simulation.h</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keywordtype">int</span> <a class="code" href="config_8h.html#af6324ed7cb4b69818c8ea96e29d4f60f">config</a>(<a class="code" href="structsim__pars.html">sim_pars</a>* pars, uint32_t* npaths, <span class="keywordtype">int</span>* oout, <span class="keywordtype">int</span>* eout, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keyword">const</span> <span class="keywordtype">char</span>* args[]);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keywordtype">void</span> <a class="code" href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
+<div class="ttc" id="aconfig_8h_html_ad58728259679e01f1f114c6a3328fbcd"><div class="ttname"><a href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a></div><div class="ttdeci">void printusage(const char *name)</div><div class="ttdoc">Prints usage information for the executable.</div><div class="ttdef"><b>Definition:</b> config.c:119</div></div>
+<div class="ttc" id="aargs_8h_html"><div class="ttname"><a href="args_8h.html">args.h</a></div><div class="ttdoc">Generic functions to process configuration parameters.</div></div>
 <div class="ttc" id="astructsim__pars_html"><div class="ttname"><a href="structsim__pars.html">sim_pars</a></div><div class="ttdef"><b>Definition:</b> simulation.h:29</div></div>
 <div class="ttc" id="asimulation_8h_html"><div class="ttname"><a href="simulation_8h.html">simulation.h</a></div><div class="ttdoc">Simulation data structures and functions.</div></div>
+<div class="ttc" id="aconfig_8h_html_af6324ed7cb4b69818c8ea96e29d4f60f"><div class="ttname"><a href="config_8h.html#af6324ed7cb4b69818c8ea96e29d4f60f">config</a></div><div class="ttdeci">int config(sim_pars *pars, uint32_t *npaths, int *oout, int *eout, const int nargs, const char *args[])</div><div class="ttdoc">Configures the input parameters for the executable.</div><div class="ttdef"><b>Definition:</b> config.c:9</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>
-    <li class="navelem"><b>config.h</b></li>
+    <li class="navelem"><a class="el" href="config_8h.html">config.h</a></li>
     <li class="footer">Generated by
     <a href="http://www.doxygen.org/index.html">
     <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
