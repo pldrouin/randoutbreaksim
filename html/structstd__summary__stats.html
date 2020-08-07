@@ -100,7 +100,7 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="st
 <tr class="separator:acbd17fcad2eb7abd3430ec4ff8275d3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0823eb53dc979bc0221c570fa1b0e2d7"><td class="memItemLeft" align="right" valign="top"><a id="a0823eb53dc979bc0221c570fa1b0e2d7"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a0823eb53dc979bc0221c570fa1b0e2d7">commpersum</a></td></tr>
-<tr class="memdesc:a0823eb53dc979bc0221c570fa1b0e2d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum of communication periods for all infectious individuals whose communicable period does not occur after tmax. <br /></td></tr>
+<tr class="memdesc:a0823eb53dc979bc0221c570fa1b0e2d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum of communicable periods for all infectious individuals whose communicable period does not occur after tmax. <br /></td></tr>
 <tr class="separator:a0823eb53dc979bc0221c570fa1b0e2d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40874a46f008c64e6ad71312da1c3e04"><td class="memItemLeft" align="right" valign="top"><a id="a40874a46f008c64e6ad71312da1c3e04"></a>
 uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a40874a46f008c64e6ad71312da1c3e04">inf_timeline</a></td></tr>
@@ -122,6 +122,14 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a0b893ea867095df3b5169b9a5fcf026b">neventssum</a></td></tr>
 <tr class="memdesc:a0b893ea867095df3b5169b9a5fcf026b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax. <br /></td></tr>
 <tr class="separator:a0b893ea867095df3b5169b9a5fcf026b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8e83d6a8048fe685966daa2fc88b9786"><td class="memItemLeft" align="right" valign="top"><a id="a8e83d6a8048fe685966daa2fc88b9786"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a8e83d6a8048fe685966daa2fc88b9786">nimax</a></td></tr>
+<tr class="memdesc:a8e83d6a8048fe685966daa2fc88b9786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of infectious individuals for a given integer inerval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded. <br /></td></tr>
+<tr class="separator:a8e83d6a8048fe685966daa2fc88b9786"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afebfc56bb1adf1c61f39f78a5e4e4b6f"><td class="memItemLeft" align="right" valign="top"><a id="afebfc56bb1adf1c61f39f78a5e4e4b6f"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#afebfc56bb1adf1c61f39f78a5e4e4b6f">nimaxedoutmintimeindex</a></td></tr>
+<tr class="memdesc:afebfc56bb1adf1c61f39f78a5e4e4b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum time index which maxed out the allowed number of infected individuals. <br /></td></tr>
+<tr class="separator:afebfc56bb1adf1c61f39f78a5e4e4b6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac229de531e51ab996d8d9943836a81df"><td class="memItemLeft" align="right" valign="top"><a id="ac229de531e51ab996d8d9943836a81df"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#ac229de531e51ab996d8d9943836a81df">extinction</a></td></tr>
 <tr class="memdesc:ac229de531e51ab996d8d9943836a81df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set to true if extinction does not occur before or at tmax. <br /></td></tr>

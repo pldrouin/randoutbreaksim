@@ -21,12 +21,14 @@
  *
  * @param pars: Simulation parameters
  * @param npaths: Number of simulation paths.
+ * @param nimax: Maximum number of infectious individuals for a given time
+ * integet interval.
  * @param oout: File descriptor for the standard output.
  * @param eout: File descriptor for the standard error.
  * @param nargs: Number of arguments from the main function, shifted by 1.
  * @param args: Arguments from the main function, shifted by 1.
  */
-int config(sim_pars* pars, uint32_t* npaths, int* oout, int* eout, const int nargs, const char* args[]);
+int config(sim_pars* pars, uint32_t* npaths, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[]);
 
 /**
  * @brief Prints usage information for the executable.

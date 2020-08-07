@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-int config(sim_pars* pars, uint32_t* npaths, int* oout, int* eout, const int nargs, const char* args[])
+int config(sim_pars* pars, uint32_t* npaths, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
 {
   int plength=1;
   FILE **fptra=NULL;
@@ -102,6 +102,10 @@ int config(sim_pars* pars, uint32_t* npaths, int* oout, int* eout, const int nar
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,npaths);
 
+      } else if(!argsdiffer(pbuf, "nimax")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,nimax);
+
       } else {
 
 	if(argsdiffer(pbuf, "help")) fprintf(stderr,"%s: Error: Option '%s' is unknown\n",__func__,pbuf);
@@ -124,7 +128,7 @@ void printusage(const char* name)
   printf("\t--olog FILENAME\t\tRedirect standard output to FILENAME\n");
   printf("\t--elog FILENAME\t\tRedirect standard error to FILENAME\n");
   printf("\t--tbar VALUE\t\tbranchsim's tbar parameter (required)\n");
-  printf("\t--p VALUE\t\tbranchsim's tbar parameter (required)\n");
+  printf("\t--p VALUE\t\tbranchsim's tbar parameter (default value of 0)\n");
   printf("\t--lambda VALUE\t\tbranchsim's tbar parameter (required)\n");
   printf("\t--kappa VALUE\t\tbranchsim's tbar parameter (required)\n");
   printf("\t--lbar VALUE\t\tlbar parameter (default value of 0)\n");
@@ -135,6 +139,7 @@ void printusage(const char* name)
   printf("\t--tmax VALUE\t\tbranchsim's tbar parameter (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\tbranchsim's tbar parameter (default value of 1)\n");
   printf("\t--npaths VALUE\t\tbranchsim's tbar parameter (default value of 10000)\n");
+  printf("\t--nimax VALUE\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX)\n");
   printf("\t--help\t\t\tPrint this usage information and exit\n");
   printf("\nEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\nOptions can be used multiple times and configuration files can be read from configuration files.\n"); 
 }

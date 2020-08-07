@@ -15,10 +15,11 @@ int main(const int nargs, const char* args[])
 {
   sim_pars pars={.tbar=0, .p=0, .lambda=0, .kappa=0, .lbar=0, .kappal=0, .q=0, .mbar=0, .kappaq=0, .tmax=INFINITY, .nstart=1};
   uint32_t npaths=10000;
+  uint32_t nimax=UINT32_MAX;
   int oout=STDOUT_FILENO;
   int eout=STDERR_FILENO;
 
-  if(config(&pars, &npaths, &oout, &eout, nargs-1, args+1)) return 1;
+  if(config(&pars, &npaths, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
   gsl_rng_env_setup();
 
   gsl_rng* r = gsl_rng_alloc(gsl_rng_taus2);
@@ -57,6 +58,7 @@ int main(const int nargs, const char* args[])
   double totinf_timeline_std_noext[(int)sv.pars.tmax+1];
 
   std_stats_init(&sv, &stats);
+  stats.nimax=nimax;
 
   memset(inf_timeline_mean_ext, 0, stats.npers*sizeof(double));
   memset(inf_timeline_std_ext, 0, stats.npers*sizeof(double));
@@ -67,6 +69,7 @@ int main(const int nargs, const char* args[])
   memset(totinf_timeline_mean_noext, 0, stats.npers*sizeof(double));
   memset(totinf_timeline_std_noext, 0, stats.npers*sizeof(double));
   int j;
+  uint32_t nimaxedoutmintimeindex=UINT32_MAX;
 
   for(int i=npaths-1; i>=0; --i) {
     std_stats_path_init(&stats);
@@ -95,6 +98,8 @@ int main(const int nargs, const char* args[])
       }
 
     } else {
+
+      if(stats.nimaxedoutmintimeindex < nimaxedoutmintimeindex) nimaxedoutmintimeindex=stats.nimaxedoutmintimeindex;
       inf_timeline_mean_noext[0]+=stats.inf_timeline[0];
       inf_timeline_std_noext[0]+=stats.inf_timeline[0]*stats.inf_timeline[0];
       totinf_timeline_mean_noext[0]+=stats.totinf_timeline[0];
@@ -134,20 +139,22 @@ int main(const int nargs, const char* args[])
   pe/=npaths;
 
   printf("Mean R is %f\n",r_mean);
-  printf("Uninterrupted communication period is %f\n",commper_mean);
+  printf("Uninterrupted communicable period is %f\n",commper_mean);
   printf("Number of events per infectious individual is %f\n",nevents_mean);
   printf("Number of infections per event is %f\n",ninf_per_event_mean);
-  printf("Probability of extinction is %f\n",pe);
+  printf("Probability of extinction is %f +/- %f\n",pe,sqrt(npaths/(npaths-1)*pe*(1-pe)));
   printf("Extinction time, if it occurs is %f +/- %f\n",te_mean,te_std);
 
   printf("Current infection timeline, for paths with extinction vs no extinction is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j]);
+  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f%s\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j],(j<nimaxedoutmintimeindex?"":" (maxed out)"));
 
   printf("Total infections timeline, for paths with extinction vs no extinction is:\n");
-  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f\n",j,totinf_timeline_mean_ext[j],totinf_timeline_std_ext[j],totinf_timeline_mean_noext[j],totinf_timeline_std_noext[j]);
+  for(j=0; j<stats.npers; ++j) printf("%3i: %9.4f +/- %9.4f\t%9.4f +/- %9.4f%s\n",j,totinf_timeline_mean_ext[j],totinf_timeline_std_ext[j],totinf_timeline_mean_noext[j],totinf_timeline_std_noext[j],(j<nimaxedoutmintimeindex?"":" (maxed out)"));
 
   sim_free(&sv);
   gsl_rng_free(r);
+  fflush(stdout);
+  fflush(stderr);
   close(oout);
   close(eout);
   return 0;

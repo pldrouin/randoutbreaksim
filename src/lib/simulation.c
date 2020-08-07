@@ -19,8 +19,8 @@ int sim_pars_check(sim_pars const* pars)
     ret-=1;
   }
 
-  if(pars->p<=0) {
-    fprintf(stderr,"%s: Error: p must be greater than 0\n",__func__);
+  if(pars->p<0) {
+    fprintf(stderr,"%s: Error: p must be non-negative\n",__func__);
     ret-=2;
   }
 

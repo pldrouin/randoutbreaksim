@@ -358,7 +358,7 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Processes the number of infections for this new event. </p>
-<p>Adds the number of infections for this new event to the number of infections from the current infectious individual, and to the total infection timeline if the event time does not exceed tmax. This function must be assigned to the simulation engine through a call of sim_set_new_event_proc_func.</p>
+<p>Adds the number of infections for this new event to the number of infections from the current infectious individual, and to the total infection timeline if the event time does not exceed tmax. If the incremented bin for the total infection timeline exceeds nimax, then set the extinction for the current path to false and update the value for the minimum time index where the maximum number of infectious individuals was exceeded if required. This function must be assigned to the simulation engine through a call of sim_set_new_event_proc_func.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>

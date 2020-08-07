@@ -15,6 +15,7 @@ void std_stats_init(sim_vars* sv, std_summary_stats* stats)
   stats->npers=(int)sv->pars.tmax+1;
   stats->inf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
   stats->totinf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
+  stats->nimax=UINT32_MAX;
 }
 
 void std_stats_increase_layers(infindividual* iis, uint32_t n)
