@@ -132,6 +132,7 @@ int simulate(sim_vars* sv)
       sv->ii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
 
       if(!sv->new_event_proc_func(sv)) {
+	DEBUG_PRINTF("New event returned false\n");
 
 	//If the events have been exhausted, go down another layer
 	if(sv->ii->curevent == sv->ii->nevents-1) {

@@ -115,13 +115,18 @@ inline static bool std_stats_new_event(sim_vars* sv)
   (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
   DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
 
-  if((int)sv->ii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
+  if((int)sv->ii->event_time <= (int)sv->pars.tmax) {
 
-  if(((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)] > ((std_summary_stats*)sv->dataptr)->nimax) {
-    ((std_summary_stats*)sv->dataptr)->extinction=false;
+    if(((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)] <= ((std_summary_stats*)sv->dataptr)->nimax)
+      ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
 
-    if((int)(sv->ii->event_time) < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=(int)(sv->ii->event_time);
-    return false;
+    else {
+      ((std_summary_stats*)sv->dataptr)->extinction=false;
+
+      if((int)(sv->ii->event_time) < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=(int)(sv->ii->event_time);
+      DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",(int)(sv->ii->event_time),((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)],((std_summary_stats*)sv->dataptr)->nimax);
+      return false;
+    }
   }
 
   return (sv->ii->event_time <= sv->pars.tmax);
@@ -141,6 +146,7 @@ inline static void std_stats_new_inf(infindividual* inf)
   *(uint32_t*)inf->dataptr=0;
   //++(*(uint32_t*)(inf-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
+  DEBUG_PRINTF("%s\n",__func__);
 }
 
 /**
@@ -202,6 +208,7 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
  * */
 inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
 {
+  DEBUG_PRINTF("%s\n",__func__);
   //++(*(uint32_t*)(inf-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
   DEBUG_PRINTF("Number of infections was 0\n");
