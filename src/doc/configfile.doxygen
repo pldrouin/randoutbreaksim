@@ -1,4 +1,5 @@
 INPUT=../../src/lib ../../src/bin
+EXCLUDE_PATTERNS=*.d
 OUTPUT_DIRECTORY=../../
 FULL_PATH_NAMES=YES
 STRIP_FROM_PATH=../../src/lib ../../src/bin
