@@ -4,7 +4,7 @@ var searchData=
   ['r0_70',['R0',['../structsim__pars.html#ad3393c07a6c72b64b920cfeaff7af9d7',1,'sim_pars']]],
   ['rf_5fgkappa_5fepsf_71',['RF_GKAPPA_EPSF',['../config_8h.html#a9490e75206749a4db7fecb0f706fc861',1,'config.h']]],
   ['rf_5fgperc_5fepsf_72',['RF_GPERC_EPSF',['../config_8h.html#ace26d7f9e0547638346a1bb80558a2e5',1,'config.h']]],
-  ['rf_5fp_5feps_73',['RF_P_EPS',['../config_8h.html#a7683285589a3c5de4a1a5ca98fe0b203',1,'config.h']]],
+  ['rf_5fp_5fepsf_73',['RF_P_EPSF',['../config_8h.html#a6fc0390a031aa231126fd62ea0efb676',1,'config.h']]],
   ['root_5ffinder_74',['root_finder',['../structroot__finder.html',1,'']]],
   ['root_5ffinder_2ec_75',['root_finder.c',['../root__finder_8c.html',1,'']]],
   ['root_5ffinder_2eh_76',['root_finder.h',['../root__finder_8h.html',1,'']]],

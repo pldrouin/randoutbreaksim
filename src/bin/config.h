@@ -21,7 +21,7 @@
 #include "simulation.h"
 #include "root_finder.h"
 
-#define RF_P_EPS (1e-15)	//!< EPS for the change in p parameter
+#define RF_P_EPSF (1e-15)	//!< EPS for the mu discrepancy
 #define RF_GPERC_EPSF (1e-15)	//!< EPS for the x95 CDF discrepancy
 #define RF_GKAPPA_EPSF (1e-15)  //!< EPS for the kappa CDF discrepancy
 
@@ -89,10 +89,10 @@ int config_solve_gamma_group(double* ave, double* kappa, double* x95);
  * distribution, given the my parameter, using Newton's method
  *
  * @param x: Current value for p (input/output).
- * @param diff: Change in value for p (output).
+ * @param diff: mu value discrepancy (output).
  * @param params: Pointer to mu parameter (input)
  */
-inline static void logroot(double* x, double* diff, void* params){const double x0=*x; const double l=log(1-x0); *x-=(*(double*)params*l*(1-x0)+x0)*(1-x0)/(x0/l+1); *diff=1 - x0 / *x;} 
+inline static void logroot(double* x, double* diff, void* params){const double omx=1-*x; const double l=log(omx); *diff=*(double*)params+ *x/(omx*l); *x-=*diff*l*omx*omx/(*x/l+1); *diff/=*(double*)params;} 
 
 /**
  * @brief Computes the discrepancy between an evaluation of gamma cumulative

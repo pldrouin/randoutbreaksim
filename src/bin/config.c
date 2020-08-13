@@ -284,7 +284,7 @@ int config_solve_R0_group(sim_pars* pars)
       root_finder* rf=root_finder_init(logroot, &pars->mu);
       pars->p=0.999;
 
-      int ret=root_finder_find(rf, RF_P_EPS, 100, RF_P_EPS, 1-RF_P_EPS, &pars->p);
+      int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
 
       root_finder_free(rf);
 
