@@ -48,11 +48,14 @@ int config_solve_pars(sim_pars* pars);
 int config_solve_R0_group(sim_pars* pars);
 int config_solve_gamma_group(double* ave, double* kappa, double* p95);
 
-inline static double logroot(double x, void* params){return *(double*)params+x/((1-x)*log(1-x));} 
-inline static double logrootderiv(double x, void* params){const double l=log(1-x); return (x/l+1)/(l*(1-x)*(1-x));} 
-inline static double gpercroot(double x, void* params){return gsl_sf_gamma_inc_P(*(double*)params,*(((double*)params)+1)*x)-0.95;} 
-inline static double gpercrootderiv(double x, void* params){const double t=*(((double*)params)+1)*x; return pow(t,*(double*)params-1)*exp(-t)/tgamma(*(double*)params) * *(((double*)params)+1);} 
-inline static double gkapparoot(double x, void* params){return gsl_sf_gamma_inc_P(*(double*)params*x,*(((double*)params)+1)*x)-0.95;} 
-inline static double gkapparootderiv(double x, void* params){const double a=*(double*)params * x; const double t=*(((double*)params)+1)*x; return -gsl_sf_psi(a) * *(double*)params * gsl_sf_gamma_inc_P(a,t) +  pow(t,a-1) * exp(-t)/tgamma(a) * *(((double*)params)+1);} 
+//Finding p in logarithmic distribution using Newton's method
+inline static void logroot(double* x, double* diff, void* params){const double x0=*x; const double l=log(1-x0); *x-=(*(double*)params*l*(1-x0)+x0)*(1-x0)/(x0/l+1); *diff=*x-x0;} 
+
+inline static double gpercrootfunc(const double a, const double t){return gsl_sf_gamma_inc_P(a,t)-0.95;}
+//Finding p95 for the gamma cumulative distribution function using Newton's method
+inline static void gpercroot(double* x, double* diff, void* params){const double t=*(((double*)params)+1)* *x; *diff=gpercrootfunc(*(double*)params,t); *x-=*diff * tgamma(*(double*)params) / (pow(t,*(double*)params-1)*exp(-t) * *(((double*)params)+1));} 
+
+//Finding kappa for the gamma cumulative distribution function using secant method
+inline static void gkapparoot(double* x, double* diff, void* params){const double oldx=*x; *diff=gpercrootfunc(*(double*)params * *x,*(((double*)params)+1) * *x); *x-=*diff * (*x - *(((double*)params)+2)) / (*diff - *(((double*)params)+3)); *(((double*)params)+2)=oldx; *(((double*)params)+3)=*diff;} 
 
 #endif

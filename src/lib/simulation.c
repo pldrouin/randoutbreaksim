@@ -79,7 +79,7 @@ void sim_pars_init(sim_pars* pars)
   pars->lambda=NAN;
   pars->kappa=NAN;
   pars->lbar=0;
-  pars->kappal=0;
+  pars->kappal=NAN;
   pars->q=0;
   pars->mbar=0;
   pars->kappaq=0;
@@ -103,7 +103,7 @@ int sim_init(sim_vars* sv, sim_pars* pars, const gsl_rng* r)
   sv->iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));
   sv->nlayers=INIT_N_LAYERS;
 
-  if(sv->pars.lbar || sv->pars.kappal) sv->gen_time_periods_func=(sv->pars.q?gen_time_periods_isolation:gen_time_periods);
+  if(!isnan(sv->pars.kappal)) sv->gen_time_periods_func=(sv->pars.q?gen_time_periods_isolation:gen_time_periods);
 
   else sv->gen_time_periods_func=(sv->pars.q?gen_comm_period_isolation:gen_comm_period);
   sv->iis[0].event_time=0;
