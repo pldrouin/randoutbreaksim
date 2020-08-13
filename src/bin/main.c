@@ -12,13 +12,17 @@
 
 int main(const int nargs, const char* args[])
 {
-  sim_pars pars={.tbar=0, .p=0, .lambda=0, .kappa=0, .lbar=0, .kappal=0, .q=0, .mbar=0, .kappaq=0, .tmax=INFINITY, .nstart=1};
+  sim_pars pars;
   uint32_t npaths=10000;
   uint32_t nimax=UINT32_MAX;
   int oout=STDOUT_FILENO;
   int eout=STDERR_FILENO;
 
+  sim_pars_init(&pars);
+
   if(config(&pars, &npaths, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
+
+  if(config_solve_pars(&pars)) return 1;
   gsl_rng_env_setup();
 
   gsl_rng* r = gsl_rng_alloc(gsl_rng_taus2);
@@ -30,19 +34,12 @@ int main(const int nargs, const char* args[])
     return 1;
   }
 
-  std_summary_stats stats;
-
-  sim_set_proc_data(&sv, &stats);
-  sim_set_increase_layers_proc_func(&sv, std_stats_increase_layers);
-  sim_set_new_event_proc_func(&sv, std_stats_new_event);
-  sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
-  sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
-  sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
-
   //printf("Min is %lu, max is %lu\n",gsl_rng_min(r),gsl_rng_max(r));
 
   double commper_mean=0;
+#ifdef NUMEVENTSSTATS
   double nevents_mean=0;
+#endif
   double r_mean=0;
   //uint32_t nr=0;
   double pe=0;
@@ -60,7 +57,18 @@ int main(const int nargs, const char* args[])
   double totinf_timeline_mean_noext[(int)sv.pars.tmax+1];
   double totinf_timeline_std_noext[(int)sv.pars.tmax+1];
 
-  std_stats_init(&sv, &stats);
+  std_summary_stats stats;
+
+  sim_set_proc_data(&sv, &stats);
+  sim_set_increase_layers_proc_func(&sv, std_stats_increase_layers);
+
+  if(nimax == UINT32_MAX) sim_set_new_event_proc_func(&sv, std_stats_new_event);
+  else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
+  sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
+  sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
+  sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
+
+  std_stats_init(&sv);
   stats.nimax=nimax;
 
   memset(inf_timeline_mean_ext, 0, stats.npers*sizeof(double));
@@ -79,7 +87,9 @@ int main(const int nargs, const char* args[])
     simulate(&sv);
     r_mean+=stats.rsum;
     commper_mean+=stats.commpersum;
+#ifdef NUMEVENTSSTATS
     nevents_mean+=stats.neventssum;
+#endif
     //nr+=stats.n_ended_infections;
 
     if(stats.extinction) {
@@ -119,11 +129,15 @@ int main(const int nargs, const char* args[])
   }
   std_stats_free(&sv, &stats);
   const double ninf=totinf_timeline_mean_ext[stats.npers-2]+totinf_timeline_mean_noext[stats.npers-2];
+#ifdef NUMEVENTSSTATS
   const double ninf_per_event_mean=r_mean/nevents_mean;
+#endif
   const double nnoe=npaths-pe;
   r_mean/=ninf;
   commper_mean/=ninf;
+#ifdef NUMEVENTSSTATS
   nevents_mean/=ninf;
+#endif
   te_mean/=pe;
   te_std=sqrt(pe/(pe-1.)*(te_std/pe-te_mean*te_mean));
 
@@ -151,11 +165,13 @@ int main(const int nargs, const char* args[])
   pe/=npaths;
 
   printf("Mean R is %f\n",r_mean);
-  printf("Uninterrupted communicable period is %f\n",commper_mean);
+  printf("Communicable period is %f\n",commper_mean);
+#ifdef NUMEVENTSSTATS
   printf("Number of events per infectious individual is %f\n",nevents_mean);
   printf("Number of infections per event is %f\n",ninf_per_event_mean);
-  printf("Probability of extinction and its statistical uncertainty: %f +/- %f%s\n",pe,sqrt(pe*(1.-pe)/(npaths-1.)),(nimaxedoutmintimeindex<UINT32_MAX?"":" (nimax reached, could be biased)"));
-  printf("Extinction time, if it occurs is %f +/- %f%s\n",te_mean,te_std,(nimaxedoutmintimeindex<UINT32_MAX?"":" (nimax reached, could be biased)"));
+#endif
+  printf("Probability of extinction and its statistical uncertainty: %f +/- %f%s\n",pe,sqrt(pe*(1.-pe)/(npaths-1.)),(nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
+  printf("Extinction time, if it occurs is %f +/- %f%s\n",te_mean,te_std,(nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
 
   printf("Current infection timeline, for paths with extinction vs no extinction vs overall is:\n");
   for(j=0; j<stats.npers; ++j) printf("%3i: %11.4f +/- %11.4f\t%11.4f +/- %11.4f\t%11.4f +/- %11.4f%s\n",j,inf_timeline_mean_ext[j],inf_timeline_std_ext[j],inf_timeline_mean_noext[j],inf_timeline_std_noext[j],inf_timeline_mean[j],inf_timeline_std[j],(j<nimaxedoutmintimeindex?"":" (nimax reached, biased)"));

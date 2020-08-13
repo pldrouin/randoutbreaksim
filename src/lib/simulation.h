@@ -37,6 +37,11 @@ typedef struct
   double q;		//!< Probability of alternate communicable period
   double mbar;		//!< Mean period for the alternate communicable period
   double kappaq;	//!< branchim's kappa parameter for the gamma distribution used to generate the alternate communicable period
+  double R0;		//!< Basic reproduction number (R0=tbar*lambda*mu)
+  double mu;		//!< Parameter for the mean number of new infections for a given transmission event (mu=-1/log(1-p)*p/(1-p))
+  double t95;	        //!< Parameter for the 95th percentile of the uninterrupted communicable period (depends on tbar and kappa)
+  double m95;	        //!< Parameter for the 95th percentile of the alternate communicable period (depends on mbar and kappaq)
+  double l95;	        //!< Parameter for the 95th percentile of the latent period (depends on lbar and kappal)
   double tmax;		//!< Maximum simulation period used to instantiate new infectious individuals.
   uint32_t nstart;	//!< Initial number of infectious individuals
 } sim_pars;
@@ -71,6 +76,16 @@ typedef struct sim_vars_
  * invalid, an error is printed on stderr.
  */
 int sim_pars_check(sim_pars const* pars);
+
+/**
+ * @brief Initialises simulation parameters.
+ *
+ * This function must be called to initialise simulation
+ * parameters.
+ *
+ * @param pars: Pointer to the simulation parameters
+ */
+void sim_pars_init(sim_pars* pars);
 
 /**
  * @brief Initialises the simulation.

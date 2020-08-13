@@ -6,12 +6,13 @@
 
 #include "standard_summary_stats.h"
 
-void std_stats_init(sim_vars* sv, std_summary_stats* stats)
+void std_stats_init(sim_vars* sv)
 {
   int i;
   for(i=sv->nlayers-1; i>=0; --i) {
     sv->iis[i].dataptr=malloc(sizeof(double));
   }
+  std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
   stats->npers=(int)sv->pars.tmax+1;
   stats->inf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
   stats->totinf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));

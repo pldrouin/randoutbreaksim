@@ -72,6 +72,26 @@ int sim_pars_check(sim_pars const* pars)
   return ret;
 }
 
+void sim_pars_init(sim_pars* pars)
+{
+  pars->tbar=NAN;
+  pars->p=NAN;
+  pars->lambda=NAN;
+  pars->kappa=NAN;
+  pars->lbar=0;
+  pars->kappal=0;
+  pars->q=0;
+  pars->mbar=0;
+  pars->kappaq=0;
+  pars->R0=NAN;
+  pars->mu=NAN;
+  pars->t95=NAN;
+  pars->m95=NAN;
+  pars->l95=NAN;
+  pars->tmax=INFINITY;
+  pars->nstart=1;
+}
+
 int sim_init(sim_vars* sv, sim_pars* pars, const gsl_rng* r)
 {
   int ret=sim_pars_check(pars);

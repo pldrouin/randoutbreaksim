@@ -127,6 +127,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a2e9b3d32f328788778fff13cbdf6dd57"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a2e9b3d32f328788778fff13cbdf6dd57">sim_pars_check</a> (<a class="el" href="structsim__pars.html">sim_pars</a> const *pars)</td></tr>
 <tr class="memdesc:a2e9b3d32f328788778fff13cbdf6dd57"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies the validity of simulation parameters.  <a href="simulation_8c.html#a2e9b3d32f328788778fff13cbdf6dd57">More...</a><br /></td></tr>
 <tr class="separator:a2e9b3d32f328788778fff13cbdf6dd57"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8759457d7530a824b9478c6c083d995"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#af8759457d7530a824b9478c6c083d995">sim_pars_init</a> (<a class="el" href="structsim__pars.html">sim_pars</a> *pars)</td></tr>
+<tr class="memdesc:af8759457d7530a824b9478c6c083d995"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises simulation parameters.  <a href="simulation_8c.html#af8759457d7530a824b9478c6c083d995">More...</a><br /></td></tr>
+<tr class="separator:af8759457d7530a824b9478c6c083d995"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac390bfd4185b26248b9ea2990e075964"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#ac390bfd4185b26248b9ea2990e075964">sim_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structsim__pars.html">sim_pars</a> *pars, const gsl_rng *r)</td></tr>
 <tr class="memdesc:ac390bfd4185b26248b9ea2990e075964"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the simulation.  <a href="simulation_8c.html#ac390bfd4185b26248b9ea2990e075964">More...</a><br /></td></tr>
 <tr class="separator:ac390bfd4185b26248b9ea2990e075964"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -184,7 +187,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the simulation was initialised successfully. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00075">75</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00095">95</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -218,6 +221,35 @@ Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="af8759457d7530a824b9478c6c083d995"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af8759457d7530a824b9478c6c083d995">&#9670;&nbsp;</a></span>sim_pars_init()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sim_pars_init </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsim__pars.html">sim_pars</a> *&#160;</td>
+          <td class="paramname"><em>pars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Initialises simulation parameters. </p>
+<p>This function must be called to initialise simulation parameters.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pars</td><td>Pointer to the simulation parameters </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00075">75</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+
+</div>
+</div>
 <a id="a25404969c762d39ee77eb67bc8611428"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a25404969c762d39ee77eb67bc8611428">&#9670;&nbsp;</a></span>simulate()</h2>
 
@@ -244,7 +276,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if there is no error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00099">99</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00119">119</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>

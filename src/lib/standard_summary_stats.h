@@ -30,7 +30,9 @@ typedef struct
   uint32_t* totinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
   uint32_t npers;		//!< Number of integer intervals (floor(tmax)+1)
   uint32_t rsum;		//!< Sum of the number of individuals that get infected during the simulation by the infectious individuals whose last transmission event does not occur after tmax.
+#ifdef NUMEVENTSSTATS
   uint32_t neventssum;		//!< Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax.
+#endif
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer inerval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t nimaxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of infected individuals.
   //uint32_t n_ended_infections;
@@ -46,10 +48,8 @@ typedef struct
  *
  * @param sv: Pointer to the simulation variables were memory for the
  * user-defined function data will be allocated.
- * @param stats: Pointer to the standard summary statistics that will be
- * initialised.
  */
-void std_stats_init(sim_vars* sv, std_summary_stats* stats);
+void std_stats_init(sim_vars* sv);
 
 /**
  * @brief Initialises elements of the standard summary statistics
@@ -68,7 +68,9 @@ inline static void std_stats_path_init(std_summary_stats* stats)
   memset(stats->inf_timeline,0,stats->npers*sizeof(uint32_t));
   memset(stats->totinf_timeline,0,stats->npers*sizeof(uint32_t));
   stats->rsum=0;
+#ifdef NUMEVENTSSTATS
   stats->neventssum=0;
+#endif
   stats->extinction=true;
   stats->nimaxedoutmintimeindex=UINT32_MAX;
 }
@@ -101,6 +103,26 @@ void std_stats_free(sim_vars* sv, std_summary_stats* stats);
  *
  * Adds the number of infections for this new event to the number of infections from
  * the current infectious individual, and to the total infection timeline if the event
+ * time does not exceed tmax.  This function must be assigned to
+ * the simulation engine through a call of sim_set_new_event_proc_func.
+ *
+ * @param sv: Pointer to the simulation variables.
+ * @return true if the event time does not exceed tmax and false otherwise.
+ * */
+inline static bool std_stats_new_event(sim_vars* sv)
+{
+  (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
+  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
+
+  if((int)sv->ii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
+  return (sv->ii->event_time <= sv->pars.tmax);
+}
+
+/**
+ * @brief Processes the number of infections for this new event.
+ *
+ * Adds the number of infections for this new event to the number of infections from
+ * the current infectious individual, and to the total infection timeline if the event
  * time does not exceed tmax. If the incremented bin for the total infection timeline
  * exceeds nimax, then set the extinction for the current path to false and
  * update the value for the minimum time index where the maximum number of
@@ -110,7 +132,7 @@ void std_stats_free(sim_vars* sv, std_summary_stats* stats);
  * @param sv: Pointer to the simulation variables.
  * @return true if the event time does not exceed tmax and false otherwise.
  * */
-inline static bool std_stats_new_event(sim_vars* sv)
+inline static bool std_stats_new_event_nimax(sim_vars* sv)
 {
   (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
   DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
@@ -172,7 +194,9 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
   DEBUG_PRINTF("Number of infections was %u\n",*(uint32_t*)inf->dataptr);
   ((std_summary_stats*)ptr)->rsum+=*(uint32_t*)inf->dataptr;
   ((std_summary_stats*)ptr)->commpersum+=inf->comm_period;
+#ifdef NUMEVENTSSTATS
   ((std_summary_stats*)ptr)->neventssum+=inf->nevents;
+#endif
 
   const double inf_end=(inf-1)->event_time+inf->comm_period;
 

@@ -17,6 +17,7 @@ var simulation_8h =
     [ "sim_free", "simulation_8h.html#a5bde1baf6ffdfb13173d7dd10983bb68", null ],
     [ "sim_init", "simulation_8h.html#ac390bfd4185b26248b9ea2990e075964", null ],
     [ "sim_pars_check", "simulation_8h.html#a2e9b3d32f328788778fff13cbdf6dd57", null ],
+    [ "sim_pars_init", "simulation_8h.html#af8759457d7530a824b9478c6c083d995", null ],
     [ "sim_set_end_inf_proc_func", "simulation_8h.html#aaf6b49ed5309f072770c4c2038371e50", null ],
     [ "sim_set_increase_layers_proc_func", "simulation_8h.html#a4ad9e4686543e5e6535b538a29dcd169", null ],
     [ "sim_set_inf_proc_noevent_func", "simulation_8h.html#a0f2a0463da67aac089d7e7cf9e23bb77", null ],
