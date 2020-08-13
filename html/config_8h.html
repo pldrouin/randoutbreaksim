@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('config_8h.html',''); initResizable(); 
 
 <div class="header">
   <div class="summary">
+<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">config.h File Reference</div>  </div>
@@ -97,31 +98,38 @@ $(document).ready(function(){initNavTree('config_8h.html',''); initResizable(); 
 <code>#include &lt;fcntl.h&gt;</code><br />
 <code>#include &lt;unistd.h&gt;</code><br />
 <code>#include &lt;inttypes.h&gt;</code><br />
+<code>#include &lt;math.h&gt;</code><br />
+<code>#include &lt;gsl/gsl_sf_gamma.h&gt;</code><br />
+<code>#include &lt;gsl/gsl_sf_psi.h&gt;</code><br />
 <code>#include &quot;<a class="el" href="args_8h_source.html">args.h</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="simulation_8h_source.html">simulation.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="root__finder_8h_source.html">root_finder.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for config.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="config_8h__incl.png" border="0" usemap="#config_8h" alt=""/></div>
 <map name="config_8h" id="config_8h">
-<area shape="rect" title="Configuration functions the simulation executable." alt="" coords="307,5,375,32"/>
+<area shape="rect" title="Configuration functions the simulation executable." alt="" coords="498,5,566,32"/>
 <area shape="rect" title=" " alt="" coords="5,80,96,107"/>
 <area shape="rect" title=" " alt="" coords="120,80,200,107"/>
 <area shape="rect" title=" " alt="" coords="224,80,283,107"/>
 <area shape="rect" title=" " alt="" coords="307,80,375,107"/>
 <area shape="rect" title=" " alt="" coords="399,80,478,107"/>
-<area shape="rect" href="args_8h.html" title="Generic functions to process configuration parameters." alt="" coords="424,155,483,181"/>
-<area shape="rect" href="simulation_8h.html" title="Simulation data structures and functions." alt="" coords="618,80,710,107"/>
-<area shape="rect" title=" " alt="" coords="432,229,496,256"/>
-<area shape="rect" title=" " alt="" coords="256,229,317,256"/>
-<area shape="rect" title=" " alt="" coords="520,229,595,256"/>
-<area shape="rect" title=" " alt="" coords="619,229,685,256"/>
-<area shape="rect" title=" " alt="" coords="342,229,407,256"/>
-<area shape="rect" title=" " alt="" coords="835,229,901,256"/>
-<area shape="rect" title=" " alt="" coords="633,155,695,181"/>
-<area shape="rect" title=" " alt="" coords="720,155,816,181"/>
-<area shape="rect" title=" " alt="" coords="840,155,957,181"/>
-<area shape="rect" href="infindividual_8h.html" title="Data structure containing infected individual information." alt="" coords="507,155,608,181"/>
+<area shape="rect" title=" " alt="" coords="1093,155,1155,181"/>
+<area shape="rect" title=" " alt="" coords="585,80,724,107"/>
+<area shape="rect" title=" " alt="" coords="749,80,862,107"/>
+<area shape="rect" href="args_8h.html" title="Generic functions to process configuration parameters." alt="" coords="503,80,561,107"/>
+<area shape="rect" href="simulation_8h.html" title="Simulation data structures and functions." alt="" coords="886,80,978,107"/>
+<area shape="rect" href="root__finder_8h.html" title="Finds the root of a function depending on a single parameter." alt="" coords="1077,80,1171,107"/>
+<area shape="rect" title=" " alt="" coords="848,229,912,256"/>
+<area shape="rect" title=" " alt="" coords="1007,155,1068,181"/>
+<area shape="rect" title=" " alt="" coords="392,229,467,256"/>
+<area shape="rect" title=" " alt="" coords="669,229,734,256"/>
+<area shape="rect" title=" " alt="" coords="429,155,494,181"/>
+<area shape="rect" title=" " alt="" coords="937,229,1002,256"/>
+<area shape="rect" title=" " alt="" coords="569,155,665,181"/>
+<area shape="rect" title=" " alt="" coords="689,155,807,181"/>
+<area shape="rect" href="infindividual_8h.html" title="Data structure containing infected individual information." alt="" coords="831,155,932,181"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -138,6 +146,21 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="config_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:a7683285589a3c5de4a1a5ca98fe0b203"><td class="memItemLeft" align="right" valign="top"><a id="a7683285589a3c5de4a1a5ca98fe0b203"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a7683285589a3c5de4a1a5ca98fe0b203">RF_P_EPS</a>&#160;&#160;&#160;(1e-15)</td></tr>
+<tr class="memdesc:a7683285589a3c5de4a1a5ca98fe0b203"><td class="mdescLeft">&#160;</td><td class="mdescRight">EPS for the change in p parameter. <br /></td></tr>
+<tr class="separator:a7683285589a3c5de4a1a5ca98fe0b203"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace26d7f9e0547638346a1bb80558a2e5"><td class="memItemLeft" align="right" valign="top"><a id="ace26d7f9e0547638346a1bb80558a2e5"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ace26d7f9e0547638346a1bb80558a2e5">RF_GPERC_EPSF</a>&#160;&#160;&#160;(1e-15)</td></tr>
+<tr class="memdesc:ace26d7f9e0547638346a1bb80558a2e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">EPS for the x95 CDF discrepancy. <br /></td></tr>
+<tr class="separator:ace26d7f9e0547638346a1bb80558a2e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9490e75206749a4db7fecb0f706fc861"><td class="memItemLeft" align="right" valign="top"><a id="a9490e75206749a4db7fecb0f706fc861"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a9490e75206749a4db7fecb0f706fc861">RF_GKAPPA_EPSF</a>&#160;&#160;&#160;(1e-15)</td></tr>
+<tr class="memdesc:a9490e75206749a4db7fecb0f706fc861"><td class="mdescLeft">&#160;</td><td class="mdescRight">EPS for the kappa CDF discrepancy. <br /></td></tr>
+<tr class="separator:a9490e75206749a4db7fecb0f706fc861"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a285a5e667f16049df449befcbeec7d9b"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a285a5e667f16049df449befcbeec7d9b">config</a> (<a class="el" href="structsim__pars.html">sim_pars</a> *pars, uint32_t *npaths, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[])</td></tr>
@@ -147,6 +170,27 @@ Functions</h2></td></tr>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a> (const char *name)</td></tr>
 <tr class="memdesc:ad58728259679e01f1f114c6a3328fbcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints usage information for the executable. <br /></td></tr>
 <tr class="separator:ad58728259679e01f1f114c6a3328fbcd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab4a5e3dba123f972f3f0bc297c5049a6"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ab4a5e3dba123f972f3f0bc297c5049a6">config_solve_pars</a> (<a class="el" href="structsim__pars.html">sim_pars</a> *pars)</td></tr>
+<tr class="memdesc:ab4a5e3dba123f972f3f0bc297c5049a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for all simulation parameters.  <a href="config_8h.html#ab4a5e3dba123f972f3f0bc297c5049a6">More...</a><br /></td></tr>
+<tr class="separator:ab4a5e3dba123f972f3f0bc297c5049a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae4427929d3e9ad1f5e5adca8bc0572ac"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ae4427929d3e9ad1f5e5adca8bc0572ac">config_solve_R0_group</a> (<a class="el" href="structsim__pars.html">sim_pars</a> *pars)</td></tr>
+<tr class="memdesc:ae4427929d3e9ad1f5e5adca8bc0572ac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for the R0-related simulation parameters.  <a href="config_8h.html#ae4427929d3e9ad1f5e5adca8bc0572ac">More...</a><br /></td></tr>
+<tr class="separator:ae4427929d3e9ad1f5e5adca8bc0572ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad7a23618fc132a96c342aa5a0472b52a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ad7a23618fc132a96c342aa5a0472b52a">config_solve_gamma_group</a> (double *ave, double *kappa, double *x95)</td></tr>
+<tr class="memdesc:ad7a23618fc132a96c342aa5a0472b52a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for gamma distribution related simulation parameters.  <a href="config_8h.html#ad7a23618fc132a96c342aa5a0472b52a">More...</a><br /></td></tr>
+<tr class="separator:ad7a23618fc132a96c342aa5a0472b52a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab215566a165d81f0d3ec74666d7991d0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ab215566a165d81f0d3ec74666d7991d0">logroot</a> (double *x, double *diff, void *params)</td></tr>
+<tr class="memdesc:ab215566a165d81f0d3ec74666d7991d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes p (logarithmic distribution) using Newton's method.  <a href="config_8h.html#ab215566a165d81f0d3ec74666d7991d0">More...</a><br /></td></tr>
+<tr class="separator:ab215566a165d81f0d3ec74666d7991d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0370fa93232a3ea9443c9f3cdd54ac93"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">gpercrootfunc</a> (const double a, const double t)</td></tr>
+<tr class="memdesc:a0370fa93232a3ea9443c9f3cdd54ac93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the discrepancy between an evaluation of gamma cumulative distribution function and the 95th percentile.  <a href="config_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">More...</a><br /></td></tr>
+<tr class="separator:a0370fa93232a3ea9443c9f3cdd54ac93"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3d757fa02920ff161046b12b01b41205"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a3d757fa02920ff161046b12b01b41205">gpercroot</a> (double *x, double *diff, void *params)</td></tr>
+<tr class="memdesc:a3d757fa02920ff161046b12b01b41205"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes x95 for a gamma cumulative distribution using Newton's method.  <a href="config_8h.html#a3d757fa02920ff161046b12b01b41205">More...</a><br /></td></tr>
+<tr class="separator:a3d757fa02920ff161046b12b01b41205"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acf51a1f2b9eabe0496061944e4872065"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#acf51a1f2b9eabe0496061944e4872065">gkapparoot</a> (double *x, double *diff, void *params)</td></tr>
+<tr class="memdesc:acf51a1f2b9eabe0496061944e4872065"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes kappa for a gamma cumulative distribution using the secant method.  <a href="config_8h.html#acf51a1f2b9eabe0496061944e4872065">More...</a><br /></td></tr>
+<tr class="separator:acf51a1f2b9eabe0496061944e4872065"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Configuration functions the simulation executable. </p>
@@ -225,6 +269,328 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="config_8c_source.html#l00009">9</a> of file <a class="el" href="config_8c_source.html">config.c</a>.</p>
+
+</div>
+</div>
+<a id="ad7a23618fc132a96c342aa5a0472b52a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad7a23618fc132a96c342aa5a0472b52a">&#9670;&nbsp;</a></span>config_solve_gamma_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int config_solve_gamma_group </td>
+          <td>(</td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>ave</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>kappa</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>x95</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Solve for gamma distribution related simulation parameters. </p>
+<p>This function solves for gamma distribution related simulation parameters that have not been provided as an input.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">ave</td><td>Gamma distribution average parameter. </td></tr>
+    <tr><td class="paramname">kappa</td><td>Gamma distribution kappa parameter. </td></tr>
+    <tr><td class="paramname">x95</td><td>Gamma distribution 95th percentile parameter. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="config_8c_source.html#l00298">298</a> of file <a class="el" href="config_8c_source.html">config.c</a>.</p>
+
+</div>
+</div>
+<a id="ab4a5e3dba123f972f3f0bc297c5049a6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4a5e3dba123f972f3f0bc297c5049a6">&#9670;&nbsp;</a></span>config_solve_pars()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int config_solve_pars </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsim__pars.html">sim_pars</a> *&#160;</td>
+          <td class="paramname"><em>pars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Solve for all simulation parameters. </p>
+<p>This function solves for the simulation parameters that have not been provided as an input.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pars</td><td>Simulation parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="config_8c_source.html#l00172">172</a> of file <a class="el" href="config_8c_source.html">config.c</a>.</p>
+
+</div>
+</div>
+<a id="ae4427929d3e9ad1f5e5adca8bc0572ac"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4427929d3e9ad1f5e5adca8bc0572ac">&#9670;&nbsp;</a></span>config_solve_R0_group()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int config_solve_R0_group </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structsim__pars.html">sim_pars</a> *&#160;</td>
+          <td class="paramname"><em>pars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Solve for the R0-related simulation parameters. </p>
+<p>This function solves for the R0-related simulation parameters that have not been provided as an input.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pars</td><td>Simulation parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="config_8c_source.html#l00244">244</a> of file <a class="el" href="config_8c_source.html">config.c</a>.</p>
+
+</div>
+</div>
+<a id="acf51a1f2b9eabe0496061944e4872065"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acf51a1f2b9eabe0496061944e4872065">&#9670;&nbsp;</a></span>gkapparoot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gkapparoot </td>
+          <td>(</td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>diff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes kappa for a gamma cumulative distribution using the secant method. </p>
+<p>this function estimates the value of kappa for a gamma distribution, using the secant method.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Current value for kappa (input/output) </td></tr>
+    <tr><td class="paramname">diff</td><td>Current value for the discrepancy between the CDF evaluated using the current kappa parameter value and the 95th percentile. (output) </td></tr>
+    <tr><td class="paramname">params</td><td>Pointer to an array of parameters. First parameter is average parameter for the gamma distribution, the second parameters is x95, the third parameter is the former kappa value and the fourth parameter is the former discrepancy of the evaluated CDF value with the 95th percentile. (input/output) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00140">140</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+
+</div>
+</div>
+<a id="a3d757fa02920ff161046b12b01b41205"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3d757fa02920ff161046b12b01b41205">&#9670;&nbsp;</a></span>gpercroot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gpercroot </td>
+          <td>(</td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>diff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes x95 for a gamma cumulative distribution using Newton's method. </p>
+<p>this function estimates the value of x95 (the x value corresponding to the 95th percentile) for a gamma distribution, using Newton's method.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Current value for x95 (input/output) </td></tr>
+    <tr><td class="paramname">diff</td><td>Current value for the discrepancy between the CDF evaluated at the current x95 parameter value and the 95th percentile. (output) </td></tr>
+    <tr><td class="paramname">params</td><td>Pointer to an array of parameters. First parameter is the a parameter for the gamma distribution and the second parameters is kappa. (input) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00123">123</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+
+</div>
+</div>
+<a id="a0370fa93232a3ea9443c9f3cdd54ac93"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0370fa93232a3ea9443c9f3cdd54ac93">&#9670;&nbsp;</a></span>gpercrootfunc()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static double gpercrootfunc </td>
+          <td>(</td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>a</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>t</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes the discrepancy between an evaluation of gamma cumulative distribution function and the 95th percentile. </p>
+<p>This function computes the discrepancy between an evaluation of gamma cumulative distribution function and the 95th percentile.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">a</td><td>a parameter of the gamma distribution. </td></tr>
+    <tr><td class="paramname">t</td><td>Evaluation point for the CDF. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>the discrepancy between the evaluated CDF and the 95th percentile. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00108">108</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
+
+</div>
+</div>
+<a id="ab215566a165d81f0d3ec74666d7991d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab215566a165d81f0d3ec74666d7991d0">&#9670;&nbsp;</a></span>logroot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void logroot </td>
+          <td>(</td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>diff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes p (logarithmic distribution) using Newton's method. </p>
+<p>This function estimates the value of the p parameter from a logarithmic distribution, given the my parameter, using Newton's method</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Current value for p (input/output). </td></tr>
+    <tr><td class="paramname">diff</td><td>Change in value for p (output). </td></tr>
+    <tr><td class="paramname">params</td><td>Pointer to mu parameter (input) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="config_8h_source.html#l00095">95</a> of file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 
 </div>
 </div>

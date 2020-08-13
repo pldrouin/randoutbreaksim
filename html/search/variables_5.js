@@ -1,6 +1,9 @@
 var searchData=
 [
-  ['kappa_161',['kappa',['../structsim__pars.html#a9a259a96b53ca013c571c0cc28649d6a',1,'sim_pars']]],
-  ['kappal_162',['kappal',['../structsim__pars.html#abfab632383b0b2ead4ef8df7fc1368ba',1,'sim_pars']]],
-  ['kappaq_163',['kappaq',['../structsim__pars.html#aaa990fffe8036f83a95fd6c2c6bdc384',1,'sim_pars']]]
+  ['ii_184',['ii',['../structsim__vars__.html#a4ecabd97135c500f58175eb7e79f2590',1,'sim_vars_']]],
+  ['iis_185',['iis',['../structsim__vars__.html#a1fac67c0df42bd1eb01036cd4694ea2d',1,'sim_vars_']]],
+  ['increase_5flayers_5fproc_5ffunc_186',['increase_layers_proc_func',['../structsim__vars__.html#a7138287fc57ef7b9243d9553c4fbba35',1,'sim_vars_']]],
+  ['inf_5fproc_5ffunc_5fnoevent_187',['inf_proc_func_noevent',['../structsim__vars__.html#aff1ee1c1322047e1ca12f5d9fa4b0b7f',1,'sim_vars_']]],
+  ['inf_5ftimeline_188',['inf_timeline',['../structstd__summary__stats.html#a40874a46f008c64e6ad71312da1c3e04',1,'std_summary_stats']]],
+  ['infectious_5fat_5ftmax_189',['infectious_at_tmax',['../structinfindividual.html#a185282fb4ce23dcec5b47429e7dfce90',1,'infindividual']]]
 ];

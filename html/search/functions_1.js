@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['default_5fevent_5fproc_5ffunc_114',['default_event_proc_func',['../simulation_8h.html#a881fb314fa7f96332cfe3f324287400f',1,'simulation.h']]],
-  ['default_5fincrease_5flayers_5fproc_5ffunc_115',['default_increase_layers_proc_func',['../simulation_8h.html#a43209d4db5fb03b575e3b61a72877b87',1,'simulation.h']]],
-  ['dummy_5fproc_5ffunc_5fone_5fpar_116',['dummy_proc_func_one_par',['../simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1',1,'simulation.h']]],
-  ['dummy_5fproc_5ffunc_5fsv_117',['dummy_proc_func_sv',['../simulation_8h.html#a4ecfceeb3812509d92a677d9c65d6d9a',1,'simulation.h']]],
-  ['dummy_5fproc_5ffunc_5ftwo_5fpars_118',['dummy_proc_func_two_pars',['../simulation_8h.html#a84beb2084ff7239d40c304cee0506411',1,'simulation.h']]]
+  ['config_133',['config',['../config_8c.html#a285a5e667f16049df449befcbeec7d9b',1,'config(sim_pars *pars, uint32_t *npaths, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c'],['../config_8h.html#a285a5e667f16049df449befcbeec7d9b',1,'config(sim_pars *pars, uint32_t *npaths, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c']]],
+  ['config_5fsolve_5fgamma_5fgroup_134',['config_solve_gamma_group',['../config_8c.html#ad7a23618fc132a96c342aa5a0472b52a',1,'config_solve_gamma_group(double *ave, double *kappa, double *x95):&#160;config.c'],['../config_8h.html#ad7a23618fc132a96c342aa5a0472b52a',1,'config_solve_gamma_group(double *ave, double *kappa, double *x95):&#160;config.c']]],
+  ['config_5fsolve_5fpars_135',['config_solve_pars',['../config_8c.html#ab4a5e3dba123f972f3f0bc297c5049a6',1,'config_solve_pars(sim_pars *pars):&#160;config.c'],['../config_8h.html#ab4a5e3dba123f972f3f0bc297c5049a6',1,'config_solve_pars(sim_pars *pars):&#160;config.c']]],
+  ['config_5fsolve_5fr0_5fgroup_136',['config_solve_R0_group',['../config_8c.html#ae4427929d3e9ad1f5e5adca8bc0572ac',1,'config_solve_R0_group(sim_pars *pars):&#160;config.c'],['../config_8h.html#ae4427929d3e9ad1f5e5adca8bc0572ac',1,'config_solve_R0_group(sim_pars *pars):&#160;config.c']]]
 ];

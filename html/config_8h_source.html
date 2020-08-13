@@ -101,37 +101,149 @@ $(document).ready(function(){initNavTree('config_8h_source.html',''); initResiza
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &lt;fcntl.h&gt;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="preprocessor">#include &lt;unistd.h&gt;</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &lt;inttypes.h&gt;</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="args_8h.html">args.h</a>&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="simulation_8h.html">simulation.h</a>&quot;</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment"> * @brief Configures the input parameters for the executable.</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"> * @param pars: Simulation parameters</span></div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment"> * @param npaths: Number of simulation paths.</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"> * @param nimax: Maximum number of infectious individuals for a given time</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment"> * integet interval.</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"> * @param oout: File descriptor for the standard output.</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment"> * @param eout: File descriptor for the standard error.</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment"> * @param nargs: Number of arguments from the main function, shifted by 1.</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> * @param args: Arguments from the main function, shifted by 1.</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keywordtype">int</span> <a class="code" href="config_8h.html#a285a5e667f16049df449befcbeec7d9b">config</a>(<a class="code" href="structsim__pars.html">sim_pars</a>* pars, uint32_t* npaths, uint32_t* nimax, <span class="keywordtype">int</span>* oout, <span class="keywordtype">int</span>* eout, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keyword">const</span> <span class="keywordtype">char</span>* args[]);</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment"> * @brief Prints usage information for the executable.</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keywordtype">void</span> <a class="code" href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;math.h&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &lt;gsl/gsl_sf_gamma.h&gt;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;gsl/gsl_sf_psi.h&gt;</span></div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="args_8h.html">args.h</a>&quot;</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="simulation_8h.html">simulation.h</a>&quot;</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="root__finder_8h.html">root_finder.h</a>&quot;</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno"><a class="line" href="config_8h.html#a7683285589a3c5de4a1a5ca98fe0b203">   24</a></span>&#160;<span class="preprocessor">#define RF_P_EPS (1e-15)    </span><span class="comment">//!&lt; EPS for the change in p parameter</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="config_8h.html#ace26d7f9e0547638346a1bb80558a2e5">   25</a></span>&#160;<span class="comment"></span>#define RF_GPERC_EPSF (1e-15)   <span class="comment">//!&lt; EPS for the x95 CDF discrepancy</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="config_8h.html#a9490e75206749a4db7fecb0f706fc861">   26</a></span>&#160;<span class="comment"></span>#define RF_GKAPPA_EPSF (1e-15)  <span class="comment">//!&lt; EPS for the kappa CDF discrepancy</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> * @brief Configures the input parameters for the executable.</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment"> * @param pars: Simulation parameters</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment"> * @param npaths: Number of simulation paths.</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment"> * @param nimax: Maximum number of infectious individuals for a given time</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment"> * integet interval.</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"> * @param oout: File descriptor for the standard output.</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"> * @param eout: File descriptor for the standard error.</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment"> * @param nargs: Number of arguments from the main function, shifted by 1.</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"> * @param args: Arguments from the main function, shifted by 1.</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="keywordtype">int</span> <a class="code" href="config_8h.html#a285a5e667f16049df449befcbeec7d9b">config</a>(<a class="code" href="structsim__pars.html">sim_pars</a>* pars, uint32_t* npaths, uint32_t* nimax, <span class="keywordtype">int</span>* oout, <span class="keywordtype">int</span>* eout, <span class="keyword">const</span> <span class="keywordtype">int</span> nargs, <span class="keyword">const</span> <span class="keywordtype">char</span>* args[]);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment"> * @brief Prints usage information for the executable.</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keywordtype">void</span> <a class="code" href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a>(<span class="keyword">const</span> <span class="keywordtype">char</span>* name);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"> * @brief Solve for all simulation parameters.</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment"> * This function solves for the simulation parameters that have not been</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment"> * provided as an input.</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment"> * @param pars: Simulation parameters.</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="comment"> * @return 0 if the parameters could be determined, and a non-zero value</span></div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;<span class="comment"> * otherwise.</span></div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keywordtype">int</span> <a class="code" href="config_8h.html#ab4a5e3dba123f972f3f0bc297c5049a6">config_solve_pars</a>(<a class="code" href="structsim__pars.html">sim_pars</a>* pars);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="comment"> * @brief Solve for the R0-related simulation parameters.</span></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="comment"> * This function solves for the R0-related simulation parameters</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="comment"> * that have not been provided as an input.</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment"> * @param pars: Simulation parameters.</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment"> * @return 0 if the parameters could be determined, and a non-zero value</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="comment"> * otherwise.</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keywordtype">int</span> <a class="code" href="config_8h.html#ae4427929d3e9ad1f5e5adca8bc0572ac">config_solve_R0_group</a>(<a class="code" href="structsim__pars.html">sim_pars</a>* pars);</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;<span class="comment"> * @brief Solve for gamma distribution related simulation parameters.</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;<span class="comment"> * This function solves for gamma distribution related simulation parameters</span></div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;<span class="comment"> * that have not been provided as an input.</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;<span class="comment"> * @param ave: Gamma distribution average parameter.</span></div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;<span class="comment"> * @param kappa: Gamma distribution kappa parameter.</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;<span class="comment"> * @param x95: Gamma distribution 95th percentile parameter.</span></div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;<span class="comment"> * @return 0 if the parameters could be determined, and a non-zero value</span></div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;<span class="comment"> * otherwise.</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">int</span> <a class="code" href="config_8h.html#ad7a23618fc132a96c342aa5a0472b52a">config_solve_gamma_group</a>(<span class="keywordtype">double</span>* ave, <span class="keywordtype">double</span>* kappa, <span class="keywordtype">double</span>* x95);</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;<span class="comment"> * @brief Computes p (logarithmic distribution) using Newton&#39;s method.</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment"> * This function estimates the value of the p parameter from a logarithmic</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment"> * distribution, given the my parameter, using Newton&#39;s method</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;<span class="comment"> * @param x: Current value for p (input/output).</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment"> * @param diff: Change in value for p (output).</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment"> * @param params: Pointer to mu parameter (input)</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="config_8h.html#ab215566a165d81f0d3ec74666d7991d0">   95</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="config_8h.html#ab215566a165d81f0d3ec74666d7991d0">logroot</a>(<span class="keywordtype">double</span>* x, <span class="keywordtype">double</span>* diff, <span class="keywordtype">void</span>* params){<span class="keyword">const</span> <span class="keywordtype">double</span> x0=*x; <span class="keyword">const</span> <span class="keywordtype">double</span> l=log(1-x0); *x-=(*(<span class="keywordtype">double</span>*)params*l*(1-x0)+x0)*(1-x0)/(x0/l+1); *diff=1 - x0 / *x;} </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="comment"> * @brief Computes the discrepancy between an evaluation of gamma cumulative</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;<span class="comment"> * distribution function and the 95th percentile.</span></div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;<span class="comment"> * This function computes the discrepancy between an evaluation of gamma cumulative</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;<span class="comment"> * distribution function and the 95th percentile.</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;<span class="comment"> * @param a: a parameter of the gamma distribution.</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;<span class="comment"> * @param t: Evaluation point for the CDF.</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;<span class="comment"> * @return the discrepancy between the evaluated CDF and the 95th percentile.</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno"><a class="line" href="config_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">  108</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">double</span> <a class="code" href="config_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">gpercrootfunc</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> a, <span class="keyword">const</span> <span class="keywordtype">double</span> t){<span class="keywordflow">return</span> gsl_sf_gamma_inc_P(a,t)-0.95;}</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;<span class="comment"> * @brief Computes x95 for a gamma cumulative distribution using Newton&#39;s</span></div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="comment"> * method.</span></div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;<span class="comment"> * this function estimates the value of x95 (the x value corresponding to the</span></div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment"> * 95th percentile) for a gamma distribution, using Newton&#39;s method.</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment"> * @param x: Current value for x95 (input/output)</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment"> * @param diff: Current value for the discrepancy between the CDF evaluated at</span></div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;<span class="comment"> * the current x95 parameter value and the 95th percentile. (output)</span></div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="comment"> * @param params: Pointer to an array of parameters. First parameter is the a parameter</span></div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;<span class="comment"> * for the gamma distribution and the second parameters is kappa. (input)</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00123"></a><span class="lineno"><a class="line" href="config_8h.html#a3d757fa02920ff161046b12b01b41205">  123</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="config_8h.html#a3d757fa02920ff161046b12b01b41205">gpercroot</a>(<span class="keywordtype">double</span>* x, <span class="keywordtype">double</span>* diff, <span class="keywordtype">void</span>* params){<span class="keyword">const</span> <span class="keywordtype">double</span> t=*(((<span class="keywordtype">double</span>*)params)+1)* *x; *diff=<a class="code" href="config_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">gpercrootfunc</a>(*(<span class="keywordtype">double</span>*)params,t); *x-=*diff * tgamma(*(<span class="keywordtype">double</span>*)params) / (pow(t,*(<span class="keywordtype">double</span>*)params-1)*exp(-t) * *(((<span class="keywordtype">double</span>*)params)+1));} </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;<span class="comment"> * @brief Computes kappa for a gamma cumulative distribution using the secant</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;<span class="comment"> * method.</span></div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment"> * this function estimates the value of kappa for a gamma distribution,</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="comment"> * using the secant method.</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment"> * @param x: Current value for kappa (input/output)</span></div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="comment"> * @param diff: Current value for the discrepancy between the CDF evaluated</span></div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;<span class="comment"> * using the current kappa parameter value and the 95th percentile. (output)</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="comment"> * @param params: Pointer to an array of parameters. First parameter is average parameter</span></div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;<span class="comment"> * for the gamma distribution, the second parameters is x95, the third parameter</span></div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="comment"> * is the former kappa value and the fourth parameter is the former discrepancy</span></div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;<span class="comment"> * of the evaluated CDF value with the 95th percentile. (input/output)</span></div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno"><a class="line" href="config_8h.html#acf51a1f2b9eabe0496061944e4872065">  140</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="config_8h.html#acf51a1f2b9eabe0496061944e4872065">gkapparoot</a>(<span class="keywordtype">double</span>* x, <span class="keywordtype">double</span>* diff, <span class="keywordtype">void</span>* params){<span class="keyword">const</span> <span class="keywordtype">double</span> oldx=*x; *diff=<a class="code" href="config_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">gpercrootfunc</a>(*(<span class="keywordtype">double</span>*)params * *x,*(((<span class="keywordtype">double</span>*)params)+1) * *x); *x-=*diff * (*x - *(((<span class="keywordtype">double</span>*)params)+2)) / (*diff - *(((<span class="keywordtype">double</span>*)params)+3)); *(((<span class="keywordtype">double</span>*)params)+2)=oldx; *(((<span class="keywordtype">double</span>*)params)+3)=*diff;} </div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160; </div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="aconfig_8h_html_ad58728259679e01f1f114c6a3328fbcd"><div class="ttname"><a href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a></div><div class="ttdeci">void printusage(const char *name)</div><div class="ttdoc">Prints usage information for the executable.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00123">config.c:123</a></div></div>
+<div class="ttc" id="aconfig_8h_html_ab215566a165d81f0d3ec74666d7991d0"><div class="ttname"><a href="config_8h.html#ab215566a165d81f0d3ec74666d7991d0">logroot</a></div><div class="ttdeci">static void logroot(double *x, double *diff, void *params)</div><div class="ttdoc">Computes p (logarithmic distribution) using Newton's method.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00095">config.h:95</a></div></div>
+<div class="ttc" id="aconfig_8h_html_ad58728259679e01f1f114c6a3328fbcd"><div class="ttname"><a href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a></div><div class="ttdeci">void printusage(const char *name)</div><div class="ttdoc">Prints usage information for the executable.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00143">config.c:143</a></div></div>
 <div class="ttc" id="aargs_8h_html"><div class="ttname"><a href="args_8h.html">args.h</a></div><div class="ttdoc">Generic functions to process configuration parameters.</div></div>
 <div class="ttc" id="aconfig_8h_html_a285a5e667f16049df449befcbeec7d9b"><div class="ttname"><a href="config_8h.html#a285a5e667f16049df449befcbeec7d9b">config</a></div><div class="ttdeci">int config(sim_pars *pars, uint32_t *npaths, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[])</div><div class="ttdoc">Configures the input parameters for the executable.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00009">config.c:9</a></div></div>
+<div class="ttc" id="aconfig_8h_html_ad7a23618fc132a96c342aa5a0472b52a"><div class="ttname"><a href="config_8h.html#ad7a23618fc132a96c342aa5a0472b52a">config_solve_gamma_group</a></div><div class="ttdeci">int config_solve_gamma_group(double *ave, double *kappa, double *x95)</div><div class="ttdoc">Solve for gamma distribution related simulation parameters.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00298">config.c:298</a></div></div>
+<div class="ttc" id="aconfig_8h_html_a3d757fa02920ff161046b12b01b41205"><div class="ttname"><a href="config_8h.html#a3d757fa02920ff161046b12b01b41205">gpercroot</a></div><div class="ttdeci">static void gpercroot(double *x, double *diff, void *params)</div><div class="ttdoc">Computes x95 for a gamma cumulative distribution using Newton's method.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00123">config.h:123</a></div></div>
 <div class="ttc" id="astructsim__pars_html"><div class="ttname"><a href="structsim__pars.html">sim_pars</a></div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00029">simulation.h:29</a></div></div>
+<div class="ttc" id="aroot__finder_8h_html"><div class="ttname"><a href="root__finder_8h.html">root_finder.h</a></div><div class="ttdoc">Finds the root of a function depending on a single parameter.</div></div>
+<div class="ttc" id="aconfig_8h_html_ae4427929d3e9ad1f5e5adca8bc0572ac"><div class="ttname"><a href="config_8h.html#ae4427929d3e9ad1f5e5adca8bc0572ac">config_solve_R0_group</a></div><div class="ttdeci">int config_solve_R0_group(sim_pars *pars)</div><div class="ttdoc">Solve for the R0-related simulation parameters.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00244">config.c:244</a></div></div>
 <div class="ttc" id="asimulation_8h_html"><div class="ttname"><a href="simulation_8h.html">simulation.h</a></div><div class="ttdoc">Simulation data structures and functions.</div></div>
+<div class="ttc" id="aconfig_8h_html_ab4a5e3dba123f972f3f0bc297c5049a6"><div class="ttname"><a href="config_8h.html#ab4a5e3dba123f972f3f0bc297c5049a6">config_solve_pars</a></div><div class="ttdeci">int config_solve_pars(sim_pars *pars)</div><div class="ttdoc">Solve for all simulation parameters.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00172">config.c:172</a></div></div>
+<div class="ttc" id="aconfig_8h_html_a0370fa93232a3ea9443c9f3cdd54ac93"><div class="ttname"><a href="config_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">gpercrootfunc</a></div><div class="ttdeci">static double gpercrootfunc(const double a, const double t)</div><div class="ttdoc">Computes the discrepancy between an evaluation of gamma cumulative distribution function and the 95th...</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00108">config.h:108</a></div></div>
+<div class="ttc" id="aconfig_8h_html_acf51a1f2b9eabe0496061944e4872065"><div class="ttname"><a href="config_8h.html#acf51a1f2b9eabe0496061944e4872065">gkapparoot</a></div><div class="ttdeci">static void gkapparoot(double *x, double *diff, void *params)</div><div class="ttdoc">Computes kappa for a gamma cumulative distribution using the secant method.</div><div class="ttdef"><b>Definition:</b> <a href="config_8h_source.html#l00140">config.h:140</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

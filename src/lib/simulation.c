@@ -78,11 +78,11 @@ void sim_pars_init(sim_pars* pars)
   pars->p=NAN;
   pars->lambda=NAN;
   pars->kappa=NAN;
-  pars->lbar=0;
+  pars->lbar=NAN;
   pars->kappal=NAN;
   pars->q=0;
-  pars->mbar=0;
-  pars->kappaq=0;
+  pars->mbar=NAN;
+  pars->kappaq=NAN;
   pars->R0=NAN;
   pars->mu=NAN;
   pars->t95=NAN;
@@ -103,9 +103,90 @@ int sim_init(sim_vars* sv, sim_pars* pars, const gsl_rng* r)
   sv->iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));
   sv->nlayers=INIT_N_LAYERS;
 
-  if(!isnan(sv->pars.kappal)) sv->gen_time_periods_func=(sv->pars.q?gen_time_periods_isolation:gen_time_periods);
+  //If a latent period is not used
+  if(isnan(sv->pars.kappal)) {
 
-  else sv->gen_time_periods_func=(sv->pars.q?gen_comm_period_isolation:gen_comm_period);
+    //If an alternate time period is not used
+    if(isnan(sv->pars.kappaq)) {
+
+      if(isinf(sv->pars.kappa)) sv->gen_time_periods_func=gen_fixed_comm_period; 
+
+      else sv->gen_time_periods_func=gen_comm_period;
+
+    //Else if an alternate time period is used
+    } else {
+
+      if(isinf(sv->pars.kappa)) {
+
+	if(isinf(sv->pars.kappaq)) sv->gen_time_periods_func=gen_fixed_comm_fixed_alternate_periods;
+
+	else  sv->gen_time_periods_func=gen_fixed_comm_alternate_periods;
+
+      } else {
+
+	if(isinf(sv->pars.kappaq)) sv->gen_time_periods_func=gen_comm_fixed_alternate_periods;
+
+	else  sv->gen_time_periods_func=gen_comm_alternate_periods;
+      }
+    }
+
+  //Else if a latent period is used
+  } else {
+
+    if(isinf(sv->pars.kappal)) {
+
+      //If an alternate time period is not used
+      if(isnan(sv->pars.kappaq)) {
+
+	if(isinf(sv->pars.kappa)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_periods; 
+
+	else sv->gen_time_periods_func=gen_fixed_latent_comm_periods;
+
+	//Else if an alternate time period is used
+      } else {
+
+	if(isinf(sv->pars.kappa)) {
+
+	  if(isinf(sv->pars.kappaq)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_alternate_periods;
+
+	  else  sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_alternate_periods;
+
+	} else {
+
+	  if(isinf(sv->pars.kappaq)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_alternate_periods;
+
+	  else  sv->gen_time_periods_func=gen_fixed_latent_comm_alternate_periods;
+	}
+      }
+
+    } else {
+
+      //If an alternate time period is not used
+      if(isnan(sv->pars.kappaq)) {
+
+	if(isinf(sv->pars.kappa)) sv->gen_time_periods_func=gen_latent_fixed_comm_periods; 
+
+	else sv->gen_time_periods_func=gen_latent_comm_periods;
+
+	//Else if an alternate time period is used
+      } else {
+
+	if(isinf(sv->pars.kappa)) {
+
+	  if(isinf(sv->pars.kappaq)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_alternate_periods;
+
+	  else  sv->gen_time_periods_func=gen_latent_fixed_comm_alternate_periods;
+
+	} else {
+
+	  if(isinf(sv->pars.kappaq)) sv->gen_time_periods_func=gen_latent_comm_fixed_alternate_periods;
+
+	  else  sv->gen_time_periods_func=gen_latent_comm_alternate_periods;
+	}
+      }
+    }
+  }
+
   sv->iis[0].event_time=0;
   sv->dataptr=NULL;
   sv->increase_layers_proc_func=default_increase_layers_proc_func;

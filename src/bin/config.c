@@ -244,7 +244,29 @@ int config_solve_pars(sim_pars* pars)
 int config_solve_R0_group(sim_pars* pars)
 {
   //If p is provided as an input
-  if(!isnan(pars->p)) pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
+  if(!isnan(pars->p)) {
+
+    if(pars->p<0) {
+      fprintf(stderr,"%s: Error: p must be non-negative\n",__func__);
+      return -1;
+    }
+    pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
+  }
+
+  if(!isnan(pars->tbar) && pars->tbar<=0) {
+    fprintf(stderr,"%s: Error: tbar must be greater than 0\n",__func__);
+    return -2;
+  }
+
+  if(!isnan(pars->lambda) && pars->lambda<=0) {
+    fprintf(stderr,"%s: Error: lambda must be greater than 0\n",__func__);
+    return -3;
+  }
+
+  if(!isnan(pars->R0) && pars->R0<=0) {
+    fprintf(stderr,"%s: Error: R0j must be greater than 0\n",__func__);
+    return -4;
+  }
 
   //Solve for the missing parameter
   if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*pars->mu;
@@ -273,29 +295,44 @@ int config_solve_R0_group(sim_pars* pars)
   return 0;
 }
 
-int config_solve_gamma_group(double* ave, double* kappa, double* p95)
+int config_solve_gamma_group(double* ave, double* kappa, double* x95)
 {
-  if(isnan(*p95)) {
+  if(!(*ave>=0)) {
+    fprintf(stderr,"%s: Error: The average of the distributio must be non-negative.\n",__func__);
+    return -1;
+  }
+
+  if(isnan(*x95)) {
+
+    if(!(*kappa>0)) {
+      fprintf(stderr,"%s: Error: The kappa parameter of the distributio must be non-negative.\n",__func__);
+      return -1;
+    }
 
     if(*kappa != INFINITY) {
       double pars[2]={*ave * *kappa, *kappa};
       root_finder* rf=root_finder_init(gpercroot, pars);
-      *p95=*ave;
+      *x95=*ave;
 
-      int ret=root_finder_find(rf, RF_GPERC_EPSF, 100, *ave, 1e100, p95);
+      int ret=root_finder_find(rf, RF_GPERC_EPSF, 100, *ave, 1e100, x95);
 
       root_finder_free(rf);
 
       if(ret) return ret;
 
-    } else *p95 = *ave;
+    } else *x95 = *ave;
 
   } else {
 
-    if(*p95 != *ave) {
+    if(!(*x95>=*ave)) {
+      fprintf(stderr,"%s: Error: The 95th percentile of the distributio cannot be smaller than the average\n",__func__);
+      return -1;
+    }
+
+    if(*x95 != *ave) {
       *kappa=1;
       const double otherkappa=*kappa*0.9;
-      double pars[4]={*ave, *p95, otherkappa, gpercrootfunc(*ave * otherkappa, *p95 * otherkappa)};
+      double pars[4]={*ave, *x95, otherkappa, gpercrootfunc(*ave * otherkappa, *x95 * otherkappa)};
       root_finder* rf=root_finder_init(gkapparoot, pars);
 
       int ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 1e-100, 1e100, kappa);

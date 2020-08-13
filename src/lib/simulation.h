@@ -193,90 +193,18 @@ inline static void sim_free(sim_vars* sv){free(sv->iis);}
  */
 int simulate(sim_vars* sv);
 
-/**
- * @brief Generates an uninterrupted communicable period without latent period.
- *
- * This function generates the uninterrupted communicable period for the current
- * infectious individual without a latent period, as determined by the simulation
- * variables and parameters. It also sets the infectious_at_tmax parameter for
- * the current infectious individual.
- *
- * @param sv: Pointer to the simulation variables.
- */
-static inline void gen_comm_period(sim_vars* sv)
-{
-  sv->ii->latent_period=0;
-  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
-  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
+//! @cond Doxygen_Suppress
+#define GEN_PER_LATENT_0 sv->ii->latent_period=0;
+#define GEN_PER_LATENT_1 sv->ii->latent_period=sv->pars.lbar;
+#define GEN_PER_LATENT_2 sv->ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
 
-  if(sv->ii->comm_period > time_left) {
-    //sv->ii->comm_period=time_left;
-    sv->ii->infectious_at_tmax=true;
+#define GEN_PER_MAIN_1 sv->ii->comm_period=sv->pars.tbar;
+#define GEN_PER_MAIN_2 sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
 
-  } else sv->ii->infectious_at_tmax=false;
-  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
-}
-
-/**
- * @brief Generates a communicable period without a latent period.
- *
- * This function generates the communicable period for the current
- * infectious individual without a latent period, as determined by the
- * simulation variables and parameters. It considers the alternate
- * communicable period based on the q simulation parameter, and selects
- * the shortest period between the uninterrupted period and the alternate
- * period. It also sets the infectious_at_tmax parameter for the current
- * infectious individual.
- *
- * @param sv: Pointer to the simulation variables.
- */
-static inline void gen_comm_period_isolation(sim_vars* sv)
-{
-  double m;
-
-  sv->ii->latent_period=0;
-  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
-
-  if(gsl_rng_uniform(sv->r) >= sv->pars.q) {
-
-    if(isinf(sv->pars.kappaq)) m=sv->pars.mbar;
-    else m=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq);
-
-    if(m<sv->ii->comm_period) sv->ii->comm_period=m;
-  }
-  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
-
-  if(sv->ii->comm_period > time_left) {
-    //sv->ii->comm_period=time_left;
-    sv->ii->infectious_at_tmax=true;
-
-  } else sv->ii->infectious_at_tmax=false;
-  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
-}
-
-/**
- * @brief Generates an uninterrupted communicable period and a latent period.
- *
- * This function generates the uninterrupted communicable period for the current
- * infectious individual and a latent period, as determined by the simulation
- * variables and parameters. It also sets the infectious_at_tmax parameter for
- * the current infectious individual.
- *
- * @param sv: Pointer to the simulation variables.
- */
-static inline void gen_time_periods(sim_vars* sv)
-{
-  sv->ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
-  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
-  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
-
-  if(sv->ii->comm_period > time_left) {
-    //sv->ii->comm_period=time_left;
-    sv->ii->infectious_at_tmax=true;
-
-  } else sv->ii->infectious_at_tmax=false;
-  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
-}
+#define GEN_PER_ALTERNATE_0(MAIN) GEN_PER_MAIN_##MAIN;
+#define GEN_PER_ALTERNATE_1(MAIN) if(gsl_rng_uniform(sv->r) >= sv->pars.q) sv->ii->comm_period=sv->pars.mbar; else GEN_PER_MAIN_##MAIN;
+#define GEN_PER_ALTERNATE_2(MAIN) if(gsl_rng_uniform(sv->r) >= sv->pars.q) sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); else GEN_PER_MAIN_##MAIN;
+//! @endcond
 
 /**
  * @brief Generates a communicable period and a latent period.
@@ -284,14 +212,48 @@ static inline void gen_time_periods(sim_vars* sv)
  * This function generates the communicable period for the current
  * infectious individual and a latent period, as determined by the
  * simulation variables and parameters. It considers the alternate
- * communicable period based on the q simulation parameter, and selects
- * the shortest period between the uninterrupted period and the alternate
- * period. It also sets the infectious_at_tmax parameter for the current
- * infectious individual.
- *
- * @param sv: Pointer to the simulation variables.
+ * communicable period based on the q simulation parameter. It also
+ * sets the infectious_at_tmax parameter for the current infectious
+ * individual.
  */
-static inline void gen_time_periods_isolation(sim_vars* sv)
+#define GEN_PER(NAME,LATENT,MAIN,ALTERNATE) static inline void NAME(sim_vars* sv) \
+{ \
+  GEN_PER_LATENT_##LATENT \
+  GEN_PER_ALTERNATE_##ALTERNATE(MAIN) \
+  double time_left=sv->pars.tmax-(sv->ii-1)->event_time; \
+ \
+  if(sv->ii->comm_period > time_left) { \
+    sv->ii->infectious_at_tmax=true; \
+ \
+  } else sv->ii->infectious_at_tmax=false; \
+  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":"")); \
+}
+
+//! @cond Doxygen_Suppress
+GEN_PER(gen_fixed_comm_period,0,1,0);
+GEN_PER(gen_comm_period,0,2,0);
+
+GEN_PER(gen_fixed_comm_fixed_alternate_periods,0,1,1);
+GEN_PER(gen_fixed_comm_alternate_periods,0,1,2);
+GEN_PER(gen_comm_fixed_alternate_periods,0,2,1);
+GEN_PER(gen_comm_alternate_periods,0,2,2);
+
+GEN_PER(gen_fixed_latent_fixed_comm_periods,1,1,0);
+GEN_PER(gen_fixed_latent_comm_periods,1,2,0);
+GEN_PER(gen_latent_fixed_comm_periods,2,1,0);
+GEN_PER(gen_latent_comm_periods,2,2,0);
+
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_alternate_periods,1,1,1);
+GEN_PER(gen_fixed_latent_fixed_comm_alternate_periods,1,1,2);
+GEN_PER(gen_fixed_latent_comm_fixed_alternate_periods,1,2,1);
+GEN_PER(gen_fixed_latent_comm_alternate_periods,1,2,2);
+GEN_PER(gen_latent_fixed_comm_fixed_alternate_periods,2,1,1);
+GEN_PER(gen_latent_fixed_comm_alternate_periods,2,1,2);
+GEN_PER(gen_latent_comm_fixed_alternate_periods,2,2,1);
+GEN_PER(gen_latent_comm_alternate_periods,2,2,2);
+//! @endcond
+
+/*static inline void gen_time_periods_isolation(sim_vars* sv)
 {
   double m;
 
@@ -314,6 +276,7 @@ static inline void gen_time_periods_isolation(sim_vars* sv)
   } else sv->ii->infectious_at_tmax=false;
   DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
 }
+*/
 
 /**
  * @brief Default processing function that is called when a new transmission event is created.

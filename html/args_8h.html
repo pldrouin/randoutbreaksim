@@ -128,14 +128,14 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a1a9ae2fe2395a059c8464ab200e1532f"><td class="memItemLeft" align="right" valign="top"><a id="a1a9ae2fe2395a059c8464ab200e1532f"></a>
-int&#160;</td><td class="memItemRight" valign="bottom"><b>getnextparam</b> (FILE **fptra, int *fptri, const bool isarg, const int nargs, char const *const args[], int *parc, char *param)</td></tr>
+<tr class="memitem:a1a9ae2fe2395a059c8464ab200e1532f"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="args_8h.html#a1a9ae2fe2395a059c8464ab200e1532f">getnextparam</a> (FILE **fptra, int *fptri, const bool isarg, const int nargs, char const *const args[], int *parc, char *param)</td></tr>
+<tr class="memdesc:a1a9ae2fe2395a059c8464ab200e1532f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Reads the next parameter.  <a href="args_8h.html#a1a9ae2fe2395a059c8464ab200e1532f">More...</a><br /></td></tr>
 <tr class="separator:a1a9ae2fe2395a059c8464ab200e1532f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afd59e6b7de0ace213f23de4d06ca339c"><td class="memItemLeft" align="right" valign="top"><a id="afd59e6b7de0ace213f23de4d06ca339c"></a>
-void&#160;</td><td class="memItemRight" valign="bottom"><b>safegetnextparam</b> (FILE **fptra, int *fptri, const bool isarg, const int nargs, char const *const args[], int *parc, char *param)</td></tr>
+<tr class="memitem:afd59e6b7de0ace213f23de4d06ca339c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="args_8h.html#afd59e6b7de0ace213f23de4d06ca339c">safegetnextparam</a> (FILE **fptra, int *fptri, const bool isarg, const int nargs, char const *const args[], int *parc, char *param)</td></tr>
+<tr class="memdesc:afd59e6b7de0ace213f23de4d06ca339c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Safely read an expected parameter.  <a href="args_8h.html#afd59e6b7de0ace213f23de4d06ca339c">More...</a><br /></td></tr>
 <tr class="separator:afd59e6b7de0ace213f23de4d06ca339c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a138454b119624044e48a5bb6b3948b2f"><td class="memItemLeft" align="right" valign="top"><a id="a138454b119624044e48a5bb6b3948b2f"></a>
-static bool&#160;</td><td class="memItemRight" valign="bottom"><b>argsdiffer</b> (const char *arg1, const char *arg2)</td></tr>
+<tr class="memitem:a138454b119624044e48a5bb6b3948b2f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="args_8h.html#a138454b119624044e48a5bb6b3948b2f">argsdiffer</a> (const char *arg1, const char *arg2)</td></tr>
+<tr class="memdesc:a138454b119624044e48a5bb6b3948b2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies if two strings differ.  <a href="args_8h.html#a138454b119624044e48a5bb6b3948b2f">More...</a><br /></td></tr>
 <tr class="separator:a138454b119624044e48a5bb6b3948b2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
@@ -143,7 +143,177 @@ static bool&#160;</td><td class="memItemRight" valign="bottom"><b>argsdiffer</b>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="args_8h_source.html">args.h</a>.</p>
-</div></div><!-- contents -->
+</div><h2 class="groupheader">Function Documentation</h2>
+<a id="a138454b119624044e48a5bb6b3948b2f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a138454b119624044e48a5bb6b3948b2f">&#9670;&nbsp;</a></span>argsdiffer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static bool argsdiffer </td>
+          <td>(</td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>arg1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const char *&#160;</td>
+          <td class="paramname"><em>arg2</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Verifies if two strings differ. </p>
+<p>This function verifies if two strings differ. It should be faster than strcmp since it does not parse the whole strings unless necessary.</p>
+<dl class="section return"><dt>Returns</dt><dd>true if the strings differ, and false otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="args_8h_source.html#l00041">41</a> of file <a class="el" href="args_8h_source.html">args.h</a>.</p>
+
+</div>
+</div>
+<a id="a1a9ae2fe2395a059c8464ab200e1532f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a9ae2fe2395a059c8464ab200e1532f">&#9670;&nbsp;</a></span>getnextparam()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int getnextparam </td>
+          <td>(</td>
+          <td class="paramtype">FILE **&#160;</td>
+          <td class="paramname"><em>fptra</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>fptri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>isarg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>nargs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char const *const&#160;</td>
+          <td class="paramname"><em>args</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>parc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>param</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Reads the next parameter. </p>
+<p>This function reads the next parameter.</p>
+<dl class="section return"><dt>Returns</dt><dd>the number of read characters. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="args_8c_source.html#l00009">9</a> of file <a class="el" href="args_8c_source.html">args.c</a>.</p>
+
+</div>
+</div>
+<a id="afd59e6b7de0ace213f23de4d06ca339c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd59e6b7de0ace213f23de4d06ca339c">&#9670;&nbsp;</a></span>safegetnextparam()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void safegetnextparam </td>
+          <td>(</td>
+          <td class="paramtype">FILE **&#160;</td>
+          <td class="paramname"><em>fptra</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>fptri</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const bool&#160;</td>
+          <td class="paramname"><em>isarg</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const int&#160;</td>
+          <td class="paramname"><em>nargs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char const *const&#160;</td>
+          <td class="paramname"><em>args</em>[], </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int *&#160;</td>
+          <td class="paramname"><em>parc</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">char *&#160;</td>
+          <td class="paramname"><em>param</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Safely read an expected parameter. </p>
+<p>This function reads the next parameter. It calls exit(1) if the parameter is missing </p>
+
+<p class="definition">Definition at line <a class="el" href="args_8c_source.html#l00054">54</a> of file <a class="el" href="args_8c_source.html">args.c</a>.</p>
+
+</div>
+</div>
+</div><!-- contents -->
 </div><!-- doc-content -->
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

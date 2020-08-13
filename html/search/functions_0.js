@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['config_113',['config',['../config_8c.html#a285a5e667f16049df449befcbeec7d9b',1,'config(sim_pars *pars, uint32_t *npaths, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c'],['../config_8h.html#a285a5e667f16049df449befcbeec7d9b',1,'config(sim_pars *pars, uint32_t *npaths, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c']]]
+  ['argsdiffer_132',['argsdiffer',['../args_8h.html#a138454b119624044e48a5bb6b3948b2f',1,'args.h']]]
 ];

@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['l95_164',['l95',['../structsim__pars.html#afd990217df134718f0918575e12505fb',1,'sim_pars']]],
-  ['lambda_165',['lambda',['../structsim__pars.html#a1d347f340245fa2ba469b305639e0829',1,'sim_pars']]],
-  ['latent_5fperiod_166',['latent_period',['../structinfindividual.html#aa01451a784f0632d3b6886b208dec889',1,'infindividual']]],
-  ['lbar_167',['lbar',['../structsim__pars.html#a2050972eeb28af006b2e92ecf2f5606a',1,'sim_pars']]]
+  ['kappa_190',['kappa',['../structsim__pars.html#a9a259a96b53ca013c571c0cc28649d6a',1,'sim_pars']]],
+  ['kappal_191',['kappal',['../structsim__pars.html#abfab632383b0b2ead4ef8df7fc1368ba',1,'sim_pars']]],
+  ['kappaq_192',['kappaq',['../structsim__pars.html#aaa990fffe8036f83a95fd6c2c6bdc384',1,'sim_pars']]]
 ];
