@@ -12,7 +12,7 @@
 
 int main(const int nargs, const char* args[])
 {
-  sim_pars pars;
+  model_pars pars;
   uint32_t npaths=10000;
   uint32_t nimax=UINT32_MAX;
   int oout=STDOUT_FILENO;
@@ -22,7 +22,7 @@ int main(const int nargs, const char* args[])
 
   if(config(&pars, &npaths, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
 
-  if(config_solve_pars(&pars)) return 1;
+  if(model_solve_pars(&pars)) return 1;
   gsl_rng_env_setup();
 
   gsl_rng* r = gsl_rng_alloc(gsl_rng_taus2);

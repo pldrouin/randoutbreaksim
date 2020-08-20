@@ -2,7 +2,7 @@
  * @file simulation.h
  * @brief Simulation data structures and functions.
  * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
- * Model from <jerome.levesque@tpsgc-pwgsc.gc.ca> and
+ * Original model from <jerome.levesque@tpsgc-pwgsc.gc.ca> and
  * <david.maybury@tpsgc-pwgsc.gc.ca>
  */
 
@@ -17,6 +17,7 @@
 #include <gsl/gsl_randist.h>
 
 #include "infindividual.h"
+#include "model_parameters.h"
 
 #define INIT_N_LAYERS (16) //!< Initial number of simulation layers
 
@@ -24,34 +25,11 @@
 //#define DEBUG_PRINTF(...) printf(__VA_ARGS__) //!< Debug print function
 
 /**
- * Simulation input parameters.
- */
-typedef struct 
-{
-  double tbar;		//!< Mean uninterrupted communicable period
-  double p;		//!< Parameter for the logarithmic distribution used to draw number of new infections for a given transmission event
-  double lambda;	//!< Rate of transmission events
-  double kappa;		//!< branchim's kappa parameter for the gamma distribution used to generate the uninterrupted communicable period
-  double lbar;		//!< Mean latent pariod
-  double kappal;   	//!< kappa parameter for the gamma distribution used to generate the latent period
-  double q;		//!< Probability of alternate communicable period
-  double mbar;		//!< Mean period for the alternate communicable period
-  double kappaq;	//!< branchim's kappa parameter for the gamma distribution used to generate the alternate communicable period
-  double R0;		//!< Basic reproduction number (R0=tbar*lambda*mu)
-  double mu;		//!< Parameter for the mean number of new infections for a given transmission event (mu=-1/log(1-p)*p/(1-p))
-  double t95;	        //!< Parameter for the 95th percentile of the uninterrupted communicable period (depends on tbar and kappa)
-  double m95;	        //!< Parameter for the 95th percentile of the alternate communicable period (depends on mbar and kappaq)
-  double l95;	        //!< Parameter for the 95th percentile of the latent period (depends on lbar and kappal)
-  double tmax;		//!< Maximum simulation period used to instantiate new infectious individuals.
-  uint32_t nstart;	//!< Initial number of infectious individuals
-} sim_pars;
-
-/**
  * Simulation variables
  */
 typedef struct sim_vars_
 {
-  sim_pars pars;		//!< Simulation input parameters
+  model_pars pars;		//!< Simulation input parameters
   gsl_rng const* r;		//!< Pointer to GSL random number generator
   infindividual* iis;	//!< Array of current infectious individuals across all layers
   infindividual* ii;	//!< Pointer to current iteration infectious individual
@@ -75,7 +53,7 @@ typedef struct sim_vars_
  * @return 0 if the parameters are valid. If the parameters are
  * invalid, an error is printed on stderr.
  */
-int sim_pars_check(sim_pars const* pars);
+int sim_pars_check(model_pars const* pars);
 
 /**
  * @brief Initialises simulation parameters.
@@ -85,7 +63,7 @@ int sim_pars_check(sim_pars const* pars);
  *
  * @param pars: Pointer to the simulation parameters
  */
-void sim_pars_init(sim_pars* pars);
+void sim_pars_init(model_pars* pars);
 
 /**
  * @brief Initialises the simulation.
@@ -97,7 +75,7 @@ void sim_pars_init(sim_pars* pars);
  * @param r: Pointer to the GSL random number generator.
  * @return 0 if the simulation was initialised successfully.
  */
-int sim_init(sim_vars* sv, sim_pars* pars, const gsl_rng* r);
+int sim_init(sim_vars* sv, model_pars* pars, const gsl_rng* r);
 
 /**
  * @brief Initialises the simulation-level data pointer for user-defined functions.
@@ -194,32 +172,53 @@ inline static void sim_free(sim_vars* sv){free(sv->iis);}
 int simulate(sim_vars* sv);
 
 //! @cond Doxygen_Suppress
+/**
+ * The preprocessing macros below are used by the main GEN_PER macro.
+ */
 #define GEN_PER_LATENT_0 sv->ii->latent_period=0;
 #define GEN_PER_LATENT_1 sv->ii->latent_period=sv->pars.lbar;
 #define GEN_PER_LATENT_2 sv->ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
 
-#define GEN_PER_MAIN_1 sv->ii->comm_period=sv->pars.tbar;
-#define GEN_PER_MAIN_2 sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
+#define GEN_PER_INTERRUPTED_MAIN_0
+#define GEN_PER_INTERRUPTED_MAIN_1 if(gsl_rng_uniform(sv->r) < sv->pars.pit && sv->pars.itbar < sv->ii->comm_period) sv->ii->comm_period=sv->pars.itbar;
+#define GEN_PER_INTERRUPTED_MAIN_2 if(gsl_rng_uniform(sv->r) < sv->pars.pit) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappait*sv->pars.itbar, 1./sv->pars.kappait); if(time < sv->ii->comm_period) sv->ii->comm_period=time;}
 
-#define GEN_PER_ALTERNATE_0(MAIN) GEN_PER_MAIN_##MAIN;
-#define GEN_PER_ALTERNATE_1(MAIN) if(gsl_rng_uniform(sv->r) >= sv->pars.q) sv->ii->comm_period=sv->pars.mbar; else GEN_PER_MAIN_##MAIN;
-#define GEN_PER_ALTERNATE_2(MAIN) if(gsl_rng_uniform(sv->r) >= sv->pars.q) sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); else GEN_PER_MAIN_##MAIN;
+#define GEN_PER_MAIN_1(IT) sv->ii->comm_period=sv->pars.tbar; GEN_PER_INTERRUPTED_MAIN_ ## IT;
+#define GEN_PER_MAIN_2(IT) sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa); GEN_PER_INTERRUPTED_MAIN_ ## IT;
+
+#define GEN_PER_INTERRUPTED_ALT_0
+#define GEN_PER_INTERRUPTED_ALT_1 if(gsl_rng_uniform(sv->r) < sv->pars.pim && sv->pars.imbar < sv->ii->comm_period) sv->ii->comm_period=sv->pars.imbar;
+#define GEN_PER_INTERRUPTED_ALT_2 if(gsl_rng_uniform(sv->r) < sv->pars.pim) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappaim*sv->pars.imbar, 1./sv->pars.kappaim); if(time < sv->ii->comm_period) sv->ii->comm_period=time;}
+
+#define GEN_PER_ALTERNATE_0(MAIN,IT,IM) GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_ALTERNATE_1(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->ii->comm_period=sv->pars.mbar; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
 //! @endcond
 
 /**
- * @brief Generates a communicable period and a latent period.
+ * @brief Generates one function that generates a specific combination of
+ * communicable and latent periods.
  *
- * This function generates the communicable period for the current
+ * This preprocessing macro generates a function that
+ * generates the communicable period for the current
  * infectious individual and a latent period, as determined by the
  * simulation variables and parameters. It considers the alternate
- * communicable period based on the q simulation parameter. It also
- * sets the infectious_at_tmax parameter for the current infectious
+ * communicable period based on the q simulation parameter, as well
+ * as the two types of interrupted periods. It also sets the
+ * infectious_at_tmax parameter for the current infectious
  * individual.
+ *
+ * @param LATENT: Type of latent period (0=none, 1=fixed, 2=variable)
+ * @param MAIN: Type of main period (1=fixed, 2=variable)
+ * @param IT: Type of interrupted main period (0=none, 1=fixed, 2=variable)
+ * @param ALTERNATE: Type of alternate period (0=none, 1=fixed, 2=variable)
+ * @param IM: Type of interrupted alternate period (0=none, 1=fixed, 2=variable)
+ * latent)
  */
-#define GEN_PER(NAME,LATENT,MAIN,ALTERNATE) static inline void NAME(sim_vars* sv) \
+#define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _periods(sim_vars* sv) \
 { \
-  GEN_PER_LATENT_##LATENT \
-  GEN_PER_ALTERNATE_##ALTERNATE(MAIN) \
+  GEN_PER_LATENT_ ## LATENT \
+  GEN_PER_ALTERNATE_ ## ALTERNATE(MAIN,IT,IM) \
   double time_left=sv->pars.tmax-(sv->ii-1)->event_time; \
  \
   if(sv->ii->comm_period > time_left) { \
@@ -230,53 +229,45 @@ int simulate(sim_vars* sv);
 }
 
 //! @cond Doxygen_Suppress
-GEN_PER(gen_fixed_comm_period,0,1,0);
-GEN_PER(gen_comm_period,0,2,0);
-
-GEN_PER(gen_fixed_comm_fixed_alternate_periods,0,1,1);
-GEN_PER(gen_fixed_comm_alternate_periods,0,1,2);
-GEN_PER(gen_comm_fixed_alternate_periods,0,2,1);
-GEN_PER(gen_comm_alternate_periods,0,2,2);
-
-GEN_PER(gen_fixed_latent_fixed_comm_periods,1,1,0);
-GEN_PER(gen_fixed_latent_comm_periods,1,2,0);
-GEN_PER(gen_latent_fixed_comm_periods,2,1,0);
-GEN_PER(gen_latent_comm_periods,2,2,0);
-
-GEN_PER(gen_fixed_latent_fixed_comm_fixed_alternate_periods,1,1,1);
-GEN_PER(gen_fixed_latent_fixed_comm_alternate_periods,1,1,2);
-GEN_PER(gen_fixed_latent_comm_fixed_alternate_periods,1,2,1);
-GEN_PER(gen_fixed_latent_comm_alternate_periods,1,2,2);
-GEN_PER(gen_latent_fixed_comm_fixed_alternate_periods,2,1,1);
-GEN_PER(gen_latent_fixed_comm_alternate_periods,2,1,2);
-GEN_PER(gen_latent_comm_fixed_alternate_periods,2,2,1);
-GEN_PER(gen_latent_comm_alternate_periods,2,2,2);
+/**
+ * The preprocessing macros below are used by the main GEN_PERS_MAIN macro.
+ */
+#define GEN_PERS_IM(LATENT,MAIN,IT,ALTERNATE) GEN_PER(LATENT,MAIN,IT,ALTERNATE,0) GEN_PER(LATENT,MAIN,IT,ALTERNATE,1) GEN_PER(LATENT,MAIN,IT,ALTERNATE,2)
+#define GEN_PERS_ALT(LATENT,MAIN,IT) GEN_PER(LATENT,MAIN,IT,0,0) GEN_PERS_IM(LATENT,MAIN,IT,1) GEN_PERS_IM(LATENT,MAIN,IT,2)
+#define GEN_PERS_IT(LATENT,MAIN) GEN_PERS_ALT(LATENT,MAIN,0) GEN_PERS_ALT(LATENT,MAIN,1) GEN_PERS_ALT(LATENT,MAIN,2)
 //! @endcond
 
-/*static inline void gen_time_periods_isolation(sim_vars* sv)
-{
-  double m;
+/**
+ * @brief For a given type of latent period, generates functions that each
+ * generates a specific combination of communicable and latent periods.
+ *
+ * @param LATENT: Type of latent period (0=none, 1=fixed, 2=variable)
+ */
+#define GEN_PERS_MAIN(LATENT) GEN_PERS_IT(LATENT,1) GEN_PERS_IT(LATENT,2)
+GEN_PERS_MAIN(0)
+GEN_PERS_MAIN(1)
+GEN_PERS_MAIN(2)
 
-  sv->ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
-  sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa);
+//! @cond Doxygen_Suppress
+/**
+ * The preprocessing macros below are used by the main PER_COND macro.
+ */
+#define PER_COND_IM(IMPREFIX) if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_comm_ ## IMPREFIX ## _0_periods; else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_comm_ ## IMPREFIX ## _1_periods; else sv->gen_time_periods_func=gen_comm_ ## IMPREFIX ## _2_periods;
+#define PER_COND_ALT(ALTPREFIX) if(!(sv->pars.q>0)) sv->gen_time_periods_func=gen_comm_ ## ALTPREFIX ## _0_0_periods; else if(isinf(sv->pars.kappaq)) {PER_COND_IM(ALTPREFIX ## _1)} else {PER_COND_IM(ALTPREFIX ## _2)};
+#define PER_COND_IT(ITPREFIX) if(!(sv->pars.pit>0)) {PER_COND_ALT(ITPREFIX ## _0)} else if(isinf(sv->pars.kappait)) {PER_COND_ALT(ITPREFIX ## _1)} else {PER_COND_ALT(ITPREFIX ## _2)};
+#define PER_COND_MAIN(MAINPREFIX) if(isinf(sv->pars.kappa)) {PER_COND_IT(MAINPREFIX ## _1)} else {PER_COND_IT(MAINPREFIX ## _2)};
+//! @endcond
 
-  if(gsl_rng_uniform(sv->r) >= sv->pars.q) {
-
-    if(isinf(sv->pars.kappaq)) m=sv->pars.mbar;
-    else m=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq);
-
-    if(m<sv->ii->comm_period) sv->ii->comm_period=m;
-  }
-  double time_left=sv->pars.tmax-(sv->ii-1)->event_time;
-
-  if(sv->ii->comm_period > time_left) {
-    //sv->ii->comm_period=time_left;
-    sv->ii->infectious_at_tmax=true;
-
-  } else sv->ii->infectious_at_tmax=false;
-  DEBUG_PRINTF("Comm period is %f%s\n",sv->ii->comm_period,(sv->ii->infectious_at_tmax?" (reached end)":""));
-}
-*/
+/**
+ * @brief Generates the conditional code that assigns the function that
+ * generates a specific combination of communicable and latent periods.
+ *
+ * This preprocessing macro generates the conditional code that assigns the
+ * function that generates a specific combination of communicable and latent
+ * periods to the gen_time_periods_func pointer of the simulation, given the
+ * configuration of the model parameters.
+ */
+#define PER_COND if(isnan(sv->pars.kappal)) {PER_COND_MAIN(0)} else if(isinf(sv->pars.kappal)) {PER_COND_MAIN(1)} else {PER_COND_MAIN(2)};
 
 /**
  * @brief Default processing function that is called when a new transmission event is created.

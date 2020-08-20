@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['kappa_190',['kappa',['../structsim__pars.html#a9a259a96b53ca013c571c0cc28649d6a',1,'sim_pars']]],
-  ['kappal_191',['kappal',['../structsim__pars.html#abfab632383b0b2ead4ef8df7fc1368ba',1,'sim_pars']]],
-  ['kappaq_192',['kappaq',['../structsim__pars.html#aaa990fffe8036f83a95fd6c2c6bdc384',1,'sim_pars']]]
+  ['kappa_208',['kappa',['../structmodel__pars.html#a498936f61e895e9dbf13ee036b824711',1,'model_pars']]],
+  ['kappaim_209',['kappaim',['../structmodel__pars.html#aa1d9db3cee284096431a6c4639d9c394',1,'model_pars']]],
+  ['kappait_210',['kappait',['../structmodel__pars.html#aada52d4357d6990ff5be3c83145ff1b4',1,'model_pars']]],
+  ['kappal_211',['kappal',['../structmodel__pars.html#a6131a3962f0fa6b0b1e75141b8963251',1,'model_pars']]],
+  ['kappaq_212',['kappaq',['../structmodel__pars.html#a563d1227f7f8f9eb035ddc87924d7fa7',1,'model_pars']]]
 ];

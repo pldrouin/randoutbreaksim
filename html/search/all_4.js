@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['func_24',['func',['../structroot__finder.html#a747447437eb3c2c96f293d21c40d7afb',1,'root_finder']]]
+  ['func_21',['func',['../structroot__finder.html#a747447437eb3c2c96f293d21c40d7afb',1,'root_finder']]]
 ];
