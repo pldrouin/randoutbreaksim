@@ -183,6 +183,7 @@ int simulate(sim_vars* sv);
 #define GEN_PER_INTERRUPTED_MAIN_1 if(gsl_rng_uniform(sv->r) < sv->pars.pit && sv->pars.itbar < sv->ii->comm_period) sv->ii->comm_period=sv->pars.itbar;
 #define GEN_PER_INTERRUPTED_MAIN_2 if(gsl_rng_uniform(sv->r) < sv->pars.pit) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappait*sv->pars.itbar, 1./sv->pars.kappait); if(time < sv->ii->comm_period) sv->ii->comm_period=time;}
 
+<<<<<<< HEAD
 #define GEN_PER_MAIN_1(IT) sv->ii->comm_period=sv->pars.tbar; GEN_PER_INTERRUPTED_MAIN_ ## IT;
 #define GEN_PER_MAIN_2(IT) sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa); GEN_PER_INTERRUPTED_MAIN_ ## IT;
 
@@ -193,6 +194,18 @@ int simulate(sim_vars* sv);
 #define GEN_PER_ALTERNATE_0(MAIN,IT,IM) GEN_PER_MAIN_ ## MAIN(IT);
 #define GEN_PER_ALTERNATE_1(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->ii->comm_period=sv->pars.mbar; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
 #define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+=======
+#define GEN_PER_MAIN_1(IT) sv->ii->comm_period=sv->pars.tbar; GEN_PER_INTERRUPTED_MAIN_##IT;
+#define GEN_PER_MAIN_2(IT) sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa); GEN_PER_INTERRUPTED_MAIN_##IT;
+
+#define GEN_PER_INTERRUPTED_ALT_0
+#define GEN_PER_INTERRUPTED_ALT_1 if(gsl_rng_uniform(sv->r) < sv->pars.pim && sv->pars.imbar < sv->ii->comm_period) sv->ii->comm_period=sv->pars.imbar;
+#define GEN_PER_INTERRUPTED_ALT_2 if(gsl_rng_uniform(sv->r) < sv->pars.pim) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappaim*sv->pars.imbar, 1./sv->pars.kappaim); if(time < sv->ii->comm_period) sv->ii->comm_period=time;}
+
+#define GEN_PER_ALTERNATE_0(MAIN,IT,IM) GEN_PER_MAIN_##MAIN(IT);
+#define GEN_PER_ALTERNATE_1(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->ii->comm_period=sv->pars.mbar; GEN_PER_INTERRUPTED_ALT_##IM} else GEN_PER_MAIN_##MAIN(IT);
+#define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); GEN_PER_INTERRUPTED_ALT_##IM} else GEN_PER_MAIN_##MAIN(IT);
+>>>>>>> 96c5561dfb5358d3614993a11af11ef9cd042f65
 //! @endcond
 
 /**
@@ -215,10 +228,17 @@ int simulate(sim_vars* sv);
  * @param IM: Type of interrupted alternate period (0=none, 1=fixed, 2=variable)
  * latent)
  */
+<<<<<<< HEAD
 #define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _periods(sim_vars* sv) \
 { \
   GEN_PER_LATENT_ ## LATENT \
   GEN_PER_ALTERNATE_ ## ALTERNATE(MAIN,IT,IM) \
+=======
+#define GEN_PER(NAME,LATENT,MAIN,ALTERNATE,IT,IM) static inline void NAME(sim_vars* sv) \
+{ \
+  GEN_PER_LATENT_##LATENT \
+  GEN_PER_ALTERNATE_##ALTERNATE(MAIN,IT,IM) \
+>>>>>>> 96c5561dfb5358d3614993a11af11ef9cd042f65
   double time_left=sv->pars.tmax-(sv->ii-1)->event_time; \
  \
   if(sv->ii->comm_period > time_left) { \
@@ -229,12 +249,160 @@ int simulate(sim_vars* sv);
 }
 
 //! @cond Doxygen_Suppress
+<<<<<<< HEAD
 /**
  * The preprocessing macros below are used by the main GEN_PERS_MAIN macro.
  */
 #define GEN_PERS_IM(LATENT,MAIN,IT,ALTERNATE) GEN_PER(LATENT,MAIN,IT,ALTERNATE,0) GEN_PER(LATENT,MAIN,IT,ALTERNATE,1) GEN_PER(LATENT,MAIN,IT,ALTERNATE,2)
 #define GEN_PERS_ALT(LATENT,MAIN,IT) GEN_PER(LATENT,MAIN,IT,0,0) GEN_PERS_IM(LATENT,MAIN,IT,1) GEN_PERS_IM(LATENT,MAIN,IT,2)
 #define GEN_PERS_IT(LATENT,MAIN) GEN_PERS_ALT(LATENT,MAIN,0) GEN_PERS_ALT(LATENT,MAIN,1) GEN_PERS_ALT(LATENT,MAIN,2)
+=======
+GEN_PER(gen_fixed_comm_period,0,1,0,0,0);
+GEN_PER(gen_fixed_comm_fixed_int_periods,0,1,0,1,0);
+GEN_PER(gen_fixed_comm_int_periods,0,1,0,2,0);
+GEN_PER(gen_comm_period,0,2,0,0,0);
+GEN_PER(gen_comm_fixed_int_periods,0,2,0,1,0);
+GEN_PER(gen_comm_int_periods,0,2,0,2,0);
+
+
+GEN_PER(gen_fixed_comm_fixed_alternate_periods,0,1,1,0,0);
+GEN_PER(gen_fixed_comm_fixed_alternate_fixed_int_periods,0,1,1,0,1);
+GEN_PER(gen_fixed_comm_fixed_alternate_int_periods,0,1,1,0,2);
+GEN_PER(gen_fixed_comm_fixed_int_fixed_alternate_periods,0,1,1,1,0);
+GEN_PER(gen_fixed_comm_fixed_int_fixed_alternate_fixed_int_periods,0,1,1,1,1);
+GEN_PER(gen_fixed_comm_fixed_int_fixed_alternate_int_periods,0,1,1,1,2);
+GEN_PER(gen_fixed_comm_int_fixed_alternate_periods,0,1,1,2,0);
+GEN_PER(gen_fixed_comm_int_fixed_alternate_fixed_int_periods,0,1,1,2,1);
+GEN_PER(gen_fixed_comm_int_fixed_alternate_int_periods,0,1,1,2,2);
+
+GEN_PER(gen_fixed_comm_alternate_periods,0,1,2,0,0);
+GEN_PER(gen_fixed_comm_alternate_fixed_int_periods,0,1,2,0,1);
+GEN_PER(gen_fixed_comm_alternate_int_periods,0,1,2,0,2);
+GEN_PER(gen_fixed_comm_fixed_int_alternate_periods,0,1,2,1,0);
+GEN_PER(gen_fixed_comm_fixed_int_alternate_fixed_int_periods,0,1,2,1,1);
+GEN_PER(gen_fixed_comm_fixed_int_alternate_int_periods,0,1,2,1,2);
+GEN_PER(gen_fixed_comm_int_alternate_periods,0,1,2,2,0);
+GEN_PER(gen_fixed_comm_int_alternate_fixed_int_periods,0,1,2,2,1);
+GEN_PER(gen_fixed_comm_int_alternate_int_periods,0,1,2,2,2);
+
+GEN_PER(gen_comm_fixed_alternate_periods,0,2,1,0,0);
+GEN_PER(gen_comm_fixed_alternate_fixed_int_periods,0,2,1,0,1);
+GEN_PER(gen_comm_fixed_alternate_int_periods,0,2,1,0,2);
+GEN_PER(gen_comm_fixed_int_fixed_alternate_periods,0,2,1,1,0);
+GEN_PER(gen_comm_fixed_int_fixed_alternate_fixed_int_periods,0,2,1,1,1);
+GEN_PER(gen_comm_fixed_int_fixed_alternate_int_periods,0,2,1,1,2);
+GEN_PER(gen_comm_int_fixed_alternate_periods,0,2,1,2,0);
+GEN_PER(gen_comm_int_fixed_alternate_fixed_int_periods,0,2,1,2,1);
+GEN_PER(gen_comm_int_fixed_alternate_int_periods,0,2,1,2,2);
+
+GEN_PER(gen_comm_alternate_periods,0,2,2,0,0);
+GEN_PER(gen_comm_alternate_fixed_int_periods,0,2,2,0,1);
+GEN_PER(gen_comm_alternate_int_periods,0,2,2,0,2);
+GEN_PER(gen_comm_fixed_int_alternate_periods,0,2,2,1,0);
+GEN_PER(gen_comm_fixed_int_alternate_fixed_int_periods,0,2,2,1,1);
+GEN_PER(gen_comm_fixed_int_alternate_int_periods,0,2,2,1,2);
+GEN_PER(gen_comm_int_alternate_periods,0,2,2,2,0);
+GEN_PER(gen_comm_int_alternate_fixed_int_periods,0,2,2,2,1);
+GEN_PER(gen_comm_int_alternate_int_periods,0,2,2,2,2);
+
+
+GEN_PER(gen_fixed_latent_fixed_comm_periods,1,1,0,0,0);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_int_periods,1,1,0,1,0);
+GEN_PER(gen_fixed_latent_fixed_comm_int_periods,1,1,0,2,0);
+
+GEN_PER(gen_fixed_latent_comm_periods,1,2,0,0,0);
+GEN_PER(gen_fixed_latent_comm_fixed_int_periods,1,2,0,1,0);
+GEN_PER(gen_fixed_latent_comm_int_periods,1,2,0,2,0);
+
+GEN_PER(gen_latent_fixed_comm_periods,2,1,0,0,0);
+GEN_PER(gen_latent_fixed_comm_fixed_int_periods,2,1,0,1,0);
+GEN_PER(gen_latent_fixed_comm_int_periods,2,1,0,2,0);
+
+GEN_PER(gen_latent_comm_periods,2,2,0,0,0);
+GEN_PER(gen_latent_comm_fixed_int_periods,2,2,0,1,0);
+GEN_PER(gen_latent_comm_int_periods,2,2,0,2,0);
+
+
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_alternate_periods,1,1,1,0,0);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_alternate_fixed_int_periods,1,1,1,0,1);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_alternate_int_periods,1,1,1,0,2);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_int_fixed_alternate_periods,1,1,1,1,0);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_int_fixed_alternate_fixed_int_periods,1,1,1,1,1);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_int_fixed_alternate_int_periods,1,1,1,1,2);
+GEN_PER(gen_fixed_latent_fixed_comm_int_fixed_alternate_periods,1,1,1,2,0);
+GEN_PER(gen_fixed_latent_fixed_comm_int_fixed_alternate_fixed_int_periods,1,1,1,2,1);
+GEN_PER(gen_fixed_latent_fixed_comm_int_fixed_alternate_int_periods,1,1,1,2,2);
+
+GEN_PER(gen_fixed_latent_fixed_comm_alternate_periods,1,1,2,0,0);
+GEN_PER(gen_fixed_latent_fixed_comm_alternate_fixed_int_periods,1,1,2,0,1);
+GEN_PER(gen_fixed_latent_fixed_comm_alternate_int_periods,1,1,2,0,2);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_int_alternate_periods,1,1,2,1,0);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_int_alternate_fixed_int_periods,1,1,2,1,1);
+GEN_PER(gen_fixed_latent_fixed_comm_fixed_int_alternate_int_periods,1,1,2,1,2);
+GEN_PER(gen_fixed_latent_fixed_comm_int_alternate_periods,1,1,2,2,0);
+GEN_PER(gen_fixed_latent_fixed_comm_int_alternate_fixed_int_periods,1,1,2,2,1);
+GEN_PER(gen_fixed_latent_fixed_comm_int_alternate_int_periods,1,1,2,2,2);
+
+GEN_PER(gen_fixed_latent_comm_fixed_alternate_periods,1,2,1,0,0);
+GEN_PER(gen_fixed_latent_comm_fixed_alternate_fixed_int_periods,1,2,1,0,1);
+GEN_PER(gen_fixed_latent_comm_fixed_alternate_int_periods,1,2,1,0,2);
+GEN_PER(gen_fixed_latent_comm_fixed_int_fixed_alternate_periods,1,2,1,1,0);
+GEN_PER(gen_fixed_latent_comm_fixed_int_fixed_alternate_fixed_int_periods,1,2,1,1,1);
+GEN_PER(gen_fixed_latent_comm_fixed_int_fixed_alternate_int_periods,1,2,1,1,2);
+GEN_PER(gen_fixed_latent_comm_int_fixed_alternate_periods,1,2,1,2,0);
+GEN_PER(gen_fixed_latent_comm_int_fixed_alternate_fixed_int_periods,1,2,1,2,1);
+GEN_PER(gen_fixed_latent_comm_int_fixed_alternate_int_periods,1,2,1,2,2);
+
+GEN_PER(gen_fixed_latent_comm_alternate_periods,1,2,2,0,0);
+GEN_PER(gen_fixed_latent_comm_alternate_fixed_int_periods,1,2,2,0,1);
+GEN_PER(gen_fixed_latent_comm_alternate_int_periods,1,2,2,0,2);
+GEN_PER(gen_fixed_latent_comm_fixed_int_alternate_periods,1,2,2,1,0);
+GEN_PER(gen_fixed_latent_comm_fixed_int_alternate_fixed_int_periods,1,2,2,1,1);
+GEN_PER(gen_fixed_latent_comm_fixed_int_alternate_int_periods,1,2,2,1,2);
+GEN_PER(gen_fixed_latent_comm_int_alternate_periods,1,2,2,2,0);
+GEN_PER(gen_fixed_latent_comm_int_alternate_fixed_int_periods,1,2,2,2,1);
+GEN_PER(gen_fixed_latent_comm_int_alternate_int_periods,1,2,2,2,2);
+
+GEN_PER(gen_latent_fixed_comm_fixed_alternate_periods,2,1,1,0,0);
+GEN_PER(gen_latent_fixed_comm_fixed_alternate_fixed_int_periods,2,1,1,0,1);
+GEN_PER(gen_latent_fixed_comm_fixed_alternate_int_periods,2,1,1,0,2);
+GEN_PER(gen_latent_fixed_comm_fixed_int_fixed_alternate_periods,2,1,1,1,0);
+GEN_PER(gen_latent_fixed_comm_fixed_int_fixed_alternate_fixed_int_periods,2,1,1,1,1);
+GEN_PER(gen_latent_fixed_comm_fixed_int_fixed_alternate_int_periods,2,1,1,1,2);
+GEN_PER(gen_latent_fixed_comm_int_fixed_alternate_periods,2,1,1,2,0);
+GEN_PER(gen_latent_fixed_comm_int_fixed_alternate_fixed_int_periods,2,1,1,2,1);
+GEN_PER(gen_latent_fixed_comm_int_fixed_alternate_int_periods,2,1,1,2,2);
+
+GEN_PER(gen_latent_fixed_comm_alternate_periods,2,1,2,0,0);
+GEN_PER(gen_latent_fixed_comm_alternate_fixed_int_periods,2,1,2,0,1);
+GEN_PER(gen_latent_fixed_comm_alternate_int_periods,2,1,2,0,2);
+GEN_PER(gen_latent_fixed_comm_fixed_int_alternate_periods,2,1,2,1,0);
+GEN_PER(gen_latent_fixed_comm_fixed_int_alternate_fixed_int_periods,2,1,2,1,1);
+GEN_PER(gen_latent_fixed_comm_fixed_int_alternate_int_periods,2,1,2,1,2);
+GEN_PER(gen_latent_fixed_comm_int_alternate_periods,2,1,2,2,0);
+GEN_PER(gen_latent_fixed_comm_int_alternate_fixed_int_periods,2,1,2,2,1);
+GEN_PER(gen_latent_fixed_comm_int_alternate_int_periods,2,1,2,2,2);
+
+GEN_PER(gen_latent_comm_fixed_alternate_periods,2,2,1,0,0);
+GEN_PER(gen_latent_comm_fixed_alternate_fixed_int_periods,2,2,1,0,1);
+GEN_PER(gen_latent_comm_fixed_alternate_int_periods,2,2,1,0,2);
+GEN_PER(gen_latent_comm_fixed_int_fixed_alternate_periods,2,2,1,1,0);
+GEN_PER(gen_latent_comm_fixed_int_fixed_alternate_fixed_int_periods,2,2,1,1,1);
+GEN_PER(gen_latent_comm_fixed_int_fixed_alternate_int_periods,2,2,1,1,2);
+GEN_PER(gen_latent_comm_int_fixed_alternate_periods,2,2,1,2,0);
+GEN_PER(gen_latent_comm_int_fixed_alternate_fixed_int_periods,2,2,1,2,1);
+GEN_PER(gen_latent_comm_int_fixed_alternate_int_periods,2,2,1,2,2);
+
+GEN_PER(gen_latent_comm_alternate_periods,2,2,2,0,0);
+GEN_PER(gen_latent_comm_alternate_fixed_int_periods,2,2,2,0,1);
+GEN_PER(gen_latent_comm_alternate_int_periods,2,2,2,0,2);
+GEN_PER(gen_latent_comm_fixed_int_alternate_periods,2,2,2,1,0);
+GEN_PER(gen_latent_comm_fixed_int_alternate_fixed_int_periods,2,2,2,1,1);
+GEN_PER(gen_latent_comm_fixed_int_alternate_int_periods,2,2,2,1,2);
+GEN_PER(gen_latent_comm_int_alternate_periods,2,2,2,2,0);
+GEN_PER(gen_latent_comm_int_alternate_fixed_int_periods,2,2,2,2,1);
+GEN_PER(gen_latent_comm_int_alternate_int_periods,2,2,2,2,2);
+>>>>>>> 96c5561dfb5358d3614993a11af11ef9cd042f65
 //! @endcond
 
 /**

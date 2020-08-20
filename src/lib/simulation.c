@@ -145,7 +145,354 @@ int sim_init(sim_vars* sv, model_pars* pars, const gsl_rng* r)
   sv->iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));
   sv->nlayers=INIT_N_LAYERS;
 
+<<<<<<< HEAD
   PER_COND;
+=======
+  //If a latent period is not used
+  if(isnan(sv->pars.kappal)) {
+
+    //If an alternate time period is not used
+    if(!(sv->pars.q>0)) {
+
+      if(isinf(sv->pars.kappa)) {
+
+	if(!(sv->pars.pit>0)) sv->gen_time_periods_func=gen_fixed_comm_period; 
+	else if(isinf(sv->pars.kappait)) sv->gen_time_periods_func=gen_fixed_comm_fixed_int_periods;
+	else sv->gen_time_periods_func=gen_fixed_comm_int_periods;
+
+      } else {
+
+	if(!(sv->pars.pit>0)) sv->gen_time_periods_func=gen_comm_period; 
+	else if(isinf(sv->pars.kappait)) sv->gen_time_periods_func=gen_comm_fixed_int_periods;
+	else sv->gen_time_periods_func=gen_comm_int_periods;
+      }
+
+    //Else if an alternate time period is used
+    } else {
+
+      if(isinf(sv->pars.kappa)) {
+
+	if(isinf(sv->pars.kappaq)) {
+
+	  if(!(sv->pars.pit>0)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_comm_fixed_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_comm_fixed_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_fixed_comm_fixed_alternate_int_periods;
+
+	  } else if(isinf(sv->pars.kappait)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_comm_fixed_int_fixed_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_comm_fixed_int_fixed_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_fixed_comm_fixed_int_fixed_alternate_int_periods;
+
+	  } else {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_comm_int_fixed_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_comm_int_fixed_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_fixed_comm_int_fixed_alternate_int_periods;
+	  }
+
+	} else {
+
+	  if(!(sv->pars.pit>0)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_comm_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_comm_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_fixed_comm_alternate_int_periods;
+
+	  } else if(isinf(sv->pars.kappait)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_comm_fixed_int_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_comm_fixed_int_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_fixed_comm_fixed_int_alternate_int_periods;
+
+	  } else {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_comm_int_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_comm_int_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_fixed_comm_int_alternate_int_periods;
+	  }
+	}
+
+      } else {
+
+	if(isinf(sv->pars.kappaq)) {
+
+	  if(!(sv->pars.pit>0)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_comm_fixed_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_comm_fixed_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_comm_fixed_alternate_int_periods;
+
+	  } else if(isinf(sv->pars.kappait)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_comm_fixed_int_fixed_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_comm_fixed_int_fixed_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_comm_fixed_int_fixed_alternate_int_periods;
+
+	  } else {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_comm_int_fixed_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_comm_int_fixed_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_comm_int_fixed_alternate_int_periods;
+	  }
+
+	} else {
+
+	  if(!(sv->pars.pit>0)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_comm_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_comm_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_comm_alternate_int_periods;
+
+	  } else if(isinf(sv->pars.kappait)) {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_comm_fixed_int_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_comm_fixed_int_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_comm_fixed_int_alternate_int_periods;
+
+	  } else {
+
+	    if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_comm_int_alternate_periods;
+	    else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_comm_int_alternate_fixed_int_periods;
+	    else sv->gen_time_periods_func=gen_comm_int_alternate_int_periods;
+	  }
+	}
+      }
+    }
+
+  //Else if a latent period is used
+  } else {
+
+    if(isinf(sv->pars.kappal)) {
+
+      //If an alternate time period is not used
+      if(!(sv->pars.q>0)) {
+
+	if(isinf(sv->pars.kappa)) {
+
+	  if(!(sv->pars.pit>0)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_periods; 
+	  else if(isinf(sv->pars.kappait)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_int_periods;
+	  else sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_int_periods;
+
+	} else {
+
+	  if(!(sv->pars.pit>0)) sv->gen_time_periods_func=gen_fixed_latent_comm_periods; 
+	  else if(isinf(sv->pars.kappait)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_int_periods;
+	  else sv->gen_time_periods_func=gen_fixed_latent_comm_int_periods;
+	}
+
+	//Else if an alternate time period is used
+      } else {
+
+	if(isinf(sv->pars.kappa)) {
+
+	  if(isinf(sv->pars.kappaq)) {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_int_fixed_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_int_fixed_alternate_int_periods;
+	    }
+
+	  } else {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_fixed_int_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_fixed_comm_int_alternate_int_periods;
+	    }
+	  }
+
+	} else {
+
+	  if(isinf(sv->pars.kappaq)) {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_int_fixed_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_comm_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_comm_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_comm_int_fixed_alternate_int_periods;
+	    }
+
+	  } else {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_comm_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_comm_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_comm_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_comm_fixed_int_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_fixed_latent_comm_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_fixed_latent_comm_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_fixed_latent_comm_int_alternate_int_periods;
+	    }
+	  }
+	}
+      }
+
+    } else {
+
+      //If an alternate time period is not used
+      if(!(sv->pars.q>0)) {
+
+	if(isinf(sv->pars.kappa)) {
+
+	  if(!(sv->pars.pit>0)) sv->gen_time_periods_func=gen_latent_fixed_comm_periods; 
+	  else if(isinf(sv->pars.kappait)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_int_periods;
+	  else sv->gen_time_periods_func=gen_latent_fixed_comm_int_periods;
+
+	} else {
+
+	  if(!(sv->pars.pit>0)) sv->gen_time_periods_func=gen_latent_comm_periods; 
+	  else if(isinf(sv->pars.kappait)) sv->gen_time_periods_func=gen_latent_comm_fixed_int_periods;
+	  else sv->gen_time_periods_func=gen_latent_comm_int_periods;
+	}
+
+	//Else if an alternate time period is used
+      } else {
+
+	if(isinf(sv->pars.kappa)) {
+
+	  if(isinf(sv->pars.kappaq)) {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_int_fixed_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_fixed_comm_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_fixed_comm_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_fixed_comm_int_fixed_alternate_int_periods;
+	    }
+
+	  } else {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_fixed_comm_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_fixed_comm_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_fixed_comm_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_fixed_comm_fixed_int_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_fixed_comm_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_fixed_comm_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_fixed_comm_int_alternate_int_periods;
+	    }
+	  }
+
+	} else {
+
+	  if(isinf(sv->pars.kappaq)) {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_comm_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_comm_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_comm_fixed_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_comm_fixed_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_comm_fixed_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_comm_fixed_int_fixed_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_comm_int_fixed_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_comm_int_fixed_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_comm_int_fixed_alternate_int_periods;
+	    }
+
+	  } else {
+
+	    if(!(sv->pars.pit>0)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_comm_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_comm_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_comm_alternate_int_periods;
+
+	    } else if(isinf(sv->pars.kappait)) {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_comm_fixed_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_comm_fixed_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_comm_fixed_int_alternate_int_periods;
+
+	    } else {
+
+	      if(!(sv->pars.pim>0)) sv->gen_time_periods_func=gen_latent_comm_int_alternate_periods;
+	      else if(isinf(sv->pars.kappaim)) sv->gen_time_periods_func=gen_latent_comm_int_alternate_fixed_int_periods;
+	      else sv->gen_time_periods_func=gen_latent_comm_int_alternate_int_periods;
+	    }
+	  }
+	}
+      }
+    }
+  }
+>>>>>>> 96c5561dfb5358d3614993a11af11ef9cd042f65
 
   sv->iis[0].event_time=0;
   sv->dataptr=NULL;

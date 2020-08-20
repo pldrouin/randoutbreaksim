@@ -3,10 +3,12 @@ var simulation_8h =
     [ "sim_vars_", "structsim__vars__.html", "structsim__vars__" ],
     [ "DEBUG_PRINTF", "simulation_8h.html#a5c8ef3c24dad2c469a42784a9a39403b", null ],
     [ "GEN_PER", "simulation_8h.html#a11c36c17ab153322bdb53907a519f423", null ],
+    [ "GEN_PER", "simulation_8h.html#a0ddd2d05b4a10c3e725847d9aa22d42b", null ],
     [ "GEN_PERS_MAIN", "simulation_8h.html#a98ef81198e297e099096bad9f1251649", null ],
     [ "INIT_N_LAYERS", "simulation_8h.html#a5655a86be72747864aa32dadb4fa6b49", null ],
     [ "PER_COND", "simulation_8h.html#a27c7cde9db55b6b22c9bb6287c0b19ab", null ],
     [ "sim_vars", "simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf", null ],
+    [ "DEBUG_PRINTF", "simulation_8h.html#ac4097c2c7136bff39106d37e4f3bbfdd", null ],
     [ "default_event_proc_func", "simulation_8h.html#a881fb314fa7f96332cfe3f324287400f", null ],
     [ "default_increase_layers_proc_func", "simulation_8h.html#a43209d4db5fb03b575e3b61a72877b87", null ],
     [ "dummy_proc_func_one_par", "simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1", null ],
@@ -22,5 +24,7 @@ var simulation_8h =
     [ "sim_set_new_event_proc_func", "simulation_8h.html#af5bcf389e2f823c77eaeb9c114ba8217", null ],
     [ "sim_set_new_inf_proc_func", "simulation_8h.html#a9e0b56e8119109b841681b7489e9eb4f", null ],
     [ "sim_set_proc_data", "simulation_8h.html#ae122699e5ed7266492671f08ad74f0f1", null ],
-    [ "simulate", "simulation_8h.html#a25404969c762d39ee77eb67bc8611428", null ]
+    [ "simulate", "simulation_8h.html#a25404969c762d39ee77eb67bc8611428", null ],
+    [ "infectious_at_tmax", "simulation_8h.html#a1078953a4baa4d2a7d7392bdde61f1ce", null ],
+    [ "time_left", "simulation_8h.html#a649cebba321127cdeafded63b674e9c1", null ]
 ];
