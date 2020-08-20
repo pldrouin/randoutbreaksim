@@ -198,8 +198,9 @@ int simulate(sim_vars* sv);
  * This function generates the communicable period for the current
  * infectious individual and a latent period, as determined by the
  * simulation variables and parameters. It considers the alternate
- * communicable period based on the q simulation parameter. It also
- * sets the infectious_at_tmax parameter for the current infectious
+ * communicable period based on the q simulation parameter, as well
+ * as the two types of interrupted periods. It also sets the
+ * infectious_at_tmax parameter for the current infectious
  * individual.
  */
 #define GEN_PER(NAME,LATENT,MAIN,ALTERNATE,IT,IM) static inline void NAME(sim_vars* sv) \
