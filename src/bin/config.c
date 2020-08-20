@@ -193,13 +193,13 @@ void printusage(const char* name)
   printf("\t--m95 VALUE\t\t95th percentile of the alternate communicable period\n");
   printf("\t--pit VALUE\t\tProbability of main communicable period interruption (default value of 0)\n");
   printf("\t--itbar VALUE\t\tMean period for the interrupted main communicable period (required if pit>0)\n");
-  printf("\t--kappait VALUE\t\tjappa parameter for the gamma period used to generate the interrupted main communicable period\n");
+  printf("\t--kappait VALUE\t\tkappa parameter for the gamma period used to generate the interrupted main communicable period\n");
   printf("\t--it95 VALUE\t\t95th percentile of the interrupted main communicable period\n");
   printf("\t--pim VALUE\t\tProbability of alternate communicable period interruption (default value of pit)\n");
   printf("\t--imbar VALUE\t\tMean period for the interrupted alternate communicable period (default value of itbar)\n");
-  printf("\t--kappaim VALUE\t\tjappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait)\n");
+  printf("\t--kappaim VALUE\t\tkappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait)\n");
   printf("\t--im95 VALUE\t\t95th percentile of the interrupted alternate communicable period (default value of it95)\n");
-  printf("\t--R0 VALUE\t\tBasuc reproduction number (R0=tbar*lambda*mu)\n");
+  printf("\t--R0 VALUE\t\tBasic reproduction number (R0=tbar*lambda*mu)\n");
   printf("\t--mu VALUE\t\tMean number of new infections for a given transmission event (mu=-1/log(1-p)*p/(1-p))\n");
   printf("\t--tmax VALUE\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\tInitial number of infectious individuals (default value of 1)\n");
