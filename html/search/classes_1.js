@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['root_5ffinder_115',['root_finder',['../structroot__finder.html',1,'']]]
+  ['model_5fpars_125',['model_pars',['../structmodel__pars.html',1,'']]]
 ];

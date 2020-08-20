@@ -12,6 +12,7 @@
 #include <gsl/gsl_rng.h>
 
 #include "config.h"
+#include "model_parameters.h"
 #include "infindividual.h"
 #include "simulation.h"
 #include "standard_summary_stats.h"

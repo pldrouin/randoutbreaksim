@@ -1,0 +1,12 @@
+<map id="model_parameters.h" name="model_parameters.h">
+<area shape="rect" id="node1" title="Model parameter functions." alt="" coords="277,5,417,32"/>
+<area shape="rect" id="node2" href="$model__parameters_8c.html" title="Model parameter functions." alt="" coords="96,80,236,107"/>
+<area shape="rect" id="node3" href="$simulation_8h.html" title="Simulation data structures and functions." alt="" coords="260,80,352,107"/>
+<area shape="rect" id="node7" href="$main_8h.html" title="Main function for the simulation executable." alt="" coords="334,229,395,256"/>
+<area shape="rect" id="node9" href="$config_8h.html" title="Configuration functions the simulation executable." alt="" coords="428,155,496,181"/>
+<area shape="rect" id="node4" href="$simulation_8c.html" title="Simulation functions." alt="" coords="5,155,97,181"/>
+<area shape="rect" id="node5" href="$standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="121,155,301,181"/>
+<area shape="rect" id="node6" href="$standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="121,229,301,256"/>
+<area shape="rect" id="node8" href="$main_8c.html" title="Main function for the simulation executable." alt="" coords="334,304,395,331"/>
+<area shape="rect" id="node10" href="$config_8c.html" title="Configuration functions the simulation executable." alt="" coords="428,229,496,256"/>
+</map>

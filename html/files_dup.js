@@ -9,6 +9,8 @@ var files_dup =
     [ "infindividual.h", "infindividual_8h.html", [
       [ "infindividual", "structinfindividual.html", "structinfindividual" ]
     ] ],
+    [ "model_parameters.c", "model__parameters_8c.html", "model__parameters_8c" ],
+    [ "model_parameters.h", "model__parameters_8h.html", "model__parameters_8h" ],
     [ "root_finder.c", "root__finder_8c.html", "root__finder_8c" ],
     [ "root_finder.h", "root__finder_8h.html", "root__finder_8h" ],
     [ "simulation.c", "simulation_8c.html", "simulation_8c" ],

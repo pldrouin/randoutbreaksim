@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-int config(sim_pars* pars, uint32_t* npaths, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
+int config(model_pars* pars, uint32_t* npaths, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
 {
   int plength=1;
   FILE **fptra=NULL;
@@ -102,6 +102,38 @@ int config(sim_pars* pars, uint32_t* npaths, uint32_t* nimax, int* oout, int* eo
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->m95);
 
+      } else if(!argsdiffer(pbuf, "pit")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->pit);
+
+      } else if(!argsdiffer(pbuf, "itbar")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->itbar);
+
+      } else if(!argsdiffer(pbuf, "kappait")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->kappait);
+
+      } else if(!argsdiffer(pbuf, "it95")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->it95);
+
+      } else if(!argsdiffer(pbuf, "pim")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->pim);
+
+      } else if(!argsdiffer(pbuf, "imbar")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->imbar);
+
+      } else if(!argsdiffer(pbuf, "kappaim")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->kappaim);
+
+      } else if(!argsdiffer(pbuf, "im95")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->im95);
+
       } else if(!argsdiffer(pbuf, "R0")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->R0);
@@ -147,201 +179,32 @@ void printusage(const char* name)
   printf("\t--config FILENAME\tRead configuration options from FILENAME\n");
   printf("\t--olog FILENAME\t\tRedirect standard output to FILENAME\n");
   printf("\t--elog FILENAME\t\tRedirect standard error to FILENAME\n");
-  printf("\t--tbar VALUE\t\tbranchsim's tbar parameter\n");
-  printf("\t--p VALUE\t\tbranchsim's p parameter\n");
-  printf("\t--lambda VALUE\t\tbranchsim's lambda parameter\n");
-  printf("\t--kappa VALUE\t\tbranchsim's kappa parameter\n");
-  printf("\t--t95 VALUE\t\tbranchsim's t95 parameter\n");
-  printf("\t--lbar VALUE\t\tlbar parameter (default value of 0)\n");
-  printf("\t--kappal VALUE\t\tkappal parameter (required if lbar>0)\n");
-  printf("\t--l95 VALUE\t\tbranchsim's l95 parameter\n");
-  printf("\t--q VALUE\t\tbranchsim's q parameter (default value of 0)\n");
-  printf("\t--mbar VALUE\t\tbranchsim's mbar parameter (required if q>0)\n");
-  printf("\t--kappaq VALUE\t\tbranchsim's kappaq parameter (required if q>0)\n");
-  printf("\t--m95 VALUE\t\tbranchsim's m95 parameter\n");
-  printf("\t--R0 VALUE\t\tbranchsim's R0 parameter\n");
-  printf("\t--mu VALUE\t\tbranchsim's mu parameter\n");
-  printf("\t--tmax VALUE\t\tbranchsim's tmax parameter (default value of INFINITY)\n");
-  printf("\t--nstart VALUE\t\tbranchsim's nstart parameter (default value of 1)\n");
-  printf("\t--npaths VALUE\t\tbranchsim's npaths parameter (default value of 10000)\n");
+  printf("\t--tbar VALUE\t\tMean main communicable period\n");
+  printf("\t--p VALUE\t\tParameter for the logarithmic distribution used to draw number of new infections for one transmission event\n");
+  printf("\t--lambda VALUE\t\tRate of transmission events\n");
+  printf("\t--kappa VALUE\t\tkappa parameter for the gamma distribution used to generate the main communicable period\n");
+  printf("\t--t95 VALUE\t\t95th percentile of the main communicable period\n");
+  printf("\t--lbar VALUE\t\tMean latent period (default value of 0)\n");
+  printf("\t--kappal VALUE\t\tkappa parameter for the gamma distribution used to generate the latent period\n");
+  printf("\t--l95 VALUE\t\t95th percentile of the latent period\n");
+  printf("\t--q VALUE\t\tProbability of alternate communicable period (default value of 0)\n");
+  printf("\t--mbar VALUE\t\tMean period for the alternate communicable period (required if q>0)\n");
+  printf("\t--kappaq VALUE\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period\n");
+  printf("\t--m95 VALUE\t\t95th percentile of the alternate communicable period\n");
+  printf("\t--pit VALUE\t\tProbability of main communicable period interruption (default value of 0)\n");
+  printf("\t--itbar VALUE\t\tMean period for the interrupted main communicable period (required if pit>0)\n");
+  printf("\t--kappait VALUE\t\tjappa parameter for the gamma period used to generate the interrupted main communicable period\n");
+  printf("\t--it95 VALUE\t\t95th percentile of the interrupted main communicable period\n");
+  printf("\t--pim VALUE\t\tProbability of alternate communicable period interruption (default value of pit)\n");
+  printf("\t--imbar VALUE\t\tMean period for the interrupted alternate communicable period (default value of itbar)\n");
+  printf("\t--kappaim VALUE\t\tjappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait)\n");
+  printf("\t--im95 VALUE\t\t95th percentile of the interrupted alternate communicable period (default value of it95)\n");
+  printf("\t--R0 VALUE\t\tBasuc reproduction number (R0=tbar*lambda*mu)\n");
+  printf("\t--mu VALUE\t\tMean number of new infections for a given transmission event (mu=-1/log(1-p)*p/(1-p))\n");
+  printf("\t--tmax VALUE\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
+  printf("\t--nstart VALUE\t\tInitial number of infectious individuals (default value of 1)\n");
+  printf("\t--npaths VALUE\t\tNumber of generated simulation paths (default value of 10000)\n");
   printf("\t--nimax VALUE\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX)\n");
   printf("\t--help\t\t\tPrint this usage information and exit\n");
   printf("\nEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\nOptions can be used multiple times and configuration files can be read from configuration files.\n"); 
-}
-
-int config_solve_pars(sim_pars* pars)
-{
-  if((isnan(pars->tbar)==0) + (isnan(pars->lambda)==0) + (isnan(pars->p)==0 || isnan(pars->mu)==0) + (isnan(pars->R0)==0) != 3) {
-    fprintf(stderr,"%s: Error: An invalid combination of tbar, lambda, p, mu and R0 parameters was provided.\n",__func__);
-    return -1;
-  }
-
-  if(config_solve_R0_group(pars)) return -5;
-  
-  printf("Basic reproduction parameters are:\n");
-  printf("lambda:\t%22.15e\n",pars->lambda);
-  printf("tbar:\t%22.15e\n",pars->tbar);
-  printf("mu:\t%22.15e\n",pars->mu);
-  printf("p:\t%22.15e\n",pars->p);
-  printf("R0:\t%22.15e\n",pars->R0);
-
-  if((isnan(pars->kappa)==0) + (isnan(pars->t95)==0) != 1) {
-    fprintf(stderr,"%s: Error: Either the kappa parameter or the t95 parameter must be provided.\n",__func__);
-    return -2;
-  }
-
-  if(config_solve_gamma_group(&pars->tbar, &pars->kappa, &pars->t95)) {
-    fprintf(stderr,"%s: Error: Cannot solve parameters for the main time gamma distribution\n",__func__);
-    return -6;
-
-  }
-  printf("Parameters for the main time gamma distribution:\n");
-  printf("tbar:\t%22.15e\n",pars->tbar);
-  printf("kappa:\t%22.15e\n",pars->kappa);
-  printf("t95:\t%22.15e\n",pars->t95);
-
-  if(pars->q) {
-
-    if((isnan(pars->kappaq)==0) + (isnan(pars->m95)==0) != 1) {
-      fprintf(stderr,"%s: Error: Either the kappaq parameter or the m95 parameter must be provided.\n",__func__);
-      return -3;
-    }
-
-    if(config_solve_gamma_group(&pars->mbar, &pars->kappaq, &pars->m95)) {
-      fprintf(stderr,"%s: Error: Cannot solve parameters for the alternate time gamma distribution\n",__func__);
-      return -7;
-
-    } else {
-      printf("Parameters for the alternate time gamma distribution:\n");
-      printf("mbar:\t%22.15e\n",pars->mbar);
-      printf("kappaq:\t%22.15e\n",pars->kappaq);
-      printf("m95:\t%22.15e\n",pars->m95);
-    }
-  }
-
-  if(!isnan(pars->kappal) || !isnan(pars->l95)) {
-
-    if((isnan(pars->kappal)==0) + (isnan(pars->l95)==0) != 1) {
-      fprintf(stderr,"%s: Error: Either the kappal parameter or the l95 parameter must be provided.\n",__func__);
-      return -4;
-    }
-
-    if(config_solve_gamma_group(&pars->lbar, &pars->kappal, &pars->l95)) {
-      fprintf(stderr,"%s: Error: Cannot solve parameters for the latent time gamma distribution\n",__func__);
-      return -8;
-
-    } else {
-      printf("Parameters for the latent time gamma distribution:\n");
-      printf("lbar:\t%22.15e\n",pars->lbar);
-      printf("kappal:\t%22.15e\n",pars->kappal);
-      printf("l95:\t%22.15e\n",pars->l95);
-    }
-  }
-
-  return 0;
-}
-
-int config_solve_R0_group(sim_pars* pars)
-{
-  //If p is provided as an input
-  if(!isnan(pars->p)) {
-
-    if(pars->p<0) {
-      fprintf(stderr,"%s: Error: p must be non-negative\n",__func__);
-      return -1;
-    }
-    pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
-  }
-
-  if(!isnan(pars->tbar) && pars->tbar<=0) {
-    fprintf(stderr,"%s: Error: tbar must be greater than 0\n",__func__);
-    return -2;
-  }
-
-  if(!isnan(pars->lambda) && pars->lambda<=0) {
-    fprintf(stderr,"%s: Error: lambda must be greater than 0\n",__func__);
-    return -3;
-  }
-
-  if(!isnan(pars->R0) && pars->R0<=0) {
-    fprintf(stderr,"%s: Error: R0j must be greater than 0\n",__func__);
-    return -4;
-  }
-
-  //Solve for the missing parameter
-  if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*pars->mu;
-
-  else if(isnan(pars->lambda)) pars->lambda=pars->R0/(pars->tbar*pars->mu);
-
-  else if(isnan(pars->tbar)) pars->tbar=pars->R0/(pars->lambda*pars->mu);
-
-  else pars->mu=pars->R0/(pars->lambda*pars->tbar);
-
-  //If p is unknown solve for it numerically
-  if(isnan(pars->p)) {
-
-    if(pars->mu > 1) {
-      root_finder* rf=root_finder_init(logroot, &pars->mu);
-      pars->p=0.999;
-
-      int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
-
-      root_finder_free(rf);
-
-      if(ret) return ret;
-
-    } else pars->p=0;
-  }
-  return 0;
-}
-
-int config_solve_gamma_group(double* ave, double* kappa, double* x95)
-{
-  if(!(*ave>=0)) {
-    fprintf(stderr,"%s: Error: The average of the distributio must be non-negative.\n",__func__);
-    return -1;
-  }
-
-  if(isnan(*x95)) {
-
-    if(!(*kappa>0)) {
-      fprintf(stderr,"%s: Error: The kappa parameter of the distributio must be non-negative.\n",__func__);
-      return -1;
-    }
-
-    if(*kappa != INFINITY) {
-      double pars[2]={*ave * *kappa, *kappa};
-      root_finder* rf=root_finder_init(gpercroot, pars);
-      *x95=*ave;
-
-      int ret=root_finder_find(rf, RF_GPERC_EPSF, 100, *ave, 1e100, x95);
-
-      root_finder_free(rf);
-
-      if(ret) return ret;
-
-    } else *x95 = *ave;
-
-  } else {
-
-    if(!(*x95>=*ave)) {
-      fprintf(stderr,"%s: Error: The 95th percentile of the distributio cannot be smaller than the average\n",__func__);
-      return -1;
-    }
-
-    if(*x95 != *ave) {
-      *kappa=1;
-      const double otherkappa=*kappa*0.9;
-      double pars[4]={*ave, *x95, otherkappa, gpercrootfunc(*ave * otherkappa, *x95 * otherkappa)};
-      root_finder* rf=root_finder_init(gkapparoot, pars);
-
-      int ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 1e-100, 1e100, kappa);
-
-      root_finder_free(rf);
-
-      if(ret) return ret;
-
-    } else *kappa = INFINITY;
-  }
-  return 0;
 }
