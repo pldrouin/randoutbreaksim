@@ -9,7 +9,11 @@
 
 #include <math.h>
 
+#include <pthread.h>
+
 #include <gsl/gsl_rng.h>
+
+#include "rngstream_gsl.h"
 
 #include "config.h"
 #include "model_parameters.h"
@@ -21,3 +25,32 @@
  * @brief Main function.
  */
 int main(const int nargs, const char* args[]);
+
+typedef struct {
+  double npathsperset;
+  uint32_t nsets;
+  uint32_t npers;
+  uint32_t nimax;
+  model_pars const* pars;
+  uint32_t volatile* set;
+  double commper_mean;
+#ifdef NUMEVENTSSTATS
+  double nevents_mean;
+#endif
+  double r_mean;
+  double pe;
+  double te_mean;
+  double te_std;
+  double* inf_timeline_mean_ext;
+  double* inf_timeline_std_ext;
+  double* inf_timeline_mean_noext;
+  double* inf_timeline_std_noext;
+  double* totinf_timeline_mean_ext;
+  double* totinf_timeline_std_ext;
+  double* totinf_timeline_mean_noext;
+  double* totinf_timeline_std_noext;
+  uint32_t nimaxedoutmintimeindex;
+  gsl_rng* r;
+} thread_data;
+
+void* simthread(void* arg);

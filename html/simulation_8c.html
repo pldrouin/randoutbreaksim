@@ -134,9 +134,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a7d7687ebb34e4df53eff1ed32e7f7597">sim_pars_init</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars)</td></tr>
 <tr class="memdesc:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises simulation parameters.  <a href="simulation_8c.html#a7d7687ebb34e4df53eff1ed32e7f7597">More...</a><br /></td></tr>
 <tr class="separator:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8013ee290efe1e7f13b3e6e4d262ed59"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a8013ee290efe1e7f13b3e6e4d262ed59">sim_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structmodel__pars.html">model_pars</a> *pars, const gsl_rng *r)</td></tr>
-<tr class="memdesc:a8013ee290efe1e7f13b3e6e4d262ed59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the simulation.  <a href="simulation_8c.html#a8013ee290efe1e7f13b3e6e4d262ed59">More...</a><br /></td></tr>
-<tr class="separator:a8013ee290efe1e7f13b3e6e4d262ed59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2ca281c80f36f8dfbbadec8518ba873e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a2ca281c80f36f8dfbbadec8518ba873e">sim_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structmodel__pars.html">model_pars</a> const *pars, const gsl_rng *r)</td></tr>
+<tr class="memdesc:a2ca281c80f36f8dfbbadec8518ba873e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the simulation.  <a href="simulation_8c.html#a2ca281c80f36f8dfbbadec8518ba873e">More...</a><br /></td></tr>
+<tr class="separator:a2ca281c80f36f8dfbbadec8518ba873e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a25404969c762d39ee77eb67bc8611428"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a25404969c762d39ee77eb67bc8611428">simulate</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
 <tr class="memdesc:a25404969c762d39ee77eb67bc8611428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the simulation.  <a href="simulation_8c.html#a25404969c762d39ee77eb67bc8611428">More...</a><br /></td></tr>
 <tr class="separator:a25404969c762d39ee77eb67bc8611428"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -147,14 +147,14 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a8013ee290efe1e7f13b3e6e4d262ed59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8013ee290efe1e7f13b3e6e4d262ed59">&#9670;&nbsp;</a></span>sim_init()</h2>
+<a id="a2ca281c80f36f8dfbbadec8518ba873e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ca281c80f36f8dfbbadec8518ba873e">&#9670;&nbsp;</a></span>sim_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">int sim_init </td>
+          <td class="memname">void sim_init </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
           <td class="paramname"><em>sv</em>, </td>
@@ -162,7 +162,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> *&#160;</td>
+          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> const *&#160;</td>
           <td class="paramname"><em>pars</em>, </td>
         </tr>
         <tr>
@@ -189,7 +189,6 @@ Functions</h2></td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd>0 if the simulation was initialised successfully. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00137">137</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
@@ -280,7 +279,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if there is no error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00160">160</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00155">155</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>

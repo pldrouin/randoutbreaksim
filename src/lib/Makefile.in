@@ -1,6 +1,6 @@
 LDIR		=	src/lib
 
-LCFLAGS	=	$(CFLAGS) 
+LCFLAGS	=	$(CFLAGS)
 LLIBS		=	
 
 ALLINCS_ORIG	=	$(wildcard $(LDIR)/*.h)

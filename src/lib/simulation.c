@@ -134,12 +134,8 @@ void sim_pars_init(model_pars* pars)
   pars->nstart=1;
 }
 
-int sim_init(sim_vars* sv, model_pars* pars, const gsl_rng* r)
+void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
 {
-  int ret=sim_pars_check(pars);
-
-  if(ret) return ret;
-
   sv->pars=*pars;
   sv->r=r;
   sv->iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));
@@ -154,7 +150,6 @@ int sim_init(sim_vars* sv, model_pars* pars, const gsl_rng* r)
   sv->new_inf_proc_func=dummy_proc_func_one_par;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
   sv->inf_proc_func_noevent=dummy_proc_func_two_pars;
-  return 0;
 }
 
 int simulate(sim_vars* sv)

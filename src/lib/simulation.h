@@ -73,9 +73,8 @@ void sim_pars_init(model_pars* pars);
  * @param sv: Pointer to the simulation handle.
  * @param pars: Pointer to the simulation parameters
  * @param r: Pointer to the GSL random number generator.
- * @return 0 if the simulation was initialised successfully.
  */
-int sim_init(sim_vars* sv, model_pars* pars, const gsl_rng* r);
+void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r);
 
 /**
  * @brief Initialises the simulation-level data pointer for user-defined functions.
