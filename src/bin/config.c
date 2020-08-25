@@ -212,8 +212,8 @@ void printusage(const char* name)
   printf("\t--tmax VALUE\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\tInitial number of infectious individuals (default value of 1)\n");
   printf("\t--npaths VALUE\t\tNumber of generated simulation paths (default value of 10000)\n");
-  printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1)\n");
-  printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100)\n");
+  printf("\t--nthreads VALUE\tNumber of threads used to perform the simulation (default value of 1)\n");
+  printf("\t--nsetsperthread VALUE\tNumber of path sets used for each thread (default value of 100)\n");
   printf("\t--nimax VALUE\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX)\n");
   printf("\t--help\t\t\tPrint this usage information and exit\n");
   printf("\nEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\nOptions can be used multiple times and configuration files can be read from configuration files.\n"); 
