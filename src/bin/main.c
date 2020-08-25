@@ -15,7 +15,7 @@ int main(const int nargs, const char* args[])
   model_pars pars;
   uint32_t npaths=10000;
   uint32_t nthreads=1;
-  uint32_t nsetsperthread=100;
+  uint32_t nsetsperthread=(nthreads>1?100:1);
   uint32_t nimax=UINT32_MAX;
   int oout=STDOUT_FILENO;
   int eout=STDERR_FILENO;
@@ -36,7 +36,7 @@ int main(const int nargs, const char* args[])
   thread_data* tdata=(thread_data*)malloc(nthreads*sizeof(thread_data));
   int j;
   const uint32_t nsets=nthreads*nsetsperthread;
-  const double npathsperset=npaths/nsets;
+  const double npathsperset=((double)npaths)/nsets;
   const uint32_t npers=pars.tmax+1;
   volatile uint32_t set=0;
   int t;
@@ -237,7 +237,9 @@ void* simthread(void* arg)
 
     if(curset>=data->nsets) break;
 
-    npaths=(uint32_t)((curset+1)*data->npathsperset)-(uint32_t)(curset*data->npathsperset);
+    //printf("%22.15e]t%22.15e\n",curset*data->npathsperset,(curset+1)*data->npathsperset);
+    npaths=round((curset+1)*data->npathsperset)-round(curset*data->npathsperset);
+    //printf("npaths %u\n",npaths);
 
     for(int i=npaths-1; i>=0; --i) {
       std_stats_path_init(&stats);
