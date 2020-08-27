@@ -1,4 +1,4 @@
-# branchsimc
+# randoutbreaksim
 A C implementation of the branchsim simulation. It consits in a faster and more memory efficient implementation of the simulation process, with some extensions of the model. Speed gains are due to the native implementation, avoidance of any indexing/hashing/searching (only direct access is used throughout the algorithm), minimised memory operations and on-the-fly computation of parameters. Reduction of memory usage is due to the different simulation algorithm that decouples the simulation process from data processing. Memory usage for the simulation process scales with the number of layers such that it is kept to a minimum. Data processing functions can be defined by the user. Speed gains of approximately three orders of magnitude can be expected (depends on data processing and simulation parameters).
 
-Depends only on libgsl.
+Depends on librngstream from the same author and or libgsl.
