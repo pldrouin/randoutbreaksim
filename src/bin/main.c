@@ -51,8 +51,8 @@ int main(const int nargs, const char* args[])
       tdata[t].nimax=nimax;
       tdata[t].pars=&pars;
       tdata[t].set=&set;
-      tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
-      //tdata[t].r = gsl_rng_alloc(rngstream_gsl);
+      //tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
+      tdata[t].r = gsl_rng_alloc(rngstream_gsl);
       pthread_create(threads+t,NULL,simthread,tdata+t);
     }
 
