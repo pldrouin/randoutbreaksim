@@ -146,17 +146,6 @@ inline static void sim_set_end_inf_proc_func(sim_vars* sv, void (*end_inf_proc_f
  */
 inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_func_noevent)(infindividual* inf, void* dataptr)){sv->inf_proc_func_noevent=inf_proc_func_noevent;}
 
-/**
- * @brief Frees the dynamic memory used in the simulation handle.
- *
- * Does not free the memory related to the simulation-level data pointer
- * for the user-defined functions, but it does free the user-allocated memory
- * for the infectious individuals.
- *
- * @param sv: Pointer to the simulation variables.
- */
-void sim_free(sim_vars* sv);
-
 //! @cond Doxygen_Suppress
 /**
  * The preprocessing macros below are used by the main GEN_PER macro.

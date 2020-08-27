@@ -169,3 +169,9 @@ done_parsing:
 
   return 0;
 }
+
+void branchsim_free(sim_vars* sv)
+{
+  for(uint32_t i=0; i<sv->brsim.nlayers; ++i) if(sv->brsim.iis[i].dataptr) free(sv->brsim.iis[i].dataptr);
+  free(sv->brsim.iis);
+}

@@ -86,6 +86,18 @@ int model_solve_R0_group(model_pars* pars);
 int model_solve_gamma_group(double* ave, double* kappa, double* x95);
 
 /**
+ * @brief Verifies the validity of the model parameters.
+ *
+ * This internal function verifies if the set of provided model parameter values are
+ * valid.
+ *
+ * @param pars: Pointer to the model parameters.
+ * @return 0 if the parameters are valid. If the parameters are
+ * invalid, an error is printed on stderr.
+ */
+int model_pars_check(model_pars const* pars);
+
+/**
  * @brief Computes p (logarithmic distribution) using Newton's method.
  *
  * This function estimates the value of the p parameter from a logarithmic

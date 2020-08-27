@@ -39,4 +39,15 @@ void branchsim_init(sim_vars* sv);
  */
 int branchsim(sim_vars* sv);
 
+/**
+ * @brief Frees the dynamic memory used in the simulation handle.
+ *
+ * Does not free the memory related to the simulation-level data pointer
+ * for the user-defined functions, but it does free the user-allocated memory
+ * for the infectious individuals.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+void branchsim_free(sim_vars* sv);
+
 #endif

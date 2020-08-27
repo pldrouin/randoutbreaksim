@@ -123,6 +123,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5be20f39de77e38781916b5deb32a53c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8c.html#a5be20f39de77e38781916b5deb32a53c">model_solve_gamma_group</a> (double *ave, double *kappa, double *x95)</td></tr>
 <tr class="memdesc:a5be20f39de77e38781916b5deb32a53c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for gamma distribution related simulation parameters.  <a href="model__parameters_8c.html#a5be20f39de77e38781916b5deb32a53c">More...</a><br /></td></tr>
 <tr class="separator:a5be20f39de77e38781916b5deb32a53c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f68d24f47076b73cae35601e7d51147"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8c.html#a9f68d24f47076b73cae35601e7d51147">model_pars_check</a> (<a class="el" href="structmodel__pars.html">model_pars</a> const *pars)</td></tr>
+<tr class="memdesc:a9f68d24f47076b73cae35601e7d51147"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies the validity of the model parameters.  <a href="model__parameters_8c.html#a9f68d24f47076b73cae35601e7d51147">More...</a><br /></td></tr>
+<tr class="separator:a9f68d24f47076b73cae35601e7d51147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Model parameter functions. </p>
@@ -130,6 +133,36 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a9f68d24f47076b73cae35601e7d51147"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f68d24f47076b73cae35601e7d51147">&#9670;&nbsp;</a></span>model_pars_check()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int model_pars_check </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> const *&#160;</td>
+          <td class="paramname"><em>pars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verifies the validity of the model parameters. </p>
+<p>This internal function verifies if the set of provided model parameter values are valid.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pars</td><td>Pointer to the model parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the parameters are valid. If the parameters are invalid, an error is printed on stderr. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00245">245</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+
+</div>
+</div>
 <a id="a5be20f39de77e38781916b5deb32a53c"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a5be20f39de77e38781916b5deb32a53c">&#9670;&nbsp;</a></span>model_solve_gamma_group()</h2>
 

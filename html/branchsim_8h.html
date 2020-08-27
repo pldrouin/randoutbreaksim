@@ -132,6 +132,10 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
+<tr class="memitem:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memItemLeft" align="right" valign="top"><a id="a5c8ef3c24dad2c469a42784a9a39403b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">DEBUG_PRINTF</a>(...)</td></tr>
+<tr class="memdesc:a5c8ef3c24dad2c469a42784a9a39403b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug print function. <br /></td></tr>
+<tr class="separator:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5655a86be72747864aa32dadb4fa6b49"><td class="memItemLeft" align="right" valign="top"><a id="a5655a86be72747864aa32dadb4fa6b49"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#a5655a86be72747864aa32dadb4fa6b49">INIT_N_LAYERS</a>&#160;&#160;&#160;(16)</td></tr>
 <tr class="memdesc:a5655a86be72747864aa32dadb4fa6b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial number of simulation layers. <br /></td></tr>
@@ -145,6 +149,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aedb2df7d851ac88b93a808dd58b19f41"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41">branchsim</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
 <tr class="memdesc:aedb2df7d851ac88b93a808dd58b19f41"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the branching simulation.  <a href="branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41">More...</a><br /></td></tr>
 <tr class="separator:aedb2df7d851ac88b93a808dd58b19f41"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acdc4823a79039c032dbbee7e5aff3255"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">branchsim_free</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:acdc4823a79039c032dbbee7e5aff3255"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the dynamic memory used in the simulation handle.  <a href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">More...</a><br /></td></tr>
+<tr class="separator:acdc4823a79039c032dbbee7e5aff3255"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Simulation data structures and functions. </p>
@@ -179,6 +186,35 @@ Functions</h2></td></tr>
 <dl class="section return"><dt>Returns</dt><dd>0 if there is no error. </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00022">22</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
+
+</div>
+</div>
+<a id="acdc4823a79039c032dbbee7e5aff3255"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acdc4823a79039c032dbbee7e5aff3255">&#9670;&nbsp;</a></span>branchsim_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void branchsim_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Frees the dynamic memory used in the simulation handle. </p>
+<p>Does not free the memory related to the simulation-level data pointer for the user-defined functions, but it does free the user-allocated memory for the infectious individuals.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00173">173</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
 
 </div>
 </div>

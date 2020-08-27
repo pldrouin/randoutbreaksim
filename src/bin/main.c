@@ -28,8 +28,8 @@ int main(const int nargs, const char* args[])
 
   gsl_rng_env_setup();
 
-  if(sim_pars_check(&pars)) {
-    fprintf(stderr,"%s: Error: While attempting to initialise the simulation\n",args[0]);
+  if(model_pars_check(&pars)) {
+    fprintf(stderr,"%s: Error: While verifying the validity of the simulation parameters.\n",args[0]);
     return 1;
   }
 
@@ -289,7 +289,7 @@ void* simthread(void* arg)
     }
   }
   std_stats_free(&stats);
-  sim_free(&sv);
+  branchsim_free(&sv);
 
   return NULL;
 }

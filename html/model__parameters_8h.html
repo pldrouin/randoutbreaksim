@@ -165,6 +165,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a5be20f39de77e38781916b5deb32a53c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a5be20f39de77e38781916b5deb32a53c">model_solve_gamma_group</a> (double *ave, double *kappa, double *x95)</td></tr>
 <tr class="memdesc:a5be20f39de77e38781916b5deb32a53c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for gamma distribution related simulation parameters.  <a href="model__parameters_8h.html#a5be20f39de77e38781916b5deb32a53c">More...</a><br /></td></tr>
 <tr class="separator:a5be20f39de77e38781916b5deb32a53c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f68d24f47076b73cae35601e7d51147"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a9f68d24f47076b73cae35601e7d51147">model_pars_check</a> (<a class="el" href="structmodel__pars.html">model_pars</a> const *pars)</td></tr>
+<tr class="memdesc:a9f68d24f47076b73cae35601e7d51147"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies the validity of the model parameters.  <a href="model__parameters_8h.html#a9f68d24f47076b73cae35601e7d51147">More...</a><br /></td></tr>
+<tr class="separator:a9f68d24f47076b73cae35601e7d51147"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab215566a165d81f0d3ec74666d7991d0"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#ab215566a165d81f0d3ec74666d7991d0">logroot</a> (double *x, double *diff, void *params)</td></tr>
 <tr class="memdesc:ab215566a165d81f0d3ec74666d7991d0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes p (logarithmic distribution) using Newton's method.  <a href="model__parameters_8h.html#ab215566a165d81f0d3ec74666d7991d0">More...</a><br /></td></tr>
 <tr class="separator:ab215566a165d81f0d3ec74666d7991d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -235,7 +238,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00143">143</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00155">155</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -290,7 +293,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00126">126</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00138">138</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -339,7 +342,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the discrepancy between the evaluated CDF and the 95th percentile. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00111">111</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00123">123</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -394,7 +397,37 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00098">98</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00110">110</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+
+</div>
+</div>
+<a id="a9f68d24f47076b73cae35601e7d51147"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f68d24f47076b73cae35601e7d51147">&#9670;&nbsp;</a></span>model_pars_check()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int model_pars_check </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> const *&#160;</td>
+          <td class="paramname"><em>pars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Verifies the validity of the model parameters. </p>
+<p>This internal function verifies if the set of provided model parameter values are valid.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pars</td><td>Pointer to the model parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the parameters are valid. If the parameters are invalid, an error is printed on stderr. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00245">245</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
