@@ -11,6 +11,12 @@
 
 #include "simulation.h"
 
+#ifdef DEBUG_PRINTF
+#undef DEBUG_PRINTF
+#endif
+#define DEBUG_PRINTF(...) //!< Debug print function
+//#define DEBUG_PRINTF(...) printf(__VA_ARGS__) //!< Debug print function
+
 #define INIT_N_LAYERS (16) //!< Initial number of simulation layers
 
 /**
