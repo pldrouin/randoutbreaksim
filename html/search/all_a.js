@@ -1,12 +1,15 @@
 var searchData=
 [
-  ['nevents_65',['nevents',['../structinfindividual.html#afd408b01ab38e9de03babe0f0059537b',1,'infindividual']]],
-  ['new_5fevent_5fproc_5ffunc_66',['new_event_proc_func',['../structsim__vars__.html#a3884cb21e08092c3e9c686bebc2e06c1',1,'sim_vars_']]],
-  ['new_5finf_5fproc_5ffunc_67',['new_inf_proc_func',['../structsim__vars__.html#aa811264d61ffd4e711034cd3965ec48b',1,'sim_vars_']]],
-  ['nimax_68',['nimax',['../structstd__summary__stats.html#a8e83d6a8048fe685966daa2fc88b9786',1,'std_summary_stats']]],
-  ['nimaxedoutmintimeindex_69',['nimaxedoutmintimeindex',['../structstd__summary__stats.html#afebfc56bb1adf1c61f39f78a5e4e4b6f',1,'std_summary_stats']]],
-  ['ninfections_70',['ninfections',['../structinfindividual.html#afe3df4bdd66cd83ba78ae3d31e64231f',1,'infindividual']]],
-  ['nlayers_71',['nlayers',['../structsim__vars__.html#a8371841f622cffaa066aade2df13c58f',1,'sim_vars_']]],
-  ['npers_72',['npers',['../structstd__summary__stats.html#af9a151e1652f1cbcdd66f9db6780e324',1,'std_summary_stats']]],
-  ['nstart_73',['nstart',['../structmodel__pars.html#aef4e69e251970cf08a8023fb9789ce0d',1,'model_pars']]]
+  ['m95_58',['m95',['../structmodel__pars.html#a49618088c283cba4fbcc6c4717cf90ed',1,'model_pars']]],
+  ['main_59',['main',['../main_8c.html#adc18f50c2d018bfc1f62f1ac87f2a5ff',1,'main(const int nargs, const char *args[]):&#160;main.c'],['../main_8h.html#adc18f50c2d018bfc1f62f1ac87f2a5ff',1,'main(const int nargs, const char *args[]):&#160;main.c']]],
+  ['main_2ec_60',['main.c',['../main_8c.html',1,'']]],
+  ['main_2eh_61',['main.h',['../main_8h.html',1,'']]],
+  ['mbar_62',['mbar',['../structmodel__pars.html#a46b17003958e9764a687c5302faaac61',1,'model_pars']]],
+  ['model_5fparameters_2ec_63',['model_parameters.c',['../model__parameters_8c.html',1,'']]],
+  ['model_5fparameters_2eh_64',['model_parameters.h',['../model__parameters_8h.html',1,'']]],
+  ['model_5fpars_65',['model_pars',['../structmodel__pars.html',1,'']]],
+  ['model_5fsolve_5fgamma_5fgroup_66',['model_solve_gamma_group',['../model__parameters_8c.html#a5be20f39de77e38781916b5deb32a53c',1,'model_solve_gamma_group(double *ave, double *kappa, double *x95):&#160;model_parameters.c'],['../model__parameters_8h.html#a5be20f39de77e38781916b5deb32a53c',1,'model_solve_gamma_group(double *ave, double *kappa, double *x95):&#160;model_parameters.c']]],
+  ['model_5fsolve_5fpars_67',['model_solve_pars',['../model__parameters_8c.html#a061f6cf422f44112bf68d0feff191130',1,'model_solve_pars(model_pars *pars):&#160;model_parameters.c'],['../model__parameters_8h.html#a061f6cf422f44112bf68d0feff191130',1,'model_solve_pars(model_pars *pars):&#160;model_parameters.c']]],
+  ['model_5fsolve_5fr0_5fgroup_68',['model_solve_R0_group',['../model__parameters_8c.html#aceca3c8ccc49ed45ad5f492606815f52',1,'model_solve_R0_group(model_pars *pars):&#160;model_parameters.c'],['../model__parameters_8h.html#aceca3c8ccc49ed45ad5f492606815f52',1,'model_solve_R0_group(model_pars *pars):&#160;model_parameters.c']]],
+  ['mu_69',['mu',['../structmodel__pars.html#afccb717dc6645784a58a0eaa29db9e3c',1,'model_pars']]]
 ];

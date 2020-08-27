@@ -1,10 +1,12 @@
 var searchData=
 [
-  ['p_74',['p',['../structmodel__pars.html#a3e7f9db94ea3e9f83745ba589e0c0794',1,'model_pars']]],
-  ['params_75',['params',['../structroot__finder.html#abb31d883d3cc54ece5bcc5acb46bb09f',1,'root_finder']]],
-  ['pars_76',['pars',['../structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af',1,'sim_vars_']]],
-  ['per_5fcond_77',['PER_COND',['../simulation_8h.html#a27c7cde9db55b6b22c9bb6287c0b19ab',1,'simulation.h']]],
-  ['pim_78',['pim',['../structmodel__pars.html#a40948650937dc498597b9eb51fa2e56d',1,'model_pars']]],
-  ['pit_79',['pit',['../structmodel__pars.html#ad74f2a750a43cf77e5fb5cfd7cbde1dc',1,'model_pars']]],
-  ['printusage_80',['printusage',['../config_8c.html#ad58728259679e01f1f114c6a3328fbcd',1,'printusage(const char *name):&#160;config.c'],['../config_8h.html#ad58728259679e01f1f114c6a3328fbcd',1,'printusage(const char *name):&#160;config.c']]]
+  ['nevents_70',['nevents',['../structinfindividual.html#afd408b01ab38e9de03babe0f0059537b',1,'infindividual']]],
+  ['new_5fevent_5fproc_5ffunc_71',['new_event_proc_func',['../structsim__vars__.html#a3884cb21e08092c3e9c686bebc2e06c1',1,'sim_vars_']]],
+  ['new_5finf_5fproc_5ffunc_72',['new_inf_proc_func',['../structsim__vars__.html#aa811264d61ffd4e711034cd3965ec48b',1,'sim_vars_']]],
+  ['nimax_73',['nimax',['../structstd__summary__stats.html#a8e83d6a8048fe685966daa2fc88b9786',1,'std_summary_stats']]],
+  ['nimaxedoutmintimeindex_74',['nimaxedoutmintimeindex',['../structstd__summary__stats.html#afebfc56bb1adf1c61f39f78a5e4e4b6f',1,'std_summary_stats']]],
+  ['ninfections_75',['ninfections',['../structinfindividual.html#afe3df4bdd66cd83ba78ae3d31e64231f',1,'infindividual']]],
+  ['nlayers_76',['nlayers',['../structbrsim__vars.html#ae5390c0233e3576af029c2dee5c9f5d3',1,'brsim_vars']]],
+  ['npers_77',['npers',['../structstd__summary__stats.html#af9a151e1652f1cbcdd66f9db6780e324',1,'std_summary_stats']]],
+  ['nstart_78',['nstart',['../structmodel__pars.html#aef4e69e251970cf08a8023fb9789ce0d',1,'model_pars']]]
 ];

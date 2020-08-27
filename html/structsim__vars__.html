@@ -96,9 +96,10 @@ Collaboration diagram for sim_vars_:</div>
 <div class="dyncontent">
 <div class="center"><img src="structsim__vars____coll__graph.png" border="0" usemap="#sim__vars___coll__map" alt="Collaboration graph"/></div>
 <map name="sim__vars___coll__map" id="sim__vars___coll__map">
-<area shape="rect" title=" " alt="" coords="67,109,149,136"/>
+<area shape="rect" title=" " alt="" coords="85,184,168,211"/>
 <area shape="rect" href="structinfindividual.html" title=" " alt="" coords="5,5,96,32"/>
-<area shape="rect" href="structmodel__pars.html" title=" " alt="" coords="121,5,210,32"/>
+<area shape="rect" href="structbrsim__vars.html" title=" " alt="" coords="83,95,170,121"/>
+<area shape="rect" href="structmodel__pars.html" title=" " alt="" coords="194,95,283,121"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
@@ -112,18 +113,10 @@ Data Fields</h2></td></tr>
 gsl_rng const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a8b90e6b2db2c771bb954d0b082fdf96f">r</a></td></tr>
 <tr class="memdesc:a8b90e6b2db2c771bb954d0b082fdf96f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to GSL random number generator. <br /></td></tr>
 <tr class="separator:a8b90e6b2db2c771bb954d0b082fdf96f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1fac67c0df42bd1eb01036cd4694ea2d"><td class="memItemLeft" align="right" valign="top"><a id="a1fac67c0df42bd1eb01036cd4694ea2d"></a>
-<a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a1fac67c0df42bd1eb01036cd4694ea2d">iis</a></td></tr>
-<tr class="memdesc:a1fac67c0df42bd1eb01036cd4694ea2d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Array of current infectious individuals across all layers. <br /></td></tr>
-<tr class="separator:a1fac67c0df42bd1eb01036cd4694ea2d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ecabd97135c500f58175eb7e79f2590"><td class="memItemLeft" align="right" valign="top"><a id="a4ecabd97135c500f58175eb7e79f2590"></a>
-<a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a4ecabd97135c500f58175eb7e79f2590">ii</a></td></tr>
-<tr class="memdesc:a4ecabd97135c500f58175eb7e79f2590"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to current iteration infectious individual. <br /></td></tr>
-<tr class="separator:a4ecabd97135c500f58175eb7e79f2590"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8371841f622cffaa066aade2df13c58f"><td class="memItemLeft" align="right" valign="top"><a id="a8371841f622cffaa066aade2df13c58f"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a8371841f622cffaa066aade2df13c58f">nlayers</a></td></tr>
-<tr class="memdesc:a8371841f622cffaa066aade2df13c58f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Current maximum number of layers that has been used so far. <br /></td></tr>
-<tr class="separator:a8371841f622cffaa066aade2df13c58f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a93f0830501be49887bb29a25db7314f1"><td class="memItemLeft" align="right" valign="top"><a id="a93f0830501be49887bb29a25db7314f1"></a>
+<a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a93f0830501be49887bb29a25db7314f1">curii</a></td></tr>
+<tr class="memdesc:a93f0830501be49887bb29a25db7314f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to current iteration infectious individual. <br /></td></tr>
+<tr class="separator:a93f0830501be49887bb29a25db7314f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad9d50be547359a56e26030911f2d3d96"><td class="memItemLeft" align="right" valign="top"><a id="ad9d50be547359a56e26030911f2d3d96"></a>
 void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#ad9d50be547359a56e26030911f2d3d96">dataptr</a></td></tr>
 <tr class="memdesc:ad9d50be547359a56e26030911f2d3d96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simulation-level data pointer for user-defined functions. <br /></td></tr>
@@ -132,10 +125,10 @@ void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="st
 void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a512ad1b3e3afc84900cb0940bf31e5d3">gen_time_periods_func</a> )(struct <a class="el" href="structsim__vars__.html">sim_vars_</a> *)</td></tr>
 <tr class="memdesc:a512ad1b3e3afc84900cb0940bf31e5d3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the function used to generate time periods for a given infectious individual. <br /></td></tr>
 <tr class="separator:a512ad1b3e3afc84900cb0940bf31e5d3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a7138287fc57ef7b9243d9553c4fbba35"><td class="memItemLeft" align="right" valign="top"><a id="a7138287fc57ef7b9243d9553c4fbba35"></a>
-void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a7138287fc57ef7b9243d9553c4fbba35">increase_layers_proc_func</a> )(<a class="el" href="structinfindividual.html">infindividual</a> *<a class="el" href="structsim__vars__.html#a1fac67c0df42bd1eb01036cd4694ea2d">iis</a>, uint32_t n)</td></tr>
-<tr class="memdesc:a7138287fc57ef7b9243d9553c4fbba35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the user-defined processing function that is called when the maximum number of layers is increased. <br /></td></tr>
-<tr class="separator:a7138287fc57ef7b9243d9553c4fbba35"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6f22c1b7604a6cfbb19c1135a8710077"><td class="memItemLeft" align="right" valign="top"><a id="a6f22c1b7604a6cfbb19c1135a8710077"></a>
+void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a6f22c1b7604a6cfbb19c1135a8710077">ii_alloc_proc_func</a> )(<a class="el" href="structinfindividual.html">infindividual</a> *ii)</td></tr>
+<tr class="memdesc:a6f22c1b7604a6cfbb19c1135a8710077"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated. <br /></td></tr>
+<tr class="separator:a6f22c1b7604a6cfbb19c1135a8710077"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3884cb21e08092c3e9c686bebc2e06c1"><td class="memItemLeft" align="right" valign="top"><a id="a3884cb21e08092c3e9c686bebc2e06c1"></a>
 bool(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a3884cb21e08092c3e9c686bebc2e06c1">new_event_proc_func</a> )(struct <a class="el" href="structsim__vars__.html">sim_vars_</a> *sv)</td></tr>
 <tr class="memdesc:a3884cb21e08092c3e9c686bebc2e06c1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event. <br /></td></tr>
@@ -152,11 +145,18 @@ void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="st
 void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#aff1ee1c1322047e1ca12f5d9fa4b0b7f">inf_proc_func_noevent</a> )(<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *<a class="el" href="structsim__vars__.html#ad9d50be547359a56e26030911f2d3d96">dataptr</a>)</td></tr>
 <tr class="memdesc:aff1ee1c1322047e1ca12f5d9fa4b0b7f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the user-defined processing function that is called for an infectious individual that does not generate any transmission event. <br /></td></tr>
 <tr class="separator:aff1ee1c1322047e1ca12f5d9fa4b0b7f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a590d0e97afe283ab4d164b2c7d9899af"><td class="memItemLeft" ><a id="a590d0e97afe283ab4d164b2c7d9899af"></a>
+union {</td></tr>
+<tr class="memitem:a17cea0550a25ffa8714918f2d04c37cd"><td class="memItemLeft" >
+&#160;&#160;&#160;<a class="el" href="structbrsim__vars.html">brsim_vars</a>&#160;&#160;&#160;<b>brsim</b></td></tr>
+<tr class="separator:a17cea0550a25ffa8714918f2d04c37cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a590d0e97afe283ab4d164b2c7d9899af"><td class="memItemLeft" valign="top">};&#160;</td><td class="memItemRight" valign="bottom"></td></tr>
+<tr class="separator:a590d0e97afe283ab4d164b2c7d9899af"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Simulation variables </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00030">30</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00031">31</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="simulation_8h_source.html">simulation.h</a></li>
 </ul>

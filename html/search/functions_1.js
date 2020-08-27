@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['config_149',['config',['../config_8c.html#a50d3039186e848d59bed6cdc4278c137',1,'config(model_pars *pars, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c'],['../config_8h.html#a50d3039186e848d59bed6cdc4278c137',1,'config(model_pars *pars, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c']]]
+  ['branchsim_158',['branchsim',['../branchsim_8c.html#aedb2df7d851ac88b93a808dd58b19f41',1,'branchsim(sim_vars *sv):&#160;branchsim.c'],['../branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41',1,'branchsim(sim_vars *sv):&#160;branchsim.c']]],
+  ['branchsim_5finit_159',['branchsim_init',['../branchsim_8c.html#aa4ba9b6e361e562235c1beefa82093a5',1,'branchsim_init(sim_vars *sv):&#160;branchsim.c'],['../branchsim_8h.html#aa4ba9b6e361e562235c1beefa82093a5',1,'branchsim_init(sim_vars *sv):&#160;branchsim.c']]]
 ];

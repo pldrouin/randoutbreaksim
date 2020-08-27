@@ -18,7 +18,7 @@
 #include "config.h"
 #include "model_parameters.h"
 #include "infindividual.h"
-#include "simulation.h"
+#include "branchsim.h"
 #include "standard_summary_stats.h"
 
 /**

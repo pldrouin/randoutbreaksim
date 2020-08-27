@@ -124,12 +124,6 @@ Functions</h2></td></tr>
 <tr class="memitem:a4d614550edbc0b49e792679d6ec7b290"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8c.html#a4d614550edbc0b49e792679d6ec7b290">std_stats_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
 <tr class="memdesc:a4d614550edbc0b49e792679d6ec7b290"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the standard summary statistics.  <a href="standard__summary__stats_8c.html#a4d614550edbc0b49e792679d6ec7b290">More...</a><br /></td></tr>
 <tr class="separator:a4d614550edbc0b49e792679d6ec7b290"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0735dff281538c95ba18efe4e1e5dcab"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8c.html#a0735dff281538c95ba18efe4e1e5dcab">std_stats_increase_layers</a> (<a class="el" href="structinfindividual.html">infindividual</a> *iis, uint32_t n)</td></tr>
-<tr class="memdesc:a0735dff281538c95ba18efe4e1e5dcab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocates additional memory for the user-defined function data.  <a href="standard__summary__stats_8c.html#a0735dff281538c95ba18efe4e1e5dcab">More...</a><br /></td></tr>
-<tr class="separator:a0735dff281538c95ba18efe4e1e5dcab"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac4f441dbc08661402ae6ee49f09bcd01"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8c.html#ac4f441dbc08661402ae6ee49f09bcd01">std_stats_free</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structstd__summary__stats.html">std_summary_stats</a> *stats)</td></tr>
-<tr class="memdesc:ac4f441dbc08661402ae6ee49f09bcd01"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory used by the standard summary statistics.  <a href="standard__summary__stats_8c.html#ac4f441dbc08661402ae6ee49f09bcd01">More...</a><br /></td></tr>
-<tr class="separator:ac4f441dbc08661402ae6ee49f09bcd01"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>User-defined functions to compute standard summary statistics. </p>
@@ -137,86 +131,6 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="standard__summary__stats_8c_source.html">standard_summary_stats.c</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ac4f441dbc08661402ae6ee49f09bcd01"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac4f441dbc08661402ae6ee49f09bcd01">&#9670;&nbsp;</a></span>std_stats_free()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void std_stats_free </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
-          <td class="paramname"><em>sv</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="structstd__summary__stats.html">std_summary_stats</a> *&#160;</td>
-          <td class="paramname"><em>stats</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Frees memory used by the standard summary statistics. </p>
-<p>This function must be called once to free the memory that was allocated by std_stats_init.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables were memory for the user-defined function data will be freed. </td></tr>
-    <tr><td class="paramname">stats</td><td>Pointer to the standard summary statistics. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8c_source.html#l00030">30</a> of file <a class="el" href="standard__summary__stats_8c_source.html">standard_summary_stats.c</a>.</p>
-
-</div>
-</div>
-<a id="a0735dff281538c95ba18efe4e1e5dcab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0735dff281538c95ba18efe4e1e5dcab">&#9670;&nbsp;</a></span>std_stats_increase_layers()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void std_stats_increase_layers </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td>
-          <td class="paramname"><em>iis</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t&#160;</td>
-          <td class="paramname"><em>n</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Allocates additional memory for the user-defined function data. </p>
-<p>This function must be assigned to the simulation engine through a call of sim_set_increase_layers_proc_func.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">iis</td><td>First newly allocated layer element of the infectious individuals array. </td></tr>
-    <tr><td class="paramname">n</td><td>Number of layers that have been added </td></tr>
-  </table>
-  </dd>
-</dl>
-
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8c_source.html#l00022">22</a> of file <a class="el" href="standard__summary__stats_8c_source.html">standard_summary_stats.c</a>.</p>
-
-</div>
-</div>
 <a id="a4d614550edbc0b49e792679d6ec7b290"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4d614550edbc0b49e792679d6ec7b290">&#9670;&nbsp;</a></span>std_stats_init()</h2>
 
@@ -234,10 +148,10 @@ Functions</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Initialises the standard summary statistics. </p>
-<p>This function must be called once to initialise the standard summary statistics, if used, as well as to allocate required memory in the simulation variables.</p>
+<p>This function must be called once to initialise the standard summary statistics, if used.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables were memory for the user-defined function data will be allocated. </td></tr>
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables . </td></tr>
   </table>
   </dd>
 </dl>

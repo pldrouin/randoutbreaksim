@@ -84,7 +84,6 @@ $(document).ready(function(){initNavTree('simulation_8c.html',''); initResizable
 
 <div class="header">
   <div class="summary">
-<a href="#define-members">Macros</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">simulation.c File Reference</div>  </div>
@@ -119,13 +118,6 @@ Include dependency graph for simulation.c:</div>
 </div>
 <p><a href="simulation_8c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
-Macros</h2></td></tr>
-<tr class="memitem:a39b090a0cb58793c36abaf74922bd800"><td class="memItemLeft" align="right" valign="top"><a id="a39b090a0cb58793c36abaf74922bd800"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a39b090a0cb58793c36abaf74922bd800">II_ARRAY_GROW_FACT</a>&#160;&#160;&#160;(1.5)</td></tr>
-<tr class="memdesc:a39b090a0cb58793c36abaf74922bd800"><td class="mdescLeft">&#160;</td><td class="mdescRight">Growing factor for the array of current infectious individuals across all layers. <br /></td></tr>
-<tr class="separator:a39b090a0cb58793c36abaf74922bd800"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:afd981fab1171f8b03e1c952b20f6f3ff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#afd981fab1171f8b03e1c952b20f6f3ff">sim_pars_check</a> (<a class="el" href="structmodel__pars.html">model_pars</a> const *pars)</td></tr>
@@ -135,18 +127,47 @@ Functions</h2></td></tr>
 <tr class="memdesc:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises simulation parameters.  <a href="simulation_8c.html#a7d7687ebb34e4df53eff1ed32e7f7597">More...</a><br /></td></tr>
 <tr class="separator:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ca281c80f36f8dfbbadec8518ba873e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a2ca281c80f36f8dfbbadec8518ba873e">sim_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structmodel__pars.html">model_pars</a> const *pars, const gsl_rng *r)</td></tr>
-<tr class="memdesc:a2ca281c80f36f8dfbbadec8518ba873e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the simulation.  <a href="simulation_8c.html#a2ca281c80f36f8dfbbadec8518ba873e">More...</a><br /></td></tr>
+<tr class="memdesc:a2ca281c80f36f8dfbbadec8518ba873e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the simulation variables.  <a href="simulation_8c.html#a2ca281c80f36f8dfbbadec8518ba873e">More...</a><br /></td></tr>
 <tr class="separator:a2ca281c80f36f8dfbbadec8518ba873e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a25404969c762d39ee77eb67bc8611428"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a25404969c762d39ee77eb67bc8611428">simulate</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
-<tr class="memdesc:a25404969c762d39ee77eb67bc8611428"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs the simulation.  <a href="simulation_8c.html#a25404969c762d39ee77eb67bc8611428">More...</a><br /></td></tr>
-<tr class="separator:a25404969c762d39ee77eb67bc8611428"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2933ac42a3a5d24b98cc555d611e3329"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a2933ac42a3a5d24b98cc555d611e3329">sim_free</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:a2933ac42a3a5d24b98cc555d611e3329"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the dynamic memory used in the simulation handle.  <a href="simulation_8c.html#a2933ac42a3a5d24b98cc555d611e3329">More...</a><br /></td></tr>
+<tr class="separator:a2933ac42a3a5d24b98cc555d611e3329"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Simulation functions. </p>
-<dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. Original model from <a href="#" onclick="location.href='mai'+'lto:'+'jer'+'om'+'e.l'+'ev'+'esq'+'ue'+'@tp'+'sg'+'c-p'+'wg'+'sc.'+'gc'+'.ca'; return false;">jerom<span style="display: none;">.nosp@m.</span>e.le<span style="display: none;">.nosp@m.</span>vesqu<span style="display: none;">.nosp@m.</span>e@tp<span style="display: none;">.nosp@m.</span>sgc-p<span style="display: none;">.nosp@m.</span>wgsc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a> and <a href="#" onclick="location.href='mai'+'lto:'+'dav'+'id'+'.ma'+'yb'+'ury'+'@t'+'psg'+'c-'+'pwg'+'sc'+'.gc'+'.c'+'a'; return false;">david<span style="display: none;">.nosp@m.</span>.may<span style="display: none;">.nosp@m.</span>bury@<span style="display: none;">.nosp@m.</span>tpsg<span style="display: none;">.nosp@m.</span>c-pwg<span style="display: none;">.nosp@m.</span>sc.g<span style="display: none;">.nosp@m.</span>c.ca</a> </dd></dl>
+<dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="a2933ac42a3a5d24b98cc555d611e3329"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2933ac42a3a5d24b98cc555d611e3329">&#9670;&nbsp;</a></span>sim_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void sim_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Frees the dynamic memory used in the simulation handle. </p>
+<p>Does not free the memory related to the simulation-level data pointer for the user-defined functions, but it does free the user-allocated memory for the infectious individuals.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00148">148</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+
+</div>
+</div>
 <a id="a2ca281c80f36f8dfbbadec8518ba873e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2ca281c80f36f8dfbbadec8518ba873e">&#9670;&nbsp;</a></span>sim_init()</h2>
 
@@ -179,8 +200,8 @@ Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Initialises the simulation. </p>
-<p>This function must be called to initialise the simulation.</p>
+<p>Initialises the simulation variables. </p>
+<p>Simulation variables initialisation function.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">sv</td><td>Pointer to the simulation handle. </td></tr>
@@ -190,7 +211,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00137">137</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00133">133</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -220,7 +241,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters are valid. If the parameters are invalid, an error is printed on stderr. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00013">13</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00009">9</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -249,37 +270,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00109">109</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
-
-</div>
-</div>
-<a id="a25404969c762d39ee77eb67bc8611428"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25404969c762d39ee77eb67bc8611428">&#9670;&nbsp;</a></span>simulate()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int simulate </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
-          <td class="paramname"><em>sv</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Performs the simulation. </p>
-<p>Performs the simulation, as configured through the simulation variables. This function can be called multiple times in a row.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>0 if there is no error. </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00155">155</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00105">105</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>

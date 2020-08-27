@@ -1,8 +1,4 @@
 var searchData=
 [
-  ['default_5fevent_5fproc_5ffunc_150',['default_event_proc_func',['../simulation_8h.html#a881fb314fa7f96332cfe3f324287400f',1,'simulation.h']]],
-  ['default_5fincrease_5flayers_5fproc_5ffunc_151',['default_increase_layers_proc_func',['../simulation_8h.html#a43209d4db5fb03b575e3b61a72877b87',1,'simulation.h']]],
-  ['dummy_5fproc_5ffunc_5fone_5fpar_152',['dummy_proc_func_one_par',['../simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1',1,'simulation.h']]],
-  ['dummy_5fproc_5ffunc_5fsv_153',['dummy_proc_func_sv',['../simulation_8h.html#a4ecfceeb3812509d92a677d9c65d6d9a',1,'simulation.h']]],
-  ['dummy_5fproc_5ffunc_5ftwo_5fpars_154',['dummy_proc_func_two_pars',['../simulation_8h.html#a84beb2084ff7239d40c304cee0506411',1,'simulation.h']]]
+  ['config_160',['config',['../config_8c.html#a50d3039186e848d59bed6cdc4278c137',1,'config(model_pars *pars, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c'],['../config_8h.html#a50d3039186e848d59bed6cdc4278c137',1,'config(model_pars *pars, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[]):&#160;config.c']]]
 ];

@@ -1,0 +1,36 @@
+/**
+ * @file branchsim.h
+ * @brief Simulation data structures and functions.
+ * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
+ * Original model from <jerome.levesque@tpsgc-pwgsc.gc.ca> and
+ * <david.maybury@tpsgc-pwgsc.gc.ca>
+ */
+
+#ifndef _BRANCHSIM_
+#define _BRANCHSIM_
+
+#include "simulation.h"
+
+#define INIT_N_LAYERS (16) //!< Initial number of simulation layers
+
+/**
+ * @brief Initialises the branching simulation.
+ *
+ * This function must be called to initialise the branching simulation.
+ *
+ * @param sv: Pointer to the simulation handle.
+ */
+void branchsim_init(sim_vars* sv);
+
+/**
+ * @brief Performs the branching simulation.
+ *
+ * Performs the branching simulation, as configured through the simulation variables. This
+ * function can be called multiple times in a row.
+ *
+ * @param sv: Pointer to the simulation variables.
+ * @return 0 if there is no error.
+ */
+int branchsim(sim_vars* sv);
+
+#endif

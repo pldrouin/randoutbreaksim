@@ -51,8 +51,8 @@ int main(const int nargs, const char* args[])
       tdata[t].nimax=nimax;
       tdata[t].pars=&pars;
       tdata[t].set=&set;
-      //tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
-      tdata[t].r = gsl_rng_alloc(rngstream_gsl);
+      tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
+      //tdata[t].r = gsl_rng_alloc(rngstream_gsl);
       pthread_create(threads+t,NULL,simthread,tdata+t);
     }
 
@@ -207,7 +207,7 @@ void* simthread(void* arg)
   memset(data->totinf_timeline_std_noext, 0, data->npers*sizeof(double));
 
   sim_vars sv;
-  //sim_init(&sv,.lambda=0.5,.p=0.8,.tmax=6);
+  //branchsim_init(&sv,.lambda=0.5,.p=0.8,.tmax=6);
 
   sim_init(&sv,data->pars,data->r);
 
@@ -218,7 +218,7 @@ void* simthread(void* arg)
   std_summary_stats stats;
 
   sim_set_proc_data(&sv, &stats);
-  sim_set_increase_layers_proc_func(&sv, std_stats_increase_layers);
+  sim_set_ii_alloc_proc_func(&sv, std_stats_ii_alloc);
 
   if(data->nimax == UINT32_MAX) sim_set_new_event_proc_func(&sv, std_stats_new_event);
   else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
@@ -226,6 +226,7 @@ void* simthread(void* arg)
   sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
   sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
 
+  branchsim_init(&sv);
   std_stats_init(&sv);
   stats.nimax=data->nimax;
   int j;
@@ -237,13 +238,13 @@ void* simthread(void* arg)
 
     if(curset>=data->nsets) break;
 
-    //printf("%22.15e]t%22.15e\n",curset*data->npathsperset,(curset+1)*data->npathsperset);
+    //printf("%22.15e\t%22.15e\n",curset*data->npathsperset,(curset+1)*data->npathsperset);
     npaths=round((curset+1)*data->npathsperset)-round(curset*data->npathsperset);
     //printf("npaths %u\n",npaths);
 
     for(int i=npaths-1; i>=0; --i) {
       std_stats_path_init(&stats);
-      simulate(&sv);
+      branchsim(&sv);
       data->r_mean+=stats.rsum;
       data->commper_mean+=stats.commpersum;
 #ifdef NUMEVENTSSTATS
@@ -287,7 +288,7 @@ void* simthread(void* arg)
       }
     }
   }
-  std_stats_free(&sv, &stats);
+  std_stats_free(&stats);
   sim_free(&sv);
 
   return NULL;

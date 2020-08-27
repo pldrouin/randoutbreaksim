@@ -43,13 +43,11 @@ typedef struct
  * @brief Initialises the standard summary statistics.
  *
  * This function must be called once to initialise the standard summary
- * statistics, if used, as well as to allocate required memory in the
- * simulation variables.
+ * statistics, if used.
  *
- * @param sv: Pointer to the simulation variables were memory for the
- * user-defined function data will be allocated.
+ * @param sv: Pointer to the simulation variables .
  */
-void std_stats_init(sim_vars* sv);
+void std_stats_init(sim_vars *sv);
 
 /**
  * @brief Initialises elements of the standard summary statistics
@@ -76,15 +74,14 @@ inline static void std_stats_path_init(std_summary_stats* stats)
 }
 
 /**
- * @brief Allocates additional memory for the user-defined function data.
+ * @brief Allocates memory for the user-defined function data.
  *
  * This function must be assigned to the simulation engine through a call of
- * sim_set_increase_layers_proc_func.
+ * sim_set_ii_alloc_proc_func.
  *
- * @param iis: First newly allocated layer element of the infectious individuals array.
- * @param n: Number of layers that have been added
+ * @param ii: Infectious individuals.
  * */
-void std_stats_increase_layers(infindividual* iis, uint32_t n);
+inline static void std_stats_ii_alloc(infindividual* ii){ii->dataptr=malloc(sizeof(double));}
 
 /**
  * @brief Frees memory used by the standard summary statistics.
@@ -92,11 +89,9 @@ void std_stats_increase_layers(infindividual* iis, uint32_t n);
  * This function must be called once to free the memory that was allocated by
  * std_stats_init.
  *
- * @param sv: Pointer to the simulation variables were memory for the
- * user-defined function data will be freed.
  * @param stats: Pointer to the standard summary statistics.
  */
-void std_stats_free(sim_vars* sv, std_summary_stats* stats);
+inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline); free(stats->totinf_timeline);}
 
 /**
  * @brief Processes the number of infections for this new event.
@@ -111,11 +106,11 @@ void std_stats_free(sim_vars* sv, std_summary_stats* stats);
  * */
 inline static bool std_stats_new_event(sim_vars* sv)
 {
-  (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
-  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
+  (*(uint32_t*)sv->curii->dataptr)+=sv->curii->ninfections;
+  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->curii->dataptr);
 
-  if((int)sv->ii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
-  return (sv->ii->event_time <= sv->pars.tmax);
+  if((int)sv->curii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->curii->event_time)]+=sv->curii->ninfections;
+  return (sv->curii->event_time <= sv->pars.tmax);
 }
 
 /**
@@ -134,24 +129,24 @@ inline static bool std_stats_new_event(sim_vars* sv)
  * */
 inline static bool std_stats_new_event_nimax(sim_vars* sv)
 {
-  (*(uint32_t*)sv->ii->dataptr)+=sv->ii->ninfections;
-  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->ii->dataptr);
+  (*(uint32_t*)sv->curii->dataptr)+=sv->curii->ninfections;
+  DEBUG_PRINTF("Number of infections incremented to %u\n",*(uint32_t*)sv->curii->dataptr);
 
-  if((int)sv->ii->event_time <= (int)sv->pars.tmax) {
+  if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
 
-    if(((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)] <= ((std_summary_stats*)sv->dataptr)->nimax)
-      ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)]+=sv->ii->ninfections;
+    if(((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->curii->event_time)] <= ((std_summary_stats*)sv->dataptr)->nimax)
+      ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->curii->event_time)]+=sv->curii->ninfections;
 
     else {
       ((std_summary_stats*)sv->dataptr)->extinction=false;
 
-      if((int)(sv->ii->event_time) < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=(int)(sv->ii->event_time);
-      DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",(int)(sv->ii->event_time),((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->ii->event_time)],((std_summary_stats*)sv->dataptr)->nimax);
+      if((int)(sv->curii->event_time) < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=(int)(sv->curii->event_time);
+      DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",(int)(sv->curii->event_time),((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)(sv->curii->event_time)],((std_summary_stats*)sv->dataptr)->nimax);
       return false;
     }
   }
 
-  return (sv->ii->event_time <= sv->pars.tmax);
+  return (sv->curii->event_time <= sv->pars.tmax);
 }
 
 /**

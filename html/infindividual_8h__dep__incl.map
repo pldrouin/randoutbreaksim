@@ -1,11 +1,13 @@
 <map id="infindividual.h" name="infindividual.h">
-<area shape="rect" id="node1" title="Data structure containing infected individual information." alt="" coords="173,5,274,32"/>
-<area shape="rect" id="node2" href="$simulation_8h.html" title="Simulation data structures and functions." alt="" coords="261,80,353,107"/>
-<area shape="rect" id="node4" href="$standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="5,155,185,181"/>
-<area shape="rect" id="node6" href="$main_8h.html" title="Main function for the simulation executable." alt="" coords="227,229,289,256"/>
-<area shape="rect" id="node3" href="$simulation_8c.html" title="Simulation functions." alt="" coords="312,155,404,181"/>
-<area shape="rect" id="node8" href="$config_8h.html" title="Configuration functions the simulation executable." alt="" coords="428,155,496,181"/>
-<area shape="rect" id="node5" href="$standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="5,229,185,256"/>
-<area shape="rect" id="node7" href="$main_8c.html" title="Main function for the simulation executable." alt="" coords="227,304,289,331"/>
-<area shape="rect" id="node9" href="$config_8c.html" title="Configuration functions the simulation executable." alt="" coords="428,229,496,256"/>
+<area shape="rect" id="node1" title="Data structure containing infected individual information." alt="" coords="190,5,291,32"/>
+<area shape="rect" id="node2" href="$simulation_8h.html" title="Simulation data structures and functions." alt="" coords="279,80,371,107"/>
+<area shape="rect" id="node5" href="$main_8h.html" title="Main function for the simulation executable." alt="" coords="210,229,271,256"/>
+<area shape="rect" id="node8" href="$standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="23,155,203,181"/>
+<area shape="rect" id="node3" href="$branchsim_8h.html" title="Simulation data structures and functions." alt="" coords="278,155,371,181"/>
+<area shape="rect" id="node7" href="$simulation_8c.html" title="Simulation functions." alt="" coords="488,155,580,181"/>
+<area shape="rect" id="node10" href="$config_8h.html" title="Configuration functions the simulation executable." alt="" coords="396,155,464,181"/>
+<area shape="rect" id="node4" href="$branchsim_8c.html" title="Simulation data structures and functions." alt="" coords="295,229,389,256"/>
+<area shape="rect" id="node6" href="$main_8c.html" title="Main function for the simulation executable." alt="" coords="210,304,271,331"/>
+<area shape="rect" id="node9" href="$standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="5,229,185,256"/>
+<area shape="rect" id="node11" href="$config_8c.html" title="Configuration functions the simulation executable." alt="" coords="413,229,481,256"/>
 </map>

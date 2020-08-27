@@ -1,5 +1,7 @@
 var searchData=
 [
-  ['root_5ffinder_2ec_142',['root_finder.c',['../root__finder_8c.html',1,'']]],
-  ['root_5ffinder_2eh_143',['root_finder.h',['../root__finder_8h.html',1,'']]]
+  ['main_2ec_146',['main.c',['../main_8c.html',1,'']]],
+  ['main_2eh_147',['main.h',['../main_8h.html',1,'']]],
+  ['model_5fparameters_2ec_148',['model_parameters.c',['../model__parameters_8c.html',1,'']]],
+  ['model_5fparameters_2eh_149',['model_parameters.h',['../model__parameters_8h.html',1,'']]]
 ];

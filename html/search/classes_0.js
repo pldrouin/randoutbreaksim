@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['infindividual_127',['infindividual',['../structinfindividual.html',1,'']]]
+  ['brsim_5fvars_132',['brsim_vars',['../structbrsim__vars.html',1,'']]]
 ];
