@@ -1,6 +1,6 @@
 /**
  * @file simulation.h
- * @brief Simulation data structures and functions.
+ * @brief Common simulation data structures and functions.
  * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
  */
 
@@ -25,6 +25,9 @@ typedef struct {
   uint32_t nlayers;	//!< Current maximum number of layers that has been used so far 
 } brsim_vars;
 
+typedef struct {
+} fpsim_vars;
+
 /**
  * Simulation variables
  */
@@ -35,6 +38,7 @@ typedef struct sim_vars_
   infindividual* curii;		//!< Pointer to current iteration infectious individual
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
   void (*gen_time_periods_func)(struct sim_vars_*);				//!< Pointer to the function used to generate time periods for a given infectious individual
+  uint32_t (*gen_infections_func)(struct sim_vars_*);				//!< Pointer to the function used to generate new infections during one event
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
   void (*new_inf_proc_func)(infindividual* newinf);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
@@ -42,20 +46,9 @@ typedef struct sim_vars_
   void (*inf_proc_func_noevent)(infindividual* inf, void* dataptr);	//!< Pointer to the user-defined processing function that is called for an infectious individual that does not generate any transmission event.
   union{
     brsim_vars brsim;
+    fpsim_vars fpsim;
   };
 } sim_vars;
-
-/**
- * @brief Verifies the validity of simulation parameters.
- *
- * This internal function verifies if the set of provided simulation parameter values are
- * valid.
- *
- * @param pars: Pointer to the simulation parameters.
- * @return 0 if the parameters are valid. If the parameters are
- * invalid, an error is printed on stderr.
- */
-int sim_pars_check(model_pars const* pars);
 
 /**
  * @brief Initialises simulation parameters.
@@ -236,6 +229,9 @@ GEN_PERS_MAIN(2)
  * configuration of the model parameters.
  */
 #define PER_COND if(isnan(sv->pars.kappal)) {PER_COND_MAIN(0)} else if(isinf(sv->pars.kappal)) {PER_COND_MAIN(1)} else {PER_COND_MAIN(2)};
+
+inline static uint32_t gen_infections_infpop_pinf1_log_plus_1(sim_vars* sv){return gsl_ran_logarithmic(sv->r, sv->pars.p);}
+inline static uint32_t gen_infections_infpop_log_plus_1(sim_vars* sv){return gsl_ran_binomial(sv->r, sv->pars.pinf, gsl_ran_logarithmic(sv->r, sv->pars.p));}
 
 /**
  * @brief Default processing function that is called when a new transmission event is created.

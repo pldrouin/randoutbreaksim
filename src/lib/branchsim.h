@@ -1,6 +1,6 @@
 /**
  * @file branchsim.h
- * @brief Simulation data structures and functions.
+ * @brief Branching simulation functions.
  * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
  * Original model from <jerome.levesque@tpsgc-pwgsc.gc.ca> and
  * <david.maybury@tpsgc-pwgsc.gc.ca>

@@ -37,7 +37,7 @@ int model_solve_pars(model_pars* pars)
   printf("kappa:\t%22.15e\n",pars->kappa);
   printf("t95:\t%22.15e\n",pars->t95);
 
-  if(pars->pit) {
+  if(pars->pit>0) {
 
     if((isnan(pars->kappait)==0) + (isnan(pars->it95)==0) != 1) {
       fprintf(stderr,"%s: Error: Either the kappait parameter or the it95 parameter must be provided.\n",__func__);
@@ -142,8 +142,8 @@ int model_solve_R0_group(model_pars* pars)
   //If p is provided as an input
   if(!isnan(pars->p)) {
 
-    if(pars->p<0) {
-      fprintf(stderr,"%s: Error: p must be non-negative\n",__func__);
+    if(!(pars->p>=0) || !(pars->p<1)) {
+      fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
       return -1;
     }
     pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
@@ -246,94 +246,122 @@ int model_pars_check(model_pars const* pars)
 {
   int ret=0;
 
+  /*
   if(pars->tbar<=0) {
     fprintf(stderr,"%s: Error: tbar must be greater than 0\n",__func__);
     ret-=1;
   }
 
-  if(pars->p<0) {
-    fprintf(stderr,"%s: Error: p must be non-negative\n",__func__);
+  if(!(pars->p>=0) || !(pars->p<1)) {
+    fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
     ret-=2;
   }
 
   if(pars->lambda<=0) {
-    fprintf(stderr,"%s: Error: lambda must be greater than 0\n",__func__);
+    fprintf(stderr,"%s: Error: If defined, lambda must be greater than 0\n",__func__);
     ret-=4;
   }
+  */
 
+  if(pars->lambdap<=0) {
+    fprintf(stderr,"%s: Error: If defined, lambdap must be greater than 0\n",__func__);
+    ret-=8;
+
+  } else if(pars->lambdap>0 && pars->popsize==0) {
+    fprintf(stderr,"%s: Error: lambdap cannot be used with an infinite population\n",__func__);
+    ret-=16;
+  }
+
+  /*
   if(pars->kappa<=0) {
     fprintf(stderr,"%s: Error: kappa must be greater than 0\n",__func__);
-    ret-=8;
+    ret-=32;
   }
 
   if(pars->lbar<0) {
     fprintf(stderr,"%s: Error: lbar must be non-negative\n",__func__);
-    ret-=16;
+    ret-=54;
 
   } else if(pars->lbar>0 && pars->kappal<=0) {
       fprintf(stderr,"%s: Error: kappal must be greater than 0 if lbar>0\n",__func__);
-      ret-=32;
+      ret-=128;
   }
+  */
 
   if(pars->pit<0) {
     fprintf(stderr,"%s: Error: pit must be non-negative\n",__func__);
-    ret-=64;
+    ret-=256;
 
-  } else if(pars->pit>0) {
+  } /*else if(pars->pit>0) {
 
     if(pars->itbar<0) {
       fprintf(stderr,"%s: Error: itbar must be non-negative if pit>0\n",__func__);
-      ret-=128;
+      ret-=512;
     }
 
     if(pars->kappait<=0) {
       fprintf(stderr,"%s: Error: kappait must be greater than 0 if pit>0\n",__func__);
-      ret-=256;
+      ret-=1024;
     }
   }
+  */
 
   if(pars->q<0) {
     fprintf(stderr,"%s: Error: q must be non-negative\n",__func__);
-    ret-=512;
+    ret-=2048;
 
   } else if(pars->q>0) {
 
+    /*
     if(pars->mbar<0) {
       fprintf(stderr,"%s: Error: mbar must be non-negative if q>0\n",__func__);
-      ret-=1024;
+      ret-=4096;
     }
 
     if(pars->kappaq<=0) {
       fprintf(stderr,"%s: Error: kappaq must be greater than 0 if q>0\n",__func__);
-      ret-=2048;
+      ret-=8192;
     }
+    */
 
     if(pars->pim<0) {
       fprintf(stderr,"%s: Error: pim must be non-negative\n",__func__);
-      ret-=4096;
+      ret-=16384;
 
-    } else if(pars->pim>0) {
+    } /*else if(pars->pim>0) {
 
       if(pars->imbar<0) {
 	fprintf(stderr,"%s: Error: imbar must be non-negative if pim>0\n",__func__);
-	ret-=8192;
+	ret-=32768;
       }
 
       if(pars->kappaim<=0) {
 	fprintf(stderr,"%s: Error: kappaim must be greater than 0 if pim>0\n",__func__);
-	ret-=16384;
+	ret-=65536;
       }
     }
+    */
   }
 
   if(pars->tmax<=0) {
     fprintf(stderr,"%s: Error: tmax must be greater than 0\n",__func__);
-    ret-=32768;
+    ret-=131072;
+  }
+
+  if(!(pars->pinf>0) || !(pars->pinf<=1)) {
+    fprintf(stderr,"%s: Error: The pinf parameter must have a value in the interval (0,1]\n",__func__);
+    ret-=262144;
   }
 
   if(pars->nstart<=0) {
     fprintf(stderr,"%s: Error: nstart must be greater than 0\n",__func__);
-    ret-=65536;
+    ret-=524288;
   }
+
+  if(pars->popsize==0 && (pars->grouptype&ro_group_log_invitees)) {
+    fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated using a logarithmically-distributed number of invitees\n",__func__);
+    ret-=1048576;
+  }
+
   return ret;
 }

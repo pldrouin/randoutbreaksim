@@ -58,14 +58,6 @@ int config(model_pars* pars, uint32_t* npaths, uint32_t* nthreads, uint32_t* nse
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->tbar);
 
-      } else if(!argsdiffer(pbuf, "p")) {
-	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->p);
-
-      } else if(!argsdiffer(pbuf, "lambda")) {
-	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->lambda);
-
       } else if(!argsdiffer(pbuf, "kappa")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->kappa);
@@ -73,6 +65,43 @@ int config(model_pars* pars, uint32_t* npaths, uint32_t* nthreads, uint32_t* nse
       } else if(!argsdiffer(pbuf, "t95")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->t95);
+
+      } else if(!argsdiffer(pbuf, "lambda")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->lambda);
+
+      } else if(!argsdiffer(pbuf, "lambdap")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->lambdap);
+
+      } else if(!argsdiffer(pbuf, "group_log_plus_1")) {
+	pars->grouptype=ro_group_log_plus_1;
+
+      } else if(!argsdiffer(pbuf, "group_log_attendees")) {
+	pars->grouptype=ro_group_log_attendees;
+
+      } else if(!argsdiffer(pbuf, "group_log_invitees")) {
+	pars->grouptype=ro_group_log_invitees;
+
+      } else if(!argsdiffer(pbuf, "p")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->p);
+
+      } else if(!argsdiffer(pbuf, "mu")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->mu);
+
+      } else if(!argsdiffer(pbuf, "pinf")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->pinf);
+
+      } else if(!argsdiffer(pbuf, "popsize")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,&pars->popsize);
+
+      } else if(!argsdiffer(pbuf, "R0")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&pars->R0);
 
       } else if(!argsdiffer(pbuf, "lbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
@@ -134,14 +163,6 @@ int config(model_pars* pars, uint32_t* npaths, uint32_t* nthreads, uint32_t* nse
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->im95);
 
-      } else if(!argsdiffer(pbuf, "R0")) {
-	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->R0);
-
-      } else if(!argsdiffer(pbuf, "mu")) {
-	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->mu);
-
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->tmax);
@@ -188,10 +209,18 @@ void printusage(const char* name)
   printf("\t--olog FILENAME\t\tRedirect standard output to FILENAME\n");
   printf("\t--elog FILENAME\t\tRedirect standard error to FILENAME\n");
   printf("\t--tbar VALUE\t\tMean main communicable period\n");
-  printf("\t--p VALUE\t\tParameter for the logarithmic distribution used to draw number of new infections for one transmission event\n");
-  printf("\t--lambda VALUE\t\tRate of transmission events\n");
   printf("\t--kappa VALUE\t\tkappa parameter for the gamma distribution used to generate the main communicable period\n");
   printf("\t--t95 VALUE\t\t95th percentile of the main communicable period\n");
+  printf("\t--lambda VALUE\t\tRate of events for a given individual. Events are defined to have more than one invitees\n");
+  printf("\t--lambdap VALUE\t\tTotal rate of events for a finite population. Events are defined to have more than one invitees\n");
+  //printf("\t--group_log_plus_1\tNumber of individuals in an event to be distributed as a logarithmically-distributed variable plus 1 (default)\n");
+  //printf("\t--group_log_attendees\tNumber of attendees in an event to be distributed as a logarithmically-distributed variable\n");
+  //printf("\t--group_log_invitees\tNumber of invitees for an event to be distributed as a logarithmically-distributed variable\n");
+  printf("\t--p VALUE\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1)\n");
+  printf("\t--mu VALUE\t\tParameter for the mean of an unbounded logarithmic distribution used to draw number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu >= 1)\n");
+  //printf("\t--pinf VALUE\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event (default value of 1)\n");
+  //printf("\t--popsize VALUE\t\tPopulation size (default value of 0, for an infinite population)\n");
+  printf("\t--R0 VALUE\t\tBasic reproduction number\n");
   printf("\t--lbar VALUE\t\tMean latent period (default value of 0)\n");
   printf("\t--kappal VALUE\t\tkappa parameter for the gamma distribution used to generate the latent period\n");
   printf("\t--l95 VALUE\t\t95th percentile of the latent period\n");
@@ -207,8 +236,6 @@ void printusage(const char* name)
   printf("\t--imbar VALUE\t\tMean period for the interrupted alternate communicable period (default value of itbar)\n");
   printf("\t--kappaim VALUE\t\tkappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait)\n");
   printf("\t--im95 VALUE\t\t95th percentile of the interrupted alternate communicable period (default value of it95)\n");
-  printf("\t--R0 VALUE\t\tBasic reproduction number (R0=tbar*lambda*mu)\n");
-  printf("\t--mu VALUE\t\tMean number of new infections for a given transmission event (mu=-1/log(1-p)*p/(1-p))\n");
   printf("\t--tmax VALUE\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\tInitial number of infectious individuals (default value of 1)\n");
   printf("\t--npaths VALUE\t\tNumber of generated simulation paths (default value of 10000)\n");

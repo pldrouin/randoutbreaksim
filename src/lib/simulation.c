@@ -1,6 +1,6 @@
 /**
  * @file simulation.c
- * @brief Simulation functions.
+ * @brief Common simulation functions.
  * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
  */
 
@@ -11,6 +11,7 @@ void sim_pars_init(model_pars* pars)
   pars->tbar=NAN;
   pars->p=NAN;
   pars->lambda=NAN;
+  pars->lambdap=NAN;
   pars->kappa=NAN;
   pars->lbar=NAN;
   pars->kappal=NAN;
@@ -31,7 +32,10 @@ void sim_pars_init(model_pars* pars)
   pars->it95=NAN;
   pars->im95=NAN;
   pars->tmax=INFINITY;
+  pars->pinf=1;
   pars->nstart=1;
+  pars->popsize=0;
+  pars->grouptype=ro_group_log_plus_1;
 }
 
 void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
