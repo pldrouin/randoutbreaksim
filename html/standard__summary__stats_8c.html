@@ -121,9 +121,9 @@ Include dependency graph for standard_summary_stats.c:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4d614550edbc0b49e792679d6ec7b290"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8c.html#a4d614550edbc0b49e792679d6ec7b290">std_stats_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
-<tr class="memdesc:a4d614550edbc0b49e792679d6ec7b290"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the standard summary statistics.  <a href="standard__summary__stats_8c.html#a4d614550edbc0b49e792679d6ec7b290">More...</a><br /></td></tr>
-<tr class="separator:a4d614550edbc0b49e792679d6ec7b290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a445375828656d6f9f2eb775781fdf5e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8c.html#a445375828656d6f9f2eb775781fdf5e0">std_stats_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, uint64_t **ngeninfs, uint32_t *ninfbins)</td></tr>
+<tr class="memdesc:a445375828656d6f9f2eb775781fdf5e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the standard summary statistics.  <a href="standard__summary__stats_8c.html#a445375828656d6f9f2eb775781fdf5e0">More...</a><br /></td></tr>
+<tr class="separator:a445375828656d6f9f2eb775781fdf5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>User-defined functions to compute standard summary statistics. </p>
@@ -131,8 +131,8 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="standard__summary__stats_8c_source.html">standard_summary_stats.c</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a4d614550edbc0b49e792679d6ec7b290"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d614550edbc0b49e792679d6ec7b290">&#9670;&nbsp;</a></span>std_stats_init()</h2>
+<a id="a445375828656d6f9f2eb775781fdf5e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a445375828656d6f9f2eb775781fdf5e0">&#9670;&nbsp;</a></span>std_stats_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -141,8 +141,24 @@ Functions</h2></td></tr>
           <td class="memname">void std_stats_init </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
-          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td class="paramname"><em>sv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint64_t **&#160;</td>
+          <td class="paramname"><em>ngeninfs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>ninfbins</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -151,7 +167,9 @@ Functions</h2></td></tr>
 <p>This function must be called once to initialise the standard summary statistics, if used.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables . </td></tr>
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+    <tr><td class="paramname">ngeninfs</td><td>Pointer to an array of number of generated infections to be filled. Ignored if NULL. </td></tr>
+    <tr><td class="paramname">ninfbins</td><td>Pointer to the length of the ngeninfs array. Ignored if NULL. </td></tr>
   </table>
   </dd>
 </dl>

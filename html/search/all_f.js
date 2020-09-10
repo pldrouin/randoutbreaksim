@@ -19,7 +19,7 @@ var searchData=
   ['std_5fstats_5fend_5finf_5frec_5fninfs_138',['std_stats_end_inf_rec_ninfs',['../standard__summary__stats_8h.html#ad4556d6b4dff3fd07323f0aaf43ed140',1,'standard_summary_stats.h']]],
   ['std_5fstats_5ffree_139',['std_stats_free',['../standard__summary__stats_8h.html#a339f085bb15df38cb162adf1304cfc34',1,'standard_summary_stats.h']]],
   ['std_5fstats_5fii_5falloc_140',['std_stats_ii_alloc',['../standard__summary__stats_8h.html#a6817859a53a32feb92636e9986da48cb',1,'standard_summary_stats.h']]],
-  ['std_5fstats_5finit_141',['std_stats_init',['../standard__summary__stats_8c.html#a4d614550edbc0b49e792679d6ec7b290',1,'std_stats_init(sim_vars *sv):&#160;standard_summary_stats.c'],['../standard__summary__stats_8h.html#a4d614550edbc0b49e792679d6ec7b290',1,'std_stats_init(sim_vars *sv):&#160;standard_summary_stats.c']]],
+  ['std_5fstats_5finit_141',['std_stats_init',['../standard__summary__stats_8c.html#a445375828656d6f9f2eb775781fdf5e0',1,'std_stats_init(sim_vars *sv, uint64_t **ngeninfs, uint32_t *ninfbins):&#160;standard_summary_stats.c'],['../standard__summary__stats_8h.html#a445375828656d6f9f2eb775781fdf5e0',1,'std_stats_init(sim_vars *sv, uint64_t **ngeninfs, uint32_t *ninfbins):&#160;standard_summary_stats.c']]],
   ['std_5fstats_5fnew_5fevent_142',['std_stats_new_event',['../standard__summary__stats_8h.html#aec5a65871a38a80d6a609baef1c314fe',1,'standard_summary_stats.h']]],
   ['std_5fstats_5fnew_5fevent_5fnimax_143',['std_stats_new_event_nimax',['../standard__summary__stats_8h.html#a43b768c341a076d5e5b2253b9dfab9de',1,'standard_summary_stats.h']]],
   ['std_5fstats_5fnew_5finf_144',['std_stats_new_inf',['../standard__summary__stats_8h.html#acc025c857b60d98e0afbdcfa3a329734',1,'standard_summary_stats.h']]],

@@ -146,9 +146,9 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a835a79f2c071f6f588c5aeb8cb8c9381"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a835a79f2c071f6f588c5aeb8cb8c9381">config</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars, int *ninfrec, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[])</td></tr>
-<tr class="memdesc:a835a79f2c071f6f588c5aeb8cb8c9381"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures the input parameters for the executable.  <a href="config_8h.html#a835a79f2c071f6f588c5aeb8cb8c9381">More...</a><br /></td></tr>
-<tr class="separator:a835a79f2c071f6f588c5aeb8cb8c9381"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a26bf1dcf78aa7ddf6609d070e6d76814"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a26bf1dcf78aa7ddf6609d070e6d76814">config</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars, bool *ninfhist, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[])</td></tr>
+<tr class="memdesc:a26bf1dcf78aa7ddf6609d070e6d76814"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures the input parameters for the executable.  <a href="config_8h.html#a26bf1dcf78aa7ddf6609d070e6d76814">More...</a><br /></td></tr>
+<tr class="separator:a26bf1dcf78aa7ddf6609d070e6d76814"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad58728259679e01f1f114c6a3328fbcd"><td class="memItemLeft" align="right" valign="top"><a id="ad58728259679e01f1f114c6a3328fbcd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a> (const char *name)</td></tr>
 <tr class="memdesc:ad58728259679e01f1f114c6a3328fbcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints usage information for the executable. <br /></td></tr>
@@ -160,8 +160,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
 
 <p class="definition">Definition in file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a835a79f2c071f6f588c5aeb8cb8c9381"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a835a79f2c071f6f588c5aeb8cb8c9381">&#9670;&nbsp;</a></span>config()</h2>
+<a id="a26bf1dcf78aa7ddf6609d070e6d76814"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a26bf1dcf78aa7ddf6609d070e6d76814">&#9670;&nbsp;</a></span>config()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -175,8 +175,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>ninfrec</em>, </td>
+          <td class="paramtype">bool *&#160;</td>
+          <td class="paramname"><em>ninfhist</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -238,7 +238,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">pars</td><td>Simulation parameters </td></tr>
-    <tr><td class="paramname">ninfrec</td><td>File descriptor for the recorded number of infections. </td></tr>
+    <tr><td class="paramname">ninfhist</td><td>Request or the generation of a histogram of number of infections. </td></tr>
     <tr><td class="paramname">npaths</td><td>Number of simulation paths. </td></tr>
     <tr><td class="paramname">nthreads</td><td>Number of threads used to perform the simulation. </td></tr>
     <tr><td class="paramname">nsetsperthread</td><td>Number of path sets used for each thread. </td></tr>

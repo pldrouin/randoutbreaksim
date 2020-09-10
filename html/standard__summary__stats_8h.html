@@ -142,11 +142,9 @@ Data Structures</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
 <tr class="memitem:af129ef530dd15ca11c8d3d8bb4586d58"><td class="memItemLeft" align="right" valign="top"><a id="af129ef530dd15ca11c8d3d8bb4586d58"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>INIT_NINF_ALLOC</b>&#160;&#160;&#160;(16)</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#af129ef530dd15ca11c8d3d8bb4586d58">INIT_NINF_ALLOC</a>&#160;&#160;&#160;(16)</td></tr>
+<tr class="memdesc:af129ef530dd15ca11c8d3d8bb4586d58"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial number of allocated bins for the ninf histogram. <br /></td></tr>
 <tr class="separator:af129ef530dd15ca11c8d3d8bb4586d58"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9d6e296e1dbacd87f5e4c04db02c4d71"><td class="memItemLeft" align="right" valign="top"><a id="a9d6e296e1dbacd87f5e4c04db02c4d71"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>NINF_ARRAY_GROW_FACT</b>&#160;&#160;&#160;(1.5)</td></tr>
-<tr class="separator:a9d6e296e1dbacd87f5e4c04db02c4d71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memItemLeft" align="right" valign="top"><a id="a5c8ef3c24dad2c469a42784a9a39403b"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">DEBUG_PRINTF</a>(...)</td></tr>
 <tr class="memdesc:a5c8ef3c24dad2c469a42784a9a39403b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug print function. <br /></td></tr>
@@ -154,9 +152,9 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a4d614550edbc0b49e792679d6ec7b290"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#a4d614550edbc0b49e792679d6ec7b290">std_stats_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
-<tr class="memdesc:a4d614550edbc0b49e792679d6ec7b290"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the standard summary statistics.  <a href="standard__summary__stats_8h.html#a4d614550edbc0b49e792679d6ec7b290">More...</a><br /></td></tr>
-<tr class="separator:a4d614550edbc0b49e792679d6ec7b290"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a445375828656d6f9f2eb775781fdf5e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#a445375828656d6f9f2eb775781fdf5e0">std_stats_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, uint64_t **ngeninfs, uint32_t *ninfbins)</td></tr>
+<tr class="memdesc:a445375828656d6f9f2eb775781fdf5e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the standard summary statistics.  <a href="standard__summary__stats_8h.html#a445375828656d6f9f2eb775781fdf5e0">More...</a><br /></td></tr>
+<tr class="separator:a445375828656d6f9f2eb775781fdf5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac35116c06c0b121db7de1e4edb6a6f9e"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8h.html#ac35116c06c0b121db7de1e4edb6a6f9e">std_stats_path_init</a> (<a class="el" href="structstd__summary__stats.html">std_summary_stats</a> *stats)</td></tr>
 <tr class="memdesc:ac35116c06c0b121db7de1e4edb6a6f9e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises elements of the standard summary statistics before a path simulation.  <a href="standard__summary__stats_8h.html#ac35116c06c0b121db7de1e4edb6a6f9e">More...</a><br /></td></tr>
 <tr class="separator:ac35116c06c0b121db7de1e4edb6a6f9e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -238,7 +236,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00194">194</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00195">195</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>
@@ -286,7 +284,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00231">231</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00232">232</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>
@@ -323,7 +321,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00101">101</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00102">102</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>
@@ -360,12 +358,12 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00091">91</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00092">92</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>
-<a id="a4d614550edbc0b49e792679d6ec7b290"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4d614550edbc0b49e792679d6ec7b290">&#9670;&nbsp;</a></span>std_stats_init()</h2>
+<a id="a445375828656d6f9f2eb775781fdf5e0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a445375828656d6f9f2eb775781fdf5e0">&#9670;&nbsp;</a></span>std_stats_init()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -374,8 +372,24 @@ Functions</h2></td></tr>
           <td class="memname">void std_stats_init </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
-          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td class="paramname"><em>sv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">uint64_t **&#160;</td>
+          <td class="paramname"><em>ngeninfs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>ninfbins</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -384,7 +398,9 @@ Functions</h2></td></tr>
 <p>This function must be called once to initialise the standard summary statistics, if used.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables . </td></tr>
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+    <tr><td class="paramname">ngeninfs</td><td>Pointer to an array of number of generated infections to be filled. Ignored if NULL. </td></tr>
+    <tr><td class="paramname">ninfbins</td><td>Pointer to the length of the ngeninfs array. Ignored if NULL. </td></tr>
   </table>
   </dd>
 </dl>
@@ -427,7 +443,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the event time does not exceed tmax and false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00114">114</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00115">115</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>
@@ -465,7 +481,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the event time does not exceed tmax and false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00137">137</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00138">138</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>
@@ -502,7 +518,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00168">168</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00169">169</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>
@@ -635,7 +651,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00068">68</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00070">70</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 
 </div>
 </div>

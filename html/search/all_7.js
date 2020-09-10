@@ -11,6 +11,7 @@ var searchData=
   ['infindividual_52',['infindividual',['../structinfindividual.html',1,'']]],
   ['infindividual_2eh_53',['infindividual.h',['../infindividual_8h.html',1,'']]],
   ['init_5fn_5flayers_54',['INIT_N_LAYERS',['../branchsim_8h.html#a5655a86be72747864aa32dadb4fa6b49',1,'branchsim.h']]],
-  ['it95_55',['it95',['../structmodel__pars.html#a3a32c337af79711d1125a738e6a853ff',1,'model_pars']]],
-  ['itbar_56',['itbar',['../structmodel__pars.html#a0c31135837fd2a612f822f33f00e2d47',1,'model_pars']]]
+  ['init_5fninf_5falloc_55',['INIT_NINF_ALLOC',['../standard__summary__stats_8h.html#af129ef530dd15ca11c8d3d8bb4586d58',1,'standard_summary_stats.h']]],
+  ['it95_56',['it95',['../structmodel__pars.html#a3a32c337af79711d1125a738e6a853ff',1,'model_pars']]],
+  ['itbar_57',['itbar',['../structmodel__pars.html#a0c31135837fd2a612f822f33f00e2d47',1,'model_pars']]]
 ];

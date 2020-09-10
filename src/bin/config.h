@@ -22,7 +22,8 @@
  * @brief Configures the input parameters for the executable.
  *
  * @param pars: Simulation parameters
- * @param ninfrec: File descriptor for the recorded number of infections.
+ * @param ninfhist: Request or the generation of a histogram of number of
+ * infections.
  * @param npaths: Number of simulation paths.
  * @param nthreads: Number of threads used to perform the simulation.
  * @param nsetsperthread: Number of path sets used for each thread.
@@ -33,7 +34,7 @@
  * @param nargs: Number of arguments from the main function, shifted by 1.
  * @param args: Arguments from the main function, shifted by 1.
  */
-int config(model_pars* pars, int* ninfrec, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[]);
+int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[]);
 
 /**
  * @brief Prints usage information for the executable.

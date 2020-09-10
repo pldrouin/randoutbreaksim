@@ -13,7 +13,7 @@
 int main(const int nargs, const char* args[])
 {
   model_pars pars;
-  int ninfrec=0;
+  bool ninfhist=false;
   uint32_t npaths=10000;
   uint32_t nthreads=1;
   uint32_t nsetsperthread=(nthreads>1?100:1);
@@ -23,7 +23,7 @@ int main(const int nargs, const char* args[])
 
   sim_pars_init(&pars);
 
-  if(config(&pars, &ninfrec, &npaths, &nthreads, &nsetsperthread, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
+  if(config(&pars, &ninfhist, &npaths, &nthreads, &nsetsperthread, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
 
   if(model_solve_pars(&pars)) return 1;
 
@@ -41,13 +41,6 @@ int main(const int nargs, const char* args[])
   const uint32_t npers=pars.tmax+1;
   volatile uint32_t set=0;
   int t;
-  uint32_t** ngeninfs=NULL;
-  uint32_t* ninfs=NULL;
-
-  if(ninfrec>0) {
-    ngeninfs=(uint32_t**)malloc(npaths*sizeof(uint32_t*));
-    ninfs=(uint32_t*)malloc(npaths*sizeof(uint32_t));
-  }
 
   if(nthreads>1) {
     pthread_t* threads=(pthread_t*)malloc(nthreads*sizeof(pthread_t));
@@ -59,11 +52,11 @@ int main(const int nargs, const char* args[])
       tdata[t].nimax=nimax;
       tdata[t].pars=&pars;
       tdata[t].set=&set;
-      tdata[t].ngeninfs=ngeninfs;
-      tdata[t].ninfs=ninfs;
+      tdata[t].ngeninfs=NULL;
+      tdata[t].ninfbins=0;
       //tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
       tdata[t].r = gsl_rng_alloc(rngstream_gsl);
-      tdata[t].rec_ninfs=(ninfrec>0);
+      tdata[t].rec_ninfs=ninfhist;
       pthread_create(threads+t,NULL,simthread,tdata+t);
     }
 
@@ -105,11 +98,11 @@ int main(const int nargs, const char* args[])
     tdata[0].nimax=nimax;
     tdata[0].pars=&pars;
     tdata[0].set=&set;
-    tdata[0].ngeninfs=ngeninfs;
-    tdata[0].ninfs=ninfs;
+    tdata[0].ngeninfs=NULL;
+    tdata[0].ninfbins=0;
     //tdata[0].r = gsl_rng_alloc(gsl_rng_taus2);
     tdata[0].r = gsl_rng_alloc(rngstream_gsl);
-    tdata[0].rec_ninfs=(ninfrec>0);
+    tdata[0].rec_ninfs=ninfhist;
     simthread(tdata);
     gsl_rng_free(tdata[0].r);
   }
@@ -170,6 +163,31 @@ int main(const int nargs, const char* args[])
   printf("Total infections timeline, for paths with extinction vs no extinction vs overall is:\n");
   for(j=0; j<npers; ++j) printf("%3i: %11.4f +/- %11.4f\t%11.4f +/- %11.4f\t%11.4f +/- %11.4f%s\n",j,tdata[0].totinf_timeline_mean_ext[j],tdata[0].totinf_timeline_std_ext[j],tdata[0].totinf_timeline_mean_noext[j],tdata[0].totinf_timeline_std_noext[j],totinf_timeline_mean[j],totinf_timeline_std[j],(j<tdata[0].nimaxedoutmintimeindex?"":" (nimax reached, biased)"));
 
+  if(ninfhist) {
+    uint32_t maxninfnbins=tdata[nthreads-1].ninfbins;
+    uint32_t b;
+    int tmaxninfnbins=nthreads-1;
+    int tp;
+
+    for(t=nthreads-2; t>=0; --t) {
+
+      if(tdata[t].ninfbins > maxninfnbins) {
+	maxninfnbins=tdata[t].ninfbins;
+	tp=tmaxninfnbins;
+	tmaxninfnbins=t;
+
+      } else tp=t;
+
+      for(b=tdata[tp].ninfbins-1; b>=0; --b) tdata[tmaxninfnbins].ngeninfs[b]+=tdata[tp].ngeninfs[b];
+      free(tdata[tp].ngeninfs);
+    }
+
+    printf("\nDistribution of number of generated infections per infectious individual:\n");
+    printf(" n inf\t               count\n");
+    
+    for(b=0; b<maxninfnbins; ++b) if(tdata[tmaxninfnbins].ngeninfs[b] > 0) printf("%6" PRIu32 "\t%20" PRIu64 "\n",b,tdata[tmaxninfnbins].ngeninfs[b]);
+  }
+
   for(t=nthreads-1; t>=0; --t) {
     free(tdata[t].inf_timeline_mean_ext);
     free(tdata[t].inf_timeline_std_ext);
@@ -182,27 +200,11 @@ int main(const int nargs, const char* args[])
   }
   free(tdata);
 
-  if(ninfrec>0) {
-    uint32_t p;
-
-    for(p=0; p<npaths; ++p) {
-
-      if(write(ninfrec, ngeninfs[p], ninfs[p]*sizeof(uint32_t)) !=  ninfs[p]*sizeof(uint32_t)) {
-	perror(args[0]);
-	return 1;
-      }
-      free(ngeninfs[p]);
-    }
-    free(ngeninfs);
-    free(ninfs);
-  }
-
   fflush(stdout);
   fflush(stderr);
   close(oout);
   close(eout);
 
-  if(ninfrec>0) close(ninfrec);
   return 0;
 }
 
@@ -265,7 +267,11 @@ void* simthread(void* arg)
   }
 
   branchsim_init(&sv);
-  std_stats_init(&sv);
+
+  if(data->rec_ninfs) std_stats_init(&sv, &data->ngeninfs, &data->ninfbins);
+
+  else std_stats_init(&sv, NULL, NULL);
+  
   stats.nimax=data->nimax;
   int j;
   uint32_t curset;
@@ -325,13 +331,6 @@ void* simthread(void* arg)
 	  data->totinf_timeline_mean_noext[j]+=stats.totinf_timeline[j];
 	  data->totinf_timeline_std_noext[j]+=(double)stats.totinf_timeline[j]*stats.totinf_timeline[j];
 	}
-      }
-
-      if(data->rec_ninfs) {
-	stats.ngeninfs=(uint32_t*)realloc(stats.ngeninfs,stats.ninfs*sizeof(uint32_t));
-	data->ngeninfs[initpath+i]=stats.ngeninfs;
-	data->ninfs[initpath+i]=stats.ninfs;
-	stats.ngeninfs=(uint32_t*)malloc(stats.nainfs*sizeof(uint32_t));
       }
     }
   }

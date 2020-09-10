@@ -13,8 +13,7 @@
 #include "infindividual.h"
 #include "simulation.h"
 
-#define INIT_NINF_ALLOC (16)
-#define NINF_ARRAY_GROW_FACT (1.5)
+#define INIT_NINF_ALLOC (16) //!< Initial number of allocated bins for the ninf histogram
 
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
@@ -31,9 +30,8 @@ typedef struct
   double commpersum;		//!< Sum of communicable periods for all infectious individuals whose communicable period does not occur after tmax.
   uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infectious at some point in this interval (lower bound included, upper bound excluded).
   uint32_t* totinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
-  uint32_t* ngeninfs;	        //!< Number of generated infections from each infectious individual.
-  uint32_t ninfs;		//!< Number of infectious  individuals.
-  uint32_t nainfs;		//!< Number of allocated infectious individuals.
+  uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
+  uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
   uint32_t npers;		//!< Number of integer intervals (floor(tmax)+1)
   uint32_t rsum;		//!< Sum of the number of individuals that get infected during the simulation by the infectious individuals whose last transmission event does not occur after tmax.
 #ifdef NUMEVENTSSTATS
@@ -51,9 +49,13 @@ typedef struct
  * This function must be called once to initialise the standard summary
  * statistics, if used.
  *
- * @param sv: Pointer to the simulation variables .
+ * @param sv: Pointer to the simulation variables.
+ * @param ngeninfs: Pointer to an array of number of generated infections to be
+ * filled. Ignored if NULL.
+ * @param ninfbins: Pointer to the length of the ngeninfs array. Ignored if
+ * NULL.
  */
-void std_stats_init(sim_vars *sv);
+void std_stats_init(sim_vars *sv, uint64_t** ngeninfs, uint32_t* ninfbins);
 
 /**
  * @brief Initialises elements of the standard summary statistics
@@ -71,7 +73,6 @@ inline static void std_stats_path_init(std_summary_stats* stats)
   stats->commpersum=0;
   memset(stats->inf_timeline,0,stats->npers*sizeof(uint32_t));
   memset(stats->totinf_timeline,0,stats->npers*sizeof(uint32_t));
-  stats->ninfs=0;
   stats->rsum=0;
 #ifdef NUMEVENTSSTATS
   stats->neventssum=0;
@@ -98,7 +99,7 @@ inline static void std_stats_ii_alloc(infindividual* ii){ii->dataptr=malloc(size
  *
  * @param stats: Pointer to the standard summary statistics.
  */
-inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline); free(stats->totinf_timeline); free(stats->ngeninfs);}
+inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline); free(stats->totinf_timeline);}
 
 /**
  * @brief Processes the number of infections for this new event.
@@ -230,13 +231,12 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
  * */
 inline static void std_stats_end_inf_rec_ninfs(infindividual* inf, void* ptr)
 {
-  if(((std_summary_stats*)ptr)->ninfs == ((std_summary_stats*)ptr)->nainfs) {
-    ((std_summary_stats*)ptr)->nainfs*=NINF_ARRAY_GROW_FACT;
-     ((std_summary_stats*)ptr)->ngeninfs=(uint32_t*)realloc(((std_summary_stats*)ptr)->ngeninfs,((std_summary_stats*)ptr)->nainfs*sizeof(uint32_t));
+  if(*(uint32_t*)inf->dataptr >= *((std_summary_stats*)ptr)->ninfbins) {
+     *((std_summary_stats*)ptr)->ngeninfs=(uint64_t*)realloc(*((std_summary_stats*)ptr)->ngeninfs,(*(uint32_t*)inf->dataptr+1)*sizeof(uint64_t));
+     memset(*((std_summary_stats*)ptr)->ngeninfs+*((std_summary_stats*)ptr)->ninfbins,0,(*(uint32_t*)inf->dataptr+1-*((std_summary_stats*)ptr)->ninfbins)*sizeof(uint64_t));
+    *((std_summary_stats*)ptr)->ninfbins=*(uint64_t*)inf->dataptr+1;
   }
-
-  ((std_summary_stats*)ptr)->ngeninfs[((std_summary_stats*)ptr)->ninfs]=*(uint32_t*)inf->dataptr;
-  ++(((std_summary_stats*)ptr)->ninfs);
+  ++((*((std_summary_stats*)ptr)->ngeninfs)[*(uint32_t*)inf->dataptr]);
 
   std_stats_end_inf(inf, ptr);
 }
@@ -294,12 +294,7 @@ inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
  * */
 inline static void std_stats_noevent_inf_rec_ninfs(infindividual* inf, void* ptr)
 {
-  if(((std_summary_stats*)ptr)->ninfs == ((std_summary_stats*)ptr)->nainfs) {
-    ((std_summary_stats*)ptr)->nainfs*=NINF_ARRAY_GROW_FACT;
-     ((std_summary_stats*)ptr)->ngeninfs=(uint32_t*)realloc(((std_summary_stats*)ptr)->ngeninfs,((std_summary_stats*)ptr)->nainfs*sizeof(uint32_t));
-  }
-  ((std_summary_stats*)ptr)->ngeninfs[((std_summary_stats*)ptr)->ninfs]=*(uint32_t*)inf->dataptr;
-  ++(((std_summary_stats*)ptr)->ninfs);
+  ++((*((std_summary_stats*)ptr)->ngeninfs)[0]);
 
   std_stats_noevent_inf(inf, ptr);
 }
