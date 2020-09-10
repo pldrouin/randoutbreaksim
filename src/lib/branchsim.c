@@ -8,8 +8,6 @@
 
 #include "branchsim.h"
 
-#define II_ARRAY_GROW_FACT (1.5)  //!< Growing factor for the array of current infectious individuals across all layers.
-
 void branchsim_init(sim_vars* sv)
 {
   sv->brsim.iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));

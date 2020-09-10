@@ -12,5 +12,7 @@ void std_stats_init(sim_vars* sv)
   stats->npers=(int)sv->pars.tmax+1;
   stats->inf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
   stats->totinf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
+  stats->ngeninfs=(uint32_t*)malloc(INIT_NINF_ALLOC*sizeof(uint32_t));
+  stats->nainfs=INIT_NINF_ALLOC;
   stats->nimax=UINT32_MAX;
 }

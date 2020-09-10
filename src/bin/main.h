@@ -49,8 +49,11 @@ typedef struct {
   double* totinf_timeline_std_ext;
   double* totinf_timeline_mean_noext;
   double* totinf_timeline_std_noext;
+  uint32_t** ngeninfs;
+  uint32_t* ninfs;
   uint32_t nimaxedoutmintimeindex;
   gsl_rng* r;
+  bool rec_ninfs;
 } thread_data;
 
 void* simthread(void* arg);

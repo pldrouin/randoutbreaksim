@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-int config(model_pars* pars, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
+int config(model_pars* pars, int* ninfrec, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
 {
   int plength=1;
   FILE **fptra=NULL;
@@ -171,6 +171,14 @@ int config(model_pars* pars, uint32_t* npaths, uint32_t* nthreads, uint32_t* nse
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&pars->nstart);
 
+      } else if(!argsdiffer(pbuf, "ninfrec")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+
+	if((*ninfrec=open(pbuf,O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH))<0) {
+	  fprintf(stderr,"%s: Error: Cannot open file '%s' in write mode\n",__func__,pbuf);
+	  return -1;
+	}
+
       } else if(!argsdiffer(pbuf, "npaths")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,npaths);
@@ -238,6 +246,7 @@ void printusage(const char* name)
   printf("\t--im95 VALUE\t\t95th percentile of the interrupted alternate communicable period (default value of it95)\n");
   printf("\t--tmax VALUE\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\tInitial number of infectious individuals (default value of 1)\n");
+  printf("\t--ninfrec FILENAME\t\tWrite the number of infected individuals for each infectious individual in the provided file\n");
   printf("\t--npaths VALUE\t\tNumber of generated simulation paths (default value of 10000)\n");
   printf("\t--nthreads VALUE\tNumber of threads used to perform the simulation (default value of 1)\n");
   printf("\t--nsetsperthread VALUE\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise)\n");

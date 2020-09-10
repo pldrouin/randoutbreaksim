@@ -13,6 +13,7 @@
 int main(const int nargs, const char* args[])
 {
   model_pars pars;
+  int ninfrec=0;
   uint32_t npaths=10000;
   uint32_t nthreads=1;
   uint32_t nsetsperthread=(nthreads>1?100:1);
@@ -22,7 +23,7 @@ int main(const int nargs, const char* args[])
 
   sim_pars_init(&pars);
 
-  if(config(&pars, &npaths, &nthreads, &nsetsperthread, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
+  if(config(&pars, &ninfrec, &npaths, &nthreads, &nsetsperthread, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
 
   if(model_solve_pars(&pars)) return 1;
 
@@ -40,6 +41,13 @@ int main(const int nargs, const char* args[])
   const uint32_t npers=pars.tmax+1;
   volatile uint32_t set=0;
   int t;
+  uint32_t** ngeninfs=NULL;
+  uint32_t* ninfs=NULL;
+
+  if(ninfrec>0) {
+    ngeninfs=(uint32_t**)malloc(npaths*sizeof(uint32_t*));
+    ninfs=(uint32_t*)malloc(npaths*sizeof(uint32_t));
+  }
 
   if(nthreads>1) {
     pthread_t* threads=(pthread_t*)malloc(nthreads*sizeof(pthread_t));
@@ -51,8 +59,11 @@ int main(const int nargs, const char* args[])
       tdata[t].nimax=nimax;
       tdata[t].pars=&pars;
       tdata[t].set=&set;
+      tdata[t].ngeninfs=ngeninfs;
+      tdata[t].ninfs=ninfs;
       //tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
       tdata[t].r = gsl_rng_alloc(rngstream_gsl);
+      tdata[t].rec_ninfs=(ninfrec>0);
       pthread_create(threads+t,NULL,simthread,tdata+t);
     }
 
@@ -94,8 +105,11 @@ int main(const int nargs, const char* args[])
     tdata[0].nimax=nimax;
     tdata[0].pars=&pars;
     tdata[0].set=&set;
+    tdata[0].ngeninfs=ngeninfs;
+    tdata[0].ninfs=ninfs;
     //tdata[0].r = gsl_rng_alloc(gsl_rng_taus2);
     tdata[0].r = gsl_rng_alloc(rngstream_gsl);
+    tdata[0].rec_ninfs=(ninfrec>0);
     simthread(tdata);
     gsl_rng_free(tdata[0].r);
   }
@@ -168,10 +182,27 @@ int main(const int nargs, const char* args[])
   }
   free(tdata);
 
+  if(ninfrec>0) {
+    uint32_t p;
+
+    for(p=0; p<npaths; ++p) {
+
+      if(write(ninfrec, ngeninfs[p], ninfs[p]*sizeof(uint32_t)) !=  ninfs[p]*sizeof(uint32_t)) {
+	perror(args[0]);
+	return 1;
+      }
+      free(ngeninfs[p]);
+    }
+    free(ngeninfs);
+    free(ninfs);
+  }
+
   fflush(stdout);
   fflush(stderr);
   close(oout);
   close(eout);
+
+  if(ninfrec>0) close(ninfrec);
   return 0;
 }
 
@@ -223,14 +254,22 @@ void* simthread(void* arg)
   if(data->nimax == UINT32_MAX) sim_set_new_event_proc_func(&sv, std_stats_new_event);
   else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
   sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
-  sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
-  sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
+
+  if(data->rec_ninfs) {
+    sim_set_end_inf_proc_func(&sv, std_stats_end_inf_rec_ninfs);
+    sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf_rec_ninfs);
+
+  } else {
+    sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
+    sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
+  }
 
   branchsim_init(&sv);
   std_stats_init(&sv);
   stats.nimax=data->nimax;
   int j;
   uint32_t curset;
+  uint32_t initpath;
   uint32_t npaths;
 
   for(;;) {
@@ -239,7 +278,8 @@ void* simthread(void* arg)
     if(curset>=data->nsets) break;
 
     //printf("%22.15e\t%22.15e\n",curset*data->npathsperset,(curset+1)*data->npathsperset);
-    npaths=round((curset+1)*data->npathsperset)-round(curset*data->npathsperset);
+    initpath=round(curset*data->npathsperset);
+    npaths=round((curset+1)*data->npathsperset)-initpath;
     //printf("npaths %u\n",npaths);
 
     for(int i=npaths-1; i>=0; --i) {
@@ -285,6 +325,13 @@ void* simthread(void* arg)
 	  data->totinf_timeline_mean_noext[j]+=stats.totinf_timeline[j];
 	  data->totinf_timeline_std_noext[j]+=(double)stats.totinf_timeline[j]*stats.totinf_timeline[j];
 	}
+      }
+
+      if(data->rec_ninfs) {
+	stats.ngeninfs=(uint32_t*)realloc(stats.ngeninfs,stats.ninfs*sizeof(uint32_t));
+	data->ngeninfs[initpath+i]=stats.ngeninfs;
+	data->ninfs[initpath+i]=stats.ninfs;
+	stats.ngeninfs=(uint32_t*)malloc(stats.nainfs*sizeof(uint32_t));
       }
     }
   }
