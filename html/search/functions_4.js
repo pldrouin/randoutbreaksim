@@ -1,7 +1,6 @@
 var searchData=
 [
-  ['getnextparam_168',['getnextparam',['../args_8c.html#a1a9ae2fe2395a059c8464ab200e1532f',1,'getnextparam(FILE **fptra, int *fptri, const bool isarg, const int nargs, char const *const args[], int *parc, char *param):&#160;args.c'],['../args_8h.html#a1a9ae2fe2395a059c8464ab200e1532f',1,'getnextparam(FILE **fptra, int *fptri, const bool isarg, const int nargs, char const *const args[], int *parc, char *param):&#160;args.c']]],
-  ['gkapparoot_169',['gkapparoot',['../model__parameters_8h.html#acf51a1f2b9eabe0496061944e4872065',1,'model_parameters.h']]],
-  ['gpercroot_170',['gpercroot',['../model__parameters_8h.html#a3d757fa02920ff161046b12b01b41205',1,'model_parameters.h']]],
-  ['gpercrootfunc_171',['gpercrootfunc',['../model__parameters_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93',1,'model_parameters.h']]]
+  ['finitepopsim_195',['finitepopsim',['../finitepopsim_8c.html#a338afcfaf84a683bc3ed33cf1d75a956',1,'finitepopsim(sim_vars *sv):&#160;finitepopsim.c'],['../finitepopsim_8h.html#a338afcfaf84a683bc3ed33cf1d75a956',1,'finitepopsim(sim_vars *sv):&#160;finitepopsim.c']]],
+  ['finitepopsim_5ffree_196',['finitepopsim_free',['../finitepopsim_8c.html#a7a2e4c83734261be7ffa8b287a9c81c4',1,'finitepopsim_free(sim_vars *sv):&#160;finitepopsim.c'],['../finitepopsim_8h.html#a7a2e4c83734261be7ffa8b287a9c81c4',1,'finitepopsim_free(sim_vars *sv):&#160;finitepopsim.c']]],
+  ['finitepopsim_5finit_197',['finitepopsim_init',['../finitepopsim_8c.html#ae3c4b61a00188c03d9c30bf9ddf8821d',1,'finitepopsim_init(sim_vars *sv):&#160;finitepopsim.c'],['../finitepopsim_8h.html#ae3c4b61a00188c03d9c30bf9ddf8821d',1,'finitepopsim_init(sim_vars *sv):&#160;finitepopsim.c']]]
 ];

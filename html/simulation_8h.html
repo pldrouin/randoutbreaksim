@@ -93,7 +93,7 @@ $(document).ready(function(){initNavTree('simulation_8h.html',''); initResizable
 </div><!--header-->
 <div class="contents">
 
-<p>Simulation data structures and functions.  
+<p>Common simulation data structures and functions.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &lt;stdint.h&gt;</code><br />
 <code>#include &lt;math.h&gt;</code><br />
@@ -107,7 +107,7 @@ Include dependency graph for simulation.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="simulation_8h__incl.png" border="0" usemap="#simulation_8h" alt=""/></div>
 <map name="simulation_8h" id="simulation_8h">
-<area shape="rect" title="Simulation data structures and functions." alt="" coords="644,5,736,32"/>
+<area shape="rect" title="Common simulation data structures and functions." alt="" coords="644,5,736,32"/>
 <area shape="rect" title=" " alt="" coords="195,229,260,256"/>
 <area shape="rect" title=" " alt="" coords="456,229,519,256"/>
 <area shape="rect" title=" " alt="" coords="626,229,687,256"/>
@@ -128,16 +128,18 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="simulation_8h__dep__incl.png" border="0" usemap="#simulation_8hdep" alt=""/></div>
 <map name="simulation_8hdep" id="simulation_8hdep">
-<area shape="rect" title="Simulation data structures and functions." alt="" coords="283,5,375,32"/>
-<area shape="rect" href="branchsim_8h.html" title="Simulation data structures and functions." alt="" coords="48,80,141,107"/>
-<area shape="rect" href="simulation_8c.html" title="Simulation functions." alt="" coords="462,80,554,107"/>
-<area shape="rect" href="standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="166,80,346,107"/>
-<area shape="rect" href="config_8h.html" title="Configuration functions the simulation executable." alt="" coords="370,80,438,107"/>
-<area shape="rect" href="branchsim_8c.html" title="Simulation data structures and functions." alt="" coords="5,155,99,181"/>
-<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="123,155,184,181"/>
-<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="123,229,184,256"/>
-<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="209,155,389,181"/>
-<area shape="rect" href="config_8c.html" title="Configuration functions the simulation executable." alt="" coords="413,155,481,181"/>
+<area shape="rect" title="Common simulation data structures and functions." alt="" coords="402,5,494,32"/>
+<area shape="rect" href="branchsim_8h.html" title="Branching simulation functions." alt="" coords="92,80,185,107"/>
+<area shape="rect" href="finitepopsim_8h.html" title="Finite population simulation functions." alt="" coords="506,80,609,107"/>
+<area shape="rect" href="simulation_8c.html" title="Common simulation functions." alt="" coords="633,80,725,107"/>
+<area shape="rect" href="standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="210,80,390,107"/>
+<area shape="rect" href="config_8h.html" title="Configuration functions the simulation executable." alt="" coords="414,80,482,107"/>
+<area shape="rect" href="branchsim_8c.html" title="Branching simulation functions." alt="" coords="5,155,99,181"/>
+<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="328,155,389,181"/>
+<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="328,229,389,256"/>
+<area shape="rect" href="finitepopsim_8c.html" title="Finite population simulation functions." alt="" coords="506,155,609,181"/>
+<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="123,155,303,181"/>
+<area shape="rect" href="config_8c.html" title="Configuration functions the simulation executable." alt="" coords="414,155,482,181"/>
 </map>
 </div>
 </div>
@@ -146,6 +148,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Data Structures</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structbrsim__vars.html">brsim_vars</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structfpsim__vars.html">fpsim_vars</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html">sim_vars_</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -173,9 +177,6 @@ Typedefs</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:afd981fab1171f8b03e1c952b20f6f3ff"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#afd981fab1171f8b03e1c952b20f6f3ff">sim_pars_check</a> (<a class="el" href="structmodel__pars.html">model_pars</a> const *pars)</td></tr>
-<tr class="memdesc:afd981fab1171f8b03e1c952b20f6f3ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Verifies the validity of simulation parameters.  <a href="simulation_8h.html#afd981fab1171f8b03e1c952b20f6f3ff">More...</a><br /></td></tr>
-<tr class="separator:afd981fab1171f8b03e1c952b20f6f3ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a7d7687ebb34e4df53eff1ed32e7f7597">sim_pars_init</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars)</td></tr>
 <tr class="memdesc:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises simulation parameters.  <a href="simulation_8h.html#a7d7687ebb34e4df53eff1ed32e7f7597">More...</a><br /></td></tr>
 <tr class="separator:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -200,6 +201,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a0f2a0463da67aac089d7e7cf9e23bb77"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a0f2a0463da67aac089d7e7cf9e23bb77">sim_set_inf_proc_noevent_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, void(*inf_proc_func_noevent)(<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *dataptr))</td></tr>
 <tr class="memdesc:a0f2a0463da67aac089d7e7cf9e23bb77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user-defined processing function that is called for an infectious individual that does not generate any transmission event.  <a href="simulation_8h.html#a0f2a0463da67aac089d7e7cf9e23bb77">More...</a><br /></td></tr>
 <tr class="separator:a0f2a0463da67aac089d7e7cf9e23bb77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa06a91098c736b2be23132eaec322456"><td class="memItemLeft" align="right" valign="top"><a id="aa06a91098c736b2be23132eaec322456"></a>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>gen_infections_infpop_pinf1_log_plus_1</b> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="separator:aa06a91098c736b2be23132eaec322456"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcb80a55cf42f1a0c864f0f51bae4e9c"><td class="memItemLeft" align="right" valign="top"><a id="afcb80a55cf42f1a0c864f0f51bae4e9c"></a>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>gen_infections_infpop_log_plus_1</b> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="separator:afcb80a55cf42f1a0c864f0f51bae4e9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a881fb314fa7f96332cfe3f324287400f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a881fb314fa7f96332cfe3f324287400f">default_event_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
 <tr class="memdesc:a881fb314fa7f96332cfe3f324287400f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function that is called when a new transmission event is created.  <a href="simulation_8h.html#a881fb314fa7f96332cfe3f324287400f">More...</a><br /></td></tr>
 <tr class="separator:a881fb314fa7f96332cfe3f324287400f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -217,7 +224,7 @@ Functions</h2></td></tr>
 <tr class="separator:a84beb2084ff7239d40c304cee0506411"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Simulation data structures and functions. </p>
+<div class="textblock"><p>Common simulation data structures and functions. </p>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
@@ -284,7 +291,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00193">193</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00186">186</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -312,7 +319,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00214">214</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00207">207</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -331,7 +338,7 @@ Functions</h2></td></tr>
 <p>Generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods. </p>
 <p>This preprocessing macro generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods to the gen_time_periods_func pointer of the simulation, given the configuration of the model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00238">238</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00231">231</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -386,7 +393,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the event does not occur after tmax, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00249">249</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00245">245</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -422,7 +429,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00257">257</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00253">253</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -453,7 +460,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00273">273</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00269">269</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -484,7 +491,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00265">265</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00261">261</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -525,7 +532,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00281">281</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00277">277</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -572,35 +579,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00037">37</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
-
-</div>
-</div>
-<a id="afd981fab1171f8b03e1c952b20f6f3ff"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afd981fab1171f8b03e1c952b20f6f3ff">&#9670;&nbsp;</a></span>sim_pars_check()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">int sim_pars_check </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> const *&#160;</td>
-          <td class="paramname"><em>pars</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Verifies the validity of simulation parameters. </p>
-<p>This internal function verifies if the set of provided simulation parameter values are valid.</p>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramname">pars</td><td>Pointer to the simulation parameters. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>0 if the parameters are valid. If the parameters are invalid, an error is printed on stderr. </dd></dl>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00041">41</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -676,7 +655,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00135">135</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00128">128</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -723,7 +702,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00125">125</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00118">118</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -771,7 +750,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00147">147</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00140">140</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -820,7 +799,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if new infectious individuals are to be instantiated from this event, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00103">103</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00096">96</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -868,7 +847,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00115">115</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00108">108</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -916,13 +895,13 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00089">89</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00082">82</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="astructsim__vars___html"><div class="ttname"><a href="structsim__vars__.html">sim_vars_</a></div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00031">simulation.h:31</a></div></div>
+<div class="ttc" id="astructsim__vars___html"><div class="ttname"><a href="structsim__vars__.html">sim_vars_</a></div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00034">simulation.h:34</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

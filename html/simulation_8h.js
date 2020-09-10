@@ -1,6 +1,7 @@
 var simulation_8h =
 [
     [ "brsim_vars", "structbrsim__vars.html", "structbrsim__vars" ],
+    [ "fpsim_vars", "structfpsim__vars.html", null ],
     [ "sim_vars_", "structsim__vars__.html", "structsim__vars__" ],
     [ "DEBUG_PRINTF", "simulation_8h.html#a5c8ef3c24dad2c469a42784a9a39403b", null ],
     [ "GEN_PER", "simulation_8h.html#a11c36c17ab153322bdb53907a519f423", null ],
@@ -12,8 +13,9 @@ var simulation_8h =
     [ "dummy_proc_func_one_par", "simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1", null ],
     [ "dummy_proc_func_sv", "simulation_8h.html#a4ecfceeb3812509d92a677d9c65d6d9a", null ],
     [ "dummy_proc_func_two_pars", "simulation_8h.html#a84beb2084ff7239d40c304cee0506411", null ],
+    [ "gen_infections_infpop_log_plus_1", "simulation_8h.html#afcb80a55cf42f1a0c864f0f51bae4e9c", null ],
+    [ "gen_infections_infpop_pinf1_log_plus_1", "simulation_8h.html#aa06a91098c736b2be23132eaec322456", null ],
     [ "sim_init", "simulation_8h.html#a2ca281c80f36f8dfbbadec8518ba873e", null ],
-    [ "sim_pars_check", "simulation_8h.html#afd981fab1171f8b03e1c952b20f6f3ff", null ],
     [ "sim_pars_init", "simulation_8h.html#a7d7687ebb34e4df53eff1ed32e7f7597", null ],
     [ "sim_set_end_inf_proc_func", "simulation_8h.html#aaf6b49ed5309f072770c4c2038371e50", null ],
     [ "sim_set_ii_alloc_proc_func", "simulation_8h.html#af4497a54b084e370fc513b737b510a55", null ],

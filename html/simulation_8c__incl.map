@@ -1,6 +1,6 @@
 <map id="simulation.c" name="simulation.c">
-<area shape="rect" id="node1" title="Simulation functions." alt="" coords="644,5,736,32"/>
-<area shape="rect" id="node2" href="$simulation_8h.html" title="Simulation data structures and functions." alt="" coords="644,80,736,107"/>
+<area shape="rect" id="node1" title="Common simulation functions." alt="" coords="644,5,736,32"/>
+<area shape="rect" id="node2" href="$simulation_8h.html" title="Common simulation data structures and functions." alt="" coords="644,80,736,107"/>
 <area shape="rect" id="node3" title=" " alt="" coords="195,304,260,331"/>
 <area shape="rect" id="node4" title=" " alt="" coords="456,304,519,331"/>
 <area shape="rect" id="node5" title=" " alt="" coords="626,304,687,331"/>

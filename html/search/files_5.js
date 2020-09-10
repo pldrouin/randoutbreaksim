@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['rngstream_5fgsl_2eh_151',['rngstream_gsl.h',['../rngstream__gsl_8h.html',1,'']]],
-  ['root_5ffinder_2ec_152',['root_finder.c',['../root__finder_8c.html',1,'']]],
-  ['root_5ffinder_2eh_153',['root_finder.h',['../root__finder_8h.html',1,'']]]
+  ['main_2ec_172',['main.c',['../main_8c.html',1,'']]],
+  ['main_2eh_173',['main.h',['../main_8h.html',1,'']]],
+  ['model_5fparameters_2ec_174',['model_parameters.c',['../model__parameters_8c.html',1,'']]],
+  ['model_5fparameters_2eh_175',['model_parameters.h',['../model__parameters_8h.html',1,'']]]
 ];

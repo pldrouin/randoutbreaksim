@@ -138,21 +138,24 @@ $(document).ready(function(){initNavTree('main_8h_source.html',''); initResizabl
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  <span class="keywordtype">double</span>* totinf_timeline_std_ext;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keywordtype">double</span>* totinf_timeline_mean_noext;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;  <span class="keywordtype">double</span>* totinf_timeline_std_noext;</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  uint32_t nimaxedoutmintimeindex;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  gsl_rng* r;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;} <a class="code" href="structthread__data.html">thread_data</a>;</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keywordtype">void</span>* simthread(<span class="keywordtype">void</span>* arg);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  uint32_t** ngeninfs;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  uint32_t* ninfs;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  uint32_t nimaxedoutmintimeindex;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  gsl_rng* r;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keywordtype">bool</span> rec_ninfs;</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;} <a class="code" href="structthread__data.html">thread_data</a>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keywordtype">void</span>* simthread(<span class="keywordtype">void</span>* arg);</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="amodel__parameters_8h_html"><div class="ttname"><a href="model__parameters_8h.html">model_parameters.h</a></div><div class="ttdoc">Model parameter functions.</div></div>
 <div class="ttc" id="astructthread__data_html"><div class="ttname"><a href="structthread__data.html">thread_data</a></div><div class="ttdef"><b>Definition:</b> <a href="main_8h_source.html#l00029">main.h:29</a></div></div>
-<div class="ttc" id="astructmodel__pars_html"><div class="ttname"><a href="structmodel__pars.html">model_pars</a></div><div class="ttdef"><b>Definition:</b> <a href="model__parameters_8h_source.html#l00022">model_parameters.h:22</a></div></div>
+<div class="ttc" id="astructmodel__pars_html"><div class="ttname"><a href="structmodel__pars.html">model_pars</a></div><div class="ttdef"><b>Definition:</b> <a href="model__parameters_8h_source.html#l00031">model_parameters.h:31</a></div></div>
 <div class="ttc" id="amain_8h_html_adc18f50c2d018bfc1f62f1ac87f2a5ff"><div class="ttname"><a href="main_8h.html#adc18f50c2d018bfc1f62f1ac87f2a5ff">main</a></div><div class="ttdeci">int main(const int nargs, const char *args[])</div><div class="ttdoc">Main function.</div><div class="ttdef"><b>Definition:</b> <a href="main_8c_source.html#l00013">main.c:13</a></div></div>
 <div class="ttc" id="aconfig_8h_html"><div class="ttname"><a href="config_8h.html">config.h</a></div><div class="ttdoc">Configuration functions the simulation executable.</div></div>
 <div class="ttc" id="astandard__summary__stats_8h_html"><div class="ttname"><a href="standard__summary__stats_8h.html">standard_summary_stats.h</a></div><div class="ttdoc">User-defined functions to compute standard summary statistics.</div></div>
 <div class="ttc" id="arngstream__gsl_8h_html"><div class="ttname"><a href="rngstream__gsl_8h.html">rngstream_gsl.h</a></div><div class="ttdoc">GSL adapter interface for rngstream.</div></div>
-<div class="ttc" id="abranchsim_8h_html"><div class="ttname"><a href="branchsim_8h.html">branchsim.h</a></div><div class="ttdoc">Simulation data structures and functions.</div></div>
+<div class="ttc" id="abranchsim_8h_html"><div class="ttname"><a href="branchsim_8h.html">branchsim.h</a></div><div class="ttdoc">Branching simulation functions.</div></div>
 <div class="ttc" id="ainfindividual_8h_html"><div class="ttname"><a href="infindividual_8h.html">infindividual.h</a></div><div class="ttdoc">Data structure containing infected individual information.</div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->

@@ -86,6 +86,7 @@ $(document).ready(function(){initNavTree('model__parameters_8h.html',''); initRe
   <div class="summary">
 <a href="#nested-classes">Data Structures</a> &#124;
 <a href="#define-members">Macros</a> &#124;
+<a href="#enum-members">Enumerations</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">model_parameters.h File Reference</div>  </div>
@@ -117,18 +118,20 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="model__parameters_8h__dep__incl.png" border="0" usemap="#model__parameters_8hdep" alt=""/></div>
 <map name="model__parameters_8hdep" id="model__parameters_8hdep">
-<area shape="rect" title="Model parameter functions." alt="" coords="303,5,443,32"/>
-<area shape="rect" href="simulation_8h.html" title="Simulation data structures and functions." alt="" coords="286,80,378,107"/>
-<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="244,229,305,256"/>
-<area shape="rect" href="config_8h.html" title="Configuration functions the simulation executable." alt="" coords="462,155,530,181"/>
-<area shape="rect" href="model__parameters_8c.html" title="Model parameter functions." alt="" coords="454,80,594,107"/>
-<area shape="rect" href="branchsim_8h.html" title="Simulation data structures and functions." alt="" coords="344,155,437,181"/>
-<area shape="rect" href="simulation_8c.html" title="Simulation functions." alt="" coords="227,155,319,181"/>
-<area shape="rect" href="standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="23,155,203,181"/>
-<area shape="rect" href="branchsim_8c.html" title="Simulation data structures and functions." alt="" coords="344,229,437,256"/>
-<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="244,304,305,331"/>
-<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="23,229,203,256"/>
-<area shape="rect" href="config_8c.html" title="Configuration functions the simulation executable." alt="" coords="462,229,530,256"/>
+<area shape="rect" title="Model parameter functions." alt="" coords="540,5,680,32"/>
+<area shape="rect" href="simulation_8h.html" title="Common simulation data structures and functions." alt="" coords="331,80,423,107"/>
+<area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="554,229,615,256"/>
+<area shape="rect" href="config_8h.html" title="Configuration functions the simulation executable." alt="" coords="623,155,691,181"/>
+<area shape="rect" href="model__parameters_8c.html" title="Model parameter functions." alt="" coords="673,80,813,107"/>
+<area shape="rect" href="branchsim_8h.html" title="Branching simulation functions." alt="" coords="249,155,342,181"/>
+<area shape="rect" href="finitepopsim_8h.html" title="Finite population simulation functions." alt="" coords="5,155,108,181"/>
+<area shape="rect" href="simulation_8c.html" title="Common simulation functions." alt="" coords="132,155,224,181"/>
+<area shape="rect" href="standard__summary__stats_8h.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="367,155,547,181"/>
+<area shape="rect" href="branchsim_8c.html" title="Branching simulation functions." alt="" coords="231,229,325,256"/>
+<area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="554,304,615,331"/>
+<area shape="rect" href="finitepopsim_8c.html" title="Finite population simulation functions." alt="" coords="5,229,108,256"/>
+<area shape="rect" href="standard__summary__stats_8c.html" title="User&#45;defined functions to compute standard summary statistics." alt="" coords="349,229,529,256"/>
+<area shape="rect" href="config_8c.html" title="Configuration functions the simulation executable." alt="" coords="640,229,708,256"/>
 </map>
 </div>
 </div>
@@ -153,6 +156,17 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a9490e75206749a4db7fecb0f706fc861">RF_GKAPPA_EPSF</a>&#160;&#160;&#160;(1e-15)</td></tr>
 <tr class="memdesc:a9490e75206749a4db7fecb0f706fc861"><td class="mdescLeft">&#160;</td><td class="mdescRight">EPS for the kappa CDF discrepancy. <br /></td></tr>
 <tr class="separator:a9490e75206749a4db7fecb0f706fc861"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa3fcbb2fda37762da626326a166a2f6"><td class="memItemLeft" align="right" valign="top"><a id="aaa3fcbb2fda37762da626326a166a2f6"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>RO_GROUP_DIST_MASK</b>&#160;&#160;&#160;(0x3)</td></tr>
+<tr class="separator:aaa3fcbb2fda37762da626326a166a2f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
+Enumerations</h2></td></tr>
+<tr class="memitem:a42664ec50544203d1d336107e7f24283"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a42664ec50544203d1d336107e7f24283">ro_model_flags</a> { <b>ro_group_log_plus_1</b> =0, 
+<b>ro_group_log_attendees</b> =1, 
+<b>ro_group_log_invitees</b> =2
+ }</td></tr>
+<tr class="separator:a42664ec50544203d1d336107e7f24283"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -186,7 +200,26 @@ Functions</h2></td></tr>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Enumeration Type Documentation</h2>
+<a id="a42664ec50544203d1d336107e7f24283"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a42664ec50544203d1d336107e7f24283">&#9670;&nbsp;</a></span>ro_model_flags</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="model__parameters_8h.html#a42664ec50544203d1d336107e7f24283">ro_model_flags</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Model type. Flags used to specify the model. ro_log_group_plus_1, ro_log_attendees and ro_log_invitees are mutually exclusive options that indicate how the number of individuals at events are distributed. <br  />
+ </p>
+
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00024">24</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="acf51a1f2b9eabe0496061944e4872065"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#acf51a1f2b9eabe0496061944e4872065">&#9670;&nbsp;</a></span>gkapparoot()</h2>
 
@@ -238,7 +271,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00155">155</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00168">168</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -293,7 +326,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00138">138</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00151">151</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -342,7 +375,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the discrepancy between the evaluated CDF and the 95th percentile. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00123">123</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00136">136</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -397,7 +430,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00110">110</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00123">123</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>

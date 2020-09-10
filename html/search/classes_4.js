@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['sim_5fvars_5f_137',['sim_vars_',['../structsim__vars__.html',1,'']]],
-  ['std_5fsummary_5fstats_138',['std_summary_stats',['../structstd__summary__stats.html',1,'']]]
+  ['ran_5flog_158',['ran_log',['../structran__log.html',1,'']]],
+  ['root_5ffinder_159',['root_finder',['../structroot__finder.html',1,'']]]
 ];

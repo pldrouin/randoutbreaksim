@@ -91,7 +91,7 @@ $(document).ready(function(){initNavTree('branchsim_8h.html',''); initResizable(
 </div><!--header-->
 <div class="contents">
 
-<p>Simulation data structures and functions.  
+<p>Branching simulation functions.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="simulation_8h_source.html">simulation.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
@@ -99,8 +99,8 @@ Include dependency graph for branchsim.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="branchsim_8h__incl.png" border="0" usemap="#branchsim_8h" alt=""/></div>
 <map name="branchsim_8h" id="branchsim_8h">
-<area shape="rect" title="Simulation data structures and functions." alt="" coords="643,5,737,32"/>
-<area shape="rect" href="simulation_8h.html" title="Simulation data structures and functions." alt="" coords="644,80,736,107"/>
+<area shape="rect" title="Branching simulation functions." alt="" coords="643,5,737,32"/>
+<area shape="rect" href="simulation_8h.html" title="Common simulation data structures and functions." alt="" coords="644,80,736,107"/>
 <area shape="rect" title=" " alt="" coords="195,304,260,331"/>
 <area shape="rect" title=" " alt="" coords="456,304,519,331"/>
 <area shape="rect" title=" " alt="" coords="626,304,687,331"/>
@@ -121,8 +121,8 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="branchsim_8h__dep__incl.png" border="0" usemap="#branchsim_8hdep" alt=""/></div>
 <map name="branchsim_8hdep" id="branchsim_8hdep">
-<area shape="rect" title="Simulation data structures and functions." alt="" coords="56,5,149,32"/>
-<area shape="rect" href="branchsim_8c.html" title="Simulation data structures and functions." alt="" coords="5,80,99,107"/>
+<area shape="rect" title="Branching simulation functions." alt="" coords="56,5,149,32"/>
+<area shape="rect" href="branchsim_8c.html" title="Branching simulation functions." alt="" coords="5,80,99,107"/>
 <area shape="rect" href="main_8h.html" title="Main function for the simulation executable." alt="" coords="123,80,184,107"/>
 <area shape="rect" href="main_8c.html" title="Main function for the simulation executable." alt="" coords="123,155,184,181"/>
 </map>
@@ -132,14 +132,18 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
 Macros</h2></td></tr>
-<tr class="memitem:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memItemLeft" align="right" valign="top"><a id="a5c8ef3c24dad2c469a42784a9a39403b"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">DEBUG_PRINTF</a>(...)</td></tr>
-<tr class="memdesc:a5c8ef3c24dad2c469a42784a9a39403b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug print function. <br /></td></tr>
-<tr class="separator:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5655a86be72747864aa32dadb4fa6b49"><td class="memItemLeft" align="right" valign="top"><a id="a5655a86be72747864aa32dadb4fa6b49"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#a5655a86be72747864aa32dadb4fa6b49">INIT_N_LAYERS</a>&#160;&#160;&#160;(16)</td></tr>
 <tr class="memdesc:a5655a86be72747864aa32dadb4fa6b49"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial number of simulation layers. <br /></td></tr>
 <tr class="separator:a5655a86be72747864aa32dadb4fa6b49"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a39b090a0cb58793c36abaf74922bd800"><td class="memItemLeft" align="right" valign="top"><a id="a39b090a0cb58793c36abaf74922bd800"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#a39b090a0cb58793c36abaf74922bd800">II_ARRAY_GROW_FACT</a>&#160;&#160;&#160;(1.5)</td></tr>
+<tr class="memdesc:a39b090a0cb58793c36abaf74922bd800"><td class="mdescLeft">&#160;</td><td class="mdescRight">Growing factor for the array of current infectious individuals across all layers. <br /></td></tr>
+<tr class="separator:a39b090a0cb58793c36abaf74922bd800"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memItemLeft" align="right" valign="top"><a id="a5c8ef3c24dad2c469a42784a9a39403b"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">DEBUG_PRINTF</a>(...)</td></tr>
+<tr class="memdesc:a5c8ef3c24dad2c469a42784a9a39403b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug print function. <br /></td></tr>
+<tr class="separator:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -154,7 +158,7 @@ Functions</h2></td></tr>
 <tr class="separator:acdc4823a79039c032dbbee7e5aff3255"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><p>Simulation data structures and functions. </p>
+<div class="textblock"><p>Branching simulation functions. </p>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. Original model from <a href="#" onclick="location.href='mai'+'lto:'+'jer'+'om'+'e.l'+'ev'+'esq'+'ue'+'@tp'+'sg'+'c-p'+'wg'+'sc.'+'gc'+'.ca'; return false;">jerom<span style="display: none;">.nosp@m.</span>e.le<span style="display: none;">.nosp@m.</span>vesqu<span style="display: none;">.nosp@m.</span>e@tp<span style="display: none;">.nosp@m.</span>sgc-p<span style="display: none;">.nosp@m.</span>wgsc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a> and <a href="#" onclick="location.href='mai'+'lto:'+'dav'+'id'+'.ma'+'yb'+'ury'+'@t'+'psg'+'c-'+'pwg'+'sc'+'.gc'+'.c'+'a'; return false;">david<span style="display: none;">.nosp@m.</span>.may<span style="display: none;">.nosp@m.</span>bury@<span style="display: none;">.nosp@m.</span>tpsg<span style="display: none;">.nosp@m.</span>c-pwg<span style="display: none;">.nosp@m.</span>sc.g<span style="display: none;">.nosp@m.</span>c.ca</a> </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="branchsim_8h_source.html">branchsim.h</a>.</p>
@@ -185,7 +189,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if there is no error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00022">22</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00020">20</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
 
 </div>
 </div>
@@ -214,7 +218,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00173">173</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00171">171</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
 
 </div>
 </div>
@@ -243,7 +247,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00013">13</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00011">11</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
 
 </div>
 </div>

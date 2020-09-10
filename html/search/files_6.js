@@ -1,7 +1,8 @@
 var searchData=
 [
-  ['simulation_2ec_154',['simulation.c',['../simulation_8c.html',1,'']]],
-  ['simulation_2eh_155',['simulation.h',['../simulation_8h.html',1,'']]],
-  ['standard_5fsummary_5fstats_2ec_156',['standard_summary_stats.c',['../standard__summary__stats_8c.html',1,'']]],
-  ['standard_5fsummary_5fstats_2eh_157',['standard_summary_stats.h',['../standard__summary__stats_8h.html',1,'']]]
+  ['ran_5flog_2ec_176',['ran_log.c',['../ran__log_8c.html',1,'']]],
+  ['ran_5flog_2eh_177',['ran_log.h',['../ran__log_8h.html',1,'']]],
+  ['rngstream_5fgsl_2eh_178',['rngstream_gsl.h',['../rngstream__gsl_8h.html',1,'']]],
+  ['root_5ffinder_2ec_179',['root_finder.c',['../root__finder_8c.html',1,'']]],
+  ['root_5ffinder_2eh_180',['root_finder.h',['../root__finder_8h.html',1,'']]]
 ];

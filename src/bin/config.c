@@ -246,7 +246,7 @@ void printusage(const char* name)
   printf("\t--im95 VALUE\t\t95th percentile of the interrupted alternate communicable period (default value of it95)\n");
   printf("\t--tmax VALUE\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\tInitial number of infectious individuals (default value of 1)\n");
-  printf("\t--ninfrec FILENAME\t\tWrite the number of infected individuals for each infectious individual in the provided file\n");
+  printf("\t--ninfrec FILENAME\t\tWrite the number of infected individuals for each infectious individual in the provided file. The values are recorded as a series of 32-bit unsigned integers.\n");
   printf("\t--npaths VALUE\t\tNumber of generated simulation paths (default value of 10000)\n");
   printf("\t--nthreads VALUE\tNumber of threads used to perform the simulation (default value of 1)\n");
   printf("\t--nsetsperthread VALUE\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise)\n");
