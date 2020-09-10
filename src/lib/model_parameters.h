@@ -165,6 +165,6 @@ inline static void gpercroot(double* x, double* diff, void* params){const double
  * is the former kappa value and the fourth parameter is the former discrepancy
  * of the evaluated CDF value with the 95th percentile. (input/output)
  */
-inline static void gkapparoot(double* x, double* diff, void* params){const double oldx=*x; *diff=gpercrootfunc(*(double*)params * *x,*(((double*)params)+1) * *x); *x-=*diff * (*x - *(((double*)params)+2)) / (*diff - *(((double*)params)+3)); *(((double*)params)+2)=oldx; *(((double*)params)+3)=*diff;} 
+inline static void gkapparoot(double* x, double* diff, void* params){const double oldx=*x; *diff=gpercrootfunc(*(double*)params * *x,*(((double*)params)+1) * *x); /*printf("%22.15e %22.15e %22.15e %22.15e\n",*diff,*x,*(((double*)params)+2),*(((double*)params)+3));*/ *x-=*diff * (*x - *(((double*)params)+2)) / (*diff - *(((double*)params)+3)); *(((double*)params)+2)=oldx; *(((double*)params)+3)=*diff;} 
 
 #endif

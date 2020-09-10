@@ -149,19 +149,24 @@ int model_solve_R0_group(model_pars* pars)
     pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
   }
 
+  if(!(pars->pinf>0) || !(pars->pinf<=1)) {
+    fprintf(stderr,"%s: Error: The pinf parameter must have a value in the interval (0,1]\n",__func__);
+    return -2;
+  }
+
   if(!isnan(pars->tbar) && pars->tbar<=0) {
     fprintf(stderr,"%s: Error: tbar must be greater than 0\n",__func__);
-    return -2;
+    return -3;
   }
 
   if(!isnan(pars->lambda) && pars->lambda<=0) {
     fprintf(stderr,"%s: Error: lambda must be greater than 0\n",__func__);
-    return -3;
+    return -4;
   }
 
   if(!isnan(pars->R0) && pars->R0<=0) {
     fprintf(stderr,"%s: Error: R0j must be greater than 0\n",__func__);
-    return -4;
+    return -5;
   }
 
   //Solve for the missing parameter
@@ -200,8 +205,8 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
 
   if(isnan(*x95)) {
 
-    if(!(*kappa>0)) {
-      fprintf(stderr,"%s: Error: The kappa parameter of the distribution must be non-negative.\n",__func__);
+    if(!(*kappa>=1/ *ave)) {
+      fprintf(stderr,"%s: Error: The kappa parameter of the distribution must have a value greater than or equal to 1/ave.\n",__func__);
       return -1;
     }
 
@@ -231,7 +236,7 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
       double pars[4]={*ave, *x95, otherkappa, gpercrootfunc(*ave * otherkappa, *x95 * otherkappa)};
       root_finder* rf=root_finder_init(gkapparoot, pars);
 
-      int ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 1e-100, 1e100, kappa);
+      int ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 1/ *ave, 1e100, kappa);
 
       root_finder_free(rf);
 
@@ -346,11 +351,6 @@ int model_pars_check(model_pars const* pars)
   if(pars->tmax<=0) {
     fprintf(stderr,"%s: Error: tmax must be greater than 0\n",__func__);
     ret-=131072;
-  }
-
-  if(!(pars->pinf>0) || !(pars->pinf<=1)) {
-    fprintf(stderr,"%s: Error: The pinf parameter must have a value in the interval (0,1]\n",__func__);
-    ret-=262144;
   }
 
   if(pars->nstart<=0) {

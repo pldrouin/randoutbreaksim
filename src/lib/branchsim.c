@@ -15,6 +15,9 @@ void branchsim_init(sim_vars* sv)
   for(uint32_t i=0; i<INIT_N_LAYERS; ++i) sv->ii_alloc_proc_func(sv->brsim.iis+i);
   sv->brsim.nlayers=INIT_N_LAYERS;
   sv->brsim.iis[0].event_time=0;
+  ran_log_init(&sv->rl, (rng_stream*)sv->r->state, sv->pars.p);
+
+  BR_GENINF_COND;
 }
 
 int branchsim(sim_vars* sv)
@@ -53,7 +56,8 @@ int branchsim(sim_vars* sv)
       //sv->curii->event_time=sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
       DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->curevent,sv->curii->nevents,sv->curii->event_time);
 
-      sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
+      //sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
+      sv->curii->ninfections=sv->gen_infections_func(sv);
 
       if(!sv->new_event_proc_func(sv)) {
 	DEBUG_PRINTF("New event returned false\n");
@@ -110,7 +114,8 @@ gen_event:
 	//Generate the number of infections and the associated index for
 	//the current event
 	//Move to the next layer
-	sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
+	//sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
+        sv->curii->ninfections=sv->gen_infections_func(sv);
 
 	if(sv->new_event_proc_func(sv)) {
 	  sv->curii->curinfection=0;

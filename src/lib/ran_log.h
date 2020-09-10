@@ -30,14 +30,14 @@ inline static void ran_log_init(ran_log* rl, rng_stream* s, const double p){rl->
  * @param rl handle
  * @return finite logarithmic deviate
  */
-#define ran_log_finite(rl) \
+#define ran_log_finite_gen(rl) \
 {\
-  double v=rng_rand_pu01d(rl->s); /*We want a finite returned value;*/ \
+  double v=rng_rand_pu01(rl->s); /*We want a finite returned value;*/ \
  \
   if (v>=rl->p) return 1; \
  \
   else { \
-    double q=1-exp(rl->r*rng_rand_pu01d(rl->s)); \
+    double q=1-exp(rl->r*rng_rand_pu01(rl->s)); \
  \
     if (v<=q*q) return 1+log(v)/log(q); \
  \
@@ -46,6 +46,8 @@ inline static void ran_log_init(ran_log* rl, rng_stream* s, const double p){rl->
     else return 1 ; \
   } \
 }
+inline static uint32_t ran_log_finite(ran_log* rl){ran_log_finite_gen(rl);}
+inline static uint64_t ran_log_finite_l(ran_log* rl){ran_log_finite_gen(rl);}
 
 /**
  * @brief Finite logarithmic deviate with a lower bound of 2.
@@ -57,23 +59,23 @@ inline static void ran_log_init(ran_log* rl, rng_stream* s, const double p){rl->
  * @param rl handle
  * @return finite logarithmic deviate greater than 1
  */
-#define ran_log_finite_gt1(rl) \
+#define ran_log_finite_gt1_gen(rl) \
 {\
   for(;;) { \
-    double v=r1->p*rng_rand_pu01d(rl->s); /*We want a finite returned value;*/ \
+    double v=rl->p*rng_rand_pu01(rl->s); /*We want a finite returned value;*/ \
     \
-    while(v==r1->p) v=r1->p*rng_rand_pu01d(rl->s); \
+    while(v==rl->p) v=rl->p*rng_rand_pu01(rl->s); \
     \
-    else { \
-      double q=1-exp(rl->r*rng_rand_pu01d(rl->s)); \
-      \
-      if (v<=q*q) return 1+log(v)/log(q); \
-      \
-      else if (v <= q) return 2; \
-      \
-      else continue ; \
-    } \
+    double q=1-exp(rl->r*rng_rand_pu01(rl->s)); \
+    \
+    if (v<=q*q) return 1+log(v)/log(q); \
+    \
+    else if (v <= q) return 2; \
+    \
+    else continue ; \
   } \
 }
+inline static uint32_t ran_log_finite_gt1(ran_log* rl){ran_log_finite_gt1_gen(rl);}
+inline static uint64_t ran_log_finite_gt1_l(ran_log* rl){ran_log_finite_gt1_gen(rl);}
 
 #endif

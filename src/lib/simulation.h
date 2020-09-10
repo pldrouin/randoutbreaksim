@@ -17,6 +17,8 @@
 #include "infindividual.h"
 #include "model_parameters.h"
 
+#include "ran_log.h"
+
 #define DEBUG_PRINTF(...) //!< Debug print function
 //#define DEBUG_PRINTF(...) printf(__VA_ARGS__) //!< Debug print function
 
@@ -44,6 +46,8 @@ typedef struct sim_vars_
   void (*new_inf_proc_func)(infindividual* newinf);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
   void (*end_inf_proc_func)(infindividual* inf, void* dataptr); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
   void (*inf_proc_func_noevent)(infindividual* inf, void* dataptr);	//!< Pointer to the user-defined processing function that is called for an infectious individual that does not generate any transmission event.
+  ran_log rl;	//!< Handle for the logarithmica random variate generator.
+
   union{
     brsim_vars brsim;
     fpsim_vars fpsim;
@@ -229,9 +233,6 @@ GEN_PERS_MAIN(2)
  * configuration of the model parameters.
  */
 #define PER_COND if(isnan(sv->pars.kappal)) {PER_COND_MAIN(0)} else if(isinf(sv->pars.kappal)) {PER_COND_MAIN(1)} else {PER_COND_MAIN(2)};
-
-inline static uint32_t gen_infections_infpop_pinf1_log_plus_1(sim_vars* sv){return gsl_ran_logarithmic(sv->r, sv->pars.p);}
-inline static uint32_t gen_infections_infpop_log_plus_1(sim_vars* sv){return gsl_ran_binomial(sv->r, sv->pars.pinf, gsl_ran_logarithmic(sv->r, sv->pars.p));}
 
 /**
  * @brief Default processing function that is called when a new transmission event is created.
