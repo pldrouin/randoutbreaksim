@@ -94,26 +94,29 @@ $(document).ready(function(){initNavTree('branchsim_8h.html',''); initResizable(
 <p>Branching simulation functions.  
 <a href="#details">More...</a></p>
 <div class="textblock"><code>#include &quot;<a class="el" href="simulation_8h_source.html">simulation.h</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ran__log_8h_source.html">ran_log.h</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for branchsim.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="branchsim_8h__incl.png" border="0" usemap="#branchsim_8h" alt=""/></div>
 <map name="branchsim_8h" id="branchsim_8h">
-<area shape="rect" title="Branching simulation functions." alt="" coords="643,5,737,32"/>
-<area shape="rect" href="simulation_8h.html" title="Common simulation data structures and functions." alt="" coords="644,80,736,107"/>
-<area shape="rect" title=" " alt="" coords="195,304,260,331"/>
-<area shape="rect" title=" " alt="" coords="456,304,519,331"/>
-<area shape="rect" title=" " alt="" coords="626,304,687,331"/>
-<area shape="rect" title=" " alt="" coords="778,155,874,181"/>
-<area shape="rect" title=" " alt="" coords="898,155,1015,181"/>
-<area shape="rect" href="infindividual_8h.html" title="Data structure containing infected individual information." alt="" coords="82,229,183,256"/>
-<area shape="rect" href="model__parameters_8h.html" title="Model parameter functions." alt="" coords="443,155,583,181"/>
-<area shape="rect" title=" " alt="" coords="326,304,390,331"/>
-<area shape="rect" title=" " alt="" coords="5,304,71,331"/>
-<area shape="rect" title=" " alt="" coords="95,304,170,331"/>
-<area shape="rect" title=" " alt="" coords="514,229,653,256"/>
-<area shape="rect" title=" " alt="" coords="259,229,372,256"/>
-<area shape="rect" href="root__finder_8h.html" title="Finds the root of a function depending on a single parameter." alt="" coords="397,229,490,256"/>
+<area shape="rect" title="Branching simulation functions." alt="" coords="519,5,612,32"/>
+<area shape="rect" href="simulation_8h.html" title="Common simulation data structures and functions." alt="" coords="478,80,570,107"/>
+<area shape="rect" href="ran__log_8h.html" title="Common simulation data structures and functions." alt="" coords="735,155,809,181"/>
+<area shape="rect" title=" " alt="" coords="457,304,522,331"/>
+<area shape="rect" title=" " alt="" coords="666,304,729,331"/>
+<area shape="rect" title=" " alt="" coords="559,304,620,331"/>
+<area shape="rect" title=" " alt="" coords="84,155,180,181"/>
+<area shape="rect" title=" " alt="" coords="204,155,321,181"/>
+<area shape="rect" href="infindividual_8h.html" title="Data structure containing infected individual information." alt="" coords="39,229,140,256"/>
+<area shape="rect" href="model__parameters_8h.html" title="Model parameter functions." alt="" coords="346,155,486,181"/>
+<area shape="rect" title=" " alt="" coords="287,304,351,331"/>
+<area shape="rect" title=" " alt="" coords="105,304,170,331"/>
+<area shape="rect" title=" " alt="" coords="5,304,80,331"/>
+<area shape="rect" title=" " alt="" coords="303,229,441,256"/>
+<area shape="rect" title=" " alt="" coords="165,229,278,256"/>
+<area shape="rect" href="root__finder_8h.html" title="Finds the root of a function depending on a single parameter." alt="" coords="516,229,609,256"/>
+<area shape="rect" title=" " alt="" coords="785,229,876,256"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -144,6 +147,8 @@ Macros</h2></td></tr>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">DEBUG_PRINTF</a>(...)</td></tr>
 <tr class="memdesc:a5c8ef3c24dad2c469a42784a9a39403b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Debug print function. <br /></td></tr>
 <tr class="separator:a5c8ef3c24dad2c469a42784a9a39403b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a07e48deb10fa6f121d47c117886d0e94"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><b>BR_GENINF_COND</b></td></tr>
+<tr class="separator:a07e48deb10fa6f121d47c117886d0e94"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -156,13 +161,49 @@ Functions</h2></td></tr>
 <tr class="memitem:acdc4823a79039c032dbbee7e5aff3255"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">branchsim_free</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
 <tr class="memdesc:acdc4823a79039c032dbbee7e5aff3255"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees the dynamic memory used in the simulation handle.  <a href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">More...</a><br /></td></tr>
 <tr class="separator:acdc4823a79039c032dbbee7e5aff3255"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa06a91098c736b2be23132eaec322456"><td class="memItemLeft" align="right" valign="top"><a id="aa06a91098c736b2be23132eaec322456"></a>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>gen_infections_infpop_pinf1_log_plus_1</b> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="separator:aa06a91098c736b2be23132eaec322456"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae707ab66c4d9aae002e90fd1e1ec84c5"><td class="memItemLeft" align="right" valign="top"><a id="ae707ab66c4d9aae002e90fd1e1ec84c5"></a>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>gen_infections_infpop_pinf1_log</b> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="separator:ae707ab66c4d9aae002e90fd1e1ec84c5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afcb80a55cf42f1a0c864f0f51bae4e9c"><td class="memItemLeft" align="right" valign="top"><a id="afcb80a55cf42f1a0c864f0f51bae4e9c"></a>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>gen_infections_infpop_log_plus_1</b> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="separator:afcb80a55cf42f1a0c864f0f51bae4e9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8059c989f627a556feb88a8734eacc3e"><td class="memItemLeft" align="right" valign="top"><a id="a8059c989f627a556feb88a8734eacc3e"></a>
+static uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>gen_infections_infpop_log</b> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="separator:a8059c989f627a556feb88a8734eacc3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Branching simulation functions. </p>
 <dl class="section author"><dt>Author</dt><dd><a href="#" onclick="location.href='mai'+'lto:'+'Pie'+'rr'+'e-L'+'uc'+'.Dr'+'ou'+'in@'+'dr'+'dc-'+'rd'+'dc.'+'gc'+'.ca'; return false;">Pierr<span style="display: none;">.nosp@m.</span>e-Lu<span style="display: none;">.nosp@m.</span>c.Dro<span style="display: none;">.nosp@m.</span>uin@<span style="display: none;">.nosp@m.</span>drdc-<span style="display: none;">.nosp@m.</span>rddc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a>, Defence Research and Development Canada Ottawa Research Centre. Original model from <a href="#" onclick="location.href='mai'+'lto:'+'jer'+'om'+'e.l'+'ev'+'esq'+'ue'+'@tp'+'sg'+'c-p'+'wg'+'sc.'+'gc'+'.ca'; return false;">jerom<span style="display: none;">.nosp@m.</span>e.le<span style="display: none;">.nosp@m.</span>vesqu<span style="display: none;">.nosp@m.</span>e@tp<span style="display: none;">.nosp@m.</span>sgc-p<span style="display: none;">.nosp@m.</span>wgsc<span style="display: none;">.nosp@m.</span>.gc.c<span style="display: none;">.nosp@m.</span>a</a> and <a href="#" onclick="location.href='mai'+'lto:'+'dav'+'id'+'.ma'+'yb'+'ury'+'@t'+'psg'+'c-'+'pwg'+'sc'+'.gc'+'.c'+'a'; return false;">david<span style="display: none;">.nosp@m.</span>.may<span style="display: none;">.nosp@m.</span>bury@<span style="display: none;">.nosp@m.</span>tpsg<span style="display: none;">.nosp@m.</span>c-pwg<span style="display: none;">.nosp@m.</span>sc.g<span style="display: none;">.nosp@m.</span>c.ca</a> </dd></dl>
 
 <p class="definition">Definition in file <a class="el" href="branchsim_8h_source.html">branchsim.h</a>.</p>
-</div><h2 class="groupheader">Function Documentation</h2>
+</div><h2 class="groupheader">Macro Definition Documentation</h2>
+<a id="a07e48deb10fa6f121d47c117886d0e94"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a07e48deb10fa6f121d47c117886d0e94">&#9670;&nbsp;</a></span>BR_GENINF_COND</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">#define BR_GENINF_COND</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<b>Value:</b><div class="fragment"><div class="line">  <span class="keywordflow">if</span>(sv-&gt;pars.pinf==1) { \</div>
+<div class="line">  if((sv-&gt;pars.grouptype&amp;RO_GROUP_DIST_MASK) == ro_group_log_plus_1) sv-&gt;gen_infections_func=gen_infections_infpop_pinf1_log_plus_1; \</div>
+<div class="line">  else sv-&gt;gen_infections_func=gen_infections_infpop_pinf1_log; \</div>
+<div class="line">} <span class="keywordflow">else</span> { \</div>
+<div class="line">  if((sv-&gt;pars.grouptype&amp;RO_GROUP_DIST_MASK) == ro_group_log_plus_1) sv-&gt;gen_infections_func=gen_infections_infpop_log_plus_1; \</div>
+<div class="line">  else sv-&gt;gen_infections_func=gen_infections_infpop_log; \</div>
+<div class="line">}</div>
+</div><!-- fragment -->
+<p class="definition">Definition at line <a class="el" href="branchsim_8h_source.html#l00062">62</a> of file <a class="el" href="branchsim_8h_source.html">branchsim.h</a>.</p>
+
+</div>
+</div>
+<h2 class="groupheader">Function Documentation</h2>
 <a id="aedb2df7d851ac88b93a808dd58b19f41"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aedb2df7d851ac88b93a808dd58b19f41">&#9670;&nbsp;</a></span>branchsim()</h2>
 
@@ -189,7 +230,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if there is no error. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00020">20</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00023">23</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
 
 </div>
 </div>
@@ -218,7 +259,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00171">171</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00176">176</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
 
 </div>
 </div>

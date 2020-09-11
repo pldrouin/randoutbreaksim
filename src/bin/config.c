@@ -221,7 +221,7 @@ void printusage(const char* name)
   printf("\t--group_log_invitees\tNumber of invitees for an event to be distributed as a logarithmically-distributed variable\n");
   printf("\t--p VALUE\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1)\n");
   printf("\t--mu VALUE\t\tParameter for the mean of an unbounded logarithmic distribution used to draw number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu >= 1)\n");
-  printf("\t--pinf VALUE\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event (default value of 1)\n");
+  printf("\t--pinf VALUE\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event\n");
   //printf("\t--popsize VALUE\t\tPopulation size (default value of 0, for an infinite population)\n");
   printf("\t--R0 VALUE\t\tBasic reproduction number\n");
   printf("\t--lbar VALUE\t\tMean latent period (default value of 0)\n");

@@ -85,6 +85,27 @@ int model_solve_pars(model_pars* pars);
 int model_solve_R0_group(model_pars* pars);
 
 /**
+ * @brief Solve for the value of the p parameter of the logarithmic
+ * distribution, given mu.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+int model_solve_p_from_mu(model_pars* pars);
+
+/**
+ * @brief Solve for the value of the p parameter of the truncated logarithmic
+ * distribution below 2, given a mean.
+ *
+ * @param mean: Mean of the truncated logarithmic distribution below 2.
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+int model_solve_p_from_mean(const double mean, model_pars* pars);
+
+/**
  * @brief Solve for gamma distribution related simulation parameters.
  *
  * This function solves for gamma distribution related simulation parameters
@@ -111,16 +132,28 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95);
 int model_pars_check(model_pars const* pars);
 
 /**
- * @brief Computes p (logarithmic distribution) using Newton's method.
+ * @brief Computes p (logarithmic distribution) from mu using Newton's method.
  *
  * This function estimates the value of the p parameter from a logarithmic
- * distribution, given the my parameter, using Newton's method
+ * distribution, given the mu parameter, using Newton's method
  *
  * @param x: Current value for p (input/output).
  * @param diff: mu value discrepancy (output).
  * @param params: Pointer to mu parameter (input)
  */
 inline static void logroot(double* x, double* diff, void* params){const double omx=1-*x; const double l=log(omx); *diff=*(double*)params+ *x/(omx*l); *x-=*diff*l*omx*omx/(*x/l+1); *diff/=*(double*)params;} 
+
+/**
+ * @brief Computes p (truncated logarithmic distribution) from the mean using Newton's method.
+ *
+ * This function estimates the value of the p parameter from a truncated logarithmic
+ * distribution below 2, given the mean parameter, using Newton's method
+ *
+ * @param x: Current value for p (input/output).
+ * @param diff: mean value discrepancy (output).
+ * @param params: Pointer to mean parameter (input)
+ */
+inline static void loggt1root(double* x, double* diff, void* params){const double omx=1-*x; const double l=log(omx); const double lpx=l+*x; *diff=*(double*)params+ *x * *x/(omx*lpx); *x-=*diff*lpx*lpx*omx*omx/(*x * (2 * lpx - *x * l)); *diff/=*(double*)params;} 
 
 /**
  * @brief Computes the discrepancy between an evaluation of gamma cumulative

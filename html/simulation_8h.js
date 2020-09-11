@@ -13,8 +13,6 @@ var simulation_8h =
     [ "dummy_proc_func_one_par", "simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1", null ],
     [ "dummy_proc_func_sv", "simulation_8h.html#a4ecfceeb3812509d92a677d9c65d6d9a", null ],
     [ "dummy_proc_func_two_pars", "simulation_8h.html#a84beb2084ff7239d40c304cee0506411", null ],
-    [ "gen_infections_infpop_log_plus_1", "simulation_8h.html#afcb80a55cf42f1a0c864f0f51bae4e9c", null ],
-    [ "gen_infections_infpop_pinf1_log_plus_1", "simulation_8h.html#aa06a91098c736b2be23132eaec322456", null ],
     [ "sim_init", "simulation_8h.html#a2ca281c80f36f8dfbbadec8518ba873e", null ],
     [ "sim_pars_init", "simulation_8h.html#a7d7687ebb34e4df53eff1ed32e7f7597", null ],
     [ "sim_set_end_inf_proc_func", "simulation_8h.html#aaf6b49ed5309f072770c4c2038371e50", null ],

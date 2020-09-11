@@ -12,5 +12,6 @@ var structsim__vars__ =
     [ "new_event_proc_func", "structsim__vars__.html#a3884cb21e08092c3e9c686bebc2e06c1", null ],
     [ "new_inf_proc_func", "structsim__vars__.html#aa811264d61ffd4e711034cd3965ec48b", null ],
     [ "pars", "structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af", null ],
-    [ "r", "structsim__vars__.html#a8b90e6b2db2c771bb954d0b082fdf96f", null ]
+    [ "r", "structsim__vars__.html#a8b90e6b2db2c771bb954d0b082fdf96f", null ],
+    [ "rl", "structsim__vars__.html#a93bff2fd9382ea529c2eb7b0926b0f1e", null ]
 ];

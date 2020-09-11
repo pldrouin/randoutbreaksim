@@ -120,6 +120,12 @@ Functions</h2></td></tr>
 <tr class="memitem:aceca3c8ccc49ed45ad5f492606815f52"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8c.html#aceca3c8ccc49ed45ad5f492606815f52">model_solve_R0_group</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars)</td></tr>
 <tr class="memdesc:aceca3c8ccc49ed45ad5f492606815f52"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for the R0-related simulation parameters.  <a href="model__parameters_8c.html#aceca3c8ccc49ed45ad5f492606815f52">More...</a><br /></td></tr>
 <tr class="separator:aceca3c8ccc49ed45ad5f492606815f52"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af4ec0343055adc3b01dd6922679e6f20"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8c.html#af4ec0343055adc3b01dd6922679e6f20">model_solve_p_from_mu</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars)</td></tr>
+<tr class="memdesc:af4ec0343055adc3b01dd6922679e6f20"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for the value of the p parameter of the logarithmic distribution, given mu.  <a href="model__parameters_8c.html#af4ec0343055adc3b01dd6922679e6f20">More...</a><br /></td></tr>
+<tr class="separator:af4ec0343055adc3b01dd6922679e6f20"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a20a93f4ed8b918df6f52cd7022e22b5a"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8c.html#a20a93f4ed8b918df6f52cd7022e22b5a">model_solve_p_from_mean</a> (const double mean, <a class="el" href="structmodel__pars.html">model_pars</a> *pars)</td></tr>
+<tr class="memdesc:a20a93f4ed8b918df6f52cd7022e22b5a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for the value of the p parameter of the truncated logarithmic distribution below 2, given a mean.  <a href="model__parameters_8c.html#a20a93f4ed8b918df6f52cd7022e22b5a">More...</a><br /></td></tr>
+<tr class="separator:a20a93f4ed8b918df6f52cd7022e22b5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5be20f39de77e38781916b5deb32a53c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8c.html#a5be20f39de77e38781916b5deb32a53c">model_solve_gamma_group</a> (double *ave, double *kappa, double *x95)</td></tr>
 <tr class="memdesc:a5be20f39de77e38781916b5deb32a53c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Solve for gamma distribution related simulation parameters.  <a href="model__parameters_8c.html#a5be20f39de77e38781916b5deb32a53c">More...</a><br /></td></tr>
 <tr class="separator:a5be20f39de77e38781916b5deb32a53c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -159,7 +165,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters are valid. If the parameters are invalid, an error is printed on stderr. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00245">245</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00332">332</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -207,7 +213,76 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00194">194</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00281">281</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+
+</div>
+</div>
+<a id="a20a93f4ed8b918df6f52cd7022e22b5a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a20a93f4ed8b918df6f52cd7022e22b5a">&#9670;&nbsp;</a></span>model_solve_p_from_mean()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int model_solve_p_from_mean </td>
+          <td>(</td>
+          <td class="paramtype">const double&#160;</td>
+          <td class="paramname"><em>mean</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> *&#160;</td>
+          <td class="paramname"><em>pars</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Solve for the value of the p parameter of the truncated logarithmic distribution below 2, given a mean. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mean</td><td>Mean of the truncated logarithmic distribution below 2. </td></tr>
+    <tr><td class="paramname">pars</td><td>Simulation parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00267">267</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+
+</div>
+</div>
+<a id="af4ec0343055adc3b01dd6922679e6f20"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af4ec0343055adc3b01dd6922679e6f20">&#9670;&nbsp;</a></span>model_solve_p_from_mu()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int model_solve_p_from_mu </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> *&#160;</td>
+          <td class="paramname"><em>pars</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Solve for the value of the p parameter of the logarithmic distribution, given mu. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">pars</td><td>Simulation parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00240">240</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -267,7 +342,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00140">140</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00141">141</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>

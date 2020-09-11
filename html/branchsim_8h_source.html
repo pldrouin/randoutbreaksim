@@ -100,54 +100,74 @@ $(document).ready(function(){initNavTree('branchsim_8h_source.html',''); initRes
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160; </div>
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="simulation_8h.html">simulation.h</a>&quot;</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
-<div class="line"><a name="l00014"></a><span class="lineno"><a class="line" href="branchsim_8h.html#a5655a86be72747864aa32dadb4fa6b49">   14</a></span>&#160;<span class="preprocessor">#define INIT_N_LAYERS (16) </span><span class="comment">//!&lt; Initial number of simulation layers</span></div>
-<div class="line"><a name="l00015"></a><span class="lineno"><a class="line" href="branchsim_8h.html#a39b090a0cb58793c36abaf74922bd800">   15</a></span>&#160;<span class="comment"></span>#define II_ARRAY_GROW_FACT (1.5)  <span class="comment">//!&lt; Growing factor for the array of current infectious individuals across all layers.</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#ifdef DEBUG_PRINTF</span></div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#undef DEBUG_PRINTF</span></div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="branchsim_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">   20</a></span>&#160;<span class="preprocessor">#define DEBUG_PRINTF(...) </span><span class="comment">//!&lt; Debug print function</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="comment"></span>//#define DEBUG_PRINTF(...) printf(__VA_ARGS__) <span class="comment">//!&lt; Debug print function</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"> * @brief Initialises the branching simulation.</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"> * This function must be called to initialise the branching simulation.</span></div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="ran__log_8h.html">ran_log.h</a>&quot;</span></div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160; </div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="branchsim_8h.html#a5655a86be72747864aa32dadb4fa6b49">   16</a></span>&#160;<span class="preprocessor">#define INIT_N_LAYERS (16) </span><span class="comment">//!&lt; Initial number of simulation layers</span></div>
+<div class="line"><a name="l00017"></a><span class="lineno"><a class="line" href="branchsim_8h.html#a39b090a0cb58793c36abaf74922bd800">   17</a></span>&#160;<span class="comment"></span>#define II_ARRAY_GROW_FACT (1.5)  <span class="comment">//!&lt; Growing factor for the array of current infectious individuals across all layers.</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="preprocessor">#ifdef DEBUG_PRINTF</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#undef DEBUG_PRINTF</span></div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="branchsim_8h.html#a5c8ef3c24dad2c469a42784a9a39403b">   22</a></span>&#160;<span class="preprocessor">#define DEBUG_PRINTF(...) </span><span class="comment">//!&lt; Debug print function</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="comment"></span>//#define DEBUG_PRINTF(...) printf(__VA_ARGS__) <span class="comment">//!&lt; Debug print function</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment"> * @brief Initialises the branching simulation.</span></div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment"> * @param sv: Pointer to the simulation handle.</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keywordtype">void</span> <a class="code" href="branchsim_8h.html#aa4ba9b6e361e562235c1beefa82093a5">branchsim_init</a>(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv);</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment"> * @brief Performs the branching simulation.</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"> * Performs the branching simulation, as configured through the simulation variables. This</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"> * function can be called multiple times in a row.</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"> * @param sv: Pointer to the simulation variables.</span></div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment"> * @return 0 if there is no error.</span></div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keywordtype">int</span> <a class="code" href="branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41">branchsim</a>(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="comment">/**</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"> * @brief Frees the dynamic memory used in the simulation handle.</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment"> * Does not free the memory related to the simulation-level data pointer</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment"> * for the user-defined functions, but it does free the user-allocated memory</span></div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"> * for the infectious individuals.</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment"> *</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment"> * @param sv: Pointer to the simulation variables.</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment"> */</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="keywordtype">void</span> <a class="code" href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">branchsim_free</a>(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment"> * This function must be called to initialise the branching simulation.</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="comment"> * @param sv: Pointer to the simulation handle.</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keywordtype">void</span> <a class="code" href="branchsim_8h.html#aa4ba9b6e361e562235c1beefa82093a5">branchsim_init</a>(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv);</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="comment"> * @brief Performs the branching simulation.</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="comment"> * Performs the branching simulation, as configured through the simulation variables. This</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="comment"> * function can be called multiple times in a row.</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="comment"> * @param sv: Pointer to the simulation variables.</span></div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="comment"> * @return 0 if there is no error.</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keywordtype">int</span> <a class="code" href="branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41">branchsim</a>(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="comment"></span> </div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="comment">/**</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="comment"> * @brief Frees the dynamic memory used in the simulation handle.</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="comment"> * Does not free the memory related to the simulation-level data pointer</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="comment"> * for the user-defined functions, but it does free the user-allocated memory</span></div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment"> * for the infectious individuals.</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment"> *</span></div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="comment"> * @param sv: Pointer to the simulation variables.</span></div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;<span class="comment"> */</span></div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keywordtype">void</span> <a class="code" href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">branchsim_free</a>(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> uint32_t gen_infections_infpop_pinf1_log_plus_1(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv){<span class="keywordflow">return</span> ran_log_finite(&amp;sv-&gt;<a class="code" href="structsim__vars__.html#a93bff2fd9382ea529c2eb7b0926b0f1e">rl</a>);}</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> uint32_t gen_infections_infpop_pinf1_log(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv){<span class="keywordflow">return</span> (uint32_t)ran_log_finite_gt1(&amp;sv-&gt;<a class="code" href="structsim__vars__.html#a93bff2fd9382ea529c2eb7b0926b0f1e">rl</a>)-1;}</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> uint32_t gen_infections_infpop_log_plus_1(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv){<span class="keywordflow">return</span> gsl_ran_binomial(sv-&gt;<a class="code" href="structsim__vars__.html#a8b90e6b2db2c771bb954d0b082fdf96f">r</a>, sv-&gt;<a class="code" href="structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af">pars</a>.<a class="code" href="structmodel__pars.html#a65992318e940f5727865bf355c0938e7">pinf</a>, (uint32_t)ran_log_finite(&amp;sv-&gt;<a class="code" href="structsim__vars__.html#a93bff2fd9382ea529c2eb7b0926b0f1e">rl</a>));}</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> uint32_t gen_infections_infpop_log(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv){<span class="keywordflow">return</span> gsl_ran_binomial(sv-&gt;<a class="code" href="structsim__vars__.html#a8b90e6b2db2c771bb954d0b082fdf96f">r</a>, sv-&gt;<a class="code" href="structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af">pars</a>.<a class="code" href="structmodel__pars.html#a65992318e940f5727865bf355c0938e7">pinf</a>, (uint32_t)ran_log_finite_gt1(&amp;sv-&gt;<a class="code" href="structsim__vars__.html#a93bff2fd9382ea529c2eb7b0926b0f1e">rl</a>)-1);}</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;<span class="preprocessor">#define BR_GENINF_COND if(sv-&gt;pars.pinf==1) { \</span></div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">  if((sv-&gt;pars.grouptype&amp;RO_GROUP_DIST_MASK) == ro_group_log_plus_1) sv-&gt;gen_infections_func=gen_infections_infpop_pinf1_log_plus_1; \</span></div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="preprocessor">  else sv-&gt;gen_infections_func=gen_infections_infpop_pinf1_log; \</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">} else { \</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="preprocessor">  if((sv-&gt;pars.grouptype&amp;RO_GROUP_DIST_MASK) == ro_group_log_plus_1) sv-&gt;gen_infections_func=gen_infections_infpop_log_plus_1; \</span></div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="preprocessor">  else sv-&gt;gen_infections_func=gen_infections_infpop_log; \</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;<span class="preprocessor">}</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="abranchsim_8h_html_acdc4823a79039c032dbbee7e5aff3255"><div class="ttname"><a href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">branchsim_free</a></div><div class="ttdeci">void branchsim_free(sim_vars *sv)</div><div class="ttdoc">Frees the dynamic memory used in the simulation handle.</div><div class="ttdef"><b>Definition:</b> <a href="branchsim_8c_source.html#l00171">branchsim.c:171</a></div></div>
-<div class="ttc" id="abranchsim_8h_html_aedb2df7d851ac88b93a808dd58b19f41"><div class="ttname"><a href="branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41">branchsim</a></div><div class="ttdeci">int branchsim(sim_vars *sv)</div><div class="ttdoc">Performs the branching simulation.</div><div class="ttdef"><b>Definition:</b> <a href="branchsim_8c_source.html#l00020">branchsim.c:20</a></div></div>
+<div class="ttc" id="astructsim__vars___html_a8b90e6b2db2c771bb954d0b082fdf96f"><div class="ttname"><a href="structsim__vars__.html#a8b90e6b2db2c771bb954d0b082fdf96f">sim_vars_::r</a></div><div class="ttdeci">gsl_rng const  * r</div><div class="ttdoc">Pointer to GSL random number generator.</div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00039">simulation.h:39</a></div></div>
+<div class="ttc" id="astructmodel__pars_html_a65992318e940f5727865bf355c0938e7"><div class="ttname"><a href="structmodel__pars.html#a65992318e940f5727865bf355c0938e7">model_pars::pinf</a></div><div class="ttdeci">double pinf</div><div class="ttdoc">Probability that a given susceptible individual gets infected when exposed to one infectious individu...</div><div class="ttdef"><b>Definition:</b> <a href="model__parameters_8h_source.html#l00057">model_parameters.h:57</a></div></div>
+<div class="ttc" id="astructsim__vars___html_aac0335e2677fb786bfaf201d5e4730af"><div class="ttname"><a href="structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af">sim_vars_::pars</a></div><div class="ttdeci">model_pars pars</div><div class="ttdoc">Simulation input parameters.</div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00038">simulation.h:38</a></div></div>
+<div class="ttc" id="abranchsim_8h_html_acdc4823a79039c032dbbee7e5aff3255"><div class="ttname"><a href="branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255">branchsim_free</a></div><div class="ttdeci">void branchsim_free(sim_vars *sv)</div><div class="ttdoc">Frees the dynamic memory used in the simulation handle.</div><div class="ttdef"><b>Definition:</b> <a href="branchsim_8c_source.html#l00176">branchsim.c:176</a></div></div>
+<div class="ttc" id="abranchsim_8h_html_aedb2df7d851ac88b93a808dd58b19f41"><div class="ttname"><a href="branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41">branchsim</a></div><div class="ttdeci">int branchsim(sim_vars *sv)</div><div class="ttdoc">Performs the branching simulation.</div><div class="ttdef"><b>Definition:</b> <a href="branchsim_8c_source.html#l00023">branchsim.c:23</a></div></div>
 <div class="ttc" id="abranchsim_8h_html_aa4ba9b6e361e562235c1beefa82093a5"><div class="ttname"><a href="branchsim_8h.html#aa4ba9b6e361e562235c1beefa82093a5">branchsim_init</a></div><div class="ttdeci">void branchsim_init(sim_vars *sv)</div><div class="ttdoc">Initialises the branching simulation.</div><div class="ttdef"><b>Definition:</b> <a href="branchsim_8c_source.html#l00011">branchsim.c:11</a></div></div>
+<div class="ttc" id="aran__log_8h_html"><div class="ttname"><a href="ran__log_8h.html">ran_log.h</a></div><div class="ttdoc">Common simulation data structures and functions.</div></div>
+<div class="ttc" id="astructsim__vars___html_a93bff2fd9382ea529c2eb7b0926b0f1e"><div class="ttname"><a href="structsim__vars__.html#a93bff2fd9382ea529c2eb7b0926b0f1e">sim_vars_::rl</a></div><div class="ttdeci">ran_log rl</div><div class="ttdoc">Handle for the logarithmica random variate generator.</div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00049">simulation.h:49</a></div></div>
 <div class="ttc" id="asimulation_8h_html"><div class="ttname"><a href="simulation_8h.html">simulation.h</a></div><div class="ttdoc">Common simulation data structures and functions.</div></div>
-<div class="ttc" id="astructsim__vars___html"><div class="ttname"><a href="structsim__vars__.html">sim_vars_</a></div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00034">simulation.h:34</a></div></div>
+<div class="ttc" id="astructsim__vars___html"><div class="ttname"><a href="structsim__vars__.html">sim_vars_</a></div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00036">simulation.h:36</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

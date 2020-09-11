@@ -8,8 +8,8 @@
 
 int model_solve_pars(model_pars* pars)
 {
-  if((isnan(pars->tbar)==0) + (isnan(pars->lambda)==0) + (isnan(pars->p)==0 || isnan(pars->mu)==0) + (isnan(pars->R0)==0) != 3) {
-    fprintf(stderr,"%s: Error: An invalid combination of tbar, lambda, p, mu and R0 parameters was provided.\n",__func__);
+  if((isnan(pars->tbar)==0) + (isnan(pars->lambda)==0) + (isnan(pars->p)==0 || isnan(pars->mu)==0) + (isnan(pars->pinf)==0) + (isnan(pars->R0)==0) != 4) {
+    fprintf(stderr,"%s: Error: An invalid combination of tbar, lambda, p, mu, pinf and R0 parameters was provided.\n",__func__);
     return -1;
   }
 
@@ -20,6 +20,7 @@ int model_solve_pars(model_pars* pars)
   printf("tbar:\t%22.15e\n",pars->tbar);
   printf("mu:\t%22.15e\n",pars->mu);
   printf("p:\t%22.15e\n",pars->p);
+  printf("pinf:\t%22.15e\n",pars->pinf);
   printf("R0:\t%22.15e\n",pars->R0);
 
   if((isnan(pars->kappa)==0) + (isnan(pars->t95)==0) != 1) {
@@ -139,17 +140,15 @@ int model_solve_pars(model_pars* pars)
 
 int model_solve_R0_group(model_pars* pars)
 {
-  //If p is provided as an input
-  if(!isnan(pars->p)) {
+  double avegroup;
+  double l1mp;
+  int ret;
 
-    if(!(pars->p>=0) || !(pars->p<1)) {
-      fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
-      return -1;
-    }
-    pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
-  }
+   printf("R0=lambda*tbar*(g_ave-1)*pinf, ");
+  if((pars->grouptype&RO_GROUP_DIST_MASK) == ro_group_log_plus_1) printf("g_ave-1=mu=-p/((1-p)*log(1-p))\n");
+  else printf("g_ave=p*p/((1-p)*(log(1-p)+p))\n");
 
-  if(!(pars->pinf>0) || !(pars->pinf<=1)) {
+  if(!isnan(pars->pinf) && (!(pars->pinf>0) || !(pars->pinf<=1))) {
     fprintf(stderr,"%s: Error: The pinf parameter must have a value in the interval (0,1]\n",__func__);
     return -2;
   }
@@ -169,30 +168,113 @@ int model_solve_R0_group(model_pars* pars)
     return -5;
   }
 
-  //Solve for the missing parameter
-  if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*pars->mu;
+  //If p or mu is provided as an input
+  if(!isnan(pars->p) || !isnan(pars->mu)) {
 
-  else if(isnan(pars->lambda)) pars->lambda=pars->R0/(pars->tbar*pars->mu);
+    //If it is p that is provided
+    if(!isnan(pars->p)) {
 
-  else if(isnan(pars->tbar)) pars->tbar=pars->R0/(pars->lambda*pars->mu);
+      if(!(pars->p>=0) || !(pars->p<1)) {
+	fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
+	return -1;
+      }
+      pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
 
-  else pars->mu=pars->R0/(pars->lambda*pars->tbar);
-
-  //If p is unknown solve for it numerically
-  if(isnan(pars->p)) {
-
-    if(pars->mu > 1) {
-      root_finder* rf=root_finder_init(logroot, &pars->mu);
-      pars->p=0.999;
-
-      int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
-
-      root_finder_free(rf);
+      //Else if it is mu that is provided
+    } else {
+      //Solve for p numerically from mu
+      ret=model_solve_p_from_mu(pars);
 
       if(ret) return ret;
+    }
 
-    } else pars->p=0;
+    if((pars->grouptype&RO_GROUP_DIST_MASK) == ro_group_log_plus_1) avegroup=pars->mu+1;
+
+    else {
+      l1mp=log(1-pars->p);
+      avegroup=-((1-pars->p)*l1mp+pars->p)/((1-pars->p)*(l1mp+pars->p));
+    }
+
+    //Solve for the missing parameter
+
+    if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*(avegroup-1)*pars->pinf;
+
+    else if(isnan(pars->lambda)) pars->lambda=pars->R0/(pars->tbar*(avegroup-1)*pars->pinf);
+
+    else if(isnan(pars->tbar)) pars->tbar=pars->R0/(pars->lambda*(avegroup-1)*pars->pinf);
+
+    else pars->pinf=pars->R0/(pars->lambda*pars->tbar*(avegroup-1));
+
+  //Else if p and mu are the unknown
+  } else {
+
+    if((pars->grouptype&RO_GROUP_DIST_MASK) == ro_group_log_plus_1) {
+      pars->mu=pars->R0/(pars->lambda*pars->tbar*pars->pinf);
+
+      if((pars->mu<1)) {
+	fprintf(stderr,"%s: Error: mu must be greater than or equal to 1 for the \"log+1\" group model\n",__func__);
+	return -1;
+      }
+
+      if(pars->mu==1) pars->p=0;
+
+      else {
+	//Solve for p numerically from mu
+	ret=model_solve_p_from_mu(pars);
+
+	if(ret) return ret;
+      }
+
+    } else {
+      avegroup=pars->R0/(pars->lambda*pars->tbar*pars->pinf)+1;
+      //Solve for p numerically from avegroup
+      ret=model_solve_p_from_mean(avegroup,pars);
+
+      if(ret) return ret;
+      pars->mu=-pars->p/((1-pars->p)*log(1-pars->p));
+    }
   }
+  return 0;
+}
+
+int model_solve_p_from_mu(model_pars* pars)
+{
+
+      if((pars->mu<1)) {
+	fprintf(stderr,"%s: Error: mu must be greater than or equal to 1\n",__func__);
+	return -1;
+      }
+
+      if(pars->mu==1) pars->p=0;
+
+      else {
+	if(pars->mu > 1) {
+	  root_finder* rf=root_finder_init(logroot, &pars->mu);
+	  pars->p=0.999;
+
+	  int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
+
+	  root_finder_free(rf);
+
+	  if(ret) return ret;
+
+	} else pars->p=0;
+      }
+
+      return 0;
+}
+
+int model_solve_p_from_mean(const double mean, model_pars* pars)
+{
+  root_finder* rf=root_finder_init(loggt1root, (void*)&mean);
+  pars->p=0.999;
+
+  int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
+
+  root_finder_free(rf);
+
+  if(ret) return ret;
+
   return 0;
 }
 

@@ -14,7 +14,7 @@ int root_finder_find(root_finder* rf, const double eps, const uint32_t maxiter, 
 
   do {
     rf->func(x, &diff, rf->params);
-    ////printf("x=%22.15e, diff=%22.15e",*x,diff);
+    //printf("x=%22.15e, diff=%22.15e",*x,diff);
 
     if(*x>xmax) *x=xmax;
     else if(*x<xmin) *x=xmin;

@@ -186,6 +186,7 @@ int main(const int nargs, const char* args[])
     printf(" n inf\t               count\n");
     
     for(b=0; b<maxninfnbins; ++b) if(tdata[tmaxninfnbins].ngeninfs[b] > 0) printf("%6" PRIu32 "\t%20" PRIu64 "\n",b,tdata[tmaxninfnbins].ngeninfs[b]);
+    free(tdata[tmaxninfnbins].ngeninfs);
   }
 
   for(t=nthreads-1; t>=0; --t) {

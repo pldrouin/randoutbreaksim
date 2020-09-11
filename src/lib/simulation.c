@@ -32,7 +32,7 @@ void sim_pars_init(model_pars* pars)
   pars->it95=NAN;
   pars->im95=NAN;
   pars->tmax=INFINITY;
-  pars->pinf=1;
+  pars->pinf=NAN;
   pars->nstart=1;
   pars->popsize=0;
   pars->grouptype=ro_group_log_plus_1;
