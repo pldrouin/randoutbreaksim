@@ -4,9 +4,9 @@ var model__parameters_8h =
     [ "RF_GKAPPA_EPSF", "model__parameters_8h.html#a9490e75206749a4db7fecb0f706fc861", null ],
     [ "RF_GPERC_EPSF", "model__parameters_8h.html#ace26d7f9e0547638346a1bb80558a2e5", null ],
     [ "RF_P_EPSF", "model__parameters_8h.html#a6fc0390a031aa231126fd62ea0efb676", null ],
-    [ "RO_GROUP_DIST_MASK", "model__parameters_8h.html#aaa3fcbb2fda37762da626326a166a2f6", null ],
     [ "ro_model_flags", "model__parameters_8h.html#a42664ec50544203d1d336107e7f24283", [
-      [ "ro_group_log_plus_1", "model__parameters_8h.html#a42664ec50544203d1d336107e7f24283aec63bba078507cf4ab9b696e3900dfb9", null ],
+      [ "ro_group_log_attendees_plus_1", "model__parameters_8h.html#a42664ec50544203d1d336107e7f24283a78a8cc6df8df10baa78c6b54749f69c8", null ],
+      [ "ro_group_log_invitees_plus_1", "model__parameters_8h.html#a42664ec50544203d1d336107e7f24283aaee51584b2153991787a6cf0f1115e11", null ],
       [ "ro_group_log_attendees", "model__parameters_8h.html#a42664ec50544203d1d336107e7f24283a0e5073190ce0fc885ec6da825fe0b2df", null ],
       [ "ro_group_log_invitees", "model__parameters_8h.html#a42664ec50544203d1d336107e7f24283a78510d9e5ec4a97b2f078fd00dcea5d8", null ]
     ] ],

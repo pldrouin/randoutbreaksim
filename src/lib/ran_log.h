@@ -53,8 +53,9 @@ inline static uint64_t ran_log_finite_l(ran_log* rl){ran_log_finite_gen(rl);}
  * @brief Finite logarithmic deviate with a lower bound of 2.
  *
  * Returns a logarithmic deviate greater than 1. Returned value is finite, and can be cast to
- * the desired integer data type. Modified algorithm from "Non-Uniform Random Variate Generation
-", by Luc Devroye. Loop seems necessary.
+ * the desired integer data type. Modified algorithm from "Non-Uniform Random Variate Generation"
+ * by Luc Devroye. Loop seems necessary. Note: There is no support for p=0 by
+ * this function due to optimisation.
  *
  * @param rl handle
  * @return finite logarithmic deviate greater than 1

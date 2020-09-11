@@ -1,5 +1,6 @@
 var structmodel__pars =
 [
+    [ "g_ave", "structmodel__pars.html#a28f35ff6aacb2651f20cf23ad0b44dac", null ],
     [ "grouptype", "structmodel__pars.html#a2923bbda4b4965abadae437ad27b3ffc", null ],
     [ "im95", "structmodel__pars.html#a8eac8ee26d24cc71a3d7f65da542d487", null ],
     [ "imbar", "structmodel__pars.html#a8eca9a98052d0a49ddaa0b5ce99a1a48", null ],

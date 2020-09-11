@@ -55,15 +55,19 @@ void branchsim_free(sim_vars* sv);
 
 inline static uint32_t gen_infections_infpop_pinf1_log_plus_1(sim_vars* sv){return ran_log_finite(&sv->rl);}
 inline static uint32_t gen_infections_infpop_pinf1_log(sim_vars* sv){return (uint32_t)ran_log_finite_gt1(&sv->rl)-1;}
+inline static uint32_t gen_infections_infpop_pinf1_log_p0(sim_vars* sv){return 1;}
 
 inline static uint32_t gen_infections_infpop_log_plus_1(sim_vars* sv){return gsl_ran_binomial(sv->r, sv->pars.pinf, (uint32_t)ran_log_finite(&sv->rl));}
 inline static uint32_t gen_infections_infpop_log(sim_vars* sv){return gsl_ran_binomial(sv->r, sv->pars.pinf, (uint32_t)ran_log_finite_gt1(&sv->rl)-1);}
+inline static uint32_t gen_infections_infpop_log_p0(sim_vars* sv){return( gsl_rng_uniform(sv->r) < sv->pars.pinf);}
 
 #define BR_GENINF_COND if(sv->pars.pinf==1) { \
-  if((sv->pars.grouptype&RO_GROUP_DIST_MASK) == ro_group_log_plus_1) sv->gen_infections_func=gen_infections_infpop_pinf1_log_plus_1; \
+  if(sv->pars.p == 0)  sv->gen_infections_func=gen_infections_infpop_pinf1_log_p0; \
+  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) sv->gen_infections_func=gen_infections_infpop_pinf1_log_plus_1; \
   else sv->gen_infections_func=gen_infections_infpop_pinf1_log; \
 } else { \
-  if((sv->pars.grouptype&RO_GROUP_DIST_MASK) == ro_group_log_plus_1) sv->gen_infections_func=gen_infections_infpop_log_plus_1; \
+  if(sv->pars.p == 0)  sv->gen_infections_func=gen_infections_infpop_log_p0; \
+  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) sv->gen_infections_func=gen_infections_infpop_log_plus_1; \
   else sv->gen_infections_func=gen_infections_infpop_log; \
 }
 #endif

@@ -100,16 +100,32 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="st
 <tr class="separator:afe4a302aaf23965b4e5aeeeacad48b1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3e7f9db94ea3e9f83745ba589e0c0794"><td class="memItemLeft" align="right" valign="top"><a id="a3e7f9db94ea3e9f83745ba589e0c0794"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a3e7f9db94ea3e9f83745ba589e0c0794">p</a></td></tr>
-<tr class="memdesc:a3e7f9db94ea3e9f83745ba589e0c0794"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter for the logarithmic distribution used to draw then number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 &lt;= p &lt; 1). <br /></td></tr>
+<tr class="memdesc:a3e7f9db94ea3e9f83745ba589e0c0794"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter for the logarithmic distribution used to draw then number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 &lt;= p &lt; 1). <br /></td></tr>
 <tr class="separator:a3e7f9db94ea3e9f83745ba589e0c0794"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afccb717dc6645784a58a0eaa29db9e3c"><td class="memItemLeft" align="right" valign="top"><a id="afccb717dc6645784a58a0eaa29db9e3c"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#afccb717dc6645784a58a0eaa29db9e3c">mu</a></td></tr>
+<tr class="memdesc:afccb717dc6645784a58a0eaa29db9e3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu &gt;= 1) <br /></td></tr>
+<tr class="separator:afccb717dc6645784a58a0eaa29db9e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a28f35ff6aacb2651f20cf23ad0b44dac"><td class="memItemLeft" align="right" valign="top"><a id="a28f35ff6aacb2651f20cf23ad0b44dac"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a28f35ff6aacb2651f20cf23ad0b44dac">g_ave</a></td></tr>
+<tr class="memdesc:a28f35ff6aacb2651f20cf23ad0b44dac"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees. <br /></td></tr>
+<tr class="separator:a28f35ff6aacb2651f20cf23ad0b44dac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af95581e2ba47f7f91ed8804895fcf7de"><td class="memItemLeft" align="right" valign="top"><a id="af95581e2ba47f7f91ed8804895fcf7de"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#af95581e2ba47f7f91ed8804895fcf7de">lambda</a></td></tr>
-<tr class="memdesc:af95581e2ba47f7f91ed8804895fcf7de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rate of events for a given individual. Events are defined to have more than one invitees. <br /></td></tr>
+<tr class="memdesc:af95581e2ba47f7f91ed8804895fcf7de"><td class="mdescLeft">&#160;</td><td class="mdescRight">Rate of events for a given individual. Events are defined to include at least two invitees. <br /></td></tr>
 <tr class="separator:af95581e2ba47f7f91ed8804895fcf7de"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6fbaef2094df86c835fd5b8c8203c3f4"><td class="memItemLeft" align="right" valign="top"><a id="a6fbaef2094df86c835fd5b8c8203c3f4"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a6fbaef2094df86c835fd5b8c8203c3f4">lambdap</a></td></tr>
-<tr class="memdesc:a6fbaef2094df86c835fd5b8c8203c3f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total rate of events for a finite population. Events are defined to have more than one invitees. <br /></td></tr>
+<tr class="memdesc:a6fbaef2094df86c835fd5b8c8203c3f4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total rate of events for a finite population. Events are defined to include at least two invitees. <br /></td></tr>
 <tr class="separator:a6fbaef2094df86c835fd5b8c8203c3f4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a65992318e940f5727865bf355c0938e7"><td class="memItemLeft" align="right" valign="top"><a id="a65992318e940f5727865bf355c0938e7"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a65992318e940f5727865bf355c0938e7">pinf</a></td></tr>
+<tr class="memdesc:a65992318e940f5727865bf355c0938e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event. <br /></td></tr>
+<tr class="separator:a65992318e940f5727865bf355c0938e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6cc9bd7884927a2b8f64ecbcb2f06927"><td class="memItemLeft" align="right" valign="top"><a id="a6cc9bd7884927a2b8f64ecbcb2f06927"></a>
+double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a6cc9bd7884927a2b8f64ecbcb2f06927">R0</a></td></tr>
+<tr class="memdesc:a6cc9bd7884927a2b8f64ecbcb2f06927"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic reproduction number. <br /></td></tr>
+<tr class="separator:a6cc9bd7884927a2b8f64ecbcb2f06927"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a498936f61e895e9dbf13ee036b824711"><td class="memItemLeft" align="right" valign="top"><a id="a498936f61e895e9dbf13ee036b824711"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a498936f61e895e9dbf13ee036b824711">kappa</a></td></tr>
 <tr class="memdesc:a498936f61e895e9dbf13ee036b824711"><td class="mdescLeft">&#160;</td><td class="mdescRight">branchim's kappa parameter for the gamma distribution used to generate the main communicable period <br /></td></tr>
@@ -158,14 +174,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="st
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#aa1d9db3cee284096431a6c4639d9c394">kappaim</a></td></tr>
 <tr class="memdesc:aa1d9db3cee284096431a6c4639d9c394"><td class="mdescLeft">&#160;</td><td class="mdescRight">kappa parameter for the gamma distribution used to generate the interrupted alternate communicable period <br /></td></tr>
 <tr class="separator:aa1d9db3cee284096431a6c4639d9c394"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6cc9bd7884927a2b8f64ecbcb2f06927"><td class="memItemLeft" align="right" valign="top"><a id="a6cc9bd7884927a2b8f64ecbcb2f06927"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a6cc9bd7884927a2b8f64ecbcb2f06927">R0</a></td></tr>
-<tr class="memdesc:a6cc9bd7884927a2b8f64ecbcb2f06927"><td class="mdescLeft">&#160;</td><td class="mdescRight">Basic reproduction number. <br /></td></tr>
-<tr class="separator:a6cc9bd7884927a2b8f64ecbcb2f06927"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afccb717dc6645784a58a0eaa29db9e3c"><td class="memItemLeft" align="right" valign="top"><a id="afccb717dc6645784a58a0eaa29db9e3c"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#afccb717dc6645784a58a0eaa29db9e3c">mu</a></td></tr>
-<tr class="memdesc:afccb717dc6645784a58a0eaa29db9e3c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter for the mean of an unbounded logarithmic distribution used to draw number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu &gt;= 1) <br /></td></tr>
-<tr class="separator:afccb717dc6645784a58a0eaa29db9e3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a855468f6d0c56265ff697a6f36e549ce"><td class="memItemLeft" align="right" valign="top"><a id="a855468f6d0c56265ff697a6f36e549ce"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a855468f6d0c56265ff697a6f36e549ce">t95</a></td></tr>
 <tr class="memdesc:a855468f6d0c56265ff697a6f36e549ce"><td class="mdescLeft">&#160;</td><td class="mdescRight">Parameter for the 95th percentile of the main communicable period (depends on tbar and kappa) <br /></td></tr>
@@ -190,10 +198,6 @@ double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="st
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#aac4af9226e4d189e42d148ce178f4033">tmax</a></td></tr>
 <tr class="memdesc:aac4af9226e4d189e42d148ce178f4033"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum simulation period used to instantiate new infectious individuals. <br /></td></tr>
 <tr class="separator:aac4af9226e4d189e42d148ce178f4033"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a65992318e940f5727865bf355c0938e7"><td class="memItemLeft" align="right" valign="top"><a id="a65992318e940f5727865bf355c0938e7"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#a65992318e940f5727865bf355c0938e7">pinf</a></td></tr>
-<tr class="memdesc:a65992318e940f5727865bf355c0938e7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event. <br /></td></tr>
-<tr class="separator:a65992318e940f5727865bf355c0938e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aef4e69e251970cf08a8023fb9789ce0d"><td class="memItemLeft" align="right" valign="top"><a id="aef4e69e251970cf08a8023fb9789ce0d"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structmodel__pars.html#aef4e69e251970cf08a8023fb9789ce0d">nstart</a></td></tr>
 <tr class="memdesc:aef4e69e251970cf08a8023fb9789ce0d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initial number of infectious individuals. <br /></td></tr>
@@ -210,7 +214,7 @@ uint8_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="s
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00031">31</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00029">29</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="model__parameters_8h_source.html">model_parameters.h</a></li>
 </ul>

@@ -10,8 +10,12 @@ void sim_pars_init(model_pars* pars)
 {
   pars->tbar=NAN;
   pars->p=NAN;
+  pars->mu=NAN;
+  pars->g_ave=NAN;
   pars->lambda=NAN;
   pars->lambdap=NAN;
+  pars->pinf=NAN;
+  pars->R0=NAN;
   pars->kappa=NAN;
   pars->lbar=NAN;
   pars->kappal=NAN;
@@ -24,18 +28,15 @@ void sim_pars_init(model_pars* pars)
   pars->pim=NAN;
   pars->imbar=NAN;
   pars->kappaim=NAN;
-  pars->R0=NAN;
-  pars->mu=NAN;
   pars->t95=NAN;
   pars->m95=NAN;
   pars->l95=NAN;
   pars->it95=NAN;
   pars->im95=NAN;
   pars->tmax=INFINITY;
-  pars->pinf=NAN;
   pars->nstart=1;
   pars->popsize=0;
-  pars->grouptype=ro_group_log_plus_1;
+  pars->grouptype=ro_group_log_attendees_plus_1;
 }
 
 void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)

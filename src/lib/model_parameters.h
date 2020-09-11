@@ -21,9 +21,7 @@
  * ro_log_invitees are mutually exclusive options that indicate how the number
  * of individuals at events are distributed.  
  **/
-enum ro_model_flags {ro_group_log_plus_1=0, ro_group_log_attendees=1, ro_group_log_invitees=2};
-
-#define RO_GROUP_DIST_MASK (0x3)
+enum ro_model_flags {ro_group_log_attendees_plus_1=1, ro_group_log_invitees_plus_1=2, ro_group_log_attendees=4, ro_group_log_invitees=8};
 
 /**
  * Model parameters.
@@ -31,9 +29,13 @@ enum ro_model_flags {ro_group_log_plus_1=0, ro_group_log_attendees=1, ro_group_l
 typedef struct 
 {
   double tbar;		//!< Mean main communicable period
-  double p;		//!< Parameter for the logarithmic distribution used to draw then number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).
-  double lambda;	//!< Rate of events for a given individual. Events are defined to have more than one invitees
-  double lambdap;	//!< Total rate of events for a finite population. Events are defined to have more than one invitees
+  double p;		//!< Parameter for the logarithmic distribution used to draw then number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).
+  double mu;		//!< Parameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu >= 1)
+  double g_ave;		//!< Parameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees.
+  double lambda;	//!< Rate of events for a given individual. Events are defined to include at least two invitees.
+  double lambdap;	//!< Total rate of events for a finite population. Events are defined to include at least two invitees
+  double pinf;		//!< Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event.
+  double R0;		//!< Basic reproduction number
   double kappa;		//!< branchim's kappa parameter for the gamma distribution used to generate the main communicable period
   double lbar;		//!< Mean latent period
   double kappal;   	//!< kappa parameter for the gamma distribution used to generate the latent period
@@ -46,15 +48,12 @@ typedef struct
   double pim;		//!< Probability of alternate communicable period interruption
   double imbar;		//!< Mean period for the interrupted alternate communicable period
   double kappaim;	//!< kappa parameter for the gamma distribution used to generate the interrupted alternate communicable period
-  double R0;		//!< Basic reproduction number
-  double mu;		//!< Parameter for the mean of an unbounded logarithmic distribution used to draw number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu >= 1)
   double t95;	        //!< Parameter for the 95th percentile of the main communicable period (depends on tbar and kappa)
   double m95;	        //!< Parameter for the 95th percentile of the alternate communicable period (depends on mbar and kappaq)
   double l95;	        //!< Parameter for the 95th percentile of the latent period (depends on lbar and kappal)
   double it95;	        //!< Parameter for the 95th percentile of the interrupted main communicable period (depends on itbar and kappait)
   double im95;	        //!< Parameter for the 95th percentile of the interrupted alternate communicable period (depends on imbar and kappaim)
   double tmax;		//!< Maximum simulation period used to instantiate new infectious individuals
-  double pinf;		//!< Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event.
   uint32_t nstart;	//!< Initial number of infectious individuals
   uint32_t popsize;     //!< Population size (finite population simulation)
   uint8_t grouptype;   	//!< Simulation type bit field (composed using ro_model_type)
