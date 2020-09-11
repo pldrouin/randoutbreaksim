@@ -201,6 +201,11 @@ int model_solve_R0_group(model_pars* pars)
 	}
 	pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
 
+	if(!(pars->mu>=1)) {
+	  fprintf(stderr,"%s: Error: Computed mu is smaller than 1. The choice of the other input parameters that were provided is invalid.\n",__func__);
+	  return -1;
+	}
+
 	//Else if it is mu that is provided
       } else {
 
