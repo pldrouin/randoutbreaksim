@@ -36,7 +36,7 @@ int branchsim(sim_vars* sv)
     DEBUG_PRINTF("initial individual %i\n",i);
     sv->curii=sv->brsim.iis+1;
     //Generate the communicable period appropriately
-    sv->gen_time_periods_func(sv);
+    sv->gen_pri_time_periods_func(sv);
     sv->curii->infectious_at_tmax=((sv->curii-1)->event_time + sv->curii->comm_period > sv->pars.tmax);
     DEBUG_PRINTF("Comm period is %f%s\n",sv->curii->comm_period,(sv->curii->infectious_at_tmax?" (reached end)":"")); \
     sv->curii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->curii->comm_period);

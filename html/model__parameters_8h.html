@@ -146,7 +146,7 @@ Data Structures</h2></td></tr>
 Macros</h2></td></tr>
 <tr class="memitem:a6fc0390a031aa231126fd62ea0efb676"><td class="memItemLeft" align="right" valign="top"><a id="a6fc0390a031aa231126fd62ea0efb676"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a6fc0390a031aa231126fd62ea0efb676">RF_P_EPSF</a>&#160;&#160;&#160;(1e-15)</td></tr>
-<tr class="memdesc:a6fc0390a031aa231126fd62ea0efb676"><td class="mdescLeft">&#160;</td><td class="mdescRight">EPS for the mu discrepancy. <br /></td></tr>
+<tr class="memdesc:a6fc0390a031aa231126fd62ea0efb676"><td class="mdescLeft">&#160;</td><td class="mdescRight">EPS for the mu and g_ave discrepancy. <br /></td></tr>
 <tr class="separator:a6fc0390a031aa231126fd62ea0efb676"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace26d7f9e0547638346a1bb80558a2e5"><td class="memItemLeft" align="right" valign="top"><a id="ace26d7f9e0547638346a1bb80558a2e5"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#ace26d7f9e0547638346a1bb80558a2e5">RF_GPERC_EPSF</a>&#160;&#160;&#160;(1e-15)</td></tr>
@@ -159,12 +159,18 @@ Macros</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
-<tr class="memitem:a42664ec50544203d1d336107e7f24283"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a42664ec50544203d1d336107e7f24283">ro_model_flags</a> { <b>ro_group_log_attendees_plus_1</b> =1, 
+<tr class="memitem:ad79ed104442e66a3fcc521254210ba4b"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4b">ro_pricommper_model_flags</a> { <b>ro_pricommper_main</b> =1, 
+<b>ro_pricommper_alt</b> =2, 
+<b>ro_pricommper_main_int</b> =4, 
+<b>ro_pricommper_alt_int</b> =8
+ }</td></tr>
+<tr class="separator:ad79ed104442e66a3fcc521254210ba4b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4f286bf280ccb5408806ca641f477a02"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a4f286bf280ccb5408806ca641f477a02">ro_group_model_flags</a> { <b>ro_group_log_attendees_plus_1</b> =1, 
 <b>ro_group_log_invitees_plus_1</b> =2, 
 <b>ro_group_log_attendees</b> =4, 
 <b>ro_group_log_invitees</b> =8
  }</td></tr>
-<tr class="separator:a42664ec50544203d1d336107e7f24283"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="separator:a4f286bf280ccb5408806ca641f477a02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -208,21 +214,38 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 </div><h2 class="groupheader">Enumeration Type Documentation</h2>
-<a id="a42664ec50544203d1d336107e7f24283"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a42664ec50544203d1d336107e7f24283">&#9670;&nbsp;</a></span>ro_model_flags</h2>
+<a id="a4f286bf280ccb5408806ca641f477a02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4f286bf280ccb5408806ca641f477a02">&#9670;&nbsp;</a></span>ro_group_model_flags</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">enum <a class="el" href="model__parameters_8h.html#a42664ec50544203d1d336107e7f24283">ro_model_flags</a></td>
+          <td class="memname">enum <a class="el" href="model__parameters_8h.html#a4f286bf280ccb5408806ca641f477a02">ro_group_model_flags</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Model type. Flags used to specify the model. ro_log_group_plus_1, ro_log_attendees and ro_log_invitees are mutually exclusive options that indicate how the number of individuals at events are distributed. <br  />
+<p>Group model type. Flags used to specify the model. ro_log_group_attendees_plus_1, ro_log_group_invitees_plus_1, ro_log_attendees and ro_log_invitees are mutually exclusive options that indicate how the number of individuals at events are distributed. <br  />
  </p>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00024">24</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00029">29</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+
+</div>
+</div>
+<a id="ad79ed104442e66a3fcc521254210ba4b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad79ed104442e66a3fcc521254210ba4b">&#9670;&nbsp;</a></span>ro_pricommper_model_flags</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4b">ro_pricommper_model_flags</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Primary individual communicable period model type. Flags used to specify the model. </p>
+
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00022">22</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -278,7 +301,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00200">200</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00206">206</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -333,7 +356,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00183">183</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00189">189</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -382,7 +405,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the discrepancy between the evaluated CDF and the 95th percentile. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00168">168</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00174">174</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -437,7 +460,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00155">155</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00161">161</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -492,7 +515,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00143">143</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00149">149</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>

@@ -360,116 +360,56 @@ int model_pars_check(model_pars const* pars)
 {
   int ret=0;
 
-  /*
-  if(pars->tbar<=0) {
-    fprintf(stderr,"%s: Error: tbar must be greater than 0\n",__func__);
-    ret-=1;
-  }
-
-  if(!(pars->p>=0) || !(pars->p<1)) {
-    fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
-    ret-=2;
-  }
-
-  if(pars->lambda<=0) {
-    fprintf(stderr,"%s: Error: If defined, lambda must be greater than 0\n",__func__);
-    ret-=4;
-  }
-  */
-
   if(pars->lambdap<=0) {
     fprintf(stderr,"%s: Error: If defined, lambdap must be greater than 0\n",__func__);
-    ret-=8;
+    ret-=1;
 
   } else if(pars->lambdap>0 && pars->popsize==0) {
     fprintf(stderr,"%s: Error: lambdap cannot be used with an infinite population\n",__func__);
-    ret-=16;
+    ret-=2;
   }
-
-  /*
-  if(pars->kappa<=0) {
-    fprintf(stderr,"%s: Error: kappa must be greater than 0\n",__func__);
-    ret-=32;
-  }
-
-  if(pars->lbar<0) {
-    fprintf(stderr,"%s: Error: lbar must be non-negative\n",__func__);
-    ret-=54;
-
-  } else if(pars->lbar>0 && pars->kappal<=0) {
-      fprintf(stderr,"%s: Error: kappal must be greater than 0 if lbar>0\n",__func__);
-      ret-=128;
-  }
-  */
 
   if(pars->pit<0) {
     fprintf(stderr,"%s: Error: pit must be non-negative\n",__func__);
-    ret-=256;
+    ret-=4;
 
-  } /*else if(pars->pit>0) {
-
-    if(pars->itbar<0) {
-      fprintf(stderr,"%s: Error: itbar must be non-negative if pit>0\n",__func__);
-      ret-=512;
-    }
-
-    if(pars->kappait<=0) {
-      fprintf(stderr,"%s: Error: kappait must be greater than 0 if pit>0\n",__func__);
-      ret-=1024;
-    }
   }
-  */
 
   if(pars->q<0) {
     fprintf(stderr,"%s: Error: q must be non-negative\n",__func__);
-    ret-=2048;
+    ret-=8;
 
   } else if(pars->q>0) {
 
-    /*
-    if(pars->mbar<0) {
-      fprintf(stderr,"%s: Error: mbar must be non-negative if q>0\n",__func__);
-      ret-=4096;
-    }
-
-    if(pars->kappaq<=0) {
-      fprintf(stderr,"%s: Error: kappaq must be greater than 0 if q>0\n",__func__);
-      ret-=8192;
-    }
-    */
-
     if(pars->pim<0) {
       fprintf(stderr,"%s: Error: pim must be non-negative\n",__func__);
-      ret-=16384;
+      ret-=16;
 
-    } /*else if(pars->pim>0) {
-
-      if(pars->imbar<0) {
-	fprintf(stderr,"%s: Error: imbar must be non-negative if pim>0\n",__func__);
-	ret-=32768;
-      }
-
-      if(pars->kappaim<=0) {
-	fprintf(stderr,"%s: Error: kappaim must be greater than 0 if pim>0\n",__func__);
-	ret-=65536;
-      }
     }
-    */
+
+  } else if(!(pars->pricommpertype&ro_pricommper_main)) {
+    fprintf(stderr,"%s: Error: Invalid configuration for the communicable period of the primary infectious individuals. The main communicable period distributions cannot be excluded if the probability for the alternate communicable period is 0\n",__func__);
+    ret-=32;
+  }
+
+  if(!(pars->pricommpertype&(ro_pricommper_main|ro_pricommper_alt))) {
+    fprintf(stderr,"%s: Error: Invalid configuration for the communicable period of the primary infectious individuals. Both communicable period distributions cannot be excluded\n",__func__);
+    ret-=64;
   }
 
   if(pars->tmax<=0) {
     fprintf(stderr,"%s: Error: tmax must be greater than 0\n",__func__);
-    ret-=131072;
+    ret-=128;
   }
 
   if(pars->nstart<=0) {
     fprintf(stderr,"%s: Error: nstart must be greater than 0\n",__func__);
-    ret-=524288;
+    ret-=256;
   }
 
   if(pars->popsize==0 && (pars->grouptype&ro_group_log_invitees)) {
     fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated using a logarithmically-distributed number of invitees\n",__func__);
-    ret-=1048576;
+    ret-=512;
   }
 
   return ret;

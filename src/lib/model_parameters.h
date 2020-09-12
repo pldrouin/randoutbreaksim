@@ -12,16 +12,21 @@
 
 #include "root_finder.h"
 
-#define RF_P_EPSF (1e-15)	//!< EPS for the mu discrepancy
+#define RF_P_EPSF (1e-15)	//!< EPS for the mu and g_ave discrepancy
 #define RF_GPERC_EPSF (1e-15)	//!< EPS for the x95 CDF discrepancy
 #define RF_GKAPPA_EPSF (1e-15)  //!< EPS for the kappa CDF discrepancy
 
 /**
- * Model type. Flags used to specify the model. ro_log_group_plus_1, ro_log_attendees and
- * ro_log_invitees are mutually exclusive options that indicate how the number
- * of individuals at events are distributed.  
+ * Primary individual communicable period model type. Flags used to specify the model.
  **/
-enum ro_model_flags {ro_group_log_attendees_plus_1=1, ro_group_log_invitees_plus_1=2, ro_group_log_attendees=4, ro_group_log_invitees=8};
+enum ro_pricommper_model_flags {ro_pricommper_main=1, ro_pricommper_alt=2, ro_pricommper_main_int=4, ro_pricommper_alt_int=8};
+
+/**
+ * Group model type. Flags used to specify the model. ro_log_group_attendees_plus_1,
+ * ro_log_group_invitees_plus_1, ro_log_attendees and ro_log_invitees are mutually
+ * exclusive options that indicate how the number of individuals at events are distributed.  
+ **/
+enum ro_group_model_flags {ro_group_log_attendees_plus_1=1, ro_group_log_invitees_plus_1=2, ro_group_log_attendees=4, ro_group_log_invitees=8};
 
 /**
  * Model parameters.
@@ -56,7 +61,8 @@ typedef struct
   double tmax;		//!< Maximum simulation period used to instantiate new infectious individuals
   uint32_t nstart;	//!< Initial number of infectious individuals
   uint32_t popsize;     //!< Population size (finite population simulation)
-  uint8_t grouptype;   	//!< Simulation type bit field (composed using ro_model_type)
+  uint8_t pricommpertype;	//!< Primary individual communicable period type bit field (composed using ro_pricommper_model_flags) 
+  uint8_t grouptype;   	//!< Group type bit field (composed using ro_group_model_flags)
 } model_pars;
 
 /**

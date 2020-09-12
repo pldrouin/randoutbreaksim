@@ -163,6 +163,18 @@ int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthread
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->im95);
 
+      } else if(!argsdiffer(pbuf, "pri_no_main_period")) {
+	pars->pricommpertype&=~ro_pricommper_main;
+
+      } else if(!argsdiffer(pbuf, "pri_no_alt_period")) {
+	pars->pricommpertype&=~ro_pricommper_alt;
+
+      } else if(!argsdiffer(pbuf, "pri_no_main_period_int")) {
+	pars->pricommpertype&=~ro_pricommper_main_int;
+
+      } else if(!argsdiffer(pbuf, "pri_no_alt_period_int")) {
+	pars->pricommpertype&=~ro_pricommper_alt_int;
+
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->tmax);
@@ -256,6 +268,11 @@ void printusage(const char* name)
   printf("\t--imbar VALUE\t\t\tMean period for the interrupted alternate communicable period (default value of itbar)\n");
   printf("\t--kappaim VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait)\n");
   printf("\t--im95 VALUE\t\t\t95th percentile of the interrupted alternate communicable period (default value of it95)\n");
+  printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period\n");
+  printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period\n");
+  printf("\t--pri_no_main_period_int\tThe main communicable period for a primary infectious individual cannot be interrupted\n");
+  printf("\t--pri_no_alt_period_int\t\tThe alternate communicable period for a primary infectious individual cannot be interrupted\n");
+
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1)\n");
   printf("\t--ninfhist\t\t\tCompute a histogram of the number of infected individuals for each infectious individual.\n");

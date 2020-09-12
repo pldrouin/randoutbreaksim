@@ -24,6 +24,7 @@ var structmodel__pars =
     [ "pinf", "structmodel__pars.html#a65992318e940f5727865bf355c0938e7", null ],
     [ "pit", "structmodel__pars.html#ad74f2a750a43cf77e5fb5cfd7cbde1dc", null ],
     [ "popsize", "structmodel__pars.html#ac44bac41a41e3cb3b057cd45e3a93102", null ],
+    [ "pricommpertype", "structmodel__pars.html#accb0825b67f69fe2cf424917b323343b", null ],
     [ "q", "structmodel__pars.html#adb88f8b9eb957e317793965d7e3eb781", null ],
     [ "R0", "structmodel__pars.html#a6cc9bd7884927a2b8f64ecbcb2f06927", null ],
     [ "t95", "structmodel__pars.html#a855468f6d0c56265ff697a6f36e549ce", null ],
