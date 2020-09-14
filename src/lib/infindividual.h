@@ -25,6 +25,7 @@ typedef struct
     double event_time;	      //!< Start time for the current iteration event
     uint32_t nevents;	      //!< Number of events
     uint32_t curevent;	      //!< Index of the current iteration event
+    uint32_t nattendees;      //!< Number of attendees for the current iteration event
     uint32_t ninfections;     //!< Number of infections for the current iteration event
     uint32_t curinfection;    //!< Index of the current iteration infection
     bool infectious_at_tmax;  //!< Is the infected individual still infectious at tmax?

@@ -57,7 +57,7 @@ int branchsim(sim_vars* sv)
       DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->curevent,sv->curii->nevents,sv->curii->event_time);
 
       //sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
-      sv->curii->ninfections=sv->gen_infections_func(sv);
+      sv->gen_att_inf_func(sv);
 
       if(!sv->curii->ninfections || !sv->new_event_proc_func(sv)) {
 	DEBUG_PRINTF("New event returned false\n");
@@ -115,7 +115,7 @@ gen_event:
 	//the current event
 	//Move to the next layer
 	//sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
-        sv->curii->ninfections=sv->gen_infections_func(sv);
+        sv->gen_att_inf_func(sv);
 
 	if(sv->curii->ninfections && sv->new_event_proc_func(sv)) {
 	  sv->curii->curinfection=0;
