@@ -5,7 +5,7 @@ var structsim__vars__ =
     [ "dataptr", "structsim__vars__.html#ad9d50be547359a56e26030911f2d3d96", null ],
     [ "end_inf_proc_func", "structsim__vars__.html#a0185f5ecedb040b1b8fb20a6f40f7b87", null ],
     [ "fpsim", "structsim__vars__.html#a1d61c178fd23d78c6b7a50e2ba1b6333", null ],
-    [ "gen_infections_func", "structsim__vars__.html#ac2356408fb23eacc09b702217c62cb57", null ],
+    [ "gen_att_inf_func", "structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f", null ],
     [ "gen_pri_time_periods_func", "structsim__vars__.html#ab5c44db99ae4e5d8178bc4acba11540b", null ],
     [ "gen_time_periods_func", "structsim__vars__.html#a512ad1b3e3afc84900cb0940bf31e5d3", null ],
     [ "ii_alloc_proc_func", "structsim__vars__.html#a6f22c1b7604a6cfbb19c1135a8710077", null ],

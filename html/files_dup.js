@@ -10,9 +10,7 @@ var files_dup =
     [ "branchsim.h", "branchsim_8h.html", "branchsim_8h" ],
     [ "finitepopsim.c", "finitepopsim_8c.html", "finitepopsim_8c" ],
     [ "finitepopsim.h", "finitepopsim_8h.html", "finitepopsim_8h" ],
-    [ "infindividual.h", "infindividual_8h.html", [
-      [ "infindividual", "structinfindividual.html", "structinfindividual" ]
-    ] ],
+    [ "infindividual.h", "infindividual_8h.html", "infindividual_8h" ],
     [ "model_parameters.c", "model__parameters_8c.html", "model__parameters_8c" ],
     [ "model_parameters.h", "model__parameters_8h.html", "model__parameters_8h" ],
     [ "ran_log.c", "ran__log_8c.html", null ],

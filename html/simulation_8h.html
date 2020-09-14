@@ -273,6 +273,7 @@ Functions</h2></td></tr>
 <div class="line">{ \</div>
 <div class="line">  GEN_PER_LATENT_ ## LATENT \</div>
 <div class="line">  GEN_PER_MAIN_ALTERNATE_ ## MAIN ## _ ## ALTERNATE(IT,IM) \</div>
+<div class="line">  sv-&gt;curii-&gt;commpertype|=ro_commper_tmax*((sv-&gt;curii-1)-&gt;event_time + sv-&gt;curii-&gt;comm_period &gt; sv-&gt;pars.tmax); \</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 <p>Generates one function that generates a specific combination of communicable and latent periods. </p>
@@ -316,7 +317,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00224">224</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00225">225</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -335,7 +336,7 @@ Functions</h2></td></tr>
 <p>Generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods. </p>
 <p>This preprocessing macro generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods to the gen_time_periods_func pointer of the simulation, given the configuration of the model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00252">252</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00253">253</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -390,7 +391,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the event does not occur after tmax, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00263">263</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00264">264</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -426,7 +427,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00271">271</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00272">272</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -457,7 +458,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00287">287</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00288">288</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -488,7 +489,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00279">279</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00280">280</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -529,7 +530,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00295">295</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00296">296</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>

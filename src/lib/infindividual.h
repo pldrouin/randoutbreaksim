@@ -15,6 +15,11 @@
 #include <stdbool.h>
 
 /**
+ * Type of communicable period type for a given individual.
+ **/
+enum ro_commper_type {ro_commper_main=0, ro_commper_alt=1, ro_commper_int=2, ro_commper_main_int=2, ro_commper_alt_int=3, ro_commper_tmax=4};
+
+/**
  * Infected individual
  */
 typedef struct
@@ -28,7 +33,7 @@ typedef struct
     uint32_t nattendees;      //!< Number of attendees for the current iteration event
     uint32_t ninfections;     //!< Number of infections for the current iteration event
     uint32_t curinfection;    //!< Index of the current iteration infection
-    bool infectious_at_tmax;  //!< Is the infected individual still infectious at tmax?
+    uint8_t commpertype;      //!< Flags for the type of communicable period (filled using ro_commpertype flags)
 } infindividual;
 
 #endif

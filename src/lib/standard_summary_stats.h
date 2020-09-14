@@ -204,7 +204,7 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
   const double inf_end=(inf-1)->event_time+inf->comm_period;
 
   //If truncated by tmax
-  if(inf->infectious_at_tmax) ((std_summary_stats*)ptr)->extinction=false;
+  if(inf->commpertype&ro_commper_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
     //++((std_summary_stats*)ptr)->n_ended_infections;
@@ -267,7 +267,7 @@ inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
   const double inf_end=(inf-1)->event_time+inf->comm_period;
 
   //If truncated by tmax
-  if(inf->infectious_at_tmax) ((std_summary_stats*)ptr)->extinction=false;
+  if(inf->commpertype&ro_commper_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
     //++((std_summary_stats*)ptr)->n_ended_infections;

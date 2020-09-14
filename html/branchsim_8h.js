@@ -7,10 +7,10 @@ var branchsim_8h =
     [ "branchsim", "branchsim_8h.html#aedb2df7d851ac88b93a808dd58b19f41", null ],
     [ "branchsim_free", "branchsim_8h.html#acdc4823a79039c032dbbee7e5aff3255", null ],
     [ "branchsim_init", "branchsim_8h.html#aa4ba9b6e361e562235c1beefa82093a5", null ],
-    [ "gen_infections_infpop_log", "branchsim_8h.html#a8059c989f627a556feb88a8734eacc3e", null ],
-    [ "gen_infections_infpop_log_p0", "branchsim_8h.html#a057f9b73d28288a512ed578508043019", null ],
-    [ "gen_infections_infpop_log_plus_1", "branchsim_8h.html#afcb80a55cf42f1a0c864f0f51bae4e9c", null ],
-    [ "gen_infections_infpop_pinf1_log", "branchsim_8h.html#ae707ab66c4d9aae002e90fd1e1ec84c5", null ],
-    [ "gen_infections_infpop_pinf1_log_p0", "branchsim_8h.html#aeb9d8130b4350c86afad494a88536283", null ],
-    [ "gen_infections_infpop_pinf1_log_plus_1", "branchsim_8h.html#aa06a91098c736b2be23132eaec322456", null ]
+    [ "gen_att_inf_infpop_log", "branchsim_8h.html#a4c026b4e342e3ae092028d245dc26ada", null ],
+    [ "gen_att_inf_infpop_log_p0", "branchsim_8h.html#a49cafb1f8654d7d22079d8e3a929339d", null ],
+    [ "gen_att_inf_infpop_log_plus_1", "branchsim_8h.html#a67ff11bf6048b877272c5af856d732a4", null ],
+    [ "gen_att_inf_infpop_pinf1_log", "branchsim_8h.html#a26666e5e1a86647bafd5f1a67937b27c", null ],
+    [ "gen_att_inf_infpop_pinf1_log_p0", "branchsim_8h.html#a72042584e40c42863cf2ce4cccb13f9f", null ],
+    [ "gen_att_inf_infpop_pinf1_log_plus_1", "branchsim_8h.html#ab7a166f8dc029feebad0219e59fcb703", null ]
 ];
