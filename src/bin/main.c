@@ -178,7 +178,7 @@ int main(const int nargs, const char* args[])
 
       } else tp=t;
 
-      for(b=tdata[tp].ninfbins-1; b>=0; --b) tdata[tmaxninfnbins].ngeninfs[b]+=tdata[tp].ngeninfs[b];
+      for(b=0; b<tdata[tp].ninfbins; ++b) tdata[tmaxninfnbins].ngeninfs[b]+=tdata[tp].ngeninfs[b];
       free(tdata[tp].ngeninfs);
     }
 
