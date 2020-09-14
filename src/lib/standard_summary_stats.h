@@ -164,13 +164,13 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
  * individual to zero. It is only called for infectious individuals that
  * participate to a non-zero number of transmission events.
  *
- * @param inf: Pointer to the new infectious individual.
+ * @param sv: Pointer to the simulation variables.
  * */
-inline static void std_stats_new_inf(infindividual* inf)
+inline static void std_stats_new_inf(sim_vars* sv)
 {
-  *(uint32_t*)inf->dataptr=0;
-  //++(*(uint32_t*)(inf-1)->dataptr);
-  //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(inf-1)->dataptr);
+  *(uint32_t*)sv->curii->dataptr=0;
+  //++(*(uint32_t*)(sv->curii-1)->dataptr);
+  //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(sv->curii-1)->dataptr);
   DEBUG_PRINTF("%s\n",__func__);
 }
 

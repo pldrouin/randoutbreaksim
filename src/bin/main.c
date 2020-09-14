@@ -256,6 +256,7 @@ void* simthread(void* arg)
 
   if(data->nimax == UINT32_MAX) sim_set_new_event_proc_func(&sv, std_stats_new_event);
   else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
+  sim_set_new_pri_inf_proc_func(&sv, std_stats_new_inf);
   sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
 
   if(data->rec_ninfs) {

@@ -50,7 +50,8 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
   sv->dataptr=NULL;
   sv->ii_alloc_proc_func=default_ii_alloc_proc_func;
   sv->new_event_proc_func=default_event_proc_func;
-  sv->new_inf_proc_func=dummy_proc_func_one_par;
+  sv->new_pri_inf_proc_func=dummy_proc_func_sv;
+  sv->new_inf_proc_func=dummy_proc_func_sv;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
   sv->inf_proc_func_noevent=dummy_proc_func_two_pars;
 }

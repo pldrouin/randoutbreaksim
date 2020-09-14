@@ -47,7 +47,7 @@ int branchsim(sim_vars* sv)
       continue;
     }
 
-    sv->new_inf_proc_func(sv->curii);
+    sv->new_pri_inf_proc_func(sv);
     sv->curii->curevent=0;
 
     for(;;) {
@@ -102,7 +102,7 @@ int branchsim(sim_vars* sv)
       //If the number of events is non-zero
       if(sv->curii->nevents) {
 	sv->curii->curevent=0;
-	sv->new_inf_proc_func(sv->curii);
+	sv->new_inf_proc_func(sv);
 	//Generate the event time
 gen_event:
 	sv->curii->event_time=(sv->curii-1)->event_time+sv->curii->latent_period+sv->curii->comm_period*(1-gsl_rng_uniform(sv->r));
