@@ -38,6 +38,7 @@ void sim_pars_init(model_pars* pars)
   pars->popsize=0;
   pars->pricommpertype=ro_pricommper_main|ro_pricommper_alt|ro_pricommper_main_int|ro_pricommper_alt_int;
   pars->grouptype=ro_group_log_attendees_plus_1;
+  pars->trelpriend=false;
 }
 
 void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
@@ -50,8 +51,8 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
   sv->dataptr=NULL;
   sv->ii_alloc_proc_func=default_ii_alloc_proc_func;
   sv->new_event_proc_func=default_event_proc_func;
-  sv->new_pri_inf_proc_func=dummy_proc_func_sv;
-  sv->new_inf_proc_func=dummy_proc_func_sv;
+  sv->new_pri_inf_proc_func=dummy_proc_func_sv_ii;
+  sv->new_inf_proc_func=dummy_proc_func_sv_ii;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
   sv->inf_proc_func_noevent=dummy_proc_func_two_pars;
 }

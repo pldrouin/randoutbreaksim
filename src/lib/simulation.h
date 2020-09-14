@@ -39,13 +39,13 @@ typedef struct sim_vars_
   gsl_rng const* r;		//!< Pointer to GSL random number generator
   infindividual* curii;		//!< Pointer to current iteration infectious individual
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
-  void (*gen_pri_time_periods_func)(struct sim_vars_*);				//!< Pointer to the function used to generate time periods for a given primary infectious individual
-  void (*gen_time_periods_func)(struct sim_vars_*);				//!< Pointer to the function used to generate time periods for a given infectious individual
+  void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii);				//!< Pointer to the function used to generate time periods for a given primary infectious individual
+  void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii);				//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
-  void (*new_pri_inf_proc_func)(struct sim_vars_* sv);			//!< Pointer to the user-defined processing function that is called when a new primary infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
-  void (*new_inf_proc_func)(struct sim_vars_* sv);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
+  void (*new_pri_inf_proc_func)(struct sim_vars_* sv, infindividual* ii);			//!< Pointer to the user-defined processing function that is called when a new primary infected individual is created, after the communicable period and the number of transmission events have been assigned.
+  void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
   void (*end_inf_proc_func)(infindividual* inf, void* dataptr); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
   void (*inf_proc_func_noevent)(infindividual* inf, void* dataptr);	//!< Pointer to the user-defined processing function that is called for an infectious individual that does not generate any transmission event.
   ran_log rl;	//!< Handle for the logarithmica random variate generator.
@@ -111,7 +111,7 @@ inline static void sim_set_new_event_proc_func(sim_vars* sv, bool (*new_event_pr
  * @param sv: Pointer to the simulation variables.
  * @param new_pri_inf_proc_func: Pointer to the user-defined function.
  */
-inline static void sim_set_new_pri_inf_proc_func(sim_vars* sv, void (*new_pri_inf_proc_func)(sim_vars* sv)){sv->new_pri_inf_proc_func=new_pri_inf_proc_func;}
+inline static void sim_set_new_pri_inf_proc_func(sim_vars* sv, void (*new_pri_inf_proc_func)(sim_vars* sv, infindividual* ii)){sv->new_pri_inf_proc_func=new_pri_inf_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called when a new infected individual is created.
@@ -123,7 +123,7 @@ inline static void sim_set_new_pri_inf_proc_func(sim_vars* sv, void (*new_pri_in
  * @param sv: Pointer to the simulation variables.
  * @param new_inf_proc_func: Pointer to the user-defined function.
  */
-inline static void sim_set_new_inf_proc_func(sim_vars* sv, void (*new_inf_proc_func)(sim_vars* sv)){sv->new_inf_proc_func=new_inf_proc_func;}
+inline static void sim_set_new_inf_proc_func(sim_vars* sv, void (*new_inf_proc_func)(sim_vars* sv, infindividual* ii)){sv->new_inf_proc_func=new_inf_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called when memory
@@ -161,26 +161,26 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
 /**
  * The preprocessing macros below are used by the main GEN_PER macro.
  */
-#define GEN_PER_LATENT_0 sv->curii->latent_period=0;
-#define GEN_PER_LATENT_1 sv->curii->latent_period=sv->pars.lbar;
-#define GEN_PER_LATENT_2 sv->curii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
+#define GEN_PER_LATENT_0 ii->latent_period=0;
+#define GEN_PER_LATENT_1 ii->latent_period=sv->pars.lbar;
+#define GEN_PER_LATENT_2 ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
 
 #define GEN_PER_INTERRUPTED_MAIN_0
-#define GEN_PER_INTERRUPTED_MAIN_1 if(gsl_rng_uniform(sv->r) < sv->pars.pit && sv->pars.itbar < sv->curii->comm_period) {sv->curii->comm_period=sv->pars.itbar; sv->curii->commpertype=ro_commper_main_int;}
-#define GEN_PER_INTERRUPTED_MAIN_2 if(gsl_rng_uniform(sv->r) < sv->pars.pit) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappait*sv->pars.itbar, 1./sv->pars.kappait); if(time < sv->curii->comm_period) {sv->curii->comm_period=time; sv->curii->commpertype=ro_commper_main_int;}}
+#define GEN_PER_INTERRUPTED_MAIN_1 if(gsl_rng_uniform(sv->r) < sv->pars.pit && sv->pars.itbar < ii->comm_period) {ii->comm_period=sv->pars.itbar; ii->commpertype=ro_commper_main_int;}
+#define GEN_PER_INTERRUPTED_MAIN_2 if(gsl_rng_uniform(sv->r) < sv->pars.pit) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappait*sv->pars.itbar, 1./sv->pars.kappait); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_main_int;}}
 
-#define GEN_PER_MAIN_1(IT) {sv->curii->comm_period=sv->pars.tbar; sv->curii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
-#define GEN_PER_MAIN_2(IT) {sv->curii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa); sv->curii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
+#define GEN_PER_MAIN_1(IT) {ii->comm_period=sv->pars.tbar; ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
+#define GEN_PER_MAIN_2(IT) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa); ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
 
 #define GEN_PER_INTERRUPTED_ALT_0
-#define GEN_PER_INTERRUPTED_ALT_1 if(gsl_rng_uniform(sv->r) < sv->pars.pim && sv->pars.imbar < sv->curii->comm_period) {sv->curii->comm_period=sv->pars.imbar; sv->curii->commpertype=ro_commper_alt_int;}
-#define GEN_PER_INTERRUPTED_ALT_2 if(gsl_rng_uniform(sv->r) < sv->pars.pim) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappaim*sv->pars.imbar, 1./sv->pars.kappaim); if(time < sv->curii->comm_period) {sv->curii->comm_period=time; sv->curii->commpertype=ro_commper_alt_int;}}
+#define GEN_PER_INTERRUPTED_ALT_1 if(gsl_rng_uniform(sv->r) < sv->pars.pim && sv->pars.imbar < ii->comm_period) {ii->comm_period=sv->pars.imbar; ii->commpertype=ro_commper_alt_int;}
+#define GEN_PER_INTERRUPTED_ALT_2 if(gsl_rng_uniform(sv->r) < sv->pars.pim) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappaim*sv->pars.imbar, 1./sv->pars.kappaim); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_alt_int;}}
 
-#define GEN_PER_ALTERNATE_ONLY_1(IM) sv->curii->comm_period=sv->pars.mbar; sv->curii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
-#define GEN_PER_ALTERNATE_ONLY_2(IM) sv->curii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); sv->curii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
+#define GEN_PER_ALTERNATE_ONLY_1(IM) ii->comm_period=sv->pars.mbar; ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
+#define GEN_PER_ALTERNATE_ONLY_2(IM) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
 
-#define GEN_PER_ALTERNATE_1(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->curii->comm_period=sv->pars.mbar; sv->curii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
-#define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {sv->curii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); sv->curii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_ALTERNATE_1(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=sv->pars.mbar; ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
 
 #define GEN_PER_MAIN_ALTERNATE_0_1(IT,IM) GEN_PER_ALTERNATE_ONLY_1(IM);
 #define GEN_PER_MAIN_ALTERNATE_0_2(IT,IM) GEN_PER_ALTERNATE_ONLY_2(IM);
@@ -212,11 +212,10 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
  * @param IM: Type of interrupted alternate period (0=none, 1=fixed, 2=variable)
  * latent)
  */
-#define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _periods(sim_vars* sv) \
+#define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _periods(sim_vars* sv, infindividual* ii) \
 { \
   GEN_PER_LATENT_ ## LATENT \
   GEN_PER_MAIN_ALTERNATE_ ## MAIN ## _ ## ALTERNATE(IT,IM) \
-  sv->curii->commpertype|=ro_commper_tmax*((sv->curii-1)->event_time + sv->curii->comm_period > sv->pars.tmax); \
 }
 
 //! @cond Doxygen_Suppress
@@ -290,7 +289,7 @@ inline static void default_ii_alloc_proc_func(infindividual* ii){ii->dataptr=NUL
  * This function is called by default if a user-defined function has not been
  * set. The function does not do anything.
  */
-inline static void dummy_proc_func_sv(sim_vars* sv){}
+inline static void dummy_proc_func_sv_ii(sim_vars* sv, infindividual* ii){}
 
 /**
  * @brief Default processing function.

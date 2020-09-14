@@ -175,6 +175,9 @@ int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthread
       } else if(!argsdiffer(pbuf, "pri_no_alt_period_int")) {
 	pars->pricommpertype&=~ro_pricommper_alt_int;
 
+      } else if(!argsdiffer(pbuf, "time_rel_pri_end")) {
+	pars->trelpriend=true;
+
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&pars->tmax);
@@ -273,6 +276,7 @@ void printusage(const char* name)
   printf("\t--pri_no_main_period_int\tThe main communicable period for a primary infectious individual cannot be interrupted\n");
   printf("\t--pri_no_alt_period_int\t\tThe alternate communicable period for a primary infectious individual cannot be interrupted\n");
 
+  printf("\t--time_rel_pri_end\t\tRecorded event time is relative to the end of the communicable period for the generated primary infectious individuals\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1)\n");
   printf("\t--ninfhist\t\t\tCompute a histogram of the number of infected individuals for each infectious individual.\n");

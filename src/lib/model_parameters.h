@@ -7,6 +7,8 @@
 #ifndef _MODEL_PARAMETERS_
 #define _MODEL_PARAMETERS_
 
+#include <stdbool.h>
+
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_sf_psi.h>
 
@@ -63,6 +65,7 @@ typedef struct
   uint32_t popsize;     //!< Population size (finite population simulation)
   uint8_t pricommpertype;	//!< Primary individual communicable period type bit field (composed using ro_pricommper_model_flags) 
   uint8_t grouptype;   	//!< Group type bit field (composed using ro_group_model_flags)
+  bool trelpriend;      //!< Recorded time relative to the end of the communicable period of the primary infectious individual
 } model_pars;
 
 /**

@@ -120,8 +120,16 @@ uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href
 <tr class="separator:af551913c9d644a175e58a5a8c30164a7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af9a151e1652f1cbcdd66f9db6780e324"><td class="memItemLeft" align="right" valign="top"><a id="af9a151e1652f1cbcdd66f9db6780e324"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#af9a151e1652f1cbcdd66f9db6780e324">npers</a></td></tr>
-<tr class="memdesc:af9a151e1652f1cbcdd66f9db6780e324"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of integer intervals (floor(tmax)+1) <br /></td></tr>
+<tr class="memdesc:af9a151e1652f1cbcdd66f9db6780e324"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of positive integer intervals. <br /></td></tr>
 <tr class="separator:af9a151e1652f1cbcdd66f9db6780e324"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae03b9ae51cf23b57eb72348796abe3b6"><td class="memItemLeft" align="right" valign="top"><a id="ae03b9ae51cf23b57eb72348796abe3b6"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#ae03b9ae51cf23b57eb72348796abe3b6">timelineshift</a></td></tr>
+<tr class="memdesc:ae03b9ae51cf23b57eb72348796abe3b6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals. <br /></td></tr>
+<tr class="separator:ae03b9ae51cf23b57eb72348796abe3b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8c36935604a78b458da7ab1404453c71"><td class="memItemLeft" align="right" valign="top"><a id="a8c36935604a78b458da7ab1404453c71"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a8c36935604a78b458da7ab1404453c71">tnpersa</a></td></tr>
+<tr class="memdesc:a8c36935604a78b458da7ab1404453c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total number of allocated integer intervals (negative+positive) <br /></td></tr>
+<tr class="separator:a8c36935604a78b458da7ab1404453c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae3fb94b9986390017590c435ac2fa66f"><td class="memItemLeft" align="right" valign="top"><a id="ae3fb94b9986390017590c435ac2fa66f"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#ae3fb94b9986390017590c435ac2fa66f">rsum</a></td></tr>
 <tr class="memdesc:ae3fb94b9986390017590c435ac2fa66f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sum of the number of individuals that get infected during the simulation by the infectious individuals whose last transmission event does not occur after tmax. <br /></td></tr>
@@ -130,10 +138,10 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a8e83d6a8048fe685966daa2fc88b9786">nimax</a></td></tr>
 <tr class="memdesc:a8e83d6a8048fe685966daa2fc88b9786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of infectious individuals for a given integer inerval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded. <br /></td></tr>
 <tr class="separator:a8e83d6a8048fe685966daa2fc88b9786"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afebfc56bb1adf1c61f39f78a5e4e4b6f"><td class="memItemLeft" align="right" valign="top"><a id="afebfc56bb1adf1c61f39f78a5e4e4b6f"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#afebfc56bb1adf1c61f39f78a5e4e4b6f">nimaxedoutmintimeindex</a></td></tr>
-<tr class="memdesc:afebfc56bb1adf1c61f39f78a5e4e4b6f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum time index which maxed out the allowed number of infected individuals. <br /></td></tr>
-<tr class="separator:afebfc56bb1adf1c61f39f78a5e4e4b6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a148cb88ee7eccbe47d87999df43ee134"><td class="memItemLeft" align="right" valign="top"><a id="a148cb88ee7eccbe47d87999df43ee134"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a148cb88ee7eccbe47d87999df43ee134">nimaxedoutmintimeindex</a></td></tr>
+<tr class="memdesc:a148cb88ee7eccbe47d87999df43ee134"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum time index which maxed out the allowed number of infected individuals. <br /></td></tr>
+<tr class="separator:a148cb88ee7eccbe47d87999df43ee134"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac229de531e51ab996d8d9943836a81df"><td class="memItemLeft" align="right" valign="top"><a id="ac229de531e51ab996d8d9943836a81df"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#ac229de531e51ab996d8d9943836a81df">extinction</a></td></tr>
 <tr class="memdesc:ac229de531e51ab996d8d9943836a81df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set to true if extinction does not occur before or at tmax. <br /></td></tr>
@@ -142,7 +150,7 @@ bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="stru
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Simulation-level standard summary statistics data struct. </p>
 
-<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00027">27</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8h_source.html#l00029">29</a> of file <a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="standard__summary__stats_8h_source.html">standard_summary_stats.h</a></li>
 </ul>

@@ -29,5 +29,6 @@ var structmodel__pars =
     [ "R0", "structmodel__pars.html#a6cc9bd7884927a2b8f64ecbcb2f06927", null ],
     [ "t95", "structmodel__pars.html#a855468f6d0c56265ff697a6f36e549ce", null ],
     [ "tbar", "structmodel__pars.html#afe4a302aaf23965b4e5aeeeacad48b1d", null ],
-    [ "tmax", "structmodel__pars.html#aac4af9226e4d189e42d148ce178f4033", null ]
+    [ "tmax", "structmodel__pars.html#aac4af9226e4d189e42d148ce178f4033", null ],
+    [ "trelpriend", "structmodel__pars.html#a4868af68ac9baf7ca9b5b16fad7d92b1", null ]
 ];

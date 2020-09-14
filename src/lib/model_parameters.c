@@ -271,17 +271,14 @@ int model_solve_p_from_mu(model_pars* pars)
   if(pars->mu==1) pars->p=0;
 
   else {
-    if(pars->mu > 1) {
-      root_finder* rf=root_finder_init(logroot, &pars->mu);
-      pars->p=0.999;
+    root_finder* rf=root_finder_init(logroot, &pars->mu);
+    pars->p=0.999;
 
-      int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
+    int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
 
-      root_finder_free(rf);
+    root_finder_free(rf);
 
-      if(ret) return ret;
-
-    } else pars->p=0;
+    if(ret) return ret;
   }
 
   return 0;

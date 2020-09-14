@@ -9,9 +9,10 @@
 void std_stats_init(sim_vars* sv, uint64_t** ngeninfs, uint32_t* ninfbins)
 {
   std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
-  stats->npers=(int)sv->pars.tmax+1;
-  stats->inf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
-  stats->totinf_timeline=(uint32_t*)malloc(stats->npers*sizeof(uint32_t));
+  stats->timelineshift=0;
+  stats->tnpersa=stats->npers=(int)sv->pars.tmax+1;
+  stats->inf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  stats->totinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
 
   if(ngeninfs && ninfbins) {
     *ngeninfs=(uint64_t*)malloc(INIT_NINF_ALLOC*sizeof(uint64_t));

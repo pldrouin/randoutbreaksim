@@ -20,6 +20,7 @@ var structthread__data =
     [ "set", "structthread__data.html#affca43a275804779e7ddacf6203687a1", null ],
     [ "te_mean", "structthread__data.html#a52ff855b6828d3254ec72c75a3046be3", null ],
     [ "te_std", "structthread__data.html#ac796c466bbeb18757234e7478cfa6f05", null ],
+    [ "tnpersa", "structthread__data.html#a59a7be74fadf80b342fc61ef32926644", null ],
     [ "totinf_timeline_mean_ext", "structthread__data.html#a44f9477fe2eda3698959dbcc228edf6b", null ],
     [ "totinf_timeline_mean_noext", "structthread__data.html#adf1f300077843a8f192e7409d2287199", null ],
     [ "totinf_timeline_std_ext", "structthread__data.html#a16c89164f7bc4967a162646146089f95", null ],

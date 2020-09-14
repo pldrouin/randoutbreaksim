@@ -6,9 +6,11 @@ var structstd__summary__stats =
     [ "inf_timeline", "structstd__summary__stats.html#a40874a46f008c64e6ad71312da1c3e04", null ],
     [ "ngeninfs", "structstd__summary__stats.html#a802968696c511394d02b2dc6ad348edd", null ],
     [ "nimax", "structstd__summary__stats.html#a8e83d6a8048fe685966daa2fc88b9786", null ],
-    [ "nimaxedoutmintimeindex", "structstd__summary__stats.html#afebfc56bb1adf1c61f39f78a5e4e4b6f", null ],
+    [ "nimaxedoutmintimeindex", "structstd__summary__stats.html#a148cb88ee7eccbe47d87999df43ee134", null ],
     [ "ninfbins", "structstd__summary__stats.html#af551913c9d644a175e58a5a8c30164a7", null ],
     [ "npers", "structstd__summary__stats.html#af9a151e1652f1cbcdd66f9db6780e324", null ],
     [ "rsum", "structstd__summary__stats.html#ae3fb94b9986390017590c435ac2fa66f", null ],
+    [ "timelineshift", "structstd__summary__stats.html#ae03b9ae51cf23b57eb72348796abe3b6", null ],
+    [ "tnpersa", "structstd__summary__stats.html#a8c36935604a78b458da7ab1404453c71", null ],
     [ "totinf_timeline", "structstd__summary__stats.html#a040ab82e792ffcd94c3fda6c22cf6960", null ]
 ];

@@ -108,22 +108,22 @@ Include dependency graph for simulation.h:</div>
 <div class="dyncontent">
 <div class="center"><img src="simulation_8h__incl.png" border="0" usemap="#simulation_8h" alt=""/></div>
 <map name="simulation_8h" id="simulation_8h">
-<area shape="rect" title="Common simulation data structures and functions." alt="" coords="417,5,509,32"/>
-<area shape="rect" title=" " alt="" coords="517,229,582,256"/>
-<area shape="rect" title=" " alt="" coords="630,229,693,256"/>
-<area shape="rect" title=" " alt="" coords="224,229,285,256"/>
-<area shape="rect" title=" " alt="" coords="349,80,445,107"/>
-<area shape="rect" title=" " alt="" coords="469,80,587,107"/>
-<area shape="rect" href="infindividual_8h.html" title="Data structure containing infected individual information." alt="" coords="67,155,168,181"/>
-<area shape="rect" href="model__parameters_8h.html" title="Model parameter functions." alt="" coords="185,80,325,107"/>
-<area shape="rect" href="ran__log_8h.html" title="Common simulation data structures and functions." alt="" coords="712,155,787,181"/>
-<area shape="rect" title=" " alt="" coords="388,229,452,256"/>
-<area shape="rect" title=" " alt="" coords="105,229,170,256"/>
-<area shape="rect" title=" " alt="" coords="5,229,80,256"/>
-<area shape="rect" title=" " alt="" coords="192,155,331,181"/>
-<area shape="rect" title=" " alt="" coords="355,155,469,181"/>
-<area shape="rect" href="root__finder_8h.html" title="Finds the root of a function depending on a single parameter." alt="" coords="493,155,587,181"/>
-<area shape="rect" title=" " alt="" coords="717,229,808,256"/>
+<area shape="rect" title="Common simulation data structures and functions." alt="" coords="391,5,483,32"/>
+<area shape="rect" title=" " alt="" coords="121,229,186,256"/>
+<area shape="rect" title=" " alt="" coords="210,229,273,256"/>
+<area shape="rect" title=" " alt="" coords="691,229,752,256"/>
+<area shape="rect" title=" " alt="" coords="952,80,1048,107"/>
+<area shape="rect" title=" " alt="" coords="1072,80,1189,107"/>
+<area shape="rect" href="infindividual_8h.html" title="Data structure containing infected individual information." alt="" coords="296,80,397,107"/>
+<area shape="rect" href="model__parameters_8h.html" title="Model parameter functions." alt="" coords="459,80,599,107"/>
+<area shape="rect" href="ran__log_8h.html" title="Common simulation data structures and functions." alt="" coords="43,155,117,181"/>
+<area shape="rect" title=" " alt="" coords="343,229,407,256"/>
+<area shape="rect" title=" " alt="" coords="243,155,309,181"/>
+<area shape="rect" title=" " alt="" coords="384,155,459,181"/>
+<area shape="rect" title=" " alt="" coords="739,155,877,181"/>
+<area shape="rect" title=" " alt="" coords="601,155,714,181"/>
+<area shape="rect" href="root__finder_8h.html" title="Finds the root of a function depending on a single parameter." alt="" coords="483,155,576,181"/>
+<area shape="rect" title=" " alt="" coords="5,229,96,256"/>
 </map>
 </div>
 </div><div class="textblock"><div class="dynheader">
@@ -192,9 +192,12 @@ Functions</h2></td></tr>
 <tr class="memitem:af5bcf389e2f823c77eaeb9c114ba8217"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#af5bcf389e2f823c77eaeb9c114ba8217">sim_set_new_event_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, bool(*new_event_proc_func)(<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv))</td></tr>
 <tr class="memdesc:af5bcf389e2f823c77eaeb9c114ba8217"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user-defined processing function that is called when a new transmission event is created.  <a href="simulation_8h.html#af5bcf389e2f823c77eaeb9c114ba8217">More...</a><br /></td></tr>
 <tr class="separator:af5bcf389e2f823c77eaeb9c114ba8217"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9e0b56e8119109b841681b7489e9eb4f"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a9e0b56e8119109b841681b7489e9eb4f">sim_set_new_inf_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, void(*new_inf_proc_func)(<a class="el" href="structinfindividual.html">infindividual</a> *newinf))</td></tr>
-<tr class="memdesc:a9e0b56e8119109b841681b7489e9eb4f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user-defined processing function that is called when a new infected individual is created.  <a href="simulation_8h.html#a9e0b56e8119109b841681b7489e9eb4f">More...</a><br /></td></tr>
-<tr class="separator:a9e0b56e8119109b841681b7489e9eb4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3eac47c612767d7a8c2a70bb804a6f59"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a3eac47c612767d7a8c2a70bb804a6f59">sim_set_new_pri_inf_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, void(*new_pri_inf_proc_func)(<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structinfindividual.html">infindividual</a> *ii))</td></tr>
+<tr class="memdesc:a3eac47c612767d7a8c2a70bb804a6f59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user-defined processing function that is called when a new primary infected individual is created.  <a href="simulation_8h.html#a3eac47c612767d7a8c2a70bb804a6f59">More...</a><br /></td></tr>
+<tr class="separator:a3eac47c612767d7a8c2a70bb804a6f59"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abcab95ac895e3fbe5d7852aa826edbc6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#abcab95ac895e3fbe5d7852aa826edbc6">sim_set_new_inf_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, void(*new_inf_proc_func)(<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structinfindividual.html">infindividual</a> *ii))</td></tr>
+<tr class="memdesc:abcab95ac895e3fbe5d7852aa826edbc6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user-defined processing function that is called when a new infected individual is created.  <a href="simulation_8h.html#abcab95ac895e3fbe5d7852aa826edbc6">More...</a><br /></td></tr>
+<tr class="separator:abcab95ac895e3fbe5d7852aa826edbc6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4497a54b084e370fc513b737b510a55"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#af4497a54b084e370fc513b737b510a55">sim_set_ii_alloc_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, void(*ii_alloc_proc_func)(<a class="el" href="structinfindividual.html">infindividual</a> *ii))</td></tr>
 <tr class="memdesc:af4497a54b084e370fc513b737b510a55"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user-defined processing function that is called when memory for a new infectious individual is allocated.  <a href="simulation_8h.html#af4497a54b084e370fc513b737b510a55">More...</a><br /></td></tr>
 <tr class="separator:af4497a54b084e370fc513b737b510a55"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -210,12 +213,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a31a47c5b9d1bede3c816e3ed9088e16b"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a31a47c5b9d1bede3c816e3ed9088e16b">default_ii_alloc_proc_func</a> (<a class="el" href="structinfindividual.html">infindividual</a> *ii)</td></tr>
 <tr class="memdesc:a31a47c5b9d1bede3c816e3ed9088e16b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function that is called memory for a new infectious individual is allocated.  <a href="simulation_8h.html#a31a47c5b9d1bede3c816e3ed9088e16b">More...</a><br /></td></tr>
 <tr class="separator:a31a47c5b9d1bede3c816e3ed9088e16b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4ecfceeb3812509d92a677d9c65d6d9a"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a4ecfceeb3812509d92a677d9c65d6d9a">dummy_proc_func_sv</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
-<tr class="memdesc:a4ecfceeb3812509d92a677d9c65d6d9a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function.  <a href="simulation_8h.html#a4ecfceeb3812509d92a677d9c65d6d9a">More...</a><br /></td></tr>
-<tr class="separator:a4ecfceeb3812509d92a677d9c65d6d9a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a909090a23b94d15cfc7fe877c85466b1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1">dummy_proc_func_one_par</a> (<a class="el" href="structinfindividual.html">infindividual</a> *inf)</td></tr>
-<tr class="memdesc:a909090a23b94d15cfc7fe877c85466b1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function.  <a href="simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1">More...</a><br /></td></tr>
-<tr class="separator:a909090a23b94d15cfc7fe877c85466b1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae5c7941df429e549c5492d906191b1ff"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#ae5c7941df429e549c5492d906191b1ff">dummy_proc_func_sv_ii</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structinfindividual.html">infindividual</a> *ii)</td></tr>
+<tr class="memdesc:ae5c7941df429e549c5492d906191b1ff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function.  <a href="simulation_8h.html#ae5c7941df429e549c5492d906191b1ff">More...</a><br /></td></tr>
+<tr class="separator:ae5c7941df429e549c5492d906191b1ff"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a84beb2084ff7239d40c304cee0506411"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a84beb2084ff7239d40c304cee0506411">dummy_proc_func_two_pars</a> (<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *ptr)</td></tr>
 <tr class="memdesc:a84beb2084ff7239d40c304cee0506411"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function.  <a href="simulation_8h.html#a84beb2084ff7239d40c304cee0506411">More...</a><br /></td></tr>
 <tr class="separator:a84beb2084ff7239d40c304cee0506411"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -269,11 +269,10 @@ Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _periods(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv) \</div>
+<b>Value:</b><div class="fragment"><div class="line"><span class="keyword">static</span> <span class="keyword">inline</span> <span class="keywordtype">void</span> gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _periods(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv, <a class="code" href="structinfindividual.html">infindividual</a>* ii) \</div>
 <div class="line">{ \</div>
 <div class="line">  GEN_PER_LATENT_ ## LATENT \</div>
 <div class="line">  GEN_PER_MAIN_ALTERNATE_ ## MAIN ## _ ## ALTERNATE(IT,IM) \</div>
-<div class="line">  sv-&gt;curii-&gt;commpertype|=ro_commper_tmax*((sv-&gt;curii-1)-&gt;event_time + sv-&gt;curii-&gt;comm_period &gt; sv-&gt;pars.tmax); \</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 <p>Generates one function that generates a specific combination of communicable and latent periods. </p>
@@ -289,7 +288,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00202">202</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00215">215</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -317,7 +316,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00225">225</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00237">237</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -336,7 +335,7 @@ Functions</h2></td></tr>
 <p>Generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods. </p>
 <p>This preprocessing macro generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods to the gen_time_periods_func pointer of the simulation, given the configuration of the model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00253">253</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00265">265</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -391,7 +390,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the event does not occur after tmax, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00264">264</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00276">276</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -427,12 +426,12 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00272">272</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00284">284</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
-<a id="a909090a23b94d15cfc7fe877c85466b1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a909090a23b94d15cfc7fe877c85466b1">&#9670;&nbsp;</a></span>dummy_proc_func_one_par()</h2>
+<a id="ae5c7941df429e549c5492d906191b1ff"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae5c7941df429e549c5492d906191b1ff">&#9670;&nbsp;</a></span>dummy_proc_func_sv_ii()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -441,42 +440,21 @@ Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">static void dummy_proc_func_one_par </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td>
-          <td class="paramname"><em>inf</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Default processing function. </p>
-<p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
-
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00288">288</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
-
-</div>
-</div>
-<a id="a4ecfceeb3812509d92a677d9c65d6d9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4ecfceeb3812509d92a677d9c65d6d9a">&#9670;&nbsp;</a></span>dummy_proc_func_sv()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">static void dummy_proc_func_sv </td>
+          <td class="memname">static void dummy_proc_func_sv_ii </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
-          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td class="paramname"><em>sv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="structinfindividual.html">infindividual</a> *&#160;</td>
+          <td class="paramname"><em>ii</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -489,7 +467,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00280">280</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00292">292</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -530,7 +508,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00296">296</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00300">300</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -577,7 +555,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00043">43</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00044">44</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -653,7 +631,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00133">133</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00146">146</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -700,7 +678,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00123">123</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00136">136</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -748,7 +726,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00145">145</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00158">158</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -797,12 +775,12 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if new infectious individuals are to be instantiated from this event, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00101">101</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00102">102</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
-<a id="a9e0b56e8119109b841681b7489e9eb4f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9e0b56e8119109b841681b7489e9eb4f">&#9670;&nbsp;</a></span>sim_set_new_inf_proc_func()</h2>
+<a id="abcab95ac895e3fbe5d7852aa826edbc6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abcab95ac895e3fbe5d7852aa826edbc6">&#9670;&nbsp;</a></span>sim_set_new_inf_proc_func()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -819,7 +797,7 @@ Functions</h2></td></tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">void(*)(<a class="el" href="structinfindividual.html">infindividual</a> *newinf)&#160;</td>
+          <td class="paramtype">void(*)(<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structinfindividual.html">infindividual</a> *ii)&#160;</td>
           <td class="paramname"><em>new_inf_proc_func</em>&#160;</td>
         </tr>
         <tr>
@@ -845,7 +823,55 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00113">113</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00126">126</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+
+</div>
+</div>
+<a id="a3eac47c612767d7a8c2a70bb804a6f59"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3eac47c612767d7a8c2a70bb804a6f59">&#9670;&nbsp;</a></span>sim_set_new_pri_inf_proc_func()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void sim_set_new_pri_inf_proc_func </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void(*)(<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structinfindividual.html">infindividual</a> *ii)&#160;</td>
+          <td class="paramname"><em>new_pri_inf_proc_func</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Sets the user-defined processing function that is called when a new primary infected individual is created. </p>
+<p>This function is called after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+    <tr><td class="paramname">new_pri_inf_proc_func</td><td>Pointer to the user-defined function. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00114">114</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -893,13 +919,14 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00087">87</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00088">88</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="astructsim__vars___html"><div class="ttname"><a href="structsim__vars__.html">sim_vars_</a></div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00036">simulation.h:36</a></div></div>
+<div class="ttc" id="astructinfindividual_html"><div class="ttname"><a href="structinfindividual.html">infindividual</a></div><div class="ttdef"><b>Definition:</b> <a href="infindividual_8h_source.html#l00025">infindividual.h:25</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

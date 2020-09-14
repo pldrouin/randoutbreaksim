@@ -10,8 +10,7 @@ var simulation_8h =
     [ "sim_vars", "simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf", null ],
     [ "default_event_proc_func", "simulation_8h.html#a881fb314fa7f96332cfe3f324287400f", null ],
     [ "default_ii_alloc_proc_func", "simulation_8h.html#a31a47c5b9d1bede3c816e3ed9088e16b", null ],
-    [ "dummy_proc_func_one_par", "simulation_8h.html#a909090a23b94d15cfc7fe877c85466b1", null ],
-    [ "dummy_proc_func_sv", "simulation_8h.html#a4ecfceeb3812509d92a677d9c65d6d9a", null ],
+    [ "dummy_proc_func_sv_ii", "simulation_8h.html#ae5c7941df429e549c5492d906191b1ff", null ],
     [ "dummy_proc_func_two_pars", "simulation_8h.html#a84beb2084ff7239d40c304cee0506411", null ],
     [ "sim_init", "simulation_8h.html#a2ca281c80f36f8dfbbadec8518ba873e", null ],
     [ "sim_pars_init", "simulation_8h.html#a7d7687ebb34e4df53eff1ed32e7f7597", null ],
@@ -19,6 +18,7 @@ var simulation_8h =
     [ "sim_set_ii_alloc_proc_func", "simulation_8h.html#af4497a54b084e370fc513b737b510a55", null ],
     [ "sim_set_inf_proc_noevent_func", "simulation_8h.html#a0f2a0463da67aac089d7e7cf9e23bb77", null ],
     [ "sim_set_new_event_proc_func", "simulation_8h.html#af5bcf389e2f823c77eaeb9c114ba8217", null ],
-    [ "sim_set_new_inf_proc_func", "simulation_8h.html#a9e0b56e8119109b841681b7489e9eb4f", null ],
+    [ "sim_set_new_inf_proc_func", "simulation_8h.html#abcab95ac895e3fbe5d7852aa826edbc6", null ],
+    [ "sim_set_new_pri_inf_proc_func", "simulation_8h.html#a3eac47c612767d7a8c2a70bb804a6f59", null ],
     [ "sim_set_proc_data", "simulation_8h.html#ae122699e5ed7266492671f08ad74f0f1", null ]
 ];
