@@ -116,17 +116,22 @@ inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_time
  * the simulation engine through a call of sim_set_new_event_proc_func.
  *
  * @param sv: Pointer to the simulation variables.
- * @return true if the event time does not exceed tmax and false otherwise.
+ * @return true if the event time does not exceed tmax and new infections were
+ * generated, and false otherwise.
  * */
 inline static bool std_stats_new_event(sim_vars* sv)
 {
-  ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
   ((uint32_t*)sv->curii->dataptr)[1]+=sv->curii->nattendees;
-  DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
-  DEBUG_PRINTF("Number of attendees incremented to %u\n",((uint32_t*)sv->curii->dataptr)[1]);
 
-  if((int)sv->curii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
-  return (sv->curii->event_time <= sv->pars.tmax);
+  if(sv->curii->ninfections) {
+    ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
+    DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
+    DEBUG_PRINTF("Number of attendees incremented to %u\n",((uint32_t*)sv->curii->dataptr)[1]);
+
+    if((int)sv->curii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
+    return (sv->curii->event_time <= sv->pars.tmax);
+  }
+  return false;
 }
 
 /**
@@ -141,31 +146,35 @@ inline static bool std_stats_new_event(sim_vars* sv)
  * the simulation engine through a call of sim_set_new_event_proc_func.
  *
  * @param sv: Pointer to the simulation variables.
- * @return true if the event time does not exceed tmax and false otherwise.
+ * @return true if the event time does not exceed tmax and new infections were
+ * generated, and false otherwise.
  * */
 inline static bool std_stats_new_event_nimax(sim_vars* sv)
 {
-  ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
   ((uint32_t*)sv->curii->dataptr)[1]+=sv->curii->nattendees;
-  DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
-  DEBUG_PRINTF("Number of attendees incremented to %u\n",((uint32_t*)sv->curii->dataptr)[1]);
 
-  if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
-    const int eti=floor(sv->curii->event_time);
+  if(sv->curii->ninfections) {
+    ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
+    DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
+    DEBUG_PRINTF("Number of attendees incremented to %u\n",((uint32_t*)sv->curii->dataptr)[1]);
 
-    if(((std_summary_stats*)sv->dataptr)->totinf_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax)
-      ((std_summary_stats*)sv->dataptr)->totinf_timeline[eti]+=sv->curii->ninfections;
+    if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
+      const int eti=floor(sv->curii->event_time);
 
-    else {
-      ((std_summary_stats*)sv->dataptr)->extinction=false;
+      if(((std_summary_stats*)sv->dataptr)->totinf_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax)
+	((std_summary_stats*)sv->dataptr)->totinf_timeline[eti]+=sv->curii->ninfections;
 
-      if(eti < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=eti;
-      DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->totinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
-      return false;
+      else {
+	((std_summary_stats*)sv->dataptr)->extinction=false;
+
+	if(eti < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=eti;
+	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->totinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
+	return false;
+      }
     }
+    return (sv->curii->event_time <= sv->pars.tmax);
   }
-
-  return (sv->curii->event_time <= sv->pars.tmax);
+  return false;
 }
 
 /**
@@ -274,7 +283,9 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
 
   for(i=floor((inf-1)->event_time+inf->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 
-  if(inf->commpertype&ro_commper_main) ((std_summary_stats*)ptr)->totmainatt_timeline[end_comm_per]+=((uint32_t*)inf->dataptr)[1];
+  if(inf->commpertype&ro_commper_main) {
+    ((std_summary_stats*)ptr)->totmainatt_timeline[end_comm_per]+=((uint32_t*)inf->dataptr)[1];
+  }
 }
 
 /**

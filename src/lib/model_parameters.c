@@ -144,7 +144,7 @@ int model_solve_R0_group(model_pars* pars)
   double l1mp;
   int ret;
 
-  if(!isnan(pars->pinf) && (!(pars->pinf>0) || !(pars->pinf<=1))) {
+  if(!isnan(pars->pinf) && (!(pars->pinf>=0) || !(pars->pinf<=1))) {
     fprintf(stderr,"%s: Error: The pinf parameter must have a value in the interval (0,1]\n",__func__);
     return -2;
   }
