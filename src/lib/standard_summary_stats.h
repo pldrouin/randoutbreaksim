@@ -32,7 +32,7 @@ typedef struct
   double commpersum;		//!< Sum of communicable periods for all infectious individuals whose communicable period does not occur after tmax.
   uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infectious at some point in this interval (lower bound included, upper bound excluded).
   uint32_t* totinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
-  uint32_t* totmainatt_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are attendees at some point in this interval by an individual whose communicable period is the main perdio (lower bound included, upper bound excluded). For the last interval, it includes the attendees that occur between floor(tmax) and tmax.
+  uint32_t* totmainatt_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are attendees at some point in this interval by an individual whose communicable period is the main period (lower bound included, upper bound excluded). For the last interval, it includes the attendees that occur between floor(tmax) and tmax.
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
   uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
   uint32_t npers;		//!< Number of positive integer intervals
@@ -199,7 +199,7 @@ inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii)
  * */
 inline static void std_stats_new_pri_inf(sim_vars* sv, infindividual* ii)
 {
-  const uint32_t newshift=ceil(ii->comm_period);
+  const uint32_t newshift=ceil(ii->latent_period+ii->comm_period);
 
   if(sv->pars.trelpriend && newshift>((std_summary_stats*)sv->dataptr)->timelineshift) {
     std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
@@ -258,7 +258,7 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
   ((std_summary_stats*)ptr)->neventssum+=inf->nevents;
 #endif
 
-  const double inf_end=(inf-1)->event_time+inf->comm_period;
+  const double inf_end=(inf-1)->event_time+inf->latent_period+inf->comm_period;
 
   //If truncated by tmax
   if(inf->commpertype&ro_commper_tmax) ((std_summary_stats*)ptr)->extinction=false;
@@ -272,7 +272,7 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
   int i;
   const int end_comm_per=(inf_end >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(inf_end));
 
-  for(i=floor((inf-1)->event_time); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=floor((inf-1)->event_time+inf->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 
   if(inf->commpertype&ro_commper_main) ((std_summary_stats*)ptr)->totmainatt_timeline[end_comm_per]+=((uint32_t*)inf->dataptr)[1];
 }
@@ -323,7 +323,7 @@ inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
   DEBUG_PRINTF("Number of infections was 0\n");
   ((std_summary_stats*)ptr)->commpersum+=inf->comm_period;
 
-  const double inf_end=(inf-1)->event_time+inf->comm_period;
+  const double inf_end=(inf-1)->event_time+inf->latent_period+inf->comm_period;
 
   //If truncated by tmax
   if(inf->commpertype&ro_commper_tmax) ((std_summary_stats*)ptr)->extinction=false;
@@ -337,7 +337,7 @@ inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
   int i;
   const int end_comm_per=(inf_end >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(inf_end));
 
-  for(i=floor((inf-1)->event_time); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=floor((inf-1)->event_time+inf->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
 /**

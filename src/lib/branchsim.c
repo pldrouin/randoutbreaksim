@@ -34,8 +34,8 @@ int branchsim(sim_vars* sv)
     //Generate the communicable period appropriately
     sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1);
     DEBUG_PRINTF("Comm period is %f%s\n",sv->brsim.iis[1].comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
-    sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=(sv->pars.trelpriend?-sv->brsim.iis[1].comm_period:0);
-    sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[0].event_time + sv->brsim.iis[1].comm_period > sv->pars.tmax);
+    sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=(sv->pars.trelpriend?-sv->brsim.iis[1].latent_period-sv->brsim.iis[1].comm_period:0);
+    sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[0].event_time + sv->brsim.iis[1].latent_period + sv->brsim.iis[1].comm_period > sv->pars.tmax);
 
     sv->new_pri_inf_proc_func(sv, sv->brsim.iis+1);
 
@@ -103,7 +103,7 @@ int branchsim(sim_vars* sv)
       sv->curii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->curii->comm_period);
       DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->curii->comm_period, sv->curii->nevents);
 
-      sv->curii->commpertype|=ro_commper_tmax*((sv->curii-1)->event_time + sv->curii->comm_period > sv->pars.tmax);
+      sv->curii->commpertype|=ro_commper_tmax*((sv->curii-1)->event_time + sv->curii->latent_period + sv->curii->comm_period > sv->pars.tmax);
 
       //If the number of events is non-zero
       if(sv->curii->nevents) {
