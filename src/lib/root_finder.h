@@ -8,6 +8,7 @@
 #define _ROOT_FINDER_
 
 #include <stdint.h>
+#include <stdbool.h>
 #include <math.h>
 #include <stdlib.h>
 #include <stdio.h>

@@ -1,8 +1,9 @@
 <map id="root_finder.c" name="root_finder.c">
-<area shape="rect" id="node1" title="Finds the root of a function depending on a single parameter." alt="" coords="123,5,217,32"/>
-<area shape="rect" id="node2" href="$root__finder_8h.html" title="Finds the root of a function depending on a single parameter." alt="" coords="123,80,217,107"/>
+<area shape="rect" id="node1" title="Finds the root of a function depending on a single parameter." alt="" coords="179,5,273,32"/>
+<area shape="rect" id="node2" href="$root__finder_8h.html" title="Finds the root of a function depending on a single parameter." alt="" coords="179,80,273,107"/>
 <area shape="rect" id="node3" title=" " alt="" coords="5,155,71,181"/>
-<area shape="rect" id="node4" title=" " alt="" coords="95,155,157,181"/>
-<area shape="rect" id="node5" title=" " alt="" coords="182,155,246,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="270,155,331,181"/>
+<area shape="rect" id="node4" title=" " alt="" coords="95,155,170,181"/>
+<area shape="rect" id="node5" title=" " alt="" coords="195,155,257,181"/>
+<area shape="rect" id="node6" title=" " alt="" coords="282,155,346,181"/>
+<area shape="rect" id="node7" title=" " alt="" coords="370,155,431,181"/>
 </map>

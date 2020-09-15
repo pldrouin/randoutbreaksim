@@ -278,7 +278,15 @@ int model_solve_p_from_mu(model_pars* pars)
 
     root_finder_free(rf);
 
-    if(ret) return ret;
+    if(ret) {
+
+      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+
+      else {
+	fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	return ret;
+      }
+    }
   }
 
   return 0;
@@ -296,7 +304,15 @@ int model_solve_p_from_mean(const double mean, model_pars* pars)
 
     root_finder_free(rf);
 
-    if(ret) return ret;
+    if(ret) {
+
+      if(ret==-1) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+
+      else {
+	fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	return ret;
+      }
+    }
   }
 
   return 0;
@@ -325,7 +341,15 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
 
       root_finder_free(rf);
 
-      if(ret) return ret;
+      if(ret) {
+
+	if(ret==-1) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+
+	else {
+	  fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	  return ret;
+	}
+      }
 
     } else *x95 = *ave;
 
@@ -346,7 +370,15 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
 
       root_finder_free(rf);
 
-      if(ret) return ret;
+      if(ret) {
+
+	if(ret==-1) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+
+	else {
+	  fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	  return ret;
+	}
+      }
 
     } else *kappa = INFINITY;
   }
