@@ -182,13 +182,13 @@ int main(const int nargs, const char* args[])
   printf("Extinction time, if it occurs is %f +/- %f%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
 
   int shift=tdata[tmaxnpersa].tnpersa-npers;
-  printf("Current infection timeline, for paths with extinction vs no extinction vs overall is:\n");
+  printf("\nCurrent infection timeline, for paths with extinction vs no extinction vs overall is:\n");
   for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].inf_timeline_mean_ext[j],tdata[tmaxnpersa].inf_timeline_std_ext[j],tdata[tmaxnpersa].inf_timeline_mean_noext[j],tdata[tmaxnpersa].inf_timeline_std_noext[j],inf_timeline_mean[j],inf_timeline_std[j],(j<tdata[0].nimaxedoutmintimeindex?"":" (nimax reached, biased)"));
 
-  printf("Total infections timeline, for paths with extinction vs no extinction vs overall is:\n");
+  printf("\nTotal infections timeline, for paths with extinction vs no extinction vs overall is:\n");
   for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].totinf_timeline_mean_ext[j],tdata[tmaxnpersa].totinf_timeline_std_ext[j],tdata[tmaxnpersa].totinf_timeline_mean_noext[j],tdata[tmaxnpersa].totinf_timeline_std_noext[j],totinf_timeline_mean[j],totinf_timeline_std[j],(j<tdata[0].nimaxedoutmintimeindex?"":" (nimax reached, biased)"));
 
-  printf("Total number of direct attendees timeline from infectious individuals whose communicable period is the main period, for paths with extinction vs no extinction vs overall is:\n");
+  printf("\nTotal number of direct attendees timeline from individuals whose ended infectious communicable period was the main period, for paths with extinction vs no extinction vs overall is:\n");
   for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].totmainatt_timeline_mean_ext[j],tdata[tmaxnpersa].totmainatt_timeline_std_ext[j],tdata[tmaxnpersa].totmainatt_timeline_mean_noext[j],tdata[tmaxnpersa].totmainatt_timeline_std_noext[j],totmainatt_timeline_mean[j],totmainatt_timeline_std[j],(j<tdata[0].nimaxedoutmintimeindex?"":" (nimax reached, biased)"));
 
   if(ninfhist) {
