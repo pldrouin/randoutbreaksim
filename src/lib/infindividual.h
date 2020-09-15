@@ -17,7 +17,7 @@
 /**
  * Type of communicable period type for a given individual.
  **/
-enum ro_commper_type {ro_commper_main=0, ro_commper_alt=1, ro_commper_int=2, ro_commper_main_int=2, ro_commper_alt_int=3, ro_commper_tmax=4};
+enum ro_commper_type {ro_commper_main=1, ro_commper_alt=2, ro_commper_int=4, ro_commper_main_int=5, ro_commper_alt_int=6, ro_commper_tmax=8};
 
 /**
  * Infected individual

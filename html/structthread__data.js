@@ -24,5 +24,9 @@ var structthread__data =
     [ "totinf_timeline_mean_ext", "structthread__data.html#a44f9477fe2eda3698959dbcc228edf6b", null ],
     [ "totinf_timeline_mean_noext", "structthread__data.html#adf1f300077843a8f192e7409d2287199", null ],
     [ "totinf_timeline_std_ext", "structthread__data.html#a16c89164f7bc4967a162646146089f95", null ],
-    [ "totinf_timeline_std_noext", "structthread__data.html#a4fafe0173a7b6cc08145a6ff011ed122", null ]
+    [ "totinf_timeline_std_noext", "structthread__data.html#a4fafe0173a7b6cc08145a6ff011ed122", null ],
+    [ "totmainatt_timeline_mean_ext", "structthread__data.html#a20900829a3eae2472c71f3dc49c52c52", null ],
+    [ "totmainatt_timeline_mean_noext", "structthread__data.html#a697b8f28b72406d1893263f1962c84db", null ],
+    [ "totmainatt_timeline_std_ext", "structthread__data.html#ab0a34050fffd1d72d87d286787d3f3dc", null ],
+    [ "totmainatt_timeline_std_noext", "structthread__data.html#a5f74468d1e9090583dcd71afdeee43a9", null ]
 ];
