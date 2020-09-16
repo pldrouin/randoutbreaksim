@@ -327,10 +327,11 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
 
   if(isnan(*x95)) {
 
-    if(!(*kappa>=1/ *ave)) {
-      fprintf(stderr,"%s: Error: The kappa parameter of the distribution must have a value greater than or equal to 1/ave.\n",__func__);
+    if(!(*kappa>=0)) {
+      fprintf(stderr,"%s: Error: The kappa parameter of the distribution must have a positive value.\n",__func__);
       return -1;
-    }
+
+    } else if(!(*kappa>1/ *ave)) fprintf(stderr,"%s: Warning: The selected kappa value will generate a monotonically decreasing distribution!.\n",__func__);
 
     if(*kappa != INFINITY) {
       double pars[2]={*ave * *kappa, *kappa};
@@ -362,23 +363,35 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
 
     if(*x95 != *ave) {
       *kappa=1;
-      const double otherkappa=*kappa*0.9;
+      double otherkappa=*kappa*0.9;
       double pars[4]={*ave, *x95, otherkappa, gpercrootfunc(*ave * otherkappa, *x95 * otherkappa)};
       root_finder* rf=root_finder_init(gkapparoot, pars);
 
       int ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 1/ *ave, 1e100, kappa);
 
-      root_finder_free(rf);
 
       if(ret) {
 
 	if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
 
 	else if(ret==-2) {
-	  fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
-	  return ret;
+	  fprintf(stderr,"%s: Warning: Root could not be found with a mode of the gamma distribution above 0. Now searching for a monotonically decreasing solution!\n",__func__);
+	  *kappa=1./ *ave;
+	  otherkappa=*kappa*0.9;
+	  pars[2]=otherkappa;
+	  pars[3]=gpercrootfunc(*ave * otherkappa, *x95 * otherkappa);
+
+          ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 0, 1/ *ave, kappa);
+
+	  if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+	  else if(ret==-2) {
+	    fprintf(stderr,"%s: Error: Root could not be found with a mode of the gamma distribution at 0.!\n",__func__);
+	    root_finder_free(rf);
+	    return ret;
+	  }
 	}
       }
+      root_finder_free(rf);
 
     } else *kappa = INFINITY;
   }
