@@ -85,7 +85,7 @@ int main(const int nargs, const char* args[])
       } else tp=t;
       shift=tdata[tmaxnpersa].tnpersa-tdata[tp].tnpersa;
 
-      for(j=shift; j<tdata[tp].tnpersa; ++j) {
+      for(j=shift; j<tdata[tmaxnpersa].tnpersa; ++j) {
         tdata[tmaxnpersa].inf_timeline_mean_ext[j]+=tdata[tp].inf_timeline_mean_ext[j-shift];
         tdata[tmaxnpersa].inf_timeline_std_ext[j]+=tdata[tp].inf_timeline_std_ext[j-shift];
         tdata[tmaxnpersa].totinf_timeline_mean_ext[j]+=tdata[tp].totinf_timeline_mean_ext[j-shift];
