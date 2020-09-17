@@ -5,6 +5,7 @@ var structthread__data =
     [ "inf_timeline_mean_noext", "structthread__data.html#ad1cb125f668969f15ed5d43b47cdda9d", null ],
     [ "inf_timeline_std_ext", "structthread__data.html#a49a237cede60efe6a209ff81c56f65be", null ],
     [ "inf_timeline_std_noext", "structthread__data.html#aa6129790f0ad9633363afd9da86869cb", null ],
+    [ "lmax", "structthread__data.html#a1390da5826d06d4e5722636fd69bfe80", null ],
     [ "ngeninfs", "structthread__data.html#a1931ab6fdd1cc8df9de999c8351aeddd", null ],
     [ "nimax", "structthread__data.html#ad6c8b754b47c8e6318b1089139f1f89e", null ],
     [ "nimaxedoutmintimeindex", "structthread__data.html#a0dd28a746a09a1549eea13c6f903da93", null ],

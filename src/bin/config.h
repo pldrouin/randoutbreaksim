@@ -27,6 +27,7 @@
  * @param npaths: Number of simulation paths.
  * @param nthreads: Number of threads used to perform the simulation.
  * @param nsetsperthread: Number of path sets used for each thread.
+ * @param lmax: Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
  * @param nimax: Maximum number of infectious individuals for a given time
  * integet interval.
  * @param oout: File descriptor for the standard output.

@@ -148,9 +148,9 @@ This graph shows which files directly or indirectly include this file:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a26bf1dcf78aa7ddf6609d070e6d76814"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#a26bf1dcf78aa7ddf6609d070e6d76814">config</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars, bool *ninfhist, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[])</td></tr>
-<tr class="memdesc:a26bf1dcf78aa7ddf6609d070e6d76814"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures the input parameters for the executable.  <a href="config_8h.html#a26bf1dcf78aa7ddf6609d070e6d76814">More...</a><br /></td></tr>
-<tr class="separator:a26bf1dcf78aa7ddf6609d070e6d76814"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae8fc498bafb840a140e963b83bd015e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ae8fc498bafb840a140e963b83bd015e5">config</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars, bool *ninfhist, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *lmax, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[])</td></tr>
+<tr class="memdesc:ae8fc498bafb840a140e963b83bd015e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures the input parameters for the executable.  <a href="config_8h.html#ae8fc498bafb840a140e963b83bd015e5">More...</a><br /></td></tr>
+<tr class="separator:ae8fc498bafb840a140e963b83bd015e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad58728259679e01f1f114c6a3328fbcd"><td class="memItemLeft" align="right" valign="top"><a id="ad58728259679e01f1f114c6a3328fbcd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a> (const char *name)</td></tr>
 <tr class="memdesc:ad58728259679e01f1f114c6a3328fbcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints usage information for the executable. <br /></td></tr>
@@ -162,8 +162,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
 
 <p class="definition">Definition in file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a26bf1dcf78aa7ddf6609d070e6d76814"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a26bf1dcf78aa7ddf6609d070e6d76814">&#9670;&nbsp;</a></span>config()</h2>
+<a id="ae8fc498bafb840a140e963b83bd015e5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae8fc498bafb840a140e963b83bd015e5">&#9670;&nbsp;</a></span>config()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -197,6 +197,12 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
           <td></td>
           <td class="paramtype">uint32_t *&#160;</td>
           <td class="paramname"><em>nsetsperthread</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">uint32_t *&#160;</td>
+          <td class="paramname"><em>lmax</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -244,6 +250,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
     <tr><td class="paramname">npaths</td><td>Number of simulation paths. </td></tr>
     <tr><td class="paramname">nthreads</td><td>Number of threads used to perform the simulation. </td></tr>
     <tr><td class="paramname">nsetsperthread</td><td>Number of path sets used for each thread. </td></tr>
+    <tr><td class="paramname">lmax</td><td>Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals. </td></tr>
     <tr><td class="paramname">nimax</td><td>Maximum number of infectious individuals for a given time integet interval. </td></tr>
     <tr><td class="paramname">oout</td><td>File descriptor for the standard output. </td></tr>
     <tr><td class="paramname">eout</td><td>File descriptor for the standard error. </td></tr>
