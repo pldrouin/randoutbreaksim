@@ -51,10 +51,10 @@ typedef struct {
   double* totinf_timeline_std_ext;
   double* totinf_timeline_mean_noext;
   double* totinf_timeline_std_noext;
-  double* totmainatt_timeline_mean_ext;
-  double* totmainatt_timeline_std_ext;
-  double* totmainatt_timeline_mean_noext;
-  double* totmainatt_timeline_std_noext;
+  double* totmainctc_timeline_mean_ext;
+  double* totmainctc_timeline_std_ext;
+  double* totmainctc_timeline_mean_noext;
+  double* totmainctc_timeline_std_noext;
   uint64_t* ngeninfs;
   uint32_t ninfbins;
   uint32_t nimaxedoutmintimeindex;

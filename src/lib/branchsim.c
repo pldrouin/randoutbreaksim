@@ -27,6 +27,7 @@ int branchsim(sim_vars* sv)
 
   sv->brsim.iis[0].nevents=1;
   sv->brsim.iis[0].curevent=0;
+  sv->brsim.iis[0].nattendees=1;
   sv->brsim.iis[0].ninfections=1;
 
   for(i=sim->nstart-1; i>=0; --i) {
@@ -42,6 +43,7 @@ int branchsim(sim_vars* sv)
     sv->curii=sv->brsim.iis;
     sv->new_event_proc_func(sv);
     sv->curii=sv->brsim.iis+1;
+    DEBUG_PRINTF("Move to primary layer (%li)\n",sv->curii-sv->brsim.iis);
 
     sv->curii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->curii->comm_period);
     DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->curii->comm_period, sv->curii->nevents);
@@ -61,8 +63,9 @@ int branchsim(sim_vars* sv)
 
       //sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
       sv->gen_att_inf_func(sv);
+      DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 
-      if(!sv->curii->nattendees || !sv->new_event_proc_func(sv)) {
+      if(sv->curii->nattendees<2 || !sv->new_event_proc_func(sv)) {
 	DEBUG_PRINTF("New event returned false\n");
 
 	//If the events have been exhausted, go down another layer
@@ -120,8 +123,9 @@ gen_event:
 	//Move to the next layer
 	//sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
         sv->gen_att_inf_func(sv);
+        DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 
-	if(sv->curii->nattendees && sv->new_event_proc_func(sv)) {
+	if(sv->curii->nattendees>1 && sv->new_event_proc_func(sv)) {
 	  sv->curii->curinfection=0;
 	  DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfection,sv->curii->ninfections);
 	  continue;
