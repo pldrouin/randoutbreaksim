@@ -42,6 +42,7 @@ typedef struct
 #ifdef NUMEVENTSSTATS
   uint32_t neventssum;		//!< Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax.
 #endif
+  uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer inerval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   int32_t nimaxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of infected individuals.
   //uint32_t n_ended_infections;
@@ -129,7 +130,7 @@ inline static bool std_stats_new_event(sim_vars* sv)
     DEBUG_PRINTF("Number of attendees incremented to %u\n",((uint32_t*)sv->curii->dataptr)[1]);
 
     if((int)sv->curii->event_time <= (int)sv->pars.tmax) ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
-    return (sv->curii->event_time <= sv->pars.tmax);
+    return (sv->curii->event_time <= sv->pars.tmax && sv->curii < sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax);
   }
   return false;
 }
@@ -172,7 +173,7 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 	return false;
       }
     }
-    return (sv->curii->event_time <= sv->pars.tmax);
+    return (sv->curii->event_time <= sv->pars.tmax && sv->curii < sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax);
   }
   return false;
 }

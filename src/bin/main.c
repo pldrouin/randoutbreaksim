@@ -17,13 +17,14 @@ int main(const int nargs, const char* args[])
   uint32_t npaths=10000;
   uint32_t nthreads=1;
   uint32_t nsetsperthread=(nthreads>1?100:1);
+  uint32_t lmax=UINT32_MAX;
   uint32_t nimax=UINT32_MAX;
   int oout=STDOUT_FILENO;
   int eout=STDERR_FILENO;
 
   sim_pars_init(&pars);
 
-  if(config(&pars, &ninfhist, &npaths, &nthreads, &nsetsperthread, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
+  if(config(&pars, &ninfhist, &npaths, &nthreads, &nsetsperthread, &lmax, &nimax, &oout, &eout, nargs-1, args+1)) return 1;
 
   if(model_solve_pars(&pars)) return 1;
 
@@ -50,6 +51,7 @@ int main(const int nargs, const char* args[])
       tdata[t].npathsperset=npathsperset;
       tdata[t].nsets=nsets;
       tdata[t].tnpersa=tdata[t].npers=npers;
+      tdata[t].lmax=lmax;
       tdata[t].nimax=nimax;
       tdata[t].pars=&pars;
       tdata[t].set=&set;
@@ -109,6 +111,7 @@ int main(const int nargs, const char* args[])
     tdata[0].npathsperset=npathsperset;
     tdata[0].nsets=nsets;
     tdata[0].tnpersa=tdata[0].npers=npers;
+    tdata[0].lmax=lmax;
     tdata[0].nimax=nimax;
     tdata[0].pars=&pars;
     tdata[0].set=&set;
@@ -314,6 +317,7 @@ void* simthread(void* arg)
 
   else std_stats_init(&sv, NULL, NULL);
   
+  stats.lmax=data->lmax;
   stats.nimax=data->nimax;
   int j;
   uint32_t curset;

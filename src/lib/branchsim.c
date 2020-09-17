@@ -169,7 +169,7 @@ gen_event:
       }
     }
 
-    //Else if no event for the current infected individual
+    //Else if no event for the current primary infected individual
 done_parsing:
     ;
   }

@@ -22,5 +22,6 @@ void std_stats_init(sim_vars* sv, uint64_t** ngeninfs, uint32_t* ninfbins)
     stats->ninfbins=ninfbins;
     memset(*stats->ngeninfs,0,*stats->ninfbins*sizeof(uint64_t));
   }
+  stats->lmax=UINT32_MAX;
   stats->nimax=UINT32_MAX;
 }

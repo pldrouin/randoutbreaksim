@@ -34,7 +34,7 @@
  * @param nargs: Number of arguments from the main function, shifted by 1.
  * @param args: Arguments from the main function, shifted by 1.
  */
-int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[]);
+int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* lmax, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[]);
 
 /**
  * @brief Prints usage information for the executable.

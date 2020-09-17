@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
+int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* lmax, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
 {
   int plength=1;
   FILE **fptra=NULL;
@@ -201,6 +201,10 @@ int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthread
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,nsetsperthread);
 
+      } else if(!argsdiffer(pbuf, "lmax")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,lmax);
+
       } else if(!argsdiffer(pbuf, "nimax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,nimax);
@@ -283,6 +287,7 @@ void printusage(const char* name)
   printf("\t--npaths VALUE\t\t\tNumber of generated simulation paths (default value of 10000)\n");
   printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1)\n");
   printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise)\n");
+  printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX)\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX)\n");
   printf("\t--help\t\t\t\tPrint this usage information and exit\n");
   printf("\nEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\nOptions can be used multiple times and configuration files can be read from configuration files.\n"); 

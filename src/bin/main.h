@@ -31,6 +31,7 @@ typedef struct {
   uint32_t nsets;
   uint32_t npers;
   uint32_t tnpersa;
+  uint32_t lmax;
   uint32_t nimax;
   model_pars const* pars;
   uint32_t volatile* set;
