@@ -56,10 +56,20 @@ typedef struct
   double imbar;		//!< Mean period for the interrupted alternate communicable period
   double kappaim;	//!< kappa parameter for the gamma distribution used to generate the interrupted alternate communicable period
   double t95;	        //!< Parameter for the 95th percentile of the main communicable period (depends on tbar and kappa)
+  double ta;		//!< a parameter for the main communicable period (kappa * tbar)
+  double tb;		//!< b parameter for the main communicable period (1 / kappa)
   double m95;	        //!< Parameter for the 95th percentile of the alternate communicable period (depends on mbar and kappaq)
+  double ma;		//!< a parameter for the alternate communicable period (kappaq * mbar)
+  double mb;		//!< b parameter for the alternate communicable period (1 / kappaq)
   double l95;	        //!< Parameter for the 95th percentile of the latent period (depends on lbar and kappal)
+  double la;		//!< a parameter for the latent period (kappal * lbar)
+  double lb;		//!< b parameter for the latent period (1 / kappal)
   double it95;	        //!< Parameter for the 95th percentile of the interrupted main communicable period (depends on itbar and kappait)
+  double ita;		//!< a parameter for the interrupted main communicable period (kappait * itbar)
+  double itb;		//!< b parameter for the interrupted main communicable period (1 / kappait)
   double im95;	        //!< Parameter for the 95th percentile of the interrupted alternate communicable period (depends on imbar and kappaim)
+  double ima;		//!< a parameter for the interrupted alternate communicable period (kappaim * imbar)
+  double imb;		//!< b parameter for the interrupted alternate communicable period (1 / kappaim)
   double tmax;		//!< Maximum simulation period used to instantiate new infectious individuals
   uint32_t nstart;	//!< Initial number of infectious individuals
   uint32_t popsize;     //!< Population size (finite population simulation)

@@ -163,24 +163,24 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
  */
 #define GEN_PER_LATENT_0 ii->latent_period=0;
 #define GEN_PER_LATENT_1 ii->latent_period=sv->pars.lbar;
-#define GEN_PER_LATENT_2 ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.kappal*sv->pars.lbar, 1./sv->pars.kappal);
+#define GEN_PER_LATENT_2 ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.la, sv->pars.lb);
 
 #define GEN_PER_INTERRUPTED_MAIN_0
 #define GEN_PER_INTERRUPTED_MAIN_1 if(gsl_rng_uniform(sv->r) < sv->pars.pit && sv->pars.itbar < ii->comm_period) {ii->comm_period=sv->pars.itbar; ii->commpertype=ro_commper_main_int;}
-#define GEN_PER_INTERRUPTED_MAIN_2 if(gsl_rng_uniform(sv->r) < sv->pars.pit) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappait*sv->pars.itbar, 1./sv->pars.kappait); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_main_int;}}
+#define GEN_PER_INTERRUPTED_MAIN_2 if(gsl_rng_uniform(sv->r) < sv->pars.pit) {const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_main_int;}}
 
 #define GEN_PER_MAIN_1(IT) {ii->comm_period=sv->pars.tbar; ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
-#define GEN_PER_MAIN_2(IT) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappa*sv->pars.tbar, 1./sv->pars.kappa); ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
+#define GEN_PER_MAIN_2(IT) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ta, sv->pars.tb); ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
 
 #define GEN_PER_INTERRUPTED_ALT_0
 #define GEN_PER_INTERRUPTED_ALT_1 if(gsl_rng_uniform(sv->r) < sv->pars.pim && sv->pars.imbar < ii->comm_period) {ii->comm_period=sv->pars.imbar; ii->commpertype=ro_commper_alt_int;}
-#define GEN_PER_INTERRUPTED_ALT_2 if(gsl_rng_uniform(sv->r) < sv->pars.pim) {const double time=gsl_ran_gamma(sv->r, sv->pars.kappaim*sv->pars.imbar, 1./sv->pars.kappaim); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_alt_int;}}
+#define GEN_PER_INTERRUPTED_ALT_2 if(gsl_rng_uniform(sv->r) < sv->pars.pim) {const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_alt_int;}}
 
 #define GEN_PER_ALTERNATE_ONLY_1(IM) ii->comm_period=sv->pars.mbar; ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
-#define GEN_PER_ALTERNATE_ONLY_2(IM) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
+#define GEN_PER_ALTERNATE_ONLY_2(IM) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
 
 #define GEN_PER_ALTERNATE_1(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=sv->pars.mbar; ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
-#define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.kappaq*sv->pars.mbar, 1./sv->pars.kappaq); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
 
 #define GEN_PER_MAIN_ALTERNATE_0_1(IT,IM) GEN_PER_ALTERNATE_ONLY_1(IM);
 #define GEN_PER_MAIN_ALTERNATE_0_2(IT,IM) GEN_PER_ALTERNATE_ONLY_2(IM);

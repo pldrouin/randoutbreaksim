@@ -34,10 +34,14 @@ int model_solve_pars(model_pars* pars)
     return -4;
 
   }
+  pars->ta=pars->tbar*pars->kappa;
+  pars->tb=1/pars->kappa;
   printf("Parameters for the main time gamma distribution:\n");
   printf("tbar:\t%22.15e\n",pars->tbar);
   printf("kappa:\t%22.15e\n",pars->kappa);
   printf("t95:\t%22.15e\n",pars->t95);
+  printf("ta:\t%22.15e\n",pars->ta);
+  printf("tb:\t%22.15e\n",pars->tb);
 
   if(pars->pit>0) {
 
@@ -51,11 +55,15 @@ int model_solve_pars(model_pars* pars)
       return -6;
 
     } else {
+      pars->ita=pars->itbar*pars->kappait;
+      pars->itb=1/pars->kappait;
       printf("Parameters for the interrupted main time gamma distribution:\n");
       printf("pit:\t%22.15e\n",pars->pit);
       printf("itbar:\t%22.15e\n",pars->itbar);
       printf("kappait:\t%22.15e\n",pars->kappait);
       printf("it95:\t%22.15e\n",pars->it95);
+      printf("ita:\t%22.15e\n",pars->ita);
+      printf("itb:\t%22.15e\n",pars->itb);
     }
   }
 
@@ -71,11 +79,15 @@ int model_solve_pars(model_pars* pars)
       return -8;
 
     } else {
+      pars->ma=pars->mbar*pars->kappaq;
+      pars->mb=1/pars->kappaq;
       printf("Parameters for the alternate time gamma distribution:\n");
       printf("q:\t%22.15e\n",pars->q);
       printf("mbar:\t%22.15e\n",pars->mbar);
       printf("kappaq:\t%22.15e\n",pars->kappaq);
       printf("m95:\t%22.15e\n",pars->m95);
+      printf("ma:\t%22.15e\n",pars->ma);
+      printf("mb:\t%22.15e\n",pars->mb);
     }
 
     if(isnan(pars->pim)) pars->pim=pars->pit;
@@ -86,12 +98,16 @@ int model_solve_pars(model_pars* pars)
 	pars->imbar=pars->itbar;
 	pars->kappaim=pars->kappait;
 	pars->im95=pars->it95;
+        pars->ima=pars->ita;
+        pars->imb=pars->itb;
 
 	printf("Parameters for the interrupted alternate time gamma distribution:\n");
 	printf("pim:\t%22.15e\n",pars->pim);
 	printf("imbar:\t%22.15e\n",pars->imbar);
 	printf("kappaim:\t%22.15e\n",pars->kappaim);
 	printf("im95:\t%22.15e\n",pars->im95);
+        printf("ima:\t%22.15e\n",pars->ima);
+        printf("imb:\t%22.15e\n",pars->imb);
 
       } else {
 
@@ -107,11 +123,15 @@ int model_solve_pars(model_pars* pars)
 	  return -10;
 
 	} else {
+          pars->ima=pars->imbar*pars->kappaim;
+          pars->imb=1/pars->kappaim;
 	  printf("Parameters for the interrupted alternate time gamma distribution:\n");
 	  printf("pim:\t%22.15e\n",pars->pim);
 	  printf("imbar:\t%22.15e\n",pars->imbar);
 	  printf("kappaim:\t%22.15e\n",pars->kappaim);
 	  printf("im95:\t%22.15e\n",pars->im95);
+          printf("ima:\t%22.15e\n",pars->ima);
+          printf("imb:\t%22.15e\n",pars->imb);
 	}
       }
     }
@@ -129,10 +149,14 @@ int model_solve_pars(model_pars* pars)
       return -12;
 
     } else {
+      pars->la=pars->lbar*pars->kappal;
+      pars->lb=1/pars->kappal;
       printf("Parameters for the latent time gamma distribution:\n");
       printf("lbar:\t%22.15e\n",pars->lbar);
       printf("kappal:\t%22.15e\n",pars->kappal);
       printf("l95:\t%22.15e\n",pars->l95);
+      printf("la:\t%22.15e\n",pars->la);
+      printf("lb:\t%22.15e\n",pars->lb);
     }
   }
 
