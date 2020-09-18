@@ -84,6 +84,7 @@ $(document).ready(function(){initNavTree('config_8h.html',''); initResizable(); 
 
 <div class="header">
   <div class="summary">
+<a href="#nested-classes">Data Structures</a> &#124;
 <a href="#func-members">Functions</a>  </div>
   <div class="headertitle">
 <div class="title">config.h File Reference</div>  </div>
@@ -146,11 +147,17 @@ This graph shows which files directly or indirectly include this file:</div>
 </div>
 <p><a href="config_8h_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
+Data Structures</h2></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structconfig__pars.html">config_pars</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct used to store configuration parmeters.  <a href="structconfig__pars.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:ae8fc498bafb840a140e963b83bd015e5"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ae8fc498bafb840a140e963b83bd015e5">config</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars, bool *ninfhist, uint32_t *npaths, uint32_t *nthreads, uint32_t *nsetsperthread, uint32_t *lmax, uint32_t *nimax, int *oout, int *eout, const int nargs, const char *args[])</td></tr>
-<tr class="memdesc:ae8fc498bafb840a140e963b83bd015e5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures the input parameters for the executable.  <a href="config_8h.html#ae8fc498bafb840a140e963b83bd015e5">More...</a><br /></td></tr>
-<tr class="separator:ae8fc498bafb840a140e963b83bd015e5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abac3f29dffc2cdc59f491378751f20eb"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#abac3f29dffc2cdc59f491378751f20eb">config</a> (<a class="el" href="structconfig__pars.html">config_pars</a> *cp, const int nargs, const char *args[])</td></tr>
+<tr class="memdesc:abac3f29dffc2cdc59f491378751f20eb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Configures the input parameters for the executable.  <a href="config_8h.html#abac3f29dffc2cdc59f491378751f20eb">More...</a><br /></td></tr>
+<tr class="separator:abac3f29dffc2cdc59f491378751f20eb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad58728259679e01f1f114c6a3328fbcd"><td class="memItemLeft" align="right" valign="top"><a id="ad58728259679e01f1f114c6a3328fbcd"></a>
 void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="config_8h.html#ad58728259679e01f1f114c6a3328fbcd">printusage</a> (const char *name)</td></tr>
 <tr class="memdesc:ad58728259679e01f1f114c6a3328fbcd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Prints usage information for the executable. <br /></td></tr>
@@ -162,8 +169,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
 
 <p class="definition">Definition in file <a class="el" href="config_8h_source.html">config.h</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="ae8fc498bafb840a140e963b83bd015e5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae8fc498bafb840a140e963b83bd015e5">&#9670;&nbsp;</a></span>config()</h2>
+<a id="abac3f29dffc2cdc59f491378751f20eb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abac3f29dffc2cdc59f491378751f20eb">&#9670;&nbsp;</a></span>config()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -171,56 +178,8 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
         <tr>
           <td class="memname">int config </td>
           <td>(</td>
-          <td class="paramtype"><a class="el" href="structmodel__pars.html">model_pars</a> *&#160;</td>
-          <td class="paramname"><em>pars</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">bool *&#160;</td>
-          <td class="paramname"><em>ninfhist</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t *&#160;</td>
-          <td class="paramname"><em>npaths</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t *&#160;</td>
-          <td class="paramname"><em>nthreads</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t *&#160;</td>
-          <td class="paramname"><em>nsetsperthread</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t *&#160;</td>
-          <td class="paramname"><em>lmax</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">uint32_t *&#160;</td>
-          <td class="paramname"><em>nimax</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>oout</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">int *&#160;</td>
-          <td class="paramname"><em>eout</em>, </td>
+          <td class="paramtype"><a class="el" href="structconfig__pars.html">config_pars</a> *&#160;</td>
+          <td class="paramname"><em>cp</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -245,15 +204,7 @@ void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="conf
 <p>Configures the input parameters for the executable. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">pars</td><td>Simulation parameters </td></tr>
-    <tr><td class="paramname">ninfhist</td><td>Request or the generation of a histogram of number of infections. </td></tr>
-    <tr><td class="paramname">npaths</td><td>Number of simulation paths. </td></tr>
-    <tr><td class="paramname">nthreads</td><td>Number of threads used to perform the simulation. </td></tr>
-    <tr><td class="paramname">nsetsperthread</td><td>Number of path sets used for each thread. </td></tr>
-    <tr><td class="paramname">lmax</td><td>Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals. </td></tr>
-    <tr><td class="paramname">nimax</td><td>Maximum number of infectious individuals for a given time integet interval. </td></tr>
-    <tr><td class="paramname">oout</td><td>File descriptor for the standard output. </td></tr>
-    <tr><td class="paramname">eout</td><td>File descriptor for the standard error. </td></tr>
+    <tr><td class="paramname">cp</td><td>Configuration parameters </td></tr>
     <tr><td class="paramname">nargs</td><td>Number of arguments from the main function, shifted by 1. </td></tr>
     <tr><td class="paramname">args</td><td>Arguments from the main function, shifted by 1. </td></tr>
   </table>

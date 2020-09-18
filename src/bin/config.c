@@ -6,7 +6,7 @@
 
 #include "config.h"
 
-int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* lmax, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[])
+int config(config_pars* cp, const int nargs, const char* args[])
 {
   int plength=1;
   FILE **fptra=NULL;
@@ -38,176 +38,188 @@ int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthread
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	fflush(stdout);
 
-	if((*oout=open(pbuf,O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH))<0) {
+	if((cp->oout=open(pbuf,O_RDWR|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH))<0) {
 	  fprintf(stderr,"%s: Error: Cannot open file '%s' in write mode\n",__func__,pbuf);
 	  return -1;
 	}
-	dup2(*oout,STDOUT_FILENO);
+	dup2(cp->oout,STDOUT_FILENO);
 
       } else if(!argsdiffer(pbuf, "elog")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	fflush(stderr);
 
-	if((*eout=open(pbuf,O_RDWR|O_CREAT|O_APPEND,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH))<0) {
+	if((cp->eout=open(pbuf,O_RDWR|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH))<0) {
 	  fprintf(stderr,"%s: Error: Cannot open file '%s' in write mode\n",__func__,pbuf);
 	  return -1;
 	}
-	dup2(*eout,STDERR_FILENO);
+	dup2(cp->eout,STDERR_FILENO);
 
       } else if(!argsdiffer(pbuf, "tbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->tbar);
+	sscanf(pbuf,"%lf",&cp->pars.tbar);
 
       } else if(!argsdiffer(pbuf, "kappa")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->kappa);
+	sscanf(pbuf,"%lf",&cp->pars.kappa);
 
       } else if(!argsdiffer(pbuf, "t95")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->t95);
+	sscanf(pbuf,"%lf",&cp->pars.t95);
 
       } else if(!argsdiffer(pbuf, "lambda")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->lambda);
+	sscanf(pbuf,"%lf",&cp->pars.lambda);
 
       } else if(!argsdiffer(pbuf, "lambdap")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->lambdap);
+	sscanf(pbuf,"%lf",&cp->pars.lambdap);
 
       } else if(!argsdiffer(pbuf, "group_log_attendees_plus_1")) {
-	pars->grouptype=ro_group_log_attendees_plus_1;
+	cp->pars.grouptype=ro_group_log_attendees_plus_1;
 
       } else if(!argsdiffer(pbuf, "group_log_attendees")) {
-	pars->grouptype=ro_group_log_attendees;
+	cp->pars.grouptype=ro_group_log_attendees;
 
       } else if(!argsdiffer(pbuf, "group_log_invitees")) {
-	pars->grouptype=ro_group_log_invitees;
+	cp->pars.grouptype=ro_group_log_invitees;
 
       } else if(!argsdiffer(pbuf, "p")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->p);
+	sscanf(pbuf,"%lf",&cp->pars.p);
 
       } else if(!argsdiffer(pbuf, "mu")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->mu);
+	sscanf(pbuf,"%lf",&cp->pars.mu);
 
       } else if(!argsdiffer(pbuf, "pinf")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->pinf);
+	sscanf(pbuf,"%lf",&cp->pars.pinf);
 
       } else if(!argsdiffer(pbuf, "popsize")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,&pars->popsize);
+	sscanf(pbuf,"%"PRIu32,&cp->pars.popsize);
 
       } else if(!argsdiffer(pbuf, "R0")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->R0);
+	sscanf(pbuf,"%lf",&cp->pars.R0);
 
       } else if(!argsdiffer(pbuf, "lbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->lbar);
+	sscanf(pbuf,"%lf",&cp->pars.lbar);
 
       } else if(!argsdiffer(pbuf, "kappal")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->kappal);
+	sscanf(pbuf,"%lf",&cp->pars.kappal);
 
       } else if(!argsdiffer(pbuf, "l95")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->l95);
+	sscanf(pbuf,"%lf",&cp->pars.l95);
 
       } else if(!argsdiffer(pbuf, "q")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->q);
+	sscanf(pbuf,"%lf",&cp->pars.q);
 
       } else if(!argsdiffer(pbuf, "mbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->mbar);
+	sscanf(pbuf,"%lf",&cp->pars.mbar);
 
       } else if(!argsdiffer(pbuf, "kappaq")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->kappaq);
+	sscanf(pbuf,"%lf",&cp->pars.kappaq);
 
       } else if(!argsdiffer(pbuf, "m95")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->m95);
+	sscanf(pbuf,"%lf",&cp->pars.m95);
 
       } else if(!argsdiffer(pbuf, "pit")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->pit);
+	sscanf(pbuf,"%lf",&cp->pars.pit);
 
       } else if(!argsdiffer(pbuf, "itbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->itbar);
+	sscanf(pbuf,"%lf",&cp->pars.itbar);
 
       } else if(!argsdiffer(pbuf, "kappait")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->kappait);
+	sscanf(pbuf,"%lf",&cp->pars.kappait);
 
       } else if(!argsdiffer(pbuf, "it95")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->it95);
+	sscanf(pbuf,"%lf",&cp->pars.it95);
 
       } else if(!argsdiffer(pbuf, "pim")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->pim);
+	sscanf(pbuf,"%lf",&cp->pars.pim);
 
       } else if(!argsdiffer(pbuf, "imbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->imbar);
+	sscanf(pbuf,"%lf",&cp->pars.imbar);
 
       } else if(!argsdiffer(pbuf, "kappaim")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->kappaim);
+	sscanf(pbuf,"%lf",&cp->pars.kappaim);
 
       } else if(!argsdiffer(pbuf, "im95")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->im95);
+	sscanf(pbuf,"%lf",&cp->pars.im95);
 
       } else if(!argsdiffer(pbuf, "pri_no_main_period")) {
-	pars->pricommpertype&=~ro_pricommper_main;
+	cp->pars.pricommpertype&=~ro_pricommper_main;
 
       } else if(!argsdiffer(pbuf, "pri_no_alt_period")) {
-	pars->pricommpertype&=~ro_pricommper_alt;
+	cp->pars.pricommpertype&=~ro_pricommper_alt;
 
       } else if(!argsdiffer(pbuf, "pri_no_main_period_int")) {
-	pars->pricommpertype&=~ro_pricommper_main_int;
+	cp->pars.pricommpertype&=~ro_pricommper_main_int;
 
       } else if(!argsdiffer(pbuf, "pri_no_alt_period_int")) {
-	pars->pricommpertype&=~ro_pricommper_alt_int;
+	cp->pars.pricommpertype&=~ro_pricommper_alt_int;
 
       } else if(!argsdiffer(pbuf, "time_rel_pri_end")) {
-	pars->trelpriend=true;
+	cp->pars.trelpriend=true;
 
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&pars->tmax);
+	sscanf(pbuf,"%lf",&cp->pars.tmax);
 
       } else if(!argsdiffer(pbuf, "nstart")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,&pars->nstart);
+	sscanf(pbuf,"%"PRIu32,&cp->pars.nstart);
+
+      } else if(!argsdiffer(pbuf, "tlout")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+
+	if((cp->tlout=open(pbuf,O_RDWR|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH))<0) {
+	  fprintf(stderr,"%s: Error: Cannot open file '%s' in write mode\n",__func__,pbuf);
+	  return -1;
+	}
+
+      } else if(!argsdiffer(pbuf, "tloutbufsize")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,&cp->tloutbufsize);
 
       } else if(!argsdiffer(pbuf, "ninfhist")) {
-	*ninfhist=true;
+	cp->ninfhist=true;
 
       } else if(!argsdiffer(pbuf, "npaths")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,npaths);
+	sscanf(pbuf,"%"PRIu32,&cp->npaths);
 
       } else if(!argsdiffer(pbuf, "nthreads")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,nthreads);
+	sscanf(pbuf,"%"PRIu32,&cp->nthreads);
 
       } else if(!argsdiffer(pbuf, "nsetsperthread")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,nsetsperthread);
+	sscanf(pbuf,"%"PRIu32,&cp->nsetsperthread);
 
       } else if(!argsdiffer(pbuf, "lmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,lmax);
+	sscanf(pbuf,"%"PRIu32,&cp->lmax);
 
       } else if(!argsdiffer(pbuf, "nimax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,nimax);
+	sscanf(pbuf,"%"PRIu32,&cp->nimax);
 
       } else {
 
@@ -243,52 +255,67 @@ void printusage(const char* name)
   printf("\n\n");
 
   printf("Options\n\n");
-  printf("\t--config FILENAME\t\tRead configuration options from FILENAME\n");
-  printf("\t--olog FILENAME\t\t\tRedirect standard output to FILENAME\n");
-  printf("\t--elog FILENAME\t\t\tRedirect standard error to FILENAME\n");
-  printf("\t--tbar VALUE\t\t\tMean main communicable period\n");
-  printf("\t--kappa VALUE\t\t\tkappa parameter for the gamma distribution used to generate the main communicable period\n");
-  printf("\t--t95 VALUE\t\t\t95th percentile of the main communicable period\n");
-  printf("\t--lambda VALUE\t\t\tRate of events for a given individual. Events are defined to include at least two invitees\n");
-  //printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees\n");
-  printf("\t--group_log_attendees_plus_1\tNumber of individuals in an event to be distributed as a logarithmically-distributed variable plus 1 (default)\n");
-  printf("\t--group_log_attendees\t\tNumber of attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2\n");
-  printf("\t--group_log_invitees\t\tNumber of invitees for an event to be distributed as a logarithmically-distributed variable truncated below 2\n");
-  printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees (g_ave>=2)\n");
-  printf("\t--p VALUE\t\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1)\n");
-  printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu >= 1)\n");
-  printf("\t--pinf VALUE\t\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event\n");
-  //printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population)\n");
-  printf("\t--R0 VALUE\t\t\tBasic reproduction number\n");
-  printf("\t--lbar VALUE\t\t\tMean latent period (default value of 0)\n");
-  printf("\t--kappal VALUE\t\t\tkappa parameter for the gamma distribution used to generate the latent period\n");
-  printf("\t--l95 VALUE\t\t\t95th percentile of the latent period\n");
-  printf("\t--q VALUE\t\t\tProbability of alternate communicable period (default value of 0)\n");
-  printf("\t--mbar VALUE\t\t\tMean period for the alternate communicable period (required if q>0)\n");
-  printf("\t--kappaq VALUE\t\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period\n");
-  printf("\t--m95 VALUE\t\t\t95th percentile of the alternate communicable period\n");
-  printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption (default value of 0)\n");
-  printf("\t--itbar VALUE\t\t\tMean period for the interrupted main communicable period (required if pit>0)\n");
-  printf("\t--kappait VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted main communicable period\n");
-  printf("\t--it95 VALUE\t\t\t95th percentile of the interrupted main communicable period\n");
-  printf("\t--pim VALUE\t\t\tProbability of alternate communicable period interruption (default value of pit)\n");
-  printf("\t--imbar VALUE\t\t\tMean period for the interrupted alternate communicable period (default value of itbar)\n");
-  printf("\t--kappaim VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait)\n");
-  printf("\t--im95 VALUE\t\t\t95th percentile of the interrupted alternate communicable period (default value of it95)\n");
-  printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period\n");
-  printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period\n");
-  printf("\t--pri_no_main_period_int\tThe main communicable period for a primary infectious individual cannot be interrupted\n");
-  printf("\t--pri_no_alt_period_int\t\tThe alternate communicable period for a primary infectious individual cannot be interrupted\n");
+  printf("\t--config FILENAME\t\tRead configuration options from FILENAME.\n");
+  printf("\t--olog FILENAME\t\t\tRedirect standard output to FILENAME.\n");
+  printf("\t--elog FILENAME\t\t\tRedirect standard error to FILENAME.\n");
+  printf("\t--tbar VALUE\t\t\tMean main communicable period.\n");
+  printf("\t--kappa VALUE\t\t\tkappa parameter for the gamma distribution used to generate the main communicable period.\n");
+  printf("\t--t95 VALUE\t\t\t95th percentile of the main communicable period.\n");
+  printf("\t--lambda VALUE\t\t\tRate of events for a given individual. Events are defined to include at least two invitees.\n");
+  //printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
+  printf("\t--group_log_attendees_plus_1\tNumber of individuals in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
+  printf("\t--group_log_attendees\t\tNumber of attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
+  printf("\t--group_log_invitees\t\tNumber of invitees for an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
+  printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees (g_ave>=2).\n");
+  printf("\t--p VALUE\t\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).\n");
+  printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu >= 1).\n");
+  printf("\t--pinf VALUE\t\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event.\n");
+  //printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
+  printf("\t--R0 VALUE\t\t\tBasic reproduction number.\n");
+  printf("\t--lbar VALUE\t\t\tMean latent period (default value of 0).\n");
+  printf("\t--kappal VALUE\t\t\tkappa parameter for the gamma distribution used to generate the latent period.\n");
+  printf("\t--l95 VALUE\t\t\t95th percentile of the latent period.\n");
+  printf("\t--q VALUE\t\t\tProbability of alternate communicable period (default value of 0).\n");
+  printf("\t--mbar VALUE\t\t\tMean period for the alternate communicable period (required if q>0).\n");
+  printf("\t--kappaq VALUE\t\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period.\n");
+  printf("\t--m95 VALUE\t\t\t95th percentile of the alternate communicable period.\n");
+  printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption (default value of 0).\n");
+  printf("\t--itbar VALUE\t\t\tMean period for the interrupted main communicable period (required if pit>0).\n");
+  printf("\t--kappait VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted main communicable period.\n");
+  printf("\t--it95 VALUE\t\t\t95th percentile of the interrupted main communicable period.\n");
+  printf("\t--pim VALUE\t\t\tProbability of alternate communicable period interruption (default value of pit).\n");
+  printf("\t--imbar VALUE\t\t\tMean period for the interrupted alternate communicable period (default value of itbar).\n");
+  printf("\t--kappaim VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait).\n");
+  printf("\t--im95 VALUE\t\t\t95th percentile of the interrupted alternate communicable period (default value of it95).\n");
+  printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period.\n");
+  printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period.\n");
+  printf("\t--pri_no_main_period_int\tThe main communicable period for a primary infectious individual cannot be interrupted.\n");
+  printf("\t--pri_no_alt_period_int\t\tThe alternate communicable period for a primary infectious individual cannot be interrupted.\n");
 
-  printf("\t--time_rel_pri_end\t\tRecorded event time is relative to the end of the communicable period for the generated primary infectious individuals\n");
-  printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY)\n");
-  printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1)\n");
+  printf("\t--time_rel_pri_end\t\tRecorded event time is relative to the end of the communicable period for the generated primary infectious individuals.\n");
+  printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");
+  printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
+  printf("\t--tlout VALUE\t\t\tOutput timeline information for each simulated path into the provided file in the binary format as described below.\n");
+  printf("\t--tloutbufsize VALUE\t\tPer-thread memory buffer size (in MB) used to accumulate data for timeline output before writing them to disk (default value of 10 MB).\n");
   printf("\t--ninfhist\t\t\tCompute a histogram of the number of infected individuals for each infectious individual.\n");
-  printf("\t--npaths VALUE\t\t\tNumber of generated simulation paths (default value of 10000)\n");
-  printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1)\n");
-  printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise)\n");
-  printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX)\n");
-  printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX)\n");
-  printf("\t--help\t\t\t\tPrint this usage information and exit\n");
+  printf("\t--npaths VALUE\t\t\tNumber of generated simulation paths (default value of 10000).\n");
+  printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1).\n");
+  printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise).\n");
+  printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
+  printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX).\n");
+  printf("\t--help\t\t\t\tPrint this usage information and exit.\n");
   printf("\nEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\nOptions can be used multiple times and configuration files can be read from configuration files.\n"); 
+
+  printf("\nBinary timeline output file:\n");
+  printf("\n\tAll fields are stored in little endian.\n");
+  printf("\n\tFile header:\n");
+  printf("\t\t-Unsigned 32 bit value: floor(tmax)+1, the number of time bins starting from t=0.\n");
+  printf("\t\t-Unsigned 8 bit field: value of 1 if time_rel_pri_end is used, and 0 otherwise.\n");
+
+  printf("\n\tSimulation path records:\n");
+  printf("\t\t-Unsigned 32 bit value: The number of written successive time bins.\n");
+  printf("\t\t-Unsigned 32 bit value: Field is written only if time_rel_pri_end is used. Value is the number of time bins before t=0.\n");
+  printf("\n\t\t-For each time bin, chronologically written:\n");
+  printf("\t\t\t-Unsigned 32 bit value: Number of active infections.\n");
+  printf("\t\t\t-Unsigned 32 bit value: Number of new infections.\n");
 }

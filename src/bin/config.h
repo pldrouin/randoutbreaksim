@@ -19,23 +19,31 @@
 #include "model_parameters.h"
 
 /**
+ * @brief Struct used to store configuration parmeters.
+ */
+typedef struct
+{
+model_pars pars; 		//!< Simulation parameters
+bool ninfhist;			//!< Request or the generation of a histogram of number of infections.
+uint32_t npaths;		//!< Number of simulation paths.
+uint32_t nthreads;		//!< Number of threads used to perform the simulation.
+uint32_t nsetsperthread;	//!< Number of path sets used for each thread.
+uint32_t lmax;			//!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
+uint32_t nimax;			//!< Maximum number of infectious individuals for a given time integet interval.
+uint32_t tloutbufsize;		//!< Per-thread memory buffer size (in MB) used to accumulate data for timeline output before writing them to disk.
+int tlout;			//!< File descriptor used to record timeline data for each simulated path.
+int oout;			//!< File descriptor for the standard output.
+int eout;			//!< File descriptor for the standard error.
+} config_pars;
+
+/**
  * @brief Configures the input parameters for the executable.
  *
- * @param pars: Simulation parameters
- * @param ninfhist: Request or the generation of a histogram of number of
- * infections.
- * @param npaths: Number of simulation paths.
- * @param nthreads: Number of threads used to perform the simulation.
- * @param nsetsperthread: Number of path sets used for each thread.
- * @param lmax: Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
- * @param nimax: Maximum number of infectious individuals for a given time
- * integet interval.
- * @param oout: File descriptor for the standard output.
- * @param eout: File descriptor for the standard error.
+ * @param cp: Configuration parameters
  * @param nargs: Number of arguments from the main function, shifted by 1.
  * @param args: Arguments from the main function, shifted by 1.
  */
-int config(model_pars* pars, bool* ninfhist, uint32_t* npaths, uint32_t* nthreads, uint32_t* nsetsperthread, uint32_t* lmax, uint32_t* nimax, int* oout, int* eout, const int nargs, const char* args[]);
+int config(config_pars *cp, const int nargs, const char* args[]);
 
 /**
  * @brief Prints usage information for the executable.

@@ -94,13 +94,17 @@ Collaboration diagram for thread_data:</div>
 <div class="dyncontent">
 <div class="center"><img src="structthread__data__coll__graph.png" border="0" usemap="#thread__data_coll__map" alt="Collaboration graph"/></div>
 <map name="thread__data_coll__map" id="thread__data_coll__map">
-<area shape="rect" title=" " alt="" coords="5,95,96,121"/>
+<area shape="rect" title=" " alt="" coords="5,184,96,211"/>
+<area shape="rect" href="structconfig__pars.html" title="Struct used to store configuration parmeters." alt="" coords="6,95,95,121"/>
 <area shape="rect" href="structmodel__pars.html" title=" " alt="" coords="6,5,95,32"/>
 </map>
 <center><span class="legend">[<a target="top" href="graph_legend.html">legend</a>]</span></center></div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-attribs"></a>
 Data Fields</h2></td></tr>
+<tr class="memitem:a0613b80e9ab01904f421e9411a77dfc1"><td class="memItemLeft" align="right" valign="top"><a id="a0613b80e9ab01904f421e9411a77dfc1"></a>
+<a class="el" href="structconfig__pars.html">config_pars</a> const  *&#160;</td><td class="memItemRight" valign="bottom"><b>cp</b></td></tr>
+<tr class="separator:a0613b80e9ab01904f421e9411a77dfc1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a98206fbb378ed5ead50afe507f961d23"><td class="memItemLeft" align="right" valign="top"><a id="a98206fbb378ed5ead50afe507f961d23"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><b>npathsperset</b></td></tr>
 <tr class="separator:a98206fbb378ed5ead50afe507f961d23"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -113,15 +117,6 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>npers</b></td></t
 <tr class="memitem:a59a7be74fadf80b342fc61ef32926644"><td class="memItemLeft" align="right" valign="top"><a id="a59a7be74fadf80b342fc61ef32926644"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>tnpersa</b></td></tr>
 <tr class="separator:a59a7be74fadf80b342fc61ef32926644"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1390da5826d06d4e5722636fd69bfe80"><td class="memItemLeft" align="right" valign="top"><a id="a1390da5826d06d4e5722636fd69bfe80"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>lmax</b></td></tr>
-<tr class="separator:a1390da5826d06d4e5722636fd69bfe80"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad6c8b754b47c8e6318b1089139f1f89e"><td class="memItemLeft" align="right" valign="top"><a id="ad6c8b754b47c8e6318b1089139f1f89e"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>nimax</b></td></tr>
-<tr class="separator:ad6c8b754b47c8e6318b1089139f1f89e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a61058472225cb33b60dd9b9880ddf14f"><td class="memItemLeft" align="right" valign="top"><a id="a61058472225cb33b60dd9b9880ddf14f"></a>
-<a class="el" href="structmodel__pars.html">model_pars</a> const  *&#160;</td><td class="memItemRight" valign="bottom"><b>pars</b></td></tr>
-<tr class="separator:a61058472225cb33b60dd9b9880ddf14f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:affca43a275804779e7ddacf6203687a1"><td class="memItemLeft" align="right" valign="top"><a id="affca43a275804779e7ddacf6203687a1"></a>
 uint32_t volatile *&#160;</td><td class="memItemRight" valign="bottom"><b>set</b></td></tr>
 <tr class="separator:affca43a275804779e7ddacf6203687a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -188,13 +183,16 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><b>nimaxedoutmintime
 <tr class="memitem:a4c05ea028393bc6f32c5cc9451942f16"><td class="memItemLeft" align="right" valign="top"><a id="a4c05ea028393bc6f32c5cc9451942f16"></a>
 gsl_rng *&#160;</td><td class="memItemRight" valign="bottom"><b>r</b></td></tr>
 <tr class="separator:a4c05ea028393bc6f32c5cc9451942f16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c7dd5c96643ad1fd1996ee85cb6ceec"><td class="memItemLeft" align="right" valign="top"><a id="a6c7dd5c96643ad1fd1996ee85cb6ceec"></a>
+pthread_mutex_t *&#160;</td><td class="memItemRight" valign="bottom"><b>tlflock</b></td></tr>
+<tr class="separator:a6c7dd5c96643ad1fd1996ee85cb6ceec"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5dfa8910cabf4b1362b48ee82af7067c"><td class="memItemLeft" align="right" valign="top"><a id="a5dfa8910cabf4b1362b48ee82af7067c"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><b>rec_ninfs</b></td></tr>
 <tr class="separator:a5dfa8910cabf4b1362b48ee82af7067c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="main_8h_source.html#l00029">29</a> of file <a class="el" href="main_8h_source.html">main.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="main_8h_source.html#l00034">34</a> of file <a class="el" href="main_8h_source.html">main.h</a>.</p>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
 <li><a class="el" href="main_8h_source.html">main.h</a></li>
 </ul>

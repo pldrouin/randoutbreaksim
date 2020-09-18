@@ -1,6 +1,7 @@
 var annotated_dup =
 [
     [ "brsim_vars", "structbrsim__vars.html", "structbrsim__vars" ],
+    [ "config_pars", "structconfig__pars.html", "structconfig__pars" ],
     [ "fpsim_vars", "structfpsim__vars.html", null ],
     [ "infindividual", "structinfindividual.html", "structinfindividual" ],
     [ "model_pars", "structmodel__pars.html", "structmodel__pars" ],
