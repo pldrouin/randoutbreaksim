@@ -83,19 +83,22 @@ inline static ssize_t tlo_write_reg_path(std_summary_stats const* stats, char* b
   if(b==0 && stats->inf_timeline[b]==0) {
     assert(stats->totinf_timeline[b]==0);
     *(uint32_t*)buf=0;
-    return 4;
+    buf[4]=1;
+    return 5;
   }
 
   const uint32_t nbins=b+1;
   *(uint32_t*)buf=htole32(nbins);
+  buf[4]=(char)stats->extinction;;
+  buf+=5;
 
   for(b=0; b<nbins; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->inf_timeline[b],b,stats->totinf_timeline[b]);
-    ((uint32_t*)buf)[2*b+1]=htole32(stats->inf_timeline[b]);
-    ((uint32_t*)buf)[2*b+2]=htole32(stats->totinf_timeline[b]);
+    ((uint32_t*)buf)[2*b]=htole32(stats->inf_timeline[b]);
+    ((uint32_t*)buf)[2*b+1]=htole32(stats->totinf_timeline[b]);
   }
 
-  return 4+nbins*2*4;
+  return 5+nbins*8*4;
 }
 
 inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, char* buf)
@@ -114,7 +117,8 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
   if(bmax==-bmin && stats->inf_timeline[bmax]==0) {
     assert(stats->totinf_timeline[bmax]==0);
     *(uint64_t*)buf=0;
-    return 8;
+    buf[8]=1;
+    return 9;
   }
 
 
@@ -130,6 +134,8 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
 
   ((uint32_t*)buf)[0]=htole32(nbins);
   ((uint32_t*)buf)[1]=htole32(-bmin);
+  buf[8]=(char)stats->extinction;;
+  buf+=9;
 
   int32_t b;
   uint32_t bp;
@@ -137,9 +143,9 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
   for(b=bmin; b<=bmax; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->inf_timeline[b],b,stats->totinf_timeline[b]);
     bp=2*(b-bmin);
-    ((uint32_t*)buf)[bp+2]=htole32(stats->inf_timeline[b]);
-    ((uint32_t*)buf)[bp+3]=htole32(stats->totinf_timeline[b]);
+    ((uint32_t*)buf)[bp]=htole32(stats->inf_timeline[b]);
+    ((uint32_t*)buf)[bp+1]=htole32(stats->totinf_timeline[b]);
   }
 
-  return 2*4+nbins*2*4;
+  return 9+nbins*8;
 }

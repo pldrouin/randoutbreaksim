@@ -404,10 +404,11 @@ $(document).ready(function(){initNavTree('config_8c_source.html',''); initResiza
 <div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;  printf(<span class="stringliteral">&quot;\n\tSimulation path records:\n&quot;</span>);</div>
 <div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 32 bit value: The number of written successive time bins.\n&quot;</span>);</div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 32 bit value: Field is written only if time_rel_pri_end is used. Value is the number of time bins before t=0.\n&quot;</span>);</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;  printf(<span class="stringliteral">&quot;\n\t\t-For each time bin, chronologically written:\n&quot;</span>);</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  printf(<span class="stringliteral">&quot;\t\t\t-Unsigned 32 bit value: Number of active infections.\n&quot;</span>);</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;  printf(<span class="stringliteral">&quot;\t\t\t-Unsigned 32 bit value: Number of new infections.\n&quot;</span>);</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;}</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 8 bit value: value of 1 if the path goes extinct, and 0 otherwise.\n&quot;</span>);</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  printf(<span class="stringliteral">&quot;\n\t\t-For each time bin, chronologically written:\n&quot;</span>);</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;  printf(<span class="stringliteral">&quot;\t\t\t-Unsigned 32 bit value: Number of active infections.\n&quot;</span>);</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;  printf(<span class="stringliteral">&quot;\t\t\t-Unsigned 32 bit value: Number of new infections.\n&quot;</span>);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aconfig_8c_html_abac3f29dffc2cdc59f491378751f20eb"><div class="ttname"><a href="config_8c.html#abac3f29dffc2cdc59f491378751f20eb">config</a></div><div class="ttdeci">int config(config_pars *cp, const int nargs, const char *args[])</div><div class="ttdoc">Configures the input parameters for the executable.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00009">config.c:9</a></div></div>

@@ -380,7 +380,7 @@ void* simthread(void* arg)
       abs_totmainctc_timeline=stats.totmainctc_timeline-stats.timelineshift;
 
       if(cp->tlout) {
-	maxwrite=8+8*stats.tnpersa;
+	maxwrite=9+8*stats.tnpersa;
 
 	if(tlobsize+maxwrite > tlobasize) {
 

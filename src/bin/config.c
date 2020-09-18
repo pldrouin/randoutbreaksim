@@ -315,6 +315,7 @@ void printusage(const char* name)
   printf("\n\tSimulation path records:\n");
   printf("\t\t-Unsigned 32 bit value: The number of written successive time bins.\n");
   printf("\t\t-Unsigned 32 bit value: Field is written only if time_rel_pri_end is used. Value is the number of time bins before t=0.\n");
+  printf("\t\t-Unsigned 8 bit value: value of 1 if the path goes extinct, and 0 otherwise.\n");
   printf("\n\t\t-For each time bin, chronologically written:\n");
   printf("\t\t\t-Unsigned 32 bit value: Number of active infections.\n");
   printf("\t\t\t-Unsigned 32 bit value: Number of new infections.\n");
