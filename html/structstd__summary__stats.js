@@ -13,6 +13,6 @@ var structstd__summary__stats =
     [ "rsum", "structstd__summary__stats.html#ae3fb94b9986390017590c435ac2fa66f", null ],
     [ "timelineshift", "structstd__summary__stats.html#ae03b9ae51cf23b57eb72348796abe3b6", null ],
     [ "tnpersa", "structstd__summary__stats.html#a8c36935604a78b458da7ab1404453c71", null ],
-    [ "totinf_timeline", "structstd__summary__stats.html#a040ab82e792ffcd94c3fda6c22cf6960", null ],
-    [ "totmainctc_timeline", "structstd__summary__stats.html#ae1340b34a42f3e69360822c5fded1b6e", null ]
+    [ "totaltctc_timeline", "structstd__summary__stats.html#a3c2d9b663cb81cc2ed6e8c01501b34f2", null ],
+    [ "totinf_timeline", "structstd__summary__stats.html#a040ab82e792ffcd94c3fda6c22cf6960", null ]
 ];

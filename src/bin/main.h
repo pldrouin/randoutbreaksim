@@ -54,10 +54,10 @@ typedef struct {
   double* totinf_timeline_std_ext;
   double* totinf_timeline_mean_noext;
   double* totinf_timeline_std_noext;
-  double* totmainctc_timeline_mean_ext;
-  double* totmainctc_timeline_std_ext;
-  double* totmainctc_timeline_mean_noext;
-  double* totmainctc_timeline_std_noext;
+  double* totaltctc_timeline_mean_ext;
+  double* totaltctc_timeline_std_ext;
+  double* totaltctc_timeline_mean_noext;
+  double* totaltctc_timeline_std_noext;
   uint64_t* ngeninfs;
   uint32_t ninfbins;
   uint32_t nimaxedoutmintimeindex;
@@ -134,7 +134,7 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
 
   ((uint32_t*)buf)[0]=htole32(nbins);
   ((uint32_t*)buf)[1]=htole32(-bmin);
-  buf[8]=(char)stats->extinction;;
+  buf[8]=(char)stats->extinction;
   buf+=9;
 
   int32_t b;

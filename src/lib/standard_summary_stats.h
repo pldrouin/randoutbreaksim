@@ -32,7 +32,7 @@ typedef struct
   double commpersum;		//!< Sum of communicable periods for all infectious individuals whose communicable period does not occur after tmax.
   uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infectious at some point in this interval (lower bound included, upper bound excluded).
   uint32_t* totinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
-  uint32_t* totmainctc_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are in contact at some point in this interval with an individual whose communicable period is the main period (lower bound included, upper bound excluded). For the last interval, it includes the contacts that occur between floor(tmax) and tmax.
+  uint32_t* totaltctc_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are in contact at some point in this interval with an individual whose communicable period is the alternate period (lower bound included, upper bound excluded). For the last interval, it includes the contacts that occur between floor(tmax) and tmax.
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
   uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
   uint32_t npers;		//!< Number of positive integer intervals
@@ -79,7 +79,7 @@ inline static void std_stats_path_init(std_summary_stats* stats)
   stats->commpersum=0;
   memset(stats->inf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->totinf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
-  memset(stats->totmainctc_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
+  memset(stats->totaltctc_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   stats->rsum=0;
 #ifdef NUMEVENTSSTATS
   stats->neventssum=0;
@@ -106,7 +106,7 @@ inline static void std_stats_ii_alloc(infindividual* ii){ii->dataptr=malloc(2*si
  *
  * @param stats: Pointer to the standard summary statistics.
  */
-inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline-stats->timelineshift); free(stats->totinf_timeline-stats->timelineshift); free(stats->totmainctc_timeline-stats->timelineshift);}
+inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline-stats->timelineshift); free(stats->totinf_timeline-stats->timelineshift); free(stats->totaltctc_timeline-stats->timelineshift);}
 
 /**
  * @brief Processes the number of infections for this new event.
@@ -234,9 +234,9 @@ inline static void std_stats_new_pri_inf(sim_vars* sv, infindividual* ii)
 
     newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
     memset(newarray,0,(newshift-stats->timelineshift)*sizeof(uint32_t));
-    memcpy(newarray+newshift-stats->timelineshift,stats->totmainctc_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
-    free(stats->totmainctc_timeline-stats->timelineshift);
-    stats->totmainctc_timeline=newarray+newshift;
+    memcpy(newarray+newshift-stats->timelineshift,stats->totaltctc_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
+    free(stats->totaltctc_timeline-stats->timelineshift);
+    stats->totaltctc_timeline=newarray+newshift;
 
     stats->timelineshift=newshift;
     stats->tnpersa=newsize;
@@ -288,8 +288,8 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
 
   for(i=floor((inf-1)->event_time+inf->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 
-  if(inf->commpertype&ro_commper_main) {
-    ((std_summary_stats*)ptr)->totmainctc_timeline[end_comm_per]+=((uint32_t*)inf->dataptr)[1];
+  if(inf->commpertype&ro_commper_alt) {
+    ((std_summary_stats*)ptr)->totaltctc_timeline[end_comm_per]+=((uint32_t*)inf->dataptr)[1];
   }
 }
 
