@@ -63,7 +63,6 @@ typedef struct {
   uint32_t nimaxedoutmintimeindex;
   gsl_rng* r;
   pthread_mutex_t* tlflock;
-  bool rec_ninfs;
 } thread_data;
 
 void* simthread(void* arg);

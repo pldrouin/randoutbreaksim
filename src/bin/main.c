@@ -334,7 +334,7 @@ void* simthread(void* arg)
   sim_set_new_pri_inf_proc_func(&sv, std_stats_new_pri_inf);
   sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
 
-  if(data->rec_ninfs) {
+  if(cp->ninfhist) {
     sim_set_end_inf_proc_func(&sv, std_stats_end_inf_rec_ninfs);
     sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf_rec_ninfs);
 
@@ -345,7 +345,7 @@ void* simthread(void* arg)
 
   branchsim_init(&sv);
 
-  if(data->rec_ninfs) std_stats_init(&sv, &data->ngeninfs, &data->ninfbins);
+  if(cp->ninfhist) std_stats_init(&sv, &data->ngeninfs, &data->ninfbins);
 
   else std_stats_init(&sv, NULL, NULL);
   
