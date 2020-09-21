@@ -174,9 +174,9 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
     ii->comm_period=sv->pars.itbar; \
     ii->end_comm_period=ecp; \
     \
-    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype=ro_commper_main_int|ro_commper_true_positive_test; \
+    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
-    else ii->commpertype=ro_commper_main_int; \
+    else ii->commpertype|=ro_commper_int; \
   } \
 }
 
@@ -188,9 +188,9 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
     ii->comm_period=time; \
     ii->end_comm_period=ecp; \
     \
-    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype=ro_commper_main_int|ro_commper_true_positive_test; \
+    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
-    else ii->commpertype=ro_commper_main_int; \
+    else ii->commpertype|=ro_commper_int; \
   } \
 }
 
@@ -209,9 +209,9 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
     ii->comm_period=sv->pars.imbar; \
     ii->end_comm_period=ecp; \
     \
-    if(gsl_rng_uniform(sv->r) < sv->pars.mtpr) ii->commpertype=ro_commper_alt_int|ro_commper_true_positive_test; \
+    if(gsl_rng_uniform(sv->r) < sv->pars.mtpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
-    else ii->commpertype=ro_commper_alt_int; \
+    else ii->commpertype|=ro_commper_int; \
   } \
 }
 
@@ -223,9 +223,9 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
     ii->comm_period=time; \
     ii->end_comm_period=ecp; \
     \
-    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype=ro_commper_alt_int|ro_commper_true_positive_test; \
+    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
-    else ii->commpertype=ro_commper_alt_int; \
+    else ii->commpertype|=ro_commper_int; \
   } \
 }
 
