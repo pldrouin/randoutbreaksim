@@ -272,21 +272,19 @@ inline static void std_stats_end_inf(infindividual* inf, void* ptr)
   ((std_summary_stats*)ptr)->neventssum+=inf->nevents;
 #endif
 
-  const double inf_end=(inf-1)->event_time+inf->latent_period+inf->comm_period;
-
   //If truncated by tmax
   if(inf->commpertype&ro_commper_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
     //++((std_summary_stats*)ptr)->n_ended_infections;
 
-    if(inf_end > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf_end;
+    if(inf->end_comm_period > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf->end_comm_period;
   }
 
   int i;
-  const int end_comm_per=(inf_end >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(inf_end));
+  const int end_comm_per=(inf->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(inf->end_comm_period));
 
-  for(i=floor((inf-1)->event_time+inf->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=floor(inf->end_comm_period-inf->comm_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 
   if(inf->commpertype&ro_commper_alt) {
     ((std_summary_stats*)ptr)->totaltctc_timeline[end_comm_per]+=((uint32_t*)inf->dataptr)[1];
@@ -339,21 +337,19 @@ inline static void std_stats_noevent_inf(infindividual* inf, void* ptr)
   DEBUG_PRINTF("Number of infections was 0\n");
   ((std_summary_stats*)ptr)->commpersum+=inf->comm_period;
 
-  const double inf_end=(inf-1)->event_time+inf->latent_period+inf->comm_period;
-
   //If truncated by tmax
   if(inf->commpertype&ro_commper_tmax) ((std_summary_stats*)ptr)->extinction=false;
 
   else {
     //++((std_summary_stats*)ptr)->n_ended_infections;
 
-    if(inf_end > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf_end;
+    if(inf->end_comm_period > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=inf->end_comm_period;
   }
 
   int i;
-  const int end_comm_per=(inf_end >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(inf_end));
+  const int end_comm_per=(inf->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(inf->end_comm_period));
 
-  for(i=floor((inf-1)->event_time+inf->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=floor(inf->end_comm_period-inf->comm_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
 /**

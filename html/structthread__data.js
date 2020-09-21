@@ -15,7 +15,6 @@ var structthread__data =
     [ "pe", "structthread__data.html#a9c4eecaef84e7e1624c3eb52ee3941a8", null ],
     [ "r", "structthread__data.html#a4c05ea028393bc6f32c5cc9451942f16", null ],
     [ "r_mean", "structthread__data.html#ae4bdbac3eadd324b955bbf8ec6c722dc", null ],
-    [ "rec_ninfs", "structthread__data.html#a5dfa8910cabf4b1362b48ee82af7067c", null ],
     [ "set", "structthread__data.html#affca43a275804779e7ddacf6203687a1", null ],
     [ "te_mean", "structthread__data.html#a52ff855b6828d3254ec72c75a3046be3", null ],
     [ "te_std", "structthread__data.html#ac796c466bbeb18757234e7478cfa6f05", null ],

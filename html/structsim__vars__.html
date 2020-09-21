@@ -123,14 +123,14 @@ gsl_rng const  *&#160;</td><td class="memItemRight" valign="bottom"><a class="el
 void *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#ad9d50be547359a56e26030911f2d3d96">dataptr</a></td></tr>
 <tr class="memdesc:ad9d50be547359a56e26030911f2d3d96"><td class="mdescLeft">&#160;</td><td class="mdescRight">Simulation-level data pointer for user-defined functions. <br /></td></tr>
 <tr class="separator:ad9d50be547359a56e26030911f2d3d96"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad517b4ab055aaec5381b7edd58925a09"><td class="memItemLeft" align="right" valign="top"><a id="ad517b4ab055aaec5381b7edd58925a09"></a>
-void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#ad517b4ab055aaec5381b7edd58925a09">gen_pri_time_periods_func</a> )(struct <a class="el" href="structsim__vars__.html">sim_vars_</a> *, <a class="el" href="structinfindividual.html">infindividual</a> *ii)</td></tr>
-<tr class="memdesc:ad517b4ab055aaec5381b7edd58925a09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the function used to generate time periods for a given primary infectious individual. <br /></td></tr>
-<tr class="separator:ad517b4ab055aaec5381b7edd58925a09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0251d88916f2730f5ffe48edec2b73cd"><td class="memItemLeft" align="right" valign="top"><a id="a0251d88916f2730f5ffe48edec2b73cd"></a>
-void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a0251d88916f2730f5ffe48edec2b73cd">gen_time_periods_func</a> )(struct <a class="el" href="structsim__vars__.html">sim_vars_</a> *, <a class="el" href="structinfindividual.html">infindividual</a> *ii)</td></tr>
-<tr class="memdesc:a0251d88916f2730f5ffe48edec2b73cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the function used to generate time periods for a given infectious individual. <br /></td></tr>
-<tr class="separator:a0251d88916f2730f5ffe48edec2b73cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5460afa91aeb919b2de0018331ca0991"><td class="memItemLeft" align="right" valign="top"><a id="a5460afa91aeb919b2de0018331ca0991"></a>
+void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a5460afa91aeb919b2de0018331ca0991">gen_pri_time_periods_func</a> )(struct <a class="el" href="structsim__vars__.html">sim_vars_</a> *, <a class="el" href="structinfindividual.html">infindividual</a> *ii, <a class="el" href="structinfindividual.html">infindividual</a> *iiparent, const double inf_start)</td></tr>
+<tr class="memdesc:a5460afa91aeb919b2de0018331ca0991"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the function used to generate time periods for a given primary infectious individual. <br /></td></tr>
+<tr class="separator:a5460afa91aeb919b2de0018331ca0991"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6c805d61910b933097e2f709dc67f687"><td class="memItemLeft" align="right" valign="top"><a id="a6c805d61910b933097e2f709dc67f687"></a>
+void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a6c805d61910b933097e2f709dc67f687">gen_time_periods_func</a> )(struct <a class="el" href="structsim__vars__.html">sim_vars_</a> *, <a class="el" href="structinfindividual.html">infindividual</a> *ii, <a class="el" href="structinfindividual.html">infindividual</a> *iiparent, const double inf_start)</td></tr>
+<tr class="memdesc:a6c805d61910b933097e2f709dc67f687"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the function used to generate time periods for a given infectious individual. <br /></td></tr>
+<tr class="separator:a6c805d61910b933097e2f709dc67f687"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a282e2679d511fdc6cc8e0826f2bcb77f"><td class="memItemLeft" align="right" valign="top"><a id="a282e2679d511fdc6cc8e0826f2bcb77f"></a>
 void(*&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">gen_att_inf_func</a> )(struct <a class="el" href="structsim__vars__.html">sim_vars_</a> *)</td></tr>
 <tr class="memdesc:a282e2679d511fdc6cc8e0826f2bcb77f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Pointer to the function used to generate attendees and new infections during one event. <br /></td></tr>

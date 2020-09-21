@@ -39,8 +39,8 @@ typedef struct sim_vars_
   gsl_rng const* r;		//!< Pointer to GSL random number generator
   infindividual* curii;		//!< Pointer to current iteration infectious individual
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
-  void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii);				//!< Pointer to the function used to generate time periods for a given primary infectious individual
-  void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii);				//!< Pointer to the function used to generate time periods for a given infectious individual
+  void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
+  void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
@@ -166,30 +166,83 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
 #define GEN_PER_LATENT_2 ii->latent_period=gsl_ran_gamma(sv->r, sv->pars.la, sv->pars.lb);
 
 #define GEN_PER_INTERRUPTED_MAIN_0
-#define GEN_PER_INTERRUPTED_MAIN_1 if(gsl_rng_uniform(sv->r) < sv->pars.pit && sv->pars.itbar < ii->comm_period) {ii->comm_period=sv->pars.itbar; ii->commpertype=ro_commper_main_int;}
-#define GEN_PER_INTERRUPTED_MAIN_2 if(gsl_rng_uniform(sv->r) < sv->pars.pit) {const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_main_int;}}
 
-#define GEN_PER_MAIN_1(IT) {ii->comm_period=sv->pars.tbar; ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
-#define GEN_PER_MAIN_2(IT) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ta, sv->pars.tb); ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
+#define GEN_PER_INTERRUPTED_MAIN_1 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar; \
+  \
+  if (ecp < ii->end_comm_period) { \
+    ii->comm_period=sv->pars.itbar; \
+    ii->end_comm_period=ecp; \
+    \
+    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype=ro_commper_main_int|ro_commper_true_positive_test; \
+    \
+    else ii->commpertype=ro_commper_main_int; \
+  } \
+}
+
+#define GEN_PER_INTERRUPTED_MAIN_2 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
+  const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb); \
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
+  \
+  if(ecp < ii->end_comm_period) { \
+    ii->comm_period=time; \
+    ii->end_comm_period=ecp; \
+    \
+    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype=ro_commper_main_int|ro_commper_true_positive_test; \
+    \
+    else ii->commpertype=ro_commper_main_int; \
+  } \
+}
+
+#define GEN_TESTED_ALT_0 ii->commpertype=ro_commper_alt;
+#define GEN_TESTED_ALT_1 if(gsl_rng_uniform(sv->r) < sv->pars.mtpr) ii->commpertype=ro_commper_alt|ro_commper_true_positive_test; else ii->commpertype=ro_commper_alt;
+
+#define GEN_PER_MAIN_1(IT) {ii->comm_period=sv->pars.tbar; ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
+#define GEN_PER_MAIN_2(IT) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ta, sv->pars.tb); ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; ii->commpertype=ro_commper_main; GEN_PER_INTERRUPTED_MAIN_ ## IT;}
 
 #define GEN_PER_INTERRUPTED_ALT_0
-#define GEN_PER_INTERRUPTED_ALT_1 if(gsl_rng_uniform(sv->r) < sv->pars.pim && sv->pars.imbar < ii->comm_period) {ii->comm_period=sv->pars.imbar; ii->commpertype=ro_commper_alt_int;}
-#define GEN_PER_INTERRUPTED_ALT_2 if(gsl_rng_uniform(sv->r) < sv->pars.pim) {const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb); if(time < ii->comm_period) {ii->comm_period=time; ii->commpertype=ro_commper_alt_int;}}
 
-#define GEN_PER_ALTERNATE_ONLY_1(IM) ii->comm_period=sv->pars.mbar; ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
-#define GEN_PER_ALTERNATE_ONLY_2(IM) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM;
+#define GEN_PER_INTERRUPTED_ALT_1 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) {\
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar; \
+  \
+  if (ecp < ii->end_comm_period) { \
+    ii->comm_period=sv->pars.imbar; \
+    ii->end_comm_period=ecp; \
+    \
+    if(gsl_rng_uniform(sv->r) < sv->pars.mtpr) ii->commpertype=ro_commper_alt_int|ro_commper_true_positive_test; \
+    \
+    else ii->commpertype=ro_commper_alt_int; \
+  } \
+}
 
-#define GEN_PER_ALTERNATE_1(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=sv->pars.mbar; ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
-#define GEN_PER_ALTERNATE_2(MAIN,IT,IM) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->commpertype=ro_commper_alt; GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_INTERRUPTED_ALT_2 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { \
+  const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb); \
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
+  \
+  if(ecp < ii->end_comm_period) { \
+    ii->comm_period=time; \
+    ii->end_comm_period=ecp; \
+    \
+    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype=ro_commper_alt_int|ro_commper_true_positive_test; \
+    \
+    else ii->commpertype=ro_commper_alt_int; \
+  } \
+}
 
-#define GEN_PER_MAIN_ALTERNATE_0_1(IT,IM) GEN_PER_ALTERNATE_ONLY_1(IM);
-#define GEN_PER_MAIN_ALTERNATE_0_2(IT,IM) GEN_PER_ALTERNATE_ONLY_2(IM);
-#define GEN_PER_MAIN_ALTERNATE_1_0(IT,IM) GEN_PER_MAIN_1(IT);
-#define GEN_PER_MAIN_ALTERNATE_2_0(IT,IM) GEN_PER_MAIN_2(IT);
-#define GEN_PER_MAIN_ALTERNATE_1_1(IT,IM)  GEN_PER_ALTERNATE_1(1,IT,IM);
-#define GEN_PER_MAIN_ALTERNATE_2_1(IT,IM)  GEN_PER_ALTERNATE_1(2,IT,IM);
-#define GEN_PER_MAIN_ALTERNATE_1_2(IT,IM)  GEN_PER_ALTERNATE_2(1,IT,IM);
-#define GEN_PER_MAIN_ALTERNATE_2_2(IT,IM)  GEN_PER_ALTERNATE_2(2,IT,IM);
+#define GEN_PER_ALTERNATE_ONLY_1(IM,TESTING) ii->comm_period=sv->pars.mbar; ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM;
+#define GEN_PER_ALTERNATE_ONLY_2(IM,TESTING) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM;
+
+#define GEN_PER_ALTERNATE_1(MAIN,IT,IM,TESTING) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=sv->pars.mbar; ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_ALTERNATE_2(MAIN,IT,IM,TESTING) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+
+#define GEN_PER_MAIN_ALTERNATE_0_1(IT,IM,TESTING) GEN_PER_ALTERNATE_ONLY_1(IM,TESTING);
+#define GEN_PER_MAIN_ALTERNATE_0_2(IT,IM,TESTING) GEN_PER_ALTERNATE_ONLY_2(IM,TESTING);
+#define GEN_PER_MAIN_ALTERNATE_1_0(IT,IM,TESTING) GEN_PER_MAIN_1(IT);
+#define GEN_PER_MAIN_ALTERNATE_2_0(IT,IM,TESTING) GEN_PER_MAIN_2(IT);
+#define GEN_PER_MAIN_ALTERNATE_1_1(IT,IM,TESTING)  GEN_PER_ALTERNATE_1(1,IT,IM,TESTING);
+#define GEN_PER_MAIN_ALTERNATE_2_1(IT,IM,TESTING)  GEN_PER_ALTERNATE_1(2,IT,IM,TESTING);
+#define GEN_PER_MAIN_ALTERNATE_1_2(IT,IM,TESTING)  GEN_PER_ALTERNATE_2(1,IT,IM,TESTING);
+#define GEN_PER_MAIN_ALTERNATE_2_2(IT,IM,TESTING)  GEN_PER_ALTERNATE_2(2,IT,IM,TESTING);
 //! @endcond
 
 /**
@@ -210,22 +263,23 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
  * @param IT: Type of interrupted main period (0=none, 1=fixed, 2=variable)
  * @param ALTERNATE: Type of alternate period (0=none, 1=fixed, 2=variable)
  * @param IM: Type of interrupted alternate period (0=none, 1=fixed, 2=variable)
+ * @param TESTING: Indicates if testing is performed (0=no, 1=yes)
  * latent)
  */
-#define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _periods(sim_vars* sv, infindividual* ii) \
+#define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM,TESTING) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _ ## TESTING ## _periods(sim_vars* sv, infindividual* ii, infindividual* iiparent, const double inf_start) \
 { \
   GEN_PER_LATENT_ ## LATENT \
-  GEN_PER_MAIN_ALTERNATE_ ## MAIN ## _ ## ALTERNATE(IT,IM) \
+  GEN_PER_MAIN_ALTERNATE_ ## MAIN ## _ ## ALTERNATE(IT,IM,TESTING) \
 }
 
 //! @cond Doxygen_Suppress
 /**
  * The preprocessing macros below are used by the main GEN_PERS_MAIN macro.
  */
-#define GEN_PERS_IM(LATENT,MAIN,IT,ALTERNATE) GEN_PER(LATENT,MAIN,IT,ALTERNATE,0) GEN_PER(LATENT,MAIN,IT,ALTERNATE,1) GEN_PER(LATENT,MAIN,IT,ALTERNATE,2)
-#define GEN_PERS_ALT(LATENT,MAIN,IT) GEN_PER(LATENT,MAIN,IT,0,0) GEN_PERS_IM(LATENT,MAIN,IT,1) GEN_PERS_IM(LATENT,MAIN,IT,2)
-#define GEN_PERS_IT_0(LATENT) GEN_PERS_IM(LATENT,0,0,1) GEN_PERS_IM(LATENT,0,0,2)
-#define GEN_PERS_IT(LATENT,MAIN) GEN_PERS_ALT(LATENT,MAIN,0) GEN_PERS_ALT(LATENT,MAIN,1) GEN_PERS_ALT(LATENT,MAIN,2)
+#define GEN_PERS_IM(LATENT,MAIN,IT,ALTERNATE,TESTING) GEN_PER(LATENT,MAIN,IT,ALTERNATE,0,TESTING) GEN_PER(LATENT,MAIN,IT,ALTERNATE,1,TESTING) GEN_PER(LATENT,MAIN,IT,ALTERNATE,2,TESTING)
+#define GEN_PERS_ALT(LATENT,MAIN,IT,TESTING) GEN_PER(LATENT,MAIN,IT,0,0,TESTING) GEN_PERS_IM(LATENT,MAIN,IT,1,TESTING) GEN_PERS_IM(LATENT,MAIN,IT,2,TESTING)
+#define GEN_PERS_IT_0(LATENT,TESTING) GEN_PERS_IM(LATENT,0,0,1,TESTING) GEN_PERS_IM(LATENT,0,0,2,TESTING)
+#define GEN_PERS_IT(LATENT,MAIN,TESTING) GEN_PERS_ALT(LATENT,MAIN,0,TESTING) GEN_PERS_ALT(LATENT,MAIN,1,TESTING) GEN_PERS_ALT(LATENT,MAIN,2,TESTING)
 //! @endcond
 
 /**
@@ -233,24 +287,29 @@ inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_f
  * generates a specific combination of communicable and latent periods.
  *
  * @param LATENT: Type of latent period (0=none, 1=fixed, 2=variable)
+ * @param TESTING: Indicates if testing is performed (0=no, 1=yes)
  */
-#define GEN_PERS_MAIN(LATENT) GEN_PERS_IT_0(LATENT) GEN_PERS_IT(LATENT,1) GEN_PERS_IT(LATENT,2)
-GEN_PERS_MAIN(0)
-GEN_PERS_MAIN(1)
-GEN_PERS_MAIN(2)
+#define GEN_PERS_MAIN(LATENT,TESTING) GEN_PERS_IT_0(LATENT,TESTING) GEN_PERS_IT(LATENT,1,TESTING) GEN_PERS_IT(LATENT,2,TESTING)
+GEN_PERS_MAIN(0,0)
+GEN_PERS_MAIN(1,0)
+GEN_PERS_MAIN(2,0)
+GEN_PERS_MAIN(0,1)
+GEN_PERS_MAIN(1,1)
+GEN_PERS_MAIN(2,1)
 
 //! @cond Doxygen_Suppress
 /**
  * The preprocessing macros below are used by the main PER_COND macro.
  */
-#define PRI_PER_COND_AFTER_IM(LATENT,MAIN,IT,ALT,IM) sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALT ## _ ## IM ## _periods;
-#define PRI_PER_COND_AFTER_IT(LATENT,MAIN,IT,ALT,IM) if(sv->pars.pricommpertype&ro_pricommper_alt_int) {PRI_PER_COND_AFTER_IM(LATENT,MAIN,IT,ALT,IM)} else {PRI_PER_COND_AFTER_IM(LATENT,MAIN,IT,ALT,0)}
-#define PRI_PER_COND_FULL(LATENT,MAIN,IT,ALT,IM) if(sv->pars.pricommpertype&ro_pricommper_main_int) {PRI_PER_COND_AFTER_IT(LATENT,MAIN,IT,ALT,IM)} else {PRI_PER_COND_AFTER_IT(LATENT,MAIN,0,ALT,IM)}
-#define PER_COND_WITH_ALT(LATENT,MAIN,IT,ALT,IM)  sv->gen_time_periods_func=gen_comm_ ##  LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALT ## _ ## IM ## _periods; if(sv->pars.pricommpertype&ro_pricommper_main) {if(sv->pars.pricommpertype&ro_pricommper_alt) {PRI_PER_COND_FULL(LATENT,MAIN,IT,ALT,IM)} else {PRI_PER_COND_FULL(LATENT,MAIN,IT,0,0)}} else {PRI_PER_COND_FULL(LATENT,0,0,ALT,IM)}
-#define PER_COND_IM(LATENT,MAIN,IT,ALT) if(!(sv->pars.pim>0)) {PER_COND_WITH_ALT(LATENT,MAIN,IT,ALT,0)} else if(isinf(sv->pars.kappaim)) {PER_COND_WITH_ALT(LATENT,MAIN,IT,ALT,1)} else {PER_COND_WITH_ALT(LATENT,MAIN,IT,ALT,2)}
-#define PER_COND_ALT(LATENT,MAIN,IT) if(!(sv->pars.q>0)) {sv->gen_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _0_0_periods; if(sv->pars.pricommpertype&ro_pricommper_main_int) sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _0_0_periods; else sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _0_0_0_periods;} else if(isinf(sv->pars.kappaq)) {PER_COND_IM(LATENT,MAIN,IT,1)} else {PER_COND_IM(LATENT,MAIN,IT,2)};
-#define PER_COND_IT(LATENT,MAIN) if(!(sv->pars.pit>0)) {PER_COND_ALT(LATENT,MAIN,0)} else if(isinf(sv->pars.kappait)) {PER_COND_ALT(LATENT,MAIN,1)} else {PER_COND_ALT(LATENT,MAIN,2)};
-#define PER_COND_MAIN(LATENT) if(isinf(sv->pars.kappa)) {PER_COND_IT(LATENT,1)} else {PER_COND_IT(LATENT,2)};
+#define PRI_PER_COND_AFTER_IM(TESTING,LATENT,MAIN,IT,ALT,IM) sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALT ## _ ## IM ## _## TESTING ## _periods;
+#define PRI_PER_COND_AFTER_IT(TESTING,LATENT,MAIN,IT,ALT,IM) if(sv->pars.pricommpertype&ro_pricommper_alt_int) {PRI_PER_COND_AFTER_IM(TESTING,LATENT,MAIN,IT,ALT,IM)} else {PRI_PER_COND_AFTER_IM(TESTING,LATENT,MAIN,IT,ALT,0)}
+#define PRI_PER_COND_FULL(TESTING,LATENT,MAIN,IT,ALT,IM) if(sv->pars.pricommpertype&ro_pricommper_main_int) {PRI_PER_COND_AFTER_IT(TESTING,LATENT,MAIN,IT,ALT,IM)} else {PRI_PER_COND_AFTER_IT(TESTING,LATENT,MAIN,0,ALT,IM)}
+#define PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,IM)  sv->gen_time_periods_func=gen_comm_ ##  LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALT ## _ ## IM ## _ ## TESTING ## _periods; if(sv->pars.pricommpertype&ro_pricommper_main) {if(sv->pars.pricommpertype&ro_pricommper_alt) {PRI_PER_COND_FULL(TESTING,LATENT,MAIN,IT,ALT,IM)} else {PRI_PER_COND_FULL(TESTING,LATENT,MAIN,IT,0,0)}} else {PRI_PER_COND_FULL(TESTING,LATENT,0,0,ALT,IM)}
+#define PER_COND_IM(TESTING,LATENT,MAIN,IT,ALT) if(!(sv->pars.pim>0)) {PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,0)} else if(isinf(sv->pars.kappaim)) {PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,1)} else {PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,2)}
+#define PER_COND_ALT(TESTING,LATENT,MAIN,IT) if(!(sv->pars.q>0)) {sv->gen_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _0_0_ ## TESTING ## _periods; if(sv->pars.pricommpertype&ro_pricommper_main_int) sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _0_0_ ## TESTING ## _periods; else sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _0_0_0_ ## TESTING ## _periods;} else if(isinf(sv->pars.kappaq)) {PER_COND_IM(TESTING,LATENT,MAIN,IT,1)} else {PER_COND_IM(TESTING,LATENT,MAIN,IT,2)};
+#define PER_COND_IT(TESTING,LATENT,MAIN) if(!(sv->pars.pit>0)) {PER_COND_ALT(TESTING,LATENT,MAIN,0)} else if(isinf(sv->pars.kappait)) {PER_COND_ALT(TESTING,LATENT,MAIN,1)} else {PER_COND_ALT(TESTING,LATENT,MAIN,2)};
+#define PER_COND_MAIN(TESTING,LATENT) if(isinf(sv->pars.kappa)) {PER_COND_IT(TESTING,LATENT,1)} else {PER_COND_IT(TESTING,LATENT,2)};
+#define PER_COND_LATENT(TESTING) if(isnan(sv->pars.kappal)) {PER_COND_MAIN(TESTING,0)} else if(isinf(sv->pars.kappal)) {PER_COND_MAIN(TESTING,1)} else {PER_COND_MAIN(TESTING,2)};
 //! @endcond
 
 /**
@@ -262,7 +321,7 @@ GEN_PERS_MAIN(2)
  * periods to the gen_time_periods_func pointer of the simulation, given the
  * configuration of the model parameters.
  */
-#define PER_COND if(isnan(sv->pars.kappal)) {PER_COND_MAIN(0)} else if(isinf(sv->pars.kappal)) {PER_COND_MAIN(1)} else {PER_COND_MAIN(2)};
+#define PER_COND if(isnan(sv->pars.tdeltat)) {PER_COND_LATENT(0)} else {PER_COND_LATENT(1)};
 
 /**
  * @brief Default processing function that is called when a new transmission event is created.

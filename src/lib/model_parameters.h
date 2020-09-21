@@ -70,6 +70,9 @@ typedef struct
   double im95;	        //!< Parameter for the 95th percentile of the interrupted alternate communicable period (depends on imbar and kappaim)
   double ima;		//!< a parameter for the interrupted alternate communicable period (kappaim * imbar)
   double imb;		//!< b parameter for the interrupted alternate communicable period (1 / kappaim)
+  double ttpr;		//!< True positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the main period, for which a positive test would allow for the interruption of a child's communicable period
+  double mtpr;		//!< True positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the alternate period, for which a positive test would allow for the interruption of a child's communicable period
+  double tdeltat;	//!< Time delay between the end of the applicable communicable period and test results.
   double tmax;		//!< Maximum simulation period used to instantiate new infectious individuals
   uint32_t nstart;	//!< Initial number of infectious individuals
   uint32_t popsize;     //!< Population size (finite population simulation)

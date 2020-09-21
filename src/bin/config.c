@@ -163,6 +163,18 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.im95);
 
+      } else if(!argsdiffer(pbuf, "ttpr")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.ttpr);
+
+      } else if(!argsdiffer(pbuf, "mtpr")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.mtpr);
+
+      } else if(!argsdiffer(pbuf, "tdeltat")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.tdeltat);
+
       } else if(!argsdiffer(pbuf, "pri_no_main_period")) {
 	cp->pars.pricommpertype&=~ro_pricommper_main;
 
@@ -287,6 +299,9 @@ void printusage(const char* name)
   printf("\t--imbar VALUE\t\t\tMean period for the interrupted alternate communicable period (default value of itbar).\n");
   printf("\t--kappaim VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait).\n");
   printf("\t--im95 VALUE\t\t\t95th percentile of the interrupted alternate communicable period (default value of it95).\n");
+  printf("\t--ttpr VALUE\t\t\tTrue positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the main period, for which a positive test would allow for the interruption of a child's communicable period.\n");
+  printf("\t--mtpr VALUE\t\t\tTrue positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the alternate period, for which a positive test would allow for the interruption of a child's communicable period.\n");
+  printf("\t--tdeltat VALUE\t\t\tTime delay between the end of the applicable communicable period and test results.\n");
   printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period.\n");
   printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period.\n");
   printf("\t--pri_no_main_period_int\tThe main communicable period for a primary infectious individual cannot be interrupted.\n");

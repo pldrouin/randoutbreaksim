@@ -474,19 +474,63 @@ int model_pars_check(model_pars const* pars)
     ret-=512;
   }
 
+  //If testing is performed
+  if(!isnan(pars->tdeltat)) {
+
+    if(!(pars->tdeltat>=0)) {
+      fprintf(stderr,"%s: Error: A tdelta value larger or equal to 0 must be defined\n",__func__);
+      ret-=4096;
+    }
+
+    //If alternate communicable period exists
+    if(pars->q > 0) {
+
+      //The true positive rate for the alternate communicable period must be
+      //defined
+      if(!(pars->mtpr>=0) || !(pars->mtpr<=1)) {
+	fprintf(stderr,"%s: Error: An mtpr value in the interval [0,1] must be defined\n",__func__);
+	ret-=2048;
+      }
+    }
+
+    //If the main communicable period can be interrupted
+    if(!isnan(pars->pit)) {
+
+      //The true positive rate for the main communicable period must be
+      //defined
+      if(!(pars->ttpr>=0) || !(pars->ttpr<=1)) {
+	fprintf(stderr,"%s: Error: A ttpr value in the interval [0,1] must be defined\n",__func__);
+	ret-=2048;
+      }
+    }
+  }
+
+  if(pars->pit>0 || pars->pim>0 || !isnan(pars->tdeltat)) {
+
+    if(!(pars->ttpr>=0) || !(pars->ttpr<=1)) {
+      fprintf(stderr,"%s: Error: A ttpr value in the interval [0,1] must be defined\n",__func__);
+      ret-=1024;
+    }
+
+    if(!(pars->tdeltat>=0)) {
+      fprintf(stderr,"%s: Error: A tdelta value larger or equal to 0 must be defined\n",__func__);
+      ret-=4096;
+    }
+  }
+
   if(pars->tmax<=0) {
     fprintf(stderr,"%s: Error: tmax must be greater than 0\n",__func__);
-    ret-=1024;
+    ret-=8192;
   }
 
   if(pars->nstart<=0) {
     fprintf(stderr,"%s: Error: nstart must be greater than 0\n",__func__);
-    ret-=2048;
+    ret-=16384;
   }
 
   if(pars->popsize==0 && (pars->grouptype&ro_group_log_invitees)) {
     fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated using a logarithmically-distributed number of invitees\n",__func__);
-    ret-=4096;
+    ret-=32768;
   }
 
   return ret;

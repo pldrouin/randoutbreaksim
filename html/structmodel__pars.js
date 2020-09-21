@@ -25,6 +25,7 @@ var structmodel__pars =
     [ "ma", "structmodel__pars.html#aa921d35d09629ae8736eb58539de9013", null ],
     [ "mb", "structmodel__pars.html#a069de9b349fa2d3b95737aba316e360d", null ],
     [ "mbar", "structmodel__pars.html#a46b17003958e9764a687c5302faaac61", null ],
+    [ "mtpr", "structmodel__pars.html#a963b725d109e9b31683eae127134cec9", null ],
     [ "mu", "structmodel__pars.html#afccb717dc6645784a58a0eaa29db9e3c", null ],
     [ "nstart", "structmodel__pars.html#aef4e69e251970cf08a8023fb9789ce0d", null ],
     [ "p", "structmodel__pars.html#a3e7f9db94ea3e9f83745ba589e0c0794", null ],
@@ -39,6 +40,8 @@ var structmodel__pars =
     [ "ta", "structmodel__pars.html#ac3294a6592b42ba683557cd85c4a9396", null ],
     [ "tb", "structmodel__pars.html#a7b1725378a8aacc198eabaa6246755b2", null ],
     [ "tbar", "structmodel__pars.html#afe4a302aaf23965b4e5aeeeacad48b1d", null ],
+    [ "tdeltat", "structmodel__pars.html#a373b4abb19dc60d1a83f8acbde73b7f7", null ],
     [ "tmax", "structmodel__pars.html#aac4af9226e4d189e42d148ce178f4033", null ],
-    [ "trelpriend", "structmodel__pars.html#a4868af68ac9baf7ca9b5b16fad7d92b1", null ]
+    [ "trelpriend", "structmodel__pars.html#a4868af68ac9baf7ca9b5b16fad7d92b1", null ],
+    [ "ttpr", "structmodel__pars.html#adcdbe5ab4ef8814375f3722f52ba5456", null ]
 ];

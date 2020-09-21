@@ -29,13 +29,19 @@ int branchsim(sim_vars* sv)
   sv->brsim.iis[0].curevent=0;
   sv->brsim.iis[0].nattendees=1;
   sv->brsim.iis[0].ninfections=1;
+  sv->brsim.iis[0].commpertype=0;
+  sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=0;
 
   for(i=sim->nstart-1; i>=0; --i) {
     DEBUG_PRINTF("initial individual %i\n",i);
     //Generate the communicable period appropriately
-    sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1);
-    sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=(sv->pars.trelpriend?-sv->brsim.iis[1].latent_period-sv->brsim.iis[1].comm_period:0);
-    sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[0].event_time + sv->brsim.iis[1].latent_period + sv->brsim.iis[1].comm_period > sv->pars.tmax);
+    sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
+
+    if(sv->pars.trelpriend) {
+      sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period;
+      sv->brsim.iis[1].end_comm_period=0;
+
+    } else sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[1].end_comm_period > sv->pars.tmax);
     DEBUG_PRINTF("Comm period is %f%s\n",sv->brsim.iis[1].comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
 
     sv->new_pri_inf_proc_func(sv, sv->brsim.iis+1);
@@ -99,8 +105,8 @@ int branchsim(sim_vars* sv)
 	sv->curii=sv->brsim.iis+layer;
       }
       //Generate the communicable period appropriately
-      sv->gen_time_periods_func(sv, sv->curii);
-      sv->curii->commpertype|=ro_commper_tmax*((sv->curii-1)->event_time + sv->curii->latent_period + sv->curii->comm_period > sv->pars.tmax);
+      sv->gen_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
+      sv->curii->commpertype|=ro_commper_tmax*(sv->curii->end_comm_period > sv->pars.tmax);
       DEBUG_PRINTF("Comm period is %f%s\n",sv->curii->comm_period,(sv->curii->commpertype&ro_commper_tmax?" (reached end)":"")); \
 
       //Generate the number of events

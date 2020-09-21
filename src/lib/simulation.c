@@ -33,6 +33,9 @@ void sim_pars_init(model_pars* pars)
   pars->l95=NAN;
   pars->it95=NAN;
   pars->im95=NAN;
+  pars->ttpr=NAN;
+  pars->mtpr=NAN;
+  pars->tdeltat=NAN;
   pars->tmax=INFINITY;
   pars->nstart=1;
   pars->popsize=0;

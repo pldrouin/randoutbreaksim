@@ -5,6 +5,7 @@ var structinfindividual =
     [ "curevent", "structinfindividual.html#abdc378964903c1426594c32ee1639cfb", null ],
     [ "curinfection", "structinfindividual.html#ac2bf42f43b0b4db00dfa2c19bbd19264", null ],
     [ "dataptr", "structinfindividual.html#a157d62ba2c11a8b680e8a4ef7baa6cad", null ],
+    [ "end_comm_period", "structinfindividual.html#a01618e8bac96ca24b74359a7ab57622c", null ],
     [ "event_time", "structinfindividual.html#abb69b597195aa750d0fbb4dfa2626025", null ],
     [ "latent_period", "structinfindividual.html#aa01451a784f0632d3b6886b208dec889", null ],
     [ "nattendees", "structinfindividual.html#a092f217171512811e229e937d4765e27", null ],
