@@ -6,7 +6,7 @@
 
 #include "root_finder.h"
 
-int root_finder_find(root_finder* rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double* x)
+int root_finder_find(root_finder* rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double* x, double* calcdiff)
 {
   double diff;
   uint32_t iter=0;
@@ -31,5 +31,7 @@ int root_finder_find(root_finder* rf, const double eps, const uint32_t maxiter, 
     //printf(" (corrected x=%22.15e)\n",*x);
 
   } while(!(fabs(diff) < eps) && ++iter < maxiter);
+
+  if(calcdiff) *calcdiff=diff;
   return -samex-2*(iter==maxiter);
 }

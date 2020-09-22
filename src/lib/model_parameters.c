@@ -297,14 +297,15 @@ int model_solve_p_from_mu(model_pars* pars)
   else {
     root_finder* rf=root_finder_init(logroot, &pars->mu);
     pars->p=0.999;
+    double diff;
 
-    int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
+    int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p, &diff);
 
     root_finder_free(rf);
 
     if(ret) {
 
-      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_P_EPSF);
 
       else if(ret==-2) {
 	fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
@@ -323,14 +324,15 @@ int model_solve_p_from_mean(const double mean, model_pars* pars)
   else {
     root_finder* rf=root_finder_init(loggt1root, (void*)&mean);
     pars->p=0.999;
+    double diff;
 
-    int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p);
+    int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p, &diff);
 
     root_finder_free(rf);
 
     if(ret) {
 
-      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_P_EPSF);
 
       else if(ret==-2) {
 	fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
@@ -361,14 +363,15 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
       double pars[2]={*ave * *kappa, *kappa};
       root_finder* rf=root_finder_init(gpercroot, pars);
       *x95=*ave;
+      double diff;
 
-      int ret=root_finder_find(rf, RF_GPERC_EPSF, 100, *ave, 1e100, x95);
+      int ret=root_finder_find(rf, RF_GPERC_EPSF, 100, *ave, 1e100, x95, &diff);
 
       root_finder_free(rf);
 
       if(ret) {
 
-	if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+	if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_GPERC_EPSF);
 
 	else if(ret==-2) {
 	  fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
@@ -390,13 +393,14 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
       double otherkappa=*kappa*0.9;
       double pars[4]={*ave, *x95, otherkappa, gpercrootfunc(*ave * otherkappa, *x95 * otherkappa)};
       root_finder* rf=root_finder_init(gkapparoot, pars);
+      double diff;
 
-      int ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 1/ *ave, 1e100, kappa);
+      int ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 1/ *ave, 1e100, kappa, &diff);
 
 
       if(ret) {
 
-	if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+	if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_GKAPPA_EPSF);
 
 	else if(ret==-2) {
 	  fprintf(stderr,"%s: Warning: Root could not be found with a mode of the gamma distribution above 0. Now searching for a monotonically decreasing solution!\n",__func__);
@@ -405,9 +409,9 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
 	  pars[2]=otherkappa;
 	  pars[3]=gpercrootfunc(*ave * otherkappa, *x95 * otherkappa);
 
-          ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 0, 1/ *ave, kappa);
+          ret=root_finder_find(rf, RF_GKAPPA_EPSF, 100, 0, 1/ *ave, kappa, &diff);
 
-	  if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy is larger than provided!\n",__func__);
+	  if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_GKAPPA_EPSF);
 	  else if(ret==-2) {
 	    fprintf(stderr,"%s: Error: Root could not be found with a mode of the gamma distribution at 0.!\n",__func__);
 	    root_finder_free(rf);

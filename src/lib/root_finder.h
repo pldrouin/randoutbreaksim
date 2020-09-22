@@ -65,6 +65,6 @@ inline static void root_finder_free(root_finder* rf){free(rf);}
  * computed root.
  * @return 0 if successful and a non-zero value otherwise.
  */
-int root_finder_find(root_finder* rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double* x);
+int root_finder_find(root_finder* rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double* x, double* calcdiff);
 
 #endif
