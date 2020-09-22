@@ -31,7 +31,7 @@ typedef struct
   double extinction_time;	//!< Path extinction time, if any.
   double commpersum;		//!< Sum of communicable periods for all infectious individuals whose communicable period does not occur after tmax.
   uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infectious at some point in this interval (lower bound included, upper bound excluded).
-  uint32_t* totinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
+  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
   uint32_t* totaltctc_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are in contact at some point in this interval with an individual whose communicable period is the alternate period (lower bound included, upper bound excluded). For the last interval, it includes the contacts that occur between floor(tmax) and tmax.
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
   uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
@@ -78,7 +78,7 @@ inline static void std_stats_path_init(std_summary_stats* stats)
   stats->extinction_time=0;
   stats->commpersum=0;
   memset(stats->inf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
-  memset(stats->totinf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
+  memset(stats->newinf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->totaltctc_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   stats->rsum=0;
 #ifdef NUMEVENTSSTATS
@@ -106,7 +106,7 @@ inline static void std_stats_ii_alloc(infindividual* ii){ii->dataptr=malloc(2*si
  *
  * @param stats: Pointer to the standard summary statistics.
  */
-inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline-stats->timelineshift); free(stats->totinf_timeline-stats->timelineshift); free(stats->totaltctc_timeline-stats->timelineshift);}
+inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline-stats->timelineshift); free(stats->newinf_timeline-stats->timelineshift); free(stats->totaltctc_timeline-stats->timelineshift);}
 
 /**
  * @brief Processes the number of infections for this new event.
@@ -132,7 +132,7 @@ inline static bool std_stats_new_event(sim_vars* sv)
     //The following condition on event_time is looser than the one in the
     //returned statemtn
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-      ((std_summary_stats*)sv->dataptr)->totinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
+      ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
       return (sv->curii->event_time <= sv->pars.tmax);
     }
   }
@@ -166,14 +166,14 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       const int eti=floor(sv->curii->event_time);
 
-      if(((std_summary_stats*)sv->dataptr)->totinf_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax)
-	((std_summary_stats*)sv->dataptr)->totinf_timeline[eti]+=sv->curii->ninfections;
+      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax)
+	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
 
       else {
 	((std_summary_stats*)sv->dataptr)->extinction=false;
 
 	if(eti < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=eti;
-	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->totinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
+	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
 	return false;
       }
       return (sv->curii->event_time <= sv->pars.tmax);
@@ -228,9 +228,9 @@ inline static void std_stats_new_pri_inf(sim_vars* sv, infindividual* ii)
 
     newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
     memset(newarray,0,(newshift-stats->timelineshift)*sizeof(uint32_t));
-    memcpy(newarray+newshift-stats->timelineshift,stats->totinf_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
-    free(stats->totinf_timeline-stats->timelineshift);
-    stats->totinf_timeline=newarray+newshift;
+    memcpy(newarray+newshift-stats->timelineshift,stats->newinf_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
+    free(stats->newinf_timeline-stats->timelineshift);
+    stats->newinf_timeline=newarray+newshift;
 
     newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
     memset(newarray,0,(newshift-stats->timelineshift)*sizeof(uint32_t));

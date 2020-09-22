@@ -12,7 +12,7 @@ void std_stats_init(sim_vars* sv, uint64_t** ngeninfs, uint32_t* ninfbins)
   stats->timelineshift=0;
   stats->tnpersa=stats->npers=(int)sv->pars.tmax+1;
   stats->inf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
-  stats->totinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  stats->newinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->totaltctc_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
 
   if(ngeninfs && ninfbins) {

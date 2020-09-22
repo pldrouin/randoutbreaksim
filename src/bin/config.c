@@ -294,20 +294,20 @@ void printusage(const char* name)
   printf("\t--mbar VALUE\t\t\tMean period for the alternate communicable period (required if q>0).\n");
   printf("\t--kappaq VALUE\t\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period.\n");
   printf("\t--m95 VALUE\t\t\t95th percentile of the alternate communicable period.\n");
-  printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption (default value of 0).\n");
+  printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption (default value of 0). This option makes a model diverge from a branching process.\n");
   printf("\t--itbar VALUE\t\t\tMean period for the interrupted main communicable period (required if pit>0).\n");
   printf("\t--kappait VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted main communicable period.\n");
   printf("\t--it95 VALUE\t\t\t95th percentile of the interrupted main communicable period.\n");
-  printf("\t--pim VALUE\t\t\tProbability of alternate communicable period interruption (default value of pit).\n");
+  printf("\t--pim VALUE\t\t\tProbability of alternate communicable period interruption (default value of pit). This option makes a model diverge from a branching process.\n");
   printf("\t--imbar VALUE\t\t\tMean period for the interrupted alternate communicable period (default value of itbar).\n");
   printf("\t--kappaim VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted alternate communicable period (default value of kappait).\n");
   printf("\t--im95 VALUE\t\t\t95th percentile of the interrupted alternate communicable period (default value of it95).\n");
   printf("\t--ttpr VALUE\t\t\tTrue positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the main period, for which a positive test would allow for the interruption of a child's communicable period.\n");
   printf("\t--mtpr VALUE\t\t\tTrue positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the alternate period, for which a positive test would allow for the interruption of a child's communicable period.\n");
   printf("\t--tdeltat VALUE\t\t\tTime delay between the end of the applicable communicable period and test results.\n");
-  printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period.\n");
-  printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period.\n");
-  printf("\t--pri_no_alt_test_fnr\t\tThe alternate communicable period for a primary infectious individual cannot result in a false negative test.\n");
+  printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period. This option makes a model diverge from a branching process.\n");
+  printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period. This option makes a model diverge from a branching process.\n");
+  printf("\t--pri_no_alt_test_fnr\t\tThe alternate communicable period for a primary infectious individual cannot result in a false negative test. This option makes a model diverge from a branching process.\n");
 
   printf("\t--time_rel_pri_infectious\tRecorded event time is relative to the time the generated primary individuals become infectious.\n");
   printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
@@ -333,7 +333,7 @@ void printusage(const char* name)
 
   printf("\n\tSimulation path records:\n");
   printf("\t\t-Unsigned 32 bit value: The number of written successive time bins.\n");
-  printf("\t\t-Unsigned 32 bit value: Field is written only if time_rel_pri_end is used. Value is the number of time bins before t=0.\n");
+  printf("\t\t-Unsigned 32 bit value: Field is written only if the time mode is not the primary individual creation time. Value is the number of time bins before t=0.\n");
   printf("\t\t-Unsigned 8 bit value: value of 1 if the path goes extinct, and 0 otherwise.\n");
   printf("\n\t\t-For each time bin, chronologically written:\n");
   printf("\t\t\t-Unsigned 32 bit value: Number of active infections.\n");
