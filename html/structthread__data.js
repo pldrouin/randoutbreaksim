@@ -10,6 +10,10 @@ var structthread__data =
     [ "newinf_timeline_mean_noext", "structthread__data.html#abd7f04256def1c7e9996cd522a0b613b", null ],
     [ "newinf_timeline_std_ext", "structthread__data.html#a115424da401c9ee2cbaa7e28fefd481d", null ],
     [ "newinf_timeline_std_noext", "structthread__data.html#afd25772bcb071065c7ce7334e7ac33d9", null ],
+    [ "newpostest_timeline_mean_ext", "structthread__data.html#a792106c2d3c564c38563c2308d815d76", null ],
+    [ "newpostest_timeline_mean_noext", "structthread__data.html#af379b0c0dbb6933d654780439a7f1fe0", null ],
+    [ "newpostest_timeline_std_ext", "structthread__data.html#a4bf877756a5aa4e0ef63ce72e1ff8ae9", null ],
+    [ "newpostest_timeline_std_noext", "structthread__data.html#af37fc597069c4c19631ad2173b77e30c", null ],
     [ "ngeninfs", "structthread__data.html#a1931ab6fdd1cc8df9de999c8351aeddd", null ],
     [ "nimaxedoutmintimeindex", "structthread__data.html#a0dd28a746a09a1549eea13c6f903da93", null ],
     [ "ninfbins", "structthread__data.html#ab04ae084ec8430fea9ec96385f0160b6", null ],
@@ -23,9 +27,5 @@ var structthread__data =
     [ "te_mean", "structthread__data.html#a52ff855b6828d3254ec72c75a3046be3", null ],
     [ "te_std", "structthread__data.html#ac796c466bbeb18757234e7478cfa6f05", null ],
     [ "tlflock", "structthread__data.html#a6c7dd5c96643ad1fd1996ee85cb6ceec", null ],
-    [ "tnpersa", "structthread__data.html#a59a7be74fadf80b342fc61ef32926644", null ],
-    [ "totaltctc_timeline_mean_ext", "structthread__data.html#a2894079056663bfd4b94ea8721273880", null ],
-    [ "totaltctc_timeline_mean_noext", "structthread__data.html#abaf0a15f008f2f51dac78d62b1ff03bd", null ],
-    [ "totaltctc_timeline_std_ext", "structthread__data.html#a53e72dfd9a658a4568ec3226aa695ac0", null ],
-    [ "totaltctc_timeline_std_noext", "structthread__data.html#a171a8d11e91153e9c6817133ec318212", null ]
+    [ "tnpersa", "structthread__data.html#a59a7be74fadf80b342fc61ef32926644", null ]
 ];

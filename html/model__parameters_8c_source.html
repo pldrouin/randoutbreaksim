@@ -555,7 +555,7 @@ $(document).ready(function(){initNavTree('model__parameters_8c_source.html','');
 <div class="line"><a name="l00466"></a><span class="lineno">  466</span>&#160;    ret-=128;</div>
 <div class="line"><a name="l00467"></a><span class="lineno">  467</span>&#160;  }</div>
 <div class="line"><a name="l00468"></a><span class="lineno">  468</span>&#160; </div>
-<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;  <span class="keywordflow">if</span>((pars-&gt;<a class="code" href="structmodel__pars.html#accb0825b67f69fe2cf424917b323343b">pricommpertype</a>&amp;ro_pricommper_main) &amp;&amp; (pars-&gt;<a class="code" href="structmodel__pars.html#a95546a6a400ce3c593f4e7e3034b397d">timetype</a>&amp;ro_time_pri_test_results)) {</div>
+<div class="line"><a name="l00469"></a><span class="lineno">  469</span>&#160;  <span class="keywordflow">if</span>((pars-&gt;<a class="code" href="structmodel__pars.html#accb0825b67f69fe2cf424917b323343b">pricommpertype</a>&amp;ro_pricommper_main) &amp;&amp; (pars-&gt;<a class="code" href="structmodel__pars.html#a95546a6a400ce3c593f4e7e3034b397d">timetype</a>==ro_time_pri_test_results)) {</div>
 <div class="line"><a name="l00470"></a><span class="lineno">  470</span>&#160;    fprintf(stderr,<span class="stringliteral">&quot;%s: Error: Invalid configuration for the combination of communicable period and time of the primary infectious individuals. Time relative to test results cannot be used if the main communicable period is allowed for primary infectious individuals\n&quot;</span>,__func__);</div>
 <div class="line"><a name="l00471"></a><span class="lineno">  471</span>&#160;    ret-=256;</div>
 <div class="line"><a name="l00472"></a><span class="lineno">  472</span>&#160;  }</div>

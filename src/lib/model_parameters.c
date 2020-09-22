@@ -466,7 +466,7 @@ int model_pars_check(model_pars const* pars)
     ret-=128;
   }
 
-  if((pars->pricommpertype&ro_pricommper_main) && (pars->timetype&ro_time_pri_test_results)) {
+  if((pars->pricommpertype&ro_pricommper_main) && (pars->timetype==ro_time_pri_test_results)) {
     fprintf(stderr,"%s: Error: Invalid configuration for the combination of communicable period and time of the primary infectious individuals. Time relative to test results cannot be used if the main communicable period is allowed for primary infectious individuals\n",__func__);
     ret-=256;
   }

@@ -54,10 +54,10 @@ typedef struct {
   double* newinf_timeline_std_ext;
   double* newinf_timeline_mean_noext;
   double* newinf_timeline_std_noext;
-  double* totaltctc_timeline_mean_ext;
-  double* totaltctc_timeline_std_ext;
-  double* totaltctc_timeline_mean_noext;
-  double* totaltctc_timeline_std_noext;
+  double* newpostest_timeline_mean_ext;
+  double* newpostest_timeline_std_ext;
+  double* newpostest_timeline_mean_noext;
+  double* newpostest_timeline_std_noext;
   uint64_t* ngeninfs;
   uint32_t ninfbins;
   uint32_t nimaxedoutmintimeindex;

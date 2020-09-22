@@ -27,7 +27,7 @@ typedef struct
     void* dataptr;	      //!< Data pointer for user-defined functions
     double latent_period;     //!< Latent period
     double comm_period;       //!< Communicable period
-    double end_comm_period;   //!> End of communicable period
+    double end_comm_period;   //!< End of communicable period
     double event_time;	      //!< Start time for the current iteration event
     uint32_t nevents;	      //!< Number of events
     uint32_t curevent;	      //!< Index of the current iteration event
