@@ -181,11 +181,8 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "pri_no_alt_period")) {
 	cp->pars.pricommpertype&=~ro_pricommper_alt;
 
-      } else if(!argsdiffer(pbuf, "pri_no_main_period_int")) {
-	cp->pars.pricommpertype&=~ro_pricommper_main_int;
-
-      } else if(!argsdiffer(pbuf, "pri_no_alt_period_int")) {
-	cp->pars.pricommpertype&=~ro_pricommper_alt_int;
+      } else if(!argsdiffer(pbuf, "pri_no_alt_test_fnr")) {
+	cp->pars.pricommpertype&=~ro_pricommper_alt_use_tpr;
 
       } else if(!argsdiffer(pbuf, "time_rel_pri_end")) {
 	cp->pars.trelpriend=true;
@@ -304,8 +301,7 @@ void printusage(const char* name)
   printf("\t--tdeltat VALUE\t\t\tTime delay between the end of the applicable communicable period and test results.\n");
   printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period.\n");
   printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period.\n");
-  printf("\t--pri_no_main_period_int\tThe main communicable period for a primary infectious individual cannot be interrupted.\n");
-  printf("\t--pri_no_alt_period_int\t\tThe alternate communicable period for a primary infectious individual cannot be interrupted.\n");
+  printf("\t--pri_no_alt_test_fnr\t\tThe alternate communicable period for a primary infectious individual cannot result in a false negative test.\n");
 
   printf("\t--time_rel_pri_end\t\tRecorded event time is relative to the end of the communicable period for the generated primary infectious individuals.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");

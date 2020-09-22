@@ -39,7 +39,7 @@ void sim_pars_init(model_pars* pars)
   pars->tmax=INFINITY;
   pars->nstart=1;
   pars->popsize=0;
-  pars->pricommpertype=ro_pricommper_main|ro_pricommper_alt|ro_pricommper_main_int|ro_pricommper_alt_int;
+  pars->pricommpertype=ro_pricommper_main|ro_pricommper_alt|ro_pricommper_alt_use_tpr;
   pars->grouptype=ro_group_log_attendees_plus_1;
   pars->trelpriend=false;
 }

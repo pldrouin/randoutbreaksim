@@ -60,7 +60,7 @@ int model_solve_pars(model_pars* pars)
       printf("Parameters for the interrupted main time gamma distribution:\n");
       printf("pit:\t%22.15e\n",pars->pit);
       printf("itbar:\t%22.15e\n",pars->itbar);
-      printf("kappait:\t%22.15e\n",pars->kappait);
+      printf("kappait:%22.15e\n",pars->kappait);
       printf("it95:\t%22.15e\n",pars->it95);
       printf("ita:\t%22.15e\n",pars->ita);
       printf("itb:\t%22.15e\n",pars->itb);
@@ -104,7 +104,7 @@ int model_solve_pars(model_pars* pars)
 	printf("Parameters for the interrupted alternate time gamma distribution:\n");
 	printf("pim:\t%22.15e\n",pars->pim);
 	printf("imbar:\t%22.15e\n",pars->imbar);
-	printf("kappaim:\t%22.15e\n",pars->kappaim);
+	printf("kappaim:%22.15e\n",pars->kappaim);
 	printf("im95:\t%22.15e\n",pars->im95);
         printf("ima:\t%22.15e\n",pars->ima);
         printf("imb:\t%22.15e\n",pars->imb);
@@ -128,7 +128,7 @@ int model_solve_pars(model_pars* pars)
 	  printf("Parameters for the interrupted alternate time gamma distribution:\n");
 	  printf("pim:\t%22.15e\n",pars->pim);
 	  printf("imbar:\t%22.15e\n",pars->imbar);
-	  printf("kappaim:\t%22.15e\n",pars->kappaim);
+	  printf("kappaim:%22.15e\n",pars->kappaim);
 	  printf("im95:\t%22.15e\n",pars->im95);
           printf("ima:\t%22.15e\n",pars->ima);
           printf("imb:\t%22.15e\n",pars->imb);
@@ -438,10 +438,6 @@ int model_pars_check(model_pars const* pars)
   if(pars->pit<0 || pars->pit>1) {
     fprintf(stderr,"%s: Error: pit must be in the interval [0.1]\n",__func__);
     ret-=4;
-
-  } else if(pars->pit==1 && !(pars->pricommpertype&ro_pricommper_main_int)) {
-    fprintf(stderr,"%s: Error: Invalid configuration for the communicable period of the primary infectious individuals. The interrupted main communicable period distributions cannot be excluded if the probability for the main communicable period interruption is 1\n",__func__);
-    ret-=8;
   }
 
   if(pars->q<0 || pars->q>1) {
@@ -453,10 +449,6 @@ int model_pars_check(model_pars const* pars)
     if(pars->pim<0 || pars->pim>1) {
       fprintf(stderr,"%s: Error: pim must be in the interval [0.1]\n",__func__);
       ret-=32;
-
-    } else if(pars->pim==1 && !(pars->pricommpertype&ro_pricommper_alt_int)) {
-      fprintf(stderr,"%s: Error: Invalid configuration for the communicable period of the primary infectious individuals. The interrupted alternate communicable period distributions cannot be excluded if the probability for the alternate communicable period interruption is 1\n",__func__);
-      ret-=64;
     }
 
     if(pars->q==1 && !(pars->pricommpertype&ro_pricommper_alt)) {

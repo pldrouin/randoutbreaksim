@@ -21,7 +21,7 @@
 /**
  * Primary individual communicable period model type. Flags used to specify the model.
  **/
-enum ro_pricommper_model_flags {ro_pricommper_main=1, ro_pricommper_alt=2, ro_pricommper_main_int=4, ro_pricommper_alt_int=8};
+enum ro_pricommper_model_flags {ro_pricommper_main=1, ro_pricommper_alt=2, ro_pricommper_alt_use_tpr=4};
 
 /**
  * Group model type. Flags used to specify the model. ro_log_group_attendees_plus_1,

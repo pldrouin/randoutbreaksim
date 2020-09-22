@@ -169,7 +169,7 @@ Macros</h2></td></tr>
 <tr class="memitem:a60f8c027c946aa65c2164c186d778583"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a60f8c027c946aa65c2164c186d778583">GEN_PERS_MAIN</a>(LATENT,  TESTING)&#160;&#160;&#160;GEN_PERS_IT_0(LATENT,TESTING) GEN_PERS_IT(LATENT,1,TESTING) GEN_PERS_IT(LATENT,2,TESTING)</td></tr>
 <tr class="memdesc:a60f8c027c946aa65c2164c186d778583"><td class="mdescLeft">&#160;</td><td class="mdescRight">For a given type of latent period, generates functions that each generates a specific combination of communicable and latent periods.  <a href="simulation_8h.html#a60f8c027c946aa65c2164c186d778583">More...</a><br /></td></tr>
 <tr class="separator:a60f8c027c946aa65c2164c186d778583"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a27c7cde9db55b6b22c9bb6287c0b19ab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a27c7cde9db55b6b22c9bb6287c0b19ab">PER_COND</a>&#160;&#160;&#160;if(isnan(sv-&gt;pars.tdeltat)) {PER_COND_LATENT(0)} else {PER_COND_LATENT(1)};</td></tr>
+<tr class="memitem:a27c7cde9db55b6b22c9bb6287c0b19ab"><td class="memItemLeft" align="right" valign="top">#define&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a27c7cde9db55b6b22c9bb6287c0b19ab">PER_COND</a>&#160;&#160;&#160;if(isnan(sv-&gt;pars.tdeltat)) {PER_COND_LATENT(0)} else {PER_COND_LATENT(2)};</td></tr>
 <tr class="memdesc:a27c7cde9db55b6b22c9bb6287c0b19ab"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods.  <a href="simulation_8h.html#a27c7cde9db55b6b22c9bb6287c0b19ab">More...</a><br /></td></tr>
 <tr class="separator:a27c7cde9db55b6b22c9bb6287c0b19ab"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
@@ -295,7 +295,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00269">269</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00270">270</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -329,12 +329,12 @@ Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">LATENT</td><td>Type of latent period (0=none, 1=fixed, 2=variable) </td></tr>
-    <tr><td class="paramname">TESTING</td><td>Indicates if testing is performed (0=no, 1=yes) </td></tr>
+    <tr><td class="paramname">TESTING</td><td>Indicates if testing is performed (0=no, 1=yes, true positive rate of 1, 2=yes, true positive rate &lt; 1) </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00292">292</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00294">294</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -345,7 +345,7 @@ Functions</h2></td></tr>
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">#define PER_COND&#160;&#160;&#160;if(isnan(sv-&gt;pars.tdeltat)) {PER_COND_LATENT(0)} else {PER_COND_LATENT(1)};</td>
+          <td class="memname">#define PER_COND&#160;&#160;&#160;if(isnan(sv-&gt;pars.tdeltat)) {PER_COND_LATENT(0)} else {PER_COND_LATENT(2)};</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -353,7 +353,7 @@ Functions</h2></td></tr>
 <p>Generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods. </p>
 <p>This preprocessing macro generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods to the gen_time_periods_func pointer of the simulation, given the configuration of the model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00324">324</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00327">327</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -408,7 +408,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the event does not occur after tmax, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00335">335</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00338">338</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -444,7 +444,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00343">343</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00346">346</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -485,7 +485,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00351">351</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00354">354</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -526,7 +526,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00359">359</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00362">362</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>

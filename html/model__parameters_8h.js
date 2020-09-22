@@ -13,8 +13,7 @@ var model__parameters_8h =
     [ "ro_pricommper_model_flags", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4b", [
       [ "ro_pricommper_main", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4ba6d0e763ed63e7f3b2da53114005dc69c", null ],
       [ "ro_pricommper_alt", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4ba56bb5cdf60b66575bcb4dceddc326b1f", null ],
-      [ "ro_pricommper_main_int", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4ba1f7e51c526550a0845010ddd0d4dcf15", null ],
-      [ "ro_pricommper_alt_int", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4ba3e0eec5c4f30f585fb13af5170a2c98c", null ]
+      [ "ro_pricommper_alt_use_tpr", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4baa6223af1bc49dd5f3877510437b80ce0", null ]
     ] ],
     [ "gkapparoot", "model__parameters_8h.html#acf51a1f2b9eabe0496061944e4872065", null ],
     [ "gpercroot", "model__parameters_8h.html#a3d757fa02920ff161046b12b01b41205", null ],
