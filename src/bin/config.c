@@ -334,7 +334,9 @@ void printusage(const char* name)
   printf("\n\tAll fields are stored in little endian.\n");
   printf("\n\tFile header:\n");
   printf("\t\t-Unsigned 32 bit value: floor(tmax)+1, the number of time bins starting from t=0.\n");
-  printf("\t\t-Unsigned 8 bit field: time model. value of 1 for primary individual creation time, 2 for time primary individual becomes infectious, 3 for end of communicable period for primary individual, 4 for test results for primary individual.\n");
+  printf("\t\t-8 bit field:\n");
+  printf("\t\t\tBits 0 to 2: A value from the three lower significant bits is used to indicate the model of the time origin. A value of 1 for primary individual creation time, 2 for time primary individual becomes infectious (time_rel_pri_infectious), 3 for end of communicable period for primary individual (time_rel_pri_end_comm), 4 for test results for primary individual (time_rel_pri_test_results).\n");
+  printf("\t\t\tBit 3: Indicates if a timeline is included for positive test results.\n");
 
   printf("\n\tSimulation path records:\n");
   printf("\t\t-Unsigned 32 bit value: The number of written successive time bins.\n");
@@ -343,4 +345,5 @@ void printusage(const char* name)
   printf("\n\t\t-For each time bin, chronologically written:\n");
   printf("\t\t\t-Unsigned 32 bit value: Number of active infections.\n");
   printf("\t\t\t-Unsigned 32 bit value: Number of new infections.\n");
+  printf("\t\t\t-Unsigned 32 bit value: Number of new positive test results (written only if indivated in the file header).\n");
 }

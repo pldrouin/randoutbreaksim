@@ -37,8 +37,9 @@ int main(const int nargs, const char* args[])
       perror("tlout");
       return 1;
     }
+    ubuf=cp.pars.timetype|((!isnan(cp.pars.tdeltat))<<3);
 
-    if(write(cp.tlout,&cp.pars.timetype,1)!=1) {
+    if(write(cp.tlout,&ubuf,1)!=1) {
       perror("tlout");
       return 1;
     }
@@ -313,8 +314,16 @@ void* simthread(void* arg)
       exit(1);
     }
 
-    if(cp->pars.timetype!=ro_time_pri_created) buf_write_func=tlo_write_reltime_path;
-    else buf_write_func=tlo_write_reg_path;
+    if(cp->pars.timetype!=ro_time_pri_created) {
+
+      if(isnan(cp->pars.tdeltat)) buf_write_func=tlo_write_reltime_path;
+      else buf_write_func=tlo_write_reltime_postest_path;
+
+    } else {
+
+      if(isnan(cp->pars.tdeltat)) buf_write_func=tlo_write_reg_path;
+      else buf_write_func=tlo_write_reg_postest_path;
+    }
   }
 
   sim_vars sv;
@@ -362,6 +371,7 @@ void* simthread(void* arg)
   uint32_t* abs_newpostest_timeline;
   int i;
   ssize_t maxwrite;
+  const ssize_t binsize=(2+1*(!isnan(cp->pars.tdeltat)))*sizeof(uint32_t);
 
   for(;;) {
     curset=__sync_fetch_and_add(data->set,1);
@@ -387,7 +397,7 @@ void* simthread(void* arg)
       abs_newpostest_timeline=stats.newpostest_timeline-stats.timelineshift;
 
       if(cp->tlout) {
-	maxwrite=9+8*stats.tnpersa;
+	maxwrite=9+binsize*stats.tnpersa;
 
 	if(tlobsize+maxwrite > tlobasize) {
 
