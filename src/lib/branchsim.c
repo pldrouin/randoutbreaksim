@@ -14,7 +14,6 @@ void branchsim_init(sim_vars* sv)
 
   for(uint32_t i=0; i<INIT_N_LAYERS; ++i) sv->ii_alloc_proc_func(sv->brsim.iis+i);
   sv->brsim.nlayers=INIT_N_LAYERS;
-  sv->brsim.iis[0].event_time=0;
   ran_log_init(&sv->rl, (rng_stream*)sv->r->state, sv->pars.p);
 
   BR_GENINF_COND;
@@ -29,7 +28,6 @@ int branchsim(sim_vars* sv)
   sv->brsim.iis[0].curevent=0;
   sv->brsim.iis[0].nattendees=1;
   sv->brsim.iis[0].ninfections=1;
-  sv->brsim.iis[0].commpertype=0;
   sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=0;
 
   for(i=sim->nstart-1; i>=0; --i) {
@@ -37,11 +35,9 @@ int branchsim(sim_vars* sv)
     //Generate the communicable period appropriately
     sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
 
-    if(sv->pars.trelpriend) {
-      sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period;
-      sv->brsim.iis[1].end_comm_period=0;
+    sv->gen_time_origin_func(sv);
+    sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[1].end_comm_period > sv->pars.tmax);
 
-    } else sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[1].end_comm_period > sv->pars.tmax);
     DEBUG_PRINTF("Comm period is %f%s\n",sv->brsim.iis[1].comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
 
     sv->new_pri_inf_proc_func(sv, sv->brsim.iis+1);
@@ -63,7 +59,7 @@ int branchsim(sim_vars* sv)
     sv->curii->curevent=0;
 
     for(;;) {
-      sv->curii->event_time=(sv->curii-1)->event_time+sv->curii->latent_period+sv->curii->comm_period*(1-gsl_rng_uniform(sv->r));
+      sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
       //sv->curii->event_time=sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
       DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->curevent,sv->curii->nevents,sv->curii->event_time);
 
@@ -119,7 +115,7 @@ int branchsim(sim_vars* sv)
 	sv->new_inf_proc_func(sv, sv->curii);
 	//Generate the event time
 gen_event:
-	sv->curii->event_time=(sv->curii-1)->event_time+sv->curii->latent_period+sv->curii->comm_period*(1-gsl_rng_uniform(sv->r));
+        sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
 	//sv->curii->event_time=(sv->curii-1)->event_time+sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
 	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->curevent,sv->curii->nevents,sv->curii->event_time);
 

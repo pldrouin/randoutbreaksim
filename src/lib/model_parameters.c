@@ -442,28 +442,33 @@ int model_pars_check(model_pars const* pars)
 
   if(pars->q<0 || pars->q>1) {
     fprintf(stderr,"%s: Error: q must be in the [0,1] interval\n",__func__);
-    ret-=16;
+    ret-=8;
 
   } else if(pars->q>0) {
 
     if(pars->pim<0 || pars->pim>1) {
       fprintf(stderr,"%s: Error: pim must be in the interval [0.1]\n",__func__);
-      ret-=32;
+      ret-=16;
     }
 
     if(pars->q==1 && !(pars->pricommpertype&ro_pricommper_alt)) {
       fprintf(stderr,"%s: Error: Invalid configuration for the communicable period of the primary infectious individuals. The alternate communicable period distributions cannot be excluded if the probability for the alternate communicable period is 1\n",__func__);
-      ret-=128;
+      ret-=32;
     }
 
   } else if(!(pars->pricommpertype&ro_pricommper_main)) {
     fprintf(stderr,"%s: Error: Invalid configuration for the communicable period of the primary infectious individuals. The main communicable period distributions cannot be excluded if the probability for the alternate communicable period is 0\n",__func__);
-    ret-=256;
+    ret-=64;
   }
 
   if(!(pars->pricommpertype&(ro_pricommper_main|ro_pricommper_alt))) {
     fprintf(stderr,"%s: Error: Invalid configuration for the communicable period of the primary infectious individuals. Both communicable period distributions cannot be excluded\n",__func__);
-    ret-=512;
+    ret-=128;
+  }
+
+  if((pars->pricommpertype&ro_pricommper_main) && (pars->timetype&ro_time_pri_test_results)) {
+    fprintf(stderr,"%s: Error: Invalid configuration for the combination of communicable period and time of the primary infectious individuals. Time relative to test results cannot be used if the main communicable period is allowed for primary infectious individuals\n",__func__);
+    ret-=256;
   }
 
   //If testing is performed
@@ -471,7 +476,7 @@ int model_pars_check(model_pars const* pars)
 
     if(!(pars->tdeltat>=0)) {
       fprintf(stderr,"%s: Error: A tdelta value larger or equal to 0 must be defined\n",__func__);
-      ret-=4096;
+      ret-=512;
     }
 
     //If alternate communicable period exists
@@ -481,7 +486,7 @@ int model_pars_check(model_pars const* pars)
       //defined
       if(!(pars->mtpr>=0) || !(pars->mtpr<=1)) {
 	fprintf(stderr,"%s: Error: An mtpr value in the interval [0,1] must be defined\n",__func__);
-	ret-=2048;
+	ret-=1024;
       }
     }
 
@@ -501,28 +506,28 @@ int model_pars_check(model_pars const* pars)
 
     if(!(pars->ttpr>=0) || !(pars->ttpr<=1)) {
       fprintf(stderr,"%s: Error: A ttpr value in the interval [0,1] must be defined\n",__func__);
-      ret-=1024;
+      ret-=4096;
     }
 
     if(!(pars->tdeltat>=0)) {
       fprintf(stderr,"%s: Error: A tdelta value larger or equal to 0 must be defined\n",__func__);
-      ret-=4096;
+      ret-=8192;
     }
   }
 
   if(pars->tmax<=0) {
     fprintf(stderr,"%s: Error: tmax must be greater than 0\n",__func__);
-    ret-=8192;
+    ret-=16384;
   }
 
   if(pars->nstart<=0) {
     fprintf(stderr,"%s: Error: nstart must be greater than 0\n",__func__);
-    ret-=16384;
+    ret-=32768;
   }
 
   if(pars->popsize==0 && (pars->grouptype&ro_group_log_invitees)) {
     fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated using a logarithmically-distributed number of invitees\n",__func__);
-    ret-=32768;
+    ret-=65536;
   }
 
   return ret;

@@ -36,7 +36,7 @@ typedef struct
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
   uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
   uint32_t npers;		//!< Number of positive integer intervals
-  uint32_t timelineshift;       //!< Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
+  int32_t timelineshift;       //!< Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
   uint32_t tnpersa;              //!< Total number of allocated integer intervals (negative+positive)
   uint32_t rsum;		//!< Sum of the number of individuals that get infected during the simulation by the infectious individuals whose last transmission event does not occur after tmax.
 #ifdef NUMEVENTSSTATS
@@ -213,9 +213,9 @@ inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii)
  * */
 inline static void std_stats_new_pri_inf(sim_vars* sv, infindividual* ii)
 {
-  const uint32_t newshift=ceil(ii->latent_period+ii->comm_period);
+  const int32_t newshift=ceil(-ii->end_comm_period+ii->comm_period+ii->latent_period);
 
-  if(sv->pars.trelpriend && newshift>((std_summary_stats*)sv->dataptr)->timelineshift) {
+  if(newshift>((std_summary_stats*)sv->dataptr)->timelineshift) {
     std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
     const uint32_t newsize=newshift+stats->npers;
     uint32_t* newarray;

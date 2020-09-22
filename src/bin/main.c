@@ -38,7 +38,7 @@ int main(const int nargs, const char* args[])
       return 1;
     }
 
-    if(write(cp.tlout,&cp.pars.trelpriend,1)!=1) {
+    if(write(cp.tlout,&cp.pars.timetype,1)!=1) {
       perror("tlout");
       return 1;
     }
@@ -311,7 +311,7 @@ void* simthread(void* arg)
       exit(1);
     }
 
-    if(cp->pars.trelpriend) buf_write_func=tlo_write_reltime_path;
+    if(cp->pars.timetype!=ro_time_pri_created) buf_write_func=tlo_write_reltime_path;
     else buf_write_func=tlo_write_reg_path;
   }
 

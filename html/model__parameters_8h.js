@@ -15,6 +15,12 @@ var model__parameters_8h =
       [ "ro_pricommper_alt", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4ba56bb5cdf60b66575bcb4dceddc326b1f", null ],
       [ "ro_pricommper_alt_use_tpr", "model__parameters_8h.html#ad79ed104442e66a3fcc521254210ba4baa6223af1bc49dd5f3877510437b80ce0", null ]
     ] ],
+    [ "ro_time_model", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2", [
+      [ "ro_time_pri_created", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2a99703193382aaf5e56f7c1573d20c413", null ],
+      [ "ro_time_pri_infectious", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2aaca25790315be0fb96e03fe9958b97a7", null ],
+      [ "ro_time_pri_end_comm", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2a333ebb79dc4a2bf289eea3adaa1f27dc", null ],
+      [ "ro_time_pri_test_results", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2aaf7c3545712aeef92787cd1241fec866", null ]
+    ] ],
     [ "gkapparoot", "model__parameters_8h.html#acf51a1f2b9eabe0496061944e4872065", null ],
     [ "gpercroot", "model__parameters_8h.html#a3d757fa02920ff161046b12b01b41205", null ],
     [ "gpercrootfunc", "model__parameters_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93", null ],

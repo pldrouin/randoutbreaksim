@@ -184,8 +184,14 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "pri_no_alt_test_fnr")) {
 	cp->pars.pricommpertype&=~ro_pricommper_alt_use_tpr;
 
-      } else if(!argsdiffer(pbuf, "time_rel_pri_end")) {
-	cp->pars.trelpriend=true;
+      } else if(!argsdiffer(pbuf, "time_rel_pri_infectious")) {
+	cp->pars.timetype=ro_time_pri_infectious;
+
+      } else if(!argsdiffer(pbuf, "time_rel_pri_end_comm")) {
+	cp->pars.timetype=ro_time_pri_end_comm;
+
+      } else if(!argsdiffer(pbuf, "time_rel_pri_test_results")) {
+	cp->pars.timetype=ro_time_pri_test_results;
 
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
@@ -303,7 +309,9 @@ void printusage(const char* name)
   printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period.\n");
   printf("\t--pri_no_alt_test_fnr\t\tThe alternate communicable period for a primary infectious individual cannot result in a false negative test.\n");
 
-  printf("\t--time_rel_pri_end\t\tRecorded event time is relative to the end of the communicable period for the generated primary infectious individuals.\n");
+  printf("\t--time_rel_pri_infectious\tRecorded event time is relative to the time the generated primary individuals become infectious.\n");
+  printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
+  printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--tlout VALUE\t\t\tOutput timeline information for each simulated path into the provided file in the binary format as described below.\n");
@@ -321,7 +329,7 @@ void printusage(const char* name)
   printf("\n\tAll fields are stored in little endian.\n");
   printf("\n\tFile header:\n");
   printf("\t\t-Unsigned 32 bit value: floor(tmax)+1, the number of time bins starting from t=0.\n");
-  printf("\t\t-Unsigned 8 bit field: value of 1 if time_rel_pri_end is used, and 0 otherwise.\n");
+  printf("\t\t-Unsigned 8 bit field: time model. value of 1 for primary individual creation time, 2 for time primary individual becomes infectious, 3 for end of communicable period for primary individual, 4 for test results for primary individual.\n");
 
   printf("\n\tSimulation path records:\n");
   printf("\t\t-Unsigned 32 bit value: The number of written successive time bins.\n");

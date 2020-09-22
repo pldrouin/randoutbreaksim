@@ -39,6 +39,7 @@ typedef struct sim_vars_
   gsl_rng const* r;		//!< Pointer to GSL random number generator
   infindividual* curii;		//!< Pointer to current iteration infectious individual
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
+  void (*gen_time_origin_func)(struct sim_vars_*);	//!<Pointer to the function used to apply a time shift
   void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
   void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
@@ -156,6 +157,38 @@ inline static void sim_set_end_inf_proc_func(sim_vars* sv, void (*end_inf_proc_f
  * argument for this function is the simulation-level data pointer.
  */
 inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_func_noevent)(infindividual* inf, void* dataptr)){sv->inf_proc_func_noevent=inf_proc_func_noevent;}
+
+/**
+ * @brief Function that modifies the simulation time to use the creation time of
+ * a primary individual as the time origin.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void gen_time_origin_pri_created(sim_vars* sv){}
+
+/**
+ * @brief Function that modifies the simulation time to use the time of
+ * a primary individual becomes infectious as the time origin.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void gen_time_origin_pri_infectious(sim_vars* sv){sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period+sv->brsim.iis[1].comm_period; sv->brsim.iis[1].end_comm_period=sv->brsim.iis[1].comm_period;}
+
+/**
+ * @brief Function that modifies the simulation time to use the end of the
+ * communicable period for a primary individual as the time origin.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void gen_time_origin_pri_end_comm(sim_vars* sv){sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period; sv->brsim.iis[1].end_comm_period=0;}
+
+/**
+ * @brief Function that modifies the simulation time to time of test results for a
+ * primary individual as the time origin.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period-sv->pars.tdeltat; sv->brsim.iis[1].end_comm_period=-sv->pars.tdeltat;}
 
 //! @cond Doxygen_Suppress
 /**

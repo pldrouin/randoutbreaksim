@@ -207,6 +207,18 @@ Functions</h2></td></tr>
 <tr class="memitem:a0f2a0463da67aac089d7e7cf9e23bb77"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a0f2a0463da67aac089d7e7cf9e23bb77">sim_set_inf_proc_noevent_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, void(*inf_proc_func_noevent)(<a class="el" href="structinfindividual.html">infindividual</a> *inf, void *dataptr))</td></tr>
 <tr class="memdesc:a0f2a0463da67aac089d7e7cf9e23bb77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sets the user-defined processing function that is called for an infectious individual that does not generate any transmission event.  <a href="simulation_8h.html#a0f2a0463da67aac089d7e7cf9e23bb77">More...</a><br /></td></tr>
 <tr class="separator:a0f2a0463da67aac089d7e7cf9e23bb77"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a162ba24e31d5fa816cfdf71e6df36a04"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a162ba24e31d5fa816cfdf71e6df36a04">gen_time_origin_pri_created</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:a162ba24e31d5fa816cfdf71e6df36a04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function that modifies the simulation time to use the creation time of a primary individual as the time origin.  <a href="simulation_8h.html#a162ba24e31d5fa816cfdf71e6df36a04">More...</a><br /></td></tr>
+<tr class="separator:a162ba24e31d5fa816cfdf71e6df36a04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2bd386697f77b0bfb23a632a90b0d9d2"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a2bd386697f77b0bfb23a632a90b0d9d2">gen_time_origin_pri_infectious</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:a2bd386697f77b0bfb23a632a90b0d9d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function that modifies the simulation time to use the time of a primary individual becomes infectious as the time origin.  <a href="simulation_8h.html#a2bd386697f77b0bfb23a632a90b0d9d2">More...</a><br /></td></tr>
+<tr class="separator:a2bd386697f77b0bfb23a632a90b0d9d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf8a0d25ac3b93c3d0c0e8948677bf82"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#adf8a0d25ac3b93c3d0c0e8948677bf82">gen_time_origin_pri_end_comm</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:adf8a0d25ac3b93c3d0c0e8948677bf82"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function that modifies the simulation time to use the end of the communicable period for a primary individual as the time origin.  <a href="simulation_8h.html#adf8a0d25ac3b93c3d0c0e8948677bf82">More...</a><br /></td></tr>
+<tr class="separator:adf8a0d25ac3b93c3d0c0e8948677bf82"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e26f4b7bd51ed90640cef3230f8e2f1"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a6e26f4b7bd51ed90640cef3230f8e2f1">gen_time_origin_pri_test_results</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
+<tr class="memdesc:a6e26f4b7bd51ed90640cef3230f8e2f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function that modifies the simulation time to time of test results for a primary individual as the time origin.  <a href="simulation_8h.html#a6e26f4b7bd51ed90640cef3230f8e2f1">More...</a><br /></td></tr>
+<tr class="separator:a6e26f4b7bd51ed90640cef3230f8e2f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a881fb314fa7f96332cfe3f324287400f"><td class="memItemLeft" align="right" valign="top">static bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8h.html#a881fb314fa7f96332cfe3f324287400f">default_event_proc_func</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv)</td></tr>
 <tr class="memdesc:a881fb314fa7f96332cfe3f324287400f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Default processing function that is called when a new transmission event is created.  <a href="simulation_8h.html#a881fb314fa7f96332cfe3f324287400f">More...</a><br /></td></tr>
 <tr class="separator:a881fb314fa7f96332cfe3f324287400f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -295,7 +307,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00270">270</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00303">303</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -334,7 +346,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00294">294</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00327">327</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -353,7 +365,7 @@ Functions</h2></td></tr>
 <p>Generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods. </p>
 <p>This preprocessing macro generates the conditional code that assigns the function that generates a specific combination of communicable and latent periods to the gen_time_periods_func pointer of the simulation, given the configuration of the model parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00327">327</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00360">360</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -408,7 +420,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if the event does not occur after tmax, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00338">338</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00371">371</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -444,7 +456,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00346">346</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00379">379</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -485,7 +497,7 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00354">354</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00387">387</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -526,7 +538,151 @@ Functions</h2></td></tr>
 <p>Default processing function. </p>
 <p>This function is called by default if a user-defined function has not been set. The function does not do anything. </p>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00362">362</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00395">395</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+
+</div>
+</div>
+<a id="a162ba24e31d5fa816cfdf71e6df36a04"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a162ba24e31d5fa816cfdf71e6df36a04">&#9670;&nbsp;</a></span>gen_time_origin_pri_created()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gen_time_origin_pri_created </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Function that modifies the simulation time to use the creation time of a primary individual as the time origin. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00167">167</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+
+</div>
+</div>
+<a id="adf8a0d25ac3b93c3d0c0e8948677bf82"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adf8a0d25ac3b93c3d0c0e8948677bf82">&#9670;&nbsp;</a></span>gen_time_origin_pri_end_comm()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gen_time_origin_pri_end_comm </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Function that modifies the simulation time to use the end of the communicable period for a primary individual as the time origin. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00183">183</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+
+</div>
+</div>
+<a id="a2bd386697f77b0bfb23a632a90b0d9d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2bd386697f77b0bfb23a632a90b0d9d2">&#9670;&nbsp;</a></span>gen_time_origin_pri_infectious()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gen_time_origin_pri_infectious </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Function that modifies the simulation time to use the time of a primary individual becomes infectious as the time origin. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00175">175</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+
+</div>
+</div>
+<a id="a6e26f4b7bd51ed90640cef3230f8e2f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6e26f4b7bd51ed90640cef3230f8e2f1">&#9670;&nbsp;</a></span>gen_time_origin_pri_test_results()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gen_time_origin_pri_test_results </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *&#160;</td>
+          <td class="paramname"><em>sv</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Function that modifies the simulation time to time of test results for a primary individual as the time origin. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">sv</td><td>Pointer to the simulation variables. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00191">191</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -649,7 +805,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00146">146</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00147">147</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -696,7 +852,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00136">136</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00137">137</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -744,7 +900,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00158">158</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00159">159</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -793,7 +949,7 @@ Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true if new infectious individuals are to be instantiated from this event, false otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00102">102</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00103">103</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -841,7 +997,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00126">126</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00127">127</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -889,7 +1045,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00114">114</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00115">115</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>
@@ -937,7 +1093,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00088">88</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8h_source.html#l00089">89</a> of file <a class="el" href="simulation_8h_source.html">simulation.h</a>.</p>
 
 </div>
 </div>

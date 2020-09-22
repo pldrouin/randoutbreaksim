@@ -41,7 +41,7 @@ var structmodel__pars =
     [ "tb", "structmodel__pars.html#a7b1725378a8aacc198eabaa6246755b2", null ],
     [ "tbar", "structmodel__pars.html#afe4a302aaf23965b4e5aeeeacad48b1d", null ],
     [ "tdeltat", "structmodel__pars.html#a373b4abb19dc60d1a83f8acbde73b7f7", null ],
+    [ "timetype", "structmodel__pars.html#a95546a6a400ce3c593f4e7e3034b397d", null ],
     [ "tmax", "structmodel__pars.html#aac4af9226e4d189e42d148ce178f4033", null ],
-    [ "trelpriend", "structmodel__pars.html#a4868af68ac9baf7ca9b5b16fad7d92b1", null ],
     [ "ttpr", "structmodel__pars.html#adcdbe5ab4ef8814375f3722f52ba5456", null ]
 ];

@@ -41,13 +41,31 @@ void sim_pars_init(model_pars* pars)
   pars->popsize=0;
   pars->pricommpertype=ro_pricommper_main|ro_pricommper_alt|ro_pricommper_alt_use_tpr;
   pars->grouptype=ro_group_log_attendees_plus_1;
-  pars->trelpriend=false;
+  pars->timetype=ro_time_pri_created;
 }
 
 void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
 {
   sv->pars=*pars;
   sv->r=r;
+
+  switch(pars->timetype) {
+    case ro_time_pri_created:
+      sv->gen_time_origin_func=gen_time_origin_pri_created;
+      break;
+
+    case ro_time_pri_infectious:
+      sv->gen_time_origin_func=gen_time_origin_pri_infectious;
+      break;
+
+    case ro_time_pri_end_comm:
+      sv->gen_time_origin_func=gen_time_origin_pri_end_comm;
+      break;
+
+    case ro_time_pri_test_results:
+      sv->gen_time_origin_func=gen_time_origin_pri_test_results;
+      break;
+  }
 
   PER_COND;
 

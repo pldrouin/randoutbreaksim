@@ -24,6 +24,11 @@
 enum ro_pricommper_model_flags {ro_pricommper_main=1, ro_pricommper_alt=2, ro_pricommper_alt_use_tpr=4};
 
 /**
+ * Time model type.
+ **/
+enum ro_time_model{ro_time_pri_created=1, ro_time_pri_infectious=2, ro_time_pri_end_comm=3, ro_time_pri_test_results=4};
+
+/**
  * Group model type. Flags used to specify the model. ro_log_group_attendees_plus_1,
  * ro_log_group_invitees_plus_1, ro_log_attendees and ro_log_invitees are mutually
  * exclusive options that indicate how the number of individuals at events are distributed.  
@@ -78,7 +83,7 @@ typedef struct
   uint32_t popsize;     //!< Population size (finite population simulation)
   uint8_t pricommpertype;	//!< Primary individual communicable period type bit field (composed using ro_pricommper_model_flags) 
   uint8_t grouptype;   	//!< Group type bit field (composed using ro_group_model_flags)
-  bool trelpriend;      //!< Recorded time relative to the end of the communicable period of the primary infectious individual
+  uint8_t timetype;     //!< Recorded time origin
 } model_pars;
 
 /**
