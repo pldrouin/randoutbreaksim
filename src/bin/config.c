@@ -252,9 +252,9 @@ int config(config_pars* cp, const int nargs, const char* args[])
 
 void printusage(const char* name)
 {
-  fprintf(stderr,"Usage: %s [OPTION]\n\n",name);
+  fprintf(stderr,"\nUSAGE: %s [OPTION]\n\n",name);
   printf("Stochastic simulation of outbreaks, using gamma distributions for the different time periods and a Poisson distribution for the number of interaction events where transmission can occur.\n");
-  printf("\nBasic reproduction parameters:\n\n");
+  printf("\n\nBASIC REPRODUCTION PARAMETERS:\n\n");
   printf("\tThe basic reproduction number R0 is defined by the expression\n");
   printf("\t\tR0 = lambda * tbar * (g_ave - 1) * pinf.\n");
   printf("\n\tA sufficient number of input parameters must be provided to determine, without overdetermining, the above expression.\n");
@@ -267,9 +267,13 @@ void printusage(const char* name)
 
   printf("\n\t--group_log_attendees indicates that the number of attendees in an event is to be distributed according to a logarithmically-distributed variable (truncated below 2). In this case, it is the distribution of the number of individuals in a group that is motivated from empirical evidence, instead of the distribution for the total number of infections from a given infectious individual. The expression for g_ave with this distribution is\n");
   printf("\t\tg_ave = -p * p / ((1 - p) * (log(1 - p) + p)).\n");
-  printf("\n\n");
 
-  printf("Options\n\n");
+  printf("\n\nEFFECTIVE REPRODUCTION NUMBER:\n\n");
+  printf("\tFor a branching process where all generations of infections occur using the same static distributions (see below for options that make the simulation deviate from a branching process), the effective reproduction number is given by\n");
+  printf("\t\tReff =  lambda * (g_ave - 1) * pinf * [(1 - q) * tbar + q * mbar]\n");
+  printf("\t\t     =  R0 * [1 + q * ( mbar / tbar - 1)].\n");
+
+  printf("\n\nOPTIONS\n\n");
   printf("\t--config FILENAME\t\tRead configuration options from FILENAME.\n");
   printf("\t--olog FILENAME\t\t\tRedirect standard output to FILENAME.\n");
   printf("\t--elog FILENAME\t\t\tRedirect standard error to FILENAME.\n");
@@ -323,9 +327,10 @@ void printusage(const char* name)
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX).\n");
   printf("\t--help\t\t\t\tPrint this usage information and exit.\n");
-  printf("\nEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\nOptions can be used multiple times and configuration files can be read from configuration files.\n"); 
+  printf("\n\tEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\n");
+  printf("\tOptions can be used multiple times and configuration files can be read from configuration files.\n"); 
 
-  printf("\nBinary timeline output file:\n");
+  printf("\nBINARY TIMELINE OUTPUT FILE:\n");
   printf("\n\tAll fields are stored in little endian.\n");
   printf("\n\tFile header:\n");
   printf("\t\t-Unsigned 32 bit value: floor(tmax)+1, the number of time bins starting from t=0.\n");
