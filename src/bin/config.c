@@ -269,9 +269,10 @@ void printusage(const char* name)
   printf("\t\tg_ave = -p * p / ((1 - p) * (log(1 - p) + p)).\n");
 
   printf("\n\nEFFECTIVE REPRODUCTION NUMBER:\n\n");
-  printf("\tFor a branching process where all generations of infections occur using the same static distributions (see below for options that make the simulation deviate from a branching process), the effective reproduction number is given by\n");
+  printf("\tIf an alternate communicable period of average duration mbar is defined, and if there is a probability q that an individual's communicable period be the alternate communicable instead of the main communicable period, then an effective reproduction number can be expressed as\n");
   printf("\t\tReff =  lambda * (g_ave - 1) * pinf * [(1 - q) * tbar + q * mbar]\n");
-  printf("\t\t     =  R0 * [1 + q * ( mbar / tbar - 1)].\n");
+  printf("\t\t     =  R0 * [1 + q * ( mbar / tbar - 1)].\n\n");
+  printf("\tThe expected effective reproduction number of the simulation will be given by the above expression if it consists of a branching process characterised by the model described above. For such a process, all generations of infections occur using the same static distributions. As identified below, some of the available options can make the simulation deviate from a branching process, in which case the effective reproduction number will deviate accordingly.\n");
 
   printf("\n\nOPTIONS\n\n");
   printf("\t--config FILENAME\t\tRead configuration options from FILENAME.\n");
@@ -325,12 +326,12 @@ void printusage(const char* name)
   printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1).\n");
   printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
-  printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX).\n");
+  printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
   printf("\t--help\t\t\t\tPrint this usage information and exit.\n");
   printf("\n\tEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\n");
   printf("\tOptions can be used multiple times and configuration files can be read from configuration files.\n"); 
 
-  printf("\nBINARY TIMELINE OUTPUT FILE:\n");
+  printf("\n\nBINARY TIMELINE OUTPUT FILE:\n");
   printf("\n\tAll fields are stored in little endian.\n");
   printf("\n\tFile header:\n");
   printf("\t\t-Unsigned 32 bit value: floor(tmax)+1, the number of time bins starting from t=0.\n");
@@ -345,5 +346,5 @@ void printusage(const char* name)
   printf("\n\t\t-For each time bin, chronologically written:\n");
   printf("\t\t\t-Unsigned 32 bit value: Number of active infections.\n");
   printf("\t\t\t-Unsigned 32 bit value: Number of new infections.\n");
-  printf("\t\t\t-Unsigned 32 bit value: Number of new positive test results (written only if indivated in the file header).\n");
+  printf("\t\t\t-Unsigned 32 bit value: Number of new positive test results (written only if indicated in the file header).\n");
 }
