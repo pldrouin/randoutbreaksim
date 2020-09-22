@@ -112,9 +112,9 @@ Include dependency graph for root_finder.c:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a2692265a8505fa2fa51cd2a2782c531c"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="root__finder_8c.html#a2692265a8505fa2fa51cd2a2782c531c">root_finder_find</a> (<a class="el" href="structroot__finder.html">root_finder</a> *rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double *x)</td></tr>
-<tr class="memdesc:a2692265a8505fa2fa51cd2a2782c531c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the root of a function depending on a single variable.  <a href="root__finder_8c.html#a2692265a8505fa2fa51cd2a2782c531c">More...</a><br /></td></tr>
-<tr class="separator:a2692265a8505fa2fa51cd2a2782c531c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae15802333c0161e399b71f9fa88894b2"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="root__finder_8c.html#ae15802333c0161e399b71f9fa88894b2">root_finder_find</a> (<a class="el" href="structroot__finder.html">root_finder</a> *rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double *x, double *calcdiff)</td></tr>
+<tr class="memdesc:ae15802333c0161e399b71f9fa88894b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Finds the root of a function depending on a single variable.  <a href="root__finder_8c.html#ae15802333c0161e399b71f9fa88894b2">More...</a><br /></td></tr>
+<tr class="separator:ae15802333c0161e399b71f9fa88894b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Finds the root of a function depending on a single parameter. </p>
@@ -122,8 +122,8 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="root__finder_8c_source.html">root_finder.c</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
-<a id="a2692265a8505fa2fa51cd2a2782c531c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2692265a8505fa2fa51cd2a2782c531c">&#9670;&nbsp;</a></span>root_finder_find()</h2>
+<a id="ae15802333c0161e399b71f9fa88894b2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae15802333c0161e399b71f9fa88894b2">&#9670;&nbsp;</a></span>root_finder_find()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -162,7 +162,13 @@ Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">double *&#160;</td>
-          <td class="paramname"><em>x</em>&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>calcdiff</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

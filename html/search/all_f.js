@@ -19,7 +19,7 @@ var searchData=
   ['root_5ffinder_151',['root_finder',['../structroot__finder.html',1,'']]],
   ['root_5ffinder_2ec_152',['root_finder.c',['../root__finder_8c.html',1,'']]],
   ['root_5ffinder_2eh_153',['root_finder.h',['../root__finder_8h.html',1,'']]],
-  ['root_5ffinder_5ffind_154',['root_finder_find',['../root__finder_8c.html#a2692265a8505fa2fa51cd2a2782c531c',1,'root_finder_find(root_finder *rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double *x):&#160;root_finder.c'],['../root__finder_8h.html#a2692265a8505fa2fa51cd2a2782c531c',1,'root_finder_find(root_finder *rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double *x):&#160;root_finder.c']]],
+  ['root_5ffinder_5ffind_154',['root_finder_find',['../root__finder_8c.html#ae15802333c0161e399b71f9fa88894b2',1,'root_finder_find(root_finder *rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double *x, double *calcdiff):&#160;root_finder.c'],['../root__finder_8h.html#ae15802333c0161e399b71f9fa88894b2',1,'root_finder_find(root_finder *rf, const double eps, const uint32_t maxiter, const double xmin, const double xmax, double *x, double *calcdiff):&#160;root_finder.c']]],
   ['root_5ffinder_5ffree_155',['root_finder_free',['../root__finder_8h.html#aac1dce1567c9c0b590fa0b432c9811aa',1,'root_finder.h']]],
   ['root_5ffinder_5finit_156',['root_finder_init',['../root__finder_8h.html#a637b034a83cf4a6a8319eb2377685b06',1,'root_finder.h']]],
   ['rsum_157',['rsum',['../structstd__summary__stats.html#ae3fb94b9986390017590c435ac2fa66f',1,'std_summary_stats']]]
