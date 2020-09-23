@@ -94,8 +94,8 @@ inline static ssize_t tlo_write_reg_path(std_summary_stats const* stats, char* b
 
   for(b=0; b<nbins; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->inf_timeline[b],b,stats->newinf_timeline[b]);
-    ((uint32_t*)buf)[2*b]=htole32(stats->inf_timeline[b]);
-    ((uint32_t*)buf)[2*b+1]=htole32(stats->newinf_timeline[b]);
+    ((uint32_t*)buf)[b]=htole32(stats->inf_timeline[b]);
+    ((uint32_t*)buf)[b+nbins]=htole32(stats->newinf_timeline[b]);
   }
 
   return 5+nbins*8;
@@ -108,7 +108,7 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
   for(b=stats->npers-1; b>0; --b) {
     //printf("TotInf[%" PRIi32 "]=%" PRIu32 ",\tInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->newinf_timeline[b],b,stats->inf_timeline[b]);
 
-    if(stats->inf_timeline[b]) break;
+    if(stats->inf_timeline[b] || stats->newpostest_timeline[b]) break;
     assert(stats->newinf_timeline[b]==0);
   }
 
@@ -124,12 +124,13 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
   *(uint32_t*)buf=htole32(nbins);
   buf[4]=(char)stats->extinction;;
   buf+=5;
+  const uint32_t tnbins=2*nbins;
 
   for(b=0; b<nbins; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->inf_timeline[b],b,stats->newinf_timeline[b]);
-    ((uint32_t*)buf)[3*b]=htole32(stats->inf_timeline[b]);
-    ((uint32_t*)buf)[3*b+1]=htole32(stats->newinf_timeline[b]);
-    ((uint32_t*)buf)[3*b+2]=htole32(stats->newpostest_timeline[b]);
+    ((uint32_t*)buf)[b]=htole32(stats->inf_timeline[b]);
+    ((uint32_t*)buf)[b+nbins]=htole32(stats->newinf_timeline[b]);
+    ((uint32_t*)buf)[b+tnbins]=htole32(stats->newpostest_timeline[b]);
   }
 
   return 5+nbins*12;
@@ -172,13 +173,12 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
   buf+=9;
 
   int32_t b;
-  uint32_t bp;
+  const int32_t nbmbm=-bmin+nbins;
 
   for(b=bmin; b<=bmax; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->inf_timeline[b],b,stats->newinf_timeline[b]);
-    bp=2*(b-bmin);
-    ((uint32_t*)buf)[bp]=htole32(stats->inf_timeline[b]);
-    ((uint32_t*)buf)[bp+1]=htole32(stats->newinf_timeline[b]);
+    ((uint32_t*)buf)[b-bmin]=htole32(stats->inf_timeline[b]);
+    ((uint32_t*)buf)[b+nbmbm]=htole32(stats->newinf_timeline[b]);
   }
 
   return 9+nbins*8;
@@ -192,7 +192,7 @@ inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* st
   for(bmax=stats->npers-1; bmax>bmin; --bmax) {
     //printf("TotInf[%" PRIi32 "]=%" PRIu32 ",\tInf[%" PRIi32 "]=%" PRIu32 "\n",bmax,stats->newinf_timeline[bmax],bmax,stats->inf_timeline[bmax]);
 
-    if(stats->inf_timeline[bmax]) break;
+    if(stats->inf_timeline[bmax] || stats->newpostest_timeline[bmax]) break;
     assert(stats->newinf_timeline[bmax]==0);
   }
 
@@ -221,14 +221,14 @@ inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* st
   buf+=9;
 
   int32_t b;
-  uint32_t bp;
+  const int32_t nbmbm=-bmin+nbins;
+  const int32_t tnbmbm=-bmin+2*nbins;
 
   for(b=bmin; b<=bmax; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->inf_timeline[b],b,stats->newinf_timeline[b]);
-    bp=3*(b-bmin);
-    ((uint32_t*)buf)[bp]=htole32(stats->inf_timeline[b]);
-    ((uint32_t*)buf)[bp+1]=htole32(stats->newinf_timeline[b]);
-    ((uint32_t*)buf)[bp+2]=htole32(stats->newpostest_timeline[b]);
+    ((uint32_t*)buf)[b-bmin]=htole32(stats->inf_timeline[b]);
+    ((uint32_t*)buf)[b+nbmbm]=htole32(stats->newinf_timeline[b]);
+    ((uint32_t*)buf)[b+tnbmbm]=htole32(stats->newpostest_timeline[b]);
   }
 
   return 9+nbins*12;
