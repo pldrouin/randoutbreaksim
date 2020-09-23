@@ -50,7 +50,7 @@ int main(const int nargs, const char* args[])
   const uint32_t nsets=cp.nthreads*cp.nsetsperthread;
   const double npathsperset=((double)cp.npaths)/nsets;
   const uint32_t npers=cp.pars.tmax+1;
-  volatile uint32_t set=0;
+  volatile uint32_t set=cp.nthreads;
   int t;
   int tmaxnpersa=0;
 
@@ -60,6 +60,7 @@ int main(const int nargs, const char* args[])
     for(t=cp.nthreads-1; t>=0; --t){
       tdata[t].cp=&cp;
       tdata[t].npathsperset=npathsperset;
+      tdata[t].id=t;
       tdata[t].nsets=nsets;
       tdata[t].tnpersa=tdata[t].npers=npers;
       tdata[t].set=&set;
@@ -118,6 +119,7 @@ int main(const int nargs, const char* args[])
   } else {
     tdata[0].cp=&cp;
     tdata[0].npathsperset=npathsperset;
+    tdata[0].id=0;
     tdata[0].nsets=nsets;
     tdata[0].tnpersa=tdata[0].npers=npers;
     tdata[0].set=&set;
@@ -363,7 +365,7 @@ void* simthread(void* arg)
   stats.lmax=cp->lmax;
   stats.nimax=cp->nimax;
   int j;
-  uint32_t curset;
+  uint32_t curset=data->id;
   uint32_t initpath;
   uint32_t npaths;
   uint32_t* abs_inf_timeline;
@@ -373,10 +375,7 @@ void* simthread(void* arg)
   ssize_t maxwrite;
   const ssize_t binsize=(2+1*(!isnan(cp->pars.tdeltat)))*sizeof(uint32_t);
 
-  for(;;) {
-    curset=__sync_fetch_and_add(data->set,1);
-
-    if(curset>=data->nsets) break;
+  do {
 
     //printf("%22.15e\t%22.15e\n",curset*data->npathsperset,(curset+1)*data->npathsperset);
     initpath=round(curset*data->npathsperset);
@@ -525,7 +524,9 @@ void* simthread(void* arg)
 	}
       }
     }
-  }
+    curset=__sync_fetch_and_add(data->set,1);
+
+  } while(curset<data->nsets);
 
   if(cp->tlout) {
     pthread_mutex_lock(data->tlflock);

@@ -34,6 +34,7 @@ int main(const int nargs, const char* args[]);
 typedef struct {
   config_pars const* cp;
   double npathsperset;
+  uint32_t id;
   uint32_t nsets;
   uint32_t npers;
   uint32_t tnpersa;

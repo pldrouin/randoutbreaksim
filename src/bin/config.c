@@ -324,7 +324,7 @@ void printusage(const char* name)
   printf("\t--ninfhist\t\t\tCompute a histogram of the number of infected individuals for each infectious individual.\n");
   printf("\t--npaths VALUE\t\t\tNumber of generated simulation paths (default value of 10000).\n");
   printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1).\n");
-  printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise).\n");
+  printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise). Using a value of 1 guarantees the same stream of random numbers from one run to another, while using a larger value increases performance by assigning sets to available processing resources. In either case, the RNG stream algorithm is used to guarantee non-overlapping seed streams between threads.\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
   printf("\t--help\t\t\t\tPrint this usage information and exit.\n");
