@@ -432,11 +432,10 @@ $(document).ready(function(){initNavTree('config_8c_source.html',''); initResiza
 <div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 32 bit value: The number of written successive time bins.\n&quot;</span>);</div>
 <div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 32 bit value: Field is written only if the time mode is not the primary individual creation time. Value is the number of time bins before t=0.\n&quot;</span>);</div>
 <div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 8 bit value: value of 1 if the path goes extinct, and 0 otherwise.\n&quot;</span>);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;  printf(<span class="stringliteral">&quot;\n\t\t-For each time bin, chronologically written:\n&quot;</span>);</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;  printf(<span class="stringliteral">&quot;\t\t\t-Unsigned 32 bit value: Number of active infections.\n&quot;</span>);</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;  printf(<span class="stringliteral">&quot;\t\t\t-Unsigned 32 bit value: Number of new infections.\n&quot;</span>);</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;  printf(<span class="stringliteral">&quot;\t\t\t-Unsigned 32 bit value: Number of new positive test results (written only if indicated in the file header).\n&quot;</span>);</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;}</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of active infections.\n&quot;</span>);</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of new infections.\n&quot;</span>);</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;  printf(<span class="stringliteral">&quot;\t\t-Unsigned 32 bit value, for each time bin, chronologically written (written only if indicated in the file header): Number of new positive test results.\n&quot;</span>);</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;}</div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="aconfig_8c_html_abac3f29dffc2cdc59f491378751f20eb"><div class="ttname"><a href="config_8c.html#abac3f29dffc2cdc59f491378751f20eb">config</a></div><div class="ttdeci">int config(config_pars *cp, const int nargs, const char *args[])</div><div class="ttdoc">Configures the input parameters for the executable.</div><div class="ttdef"><b>Definition:</b> <a href="config_8c_source.html#l00009">config.c:9</a></div></div>

@@ -30,7 +30,7 @@ typedef struct
 {
   double extinction_time;	//!< Path extinction time, if any.
   double commpersum;		//!< Sum of communicable periods for all infectious individuals whose communicable period does not occur after tmax.
-  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infectious at some point in this interval (lower bound included, upper bound excluded).
+  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infected at some point in this interval (lower bound included, upper bound excluded).
   uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
   uint32_t* newpostest_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that receive a positive test result at some point in this interval with an individual whose communicable period is the alternate period (lower bound included, upper bound excluded). For the last interval, it includes positive test results that occur between floor(tmax) and tmax.
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
@@ -282,7 +282,7 @@ inline static void std_stats_end_inf(infindividual* ii, void* ptr)
   int i;
   const int end_comm_per=(ii->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(ii->end_comm_period));
 
-  for(i=floor(ii->end_comm_period-ii->comm_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
 /**
@@ -343,7 +343,7 @@ inline static void std_stats_noevent_inf(infindividual* ii, void* ptr)
   int i;
   const int end_comm_per=(ii->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(ii->end_comm_period));
 
-  for(i=floor(ii->end_comm_period-ii->comm_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  for(i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
 /**
