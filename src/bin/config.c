@@ -268,9 +268,9 @@ void printusage(const char* name)
   printf("\n\t--group_log_attendees indicates that the number of attendees in an event is to be distributed according to a logarithmically-distributed variable (truncated below 2). In this case, it is the distribution of the number of individuals in a group that is motivated from empirical evidence, instead of the distribution for the total number of infections from a given infectious individual. The expression for g_ave with this distribution is\n");
   printf("\t\tg_ave = -p * p / ((1 - p) * (log(1 - p) + p)).\n");
 
-  printf("\n\nEFFECTIVE REPRODUCTION NUMBER:\n\n");
+  printf("\n\nBRANCHING PROCESS EFFECTIVE REPRODUCTION NUMBER:\n\n");
   printf("\tIf an alternate communicable period of average duration mbar is defined, and if there is a probability q that an individual's communicable period be the alternate communicable instead of the main communicable period, then an effective reproduction number can be expressed as\n");
-  printf("\t\tReff =  lambda * (g_ave - 1) * pinf * [(1 - q) * tbar + q * mbar]\n");
+  printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [(1 - q) * tbar + q * mbar]\n");
   printf("\t\t     =  R0 * [1 + q * ( mbar / tbar - 1)].\n\n");
   printf("\tThe expected effective reproduction number of the simulation will be given by the above expression if it consists of a branching process characterised by the model described above. For such a process, all generations of infections occur using the same static distributions. As identified below, some of the available options can make the simulation deviate from a branching process, in which case the effective reproduction number will deviate accordingly.\n");
 

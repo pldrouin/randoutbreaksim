@@ -192,14 +192,15 @@ int main(const int nargs, const char* args[])
   }
   tdata[0].pe/=cp.npaths;
 
-  printf("Mean R is %f\n",tdata[0].r_mean);
-  printf("Communicable period is %f\n",tdata[0].commper_mean);
+  printf("\nComputed simulation results:\n");
+  printf("Mean R is %22.15e\n",tdata[0].r_mean);
+  printf("Communicable period is %22.15e\n",tdata[0].commper_mean);
 #ifdef NUMEVENTSSTATS
-  printf("Number of events per infectious individual is %f\n",tdata[0].nevents_mean);
-  printf("Number of infections per event is %f\n",ninf_per_event_mean);
+  printf("Number of events per infectious individual is %22.15e\n",tdata[0].nevents_mean);
+  printf("Number of infections per event is %22.15e\n",ninf_per_event_mean);
 #endif
-  printf("Probability of extinction and its statistical uncertainty: %f +/- %f%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
-  printf("Extinction time, if it occurs is %f +/- %f%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
+  printf("Probability of extinction and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
+  printf("Extinction time, if it occurs is %22.15e +/- %22.15e%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
 
   int shift=tdata[tmaxnpersa].tnpersa-npers;
   printf("\nCurrent infection timeline, for paths with extinction vs no extinction vs overall is:\n");

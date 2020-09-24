@@ -15,7 +15,7 @@ int model_solve_pars(model_pars* pars)
 
   if(model_solve_R0_group(pars)) return -2;
   
-  printf("Basic reproduction parameters are:\n");
+  printf("\nBasic reproduction parameters are:\n");
   printf("lambda:\t%22.15e\n",pars->lambda);
   printf("tbar:\t%22.15e\n",pars->tbar);
   printf("g_ave:\t%22.15e\n",pars->g_ave);
@@ -36,7 +36,7 @@ int model_solve_pars(model_pars* pars)
   }
   pars->ta=pars->tbar*pars->kappa;
   pars->tb=1/pars->kappa;
-  printf("Parameters for the main time gamma distribution:\n");
+  printf("\nParameters for the main time gamma distribution:\n");
   printf("tbar:\t%22.15e\n",pars->tbar);
   printf("kappa:\t%22.15e\n",pars->kappa);
   printf("t95:\t%22.15e\n",pars->t95);
@@ -57,7 +57,7 @@ int model_solve_pars(model_pars* pars)
     } else {
       pars->ita=pars->itbar*pars->kappait;
       pars->itb=1/pars->kappait;
-      printf("Parameters for the interrupted main time gamma distribution:\n");
+      printf("\nParameters for the interrupted main time gamma distribution:\n");
       printf("pit:\t%22.15e\n",pars->pit);
       printf("itbar:\t%22.15e\n",pars->itbar);
       printf("kappait:%22.15e\n",pars->kappait);
@@ -81,7 +81,7 @@ int model_solve_pars(model_pars* pars)
     } else {
       pars->ma=pars->mbar*pars->kappaq;
       pars->mb=1/pars->kappaq;
-      printf("Parameters for the alternate time gamma distribution:\n");
+      printf("\nParameters for the alternate time gamma distribution:\n");
       printf("q:\t%22.15e\n",pars->q);
       printf("mbar:\t%22.15e\n",pars->mbar);
       printf("kappaq:\t%22.15e\n",pars->kappaq);
@@ -101,7 +101,7 @@ int model_solve_pars(model_pars* pars)
         pars->ima=pars->ita;
         pars->imb=pars->itb;
 
-	printf("Parameters for the interrupted alternate time gamma distribution:\n");
+	printf("\nParameters for the interrupted alternate time gamma distribution:\n");
 	printf("pim:\t%22.15e\n",pars->pim);
 	printf("imbar:\t%22.15e\n",pars->imbar);
 	printf("kappaim:%22.15e\n",pars->kappaim);
@@ -159,6 +159,9 @@ int model_solve_pars(model_pars* pars)
       printf("lb:\t%22.15e\n",pars->lb);
     }
   }
+
+  printf("\nBranching process effective reproduction number:\n");
+  printf("brReff:\t%22.15e\n",pars->R0*(1+(isnan(pars->q)?0:pars->q)*(pars->mbar/pars->tbar-1)));
 
   return 0;
 }

@@ -214,7 +214,8 @@ inline static void std_stats_new_pri_inf(sim_vars* sv, infindividual* ii)
 {
   int32_t newshift;
 
-  if(sv->pars.timetype!=ro_time_pri_created && (newshift=ceil(-ii->end_comm_period+ii->comm_period+ii->latent_period))>((std_summary_stats*)sv->dataptr)->timelineshift) {
+  newshift=ceil(-ii->end_comm_period+(ii->comm_period+ii->latent_period));
+  if(newshift>((std_summary_stats*)sv->dataptr)->timelineshift) {
     std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
     const uint32_t newsize=newshift+stats->npers;
     uint32_t* newarray;
@@ -280,9 +281,7 @@ inline static void std_stats_end_inf(infindividual* ii, void* ptr)
   }
 
   const int end_comm_per=(ii->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(ii->end_comm_period));
-  int i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period);
-
-  if(-i>((std_summary_stats*)ptr)->timelineshift) i=0;
+  int i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
 
   for(; i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
@@ -343,9 +342,7 @@ inline static void std_stats_noevent_inf(infindividual* ii, void* ptr)
   }
 
   const int end_comm_per=(ii->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(ii->end_comm_period));
-  int i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period);
-
-  if(-i>((std_summary_stats*)ptr)->timelineshift) i=0;
+  int i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
 
   for(; i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
