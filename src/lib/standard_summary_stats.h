@@ -279,10 +279,12 @@ inline static void std_stats_end_inf(infindividual* ii, void* ptr)
     if(ii->end_comm_period > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=ii->end_comm_period;
   }
 
-  int i;
   const int end_comm_per=(ii->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(ii->end_comm_period));
+  int i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period);
 
-  for(i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  if(-i>((std_summary_stats*)ptr)->timelineshift) i=0;
+
+  for(; i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
 /**
@@ -340,10 +342,12 @@ inline static void std_stats_noevent_inf(infindividual* ii, void* ptr)
     if(ii->end_comm_period > ((std_summary_stats*)ptr)->extinction_time) ((std_summary_stats*)ptr)->extinction_time=ii->end_comm_period;
   }
 
-  int i;
   const int end_comm_per=(ii->end_comm_period >= ((std_summary_stats*)ptr)->npers ? ((std_summary_stats*)ptr)->npers-1 : floor(ii->end_comm_period));
+  int i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period);
 
-  for(i=floor(ii->end_comm_period-ii->comm_period-ii->latent_period); i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
+  if(-i>((std_summary_stats*)ptr)->timelineshift) i=0;
+
+  for(; i<=end_comm_per; ++i) ++(((std_summary_stats*)ptr)->inf_timeline[i]);
 }
 
 /**
