@@ -84,7 +84,9 @@ $(document).ready(function(){initNavTree('simulation_8c.html',''); initResizable
 
 <div class="header">
   <div class="summary">
-<a href="#func-members">Functions</a>  </div>
+<a href="#define-members">Macros</a> &#124;
+<a href="#func-members">Functions</a> &#124;
+<a href="#var-members">Variables</a>  </div>
   <div class="headertitle">
 <div class="title">simulation.c File Reference</div>  </div>
 </div><!--header-->
@@ -120,6 +122,15 @@ Include dependency graph for simulation.c:</div>
 </div>
 <p><a href="simulation_8c_source.html">Go to the source code of this file.</a></p>
 <table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="define-members"></a>
+Macros</h2></td></tr>
+<tr class="memitem:ac67d56a22930fb32f533fbb1a9729890"><td class="memItemLeft" align="right" valign="top"><a id="ac67d56a22930fb32f533fbb1a9729890"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DO_EXPAND</b>(VAL)&#160;&#160;&#160;VAL ## 1</td></tr>
+<tr class="separator:ac67d56a22930fb32f533fbb1a9729890"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd6dc610405342de091109cfb184eb69"><td class="memItemLeft" align="right" valign="top"><a id="afd6dc610405342de091109cfb184eb69"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>EXPAND</b>(VAL)&#160;&#160;&#160;DO_EXPAND(VAL)</td></tr>
+<tr class="separator:afd6dc610405342de091109cfb184eb69"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:a7d7687ebb34e4df53eff1ed32e7f7597"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a7d7687ebb34e4df53eff1ed32e7f7597">sim_pars_init</a> (<a class="el" href="structmodel__pars.html">model_pars</a> *pars)</td></tr>
@@ -128,6 +139,12 @@ Functions</h2></td></tr>
 <tr class="memitem:a2ca281c80f36f8dfbbadec8518ba873e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="simulation_8c.html#a2ca281c80f36f8dfbbadec8518ba873e">sim_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, <a class="el" href="structmodel__pars.html">model_pars</a> const *pars, const gsl_rng *r)</td></tr>
 <tr class="memdesc:a2ca281c80f36f8dfbbadec8518ba873e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the simulation variables.  <a href="simulation_8c.html#a2ca281c80f36f8dfbbadec8518ba873e">More...</a><br /></td></tr>
 <tr class="separator:a2ca281c80f36f8dfbbadec8518ba873e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
+Variables</h2></td></tr>
+<tr class="memitem:a8d078c3df3fd4ba18a0fdbc446d6d099"><td class="memItemLeft" align="right" valign="top"><a id="a8d078c3df3fd4ba18a0fdbc446d6d099"></a>
+int&#160;</td><td class="memItemRight" valign="bottom"><b>__ro_debug</b> =0</td></tr>
+<tr class="separator:a8d078c3df3fd4ba18a0fdbc446d6d099"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Common simulation functions. </p>
@@ -178,7 +195,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00047">47</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00054">54</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>
@@ -207,7 +224,7 @@ Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00009">9</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="simulation_8c_source.html#l00016">16</a> of file <a class="el" href="simulation_8c_source.html">simulation.c</a>.</p>
 
 </div>
 </div>

@@ -16,11 +16,12 @@
 #define INIT_N_LAYERS (16) //!< Initial number of simulation layers
 #define II_ARRAY_GROW_FACT (1.5)  //!< Growing factor for the array of current infectious individuals across all layers.
 
+extern int __ro_debug;
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
 #endif
 #define DEBUG_PRINTF(...) //!< Debug print function
-//#define DEBUG_PRINTF(...) printf(__VA_ARGS__) //!< Debug print function
+//#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
 /**
  * @brief Initialises the branching simulation.

@@ -20,7 +20,7 @@
 #include "ran_log.h"
 
 #define DEBUG_PRINTF(...) //!< Debug print function
-//#define DEBUG_PRINTF(...) printf(__VA_ARGS__) //!< Debug print function
+//#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
 typedef struct {
   infindividual* iis;	//!< Array of current infectious individuals across all layers
@@ -43,12 +43,12 @@ typedef struct sim_vars_
   void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
   void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
+  void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
-  void (*new_pri_inf_proc_func)(struct sim_vars_* sv, infindividual* ii);			//!< Pointer to the user-defined processing function that is called when a new primary infected individual is created, after the communicable period and the number of transmission events have been assigned.
   void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
+  void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii);	//!< Pointer to the user-defined processing function that is called for a new infected individual that does not generate any transmission event.
   void (*end_inf_proc_func)(infindividual* ii, void* dataptr); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
-  void (*inf_proc_func_noevent)(infindividual* ii, void* dataptr);	//!< Pointer to the user-defined processing function that is called for an infectious individual that does not generate any transmission event.
   ran_log rl;	//!< Handle for the logarithmica random variate generator.
 
   union{
@@ -103,18 +103,6 @@ inline static void sim_set_proc_data(sim_vars* sv, void* dataptr){sv->dataptr=da
 inline static void sim_set_new_event_proc_func(sim_vars* sv, bool (*new_event_proc_func)(sim_vars* sv)){sv->new_event_proc_func=new_event_proc_func;}
 
 /**
- * @brief Sets the user-defined processing function that is called when a new primary infected individual is created.
- *
- * This function is called after the communicable period and the number of
- * transmission events have been assigned. The function is only called if the number
- * of transmission events is non-zero.
- *
- * @param sv: Pointer to the simulation variables.
- * @param new_pri_inf_proc_func: Pointer to the user-defined function.
- */
-inline static void sim_set_new_pri_inf_proc_func(sim_vars* sv, void (*new_pri_inf_proc_func)(sim_vars* sv, infindividual* ii)){sv->new_pri_inf_proc_func=new_pri_inf_proc_func;}
-
-/**
  * @brief Sets the user-defined processing function that is called when a new infected individual is created.
  *
  * This function is called after the communicable period and the number of
@@ -125,6 +113,14 @@ inline static void sim_set_new_pri_inf_proc_func(sim_vars* sv, void (*new_pri_in
  * @param new_inf_proc_func: Pointer to the user-defined function.
  */
 inline static void sim_set_new_inf_proc_func(sim_vars* sv, void (*new_inf_proc_func)(sim_vars* sv, infindividual* ii)){sv->new_inf_proc_func=new_inf_proc_func;}
+
+/**
+ * @brief Sets the user-defined processing function that is called when a new
+ * primary individual is created.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void sim_set_pri_init_proc_func(sim_vars* sv, void (*pri_init_proc_func)(sim_vars* sv, infindividual* ii)){sv->pri_init_proc_func=pri_init_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called when memory
@@ -153,10 +149,10 @@ inline static void sim_set_end_inf_proc_func(sim_vars* sv, void (*end_inf_proc_f
  * the current infectious individual.
  *
  * @param sv: Pointer to the simulation variables.
- * @param inf_proc_func_noevent: Pointer to the user-defined function. The second
+ * @param new_inf_proc_func_noevent: Pointer to the user-defined function. The second
  * argument for this function is the simulation-level data pointer.
  */
-inline static void sim_set_inf_proc_noevent_func(sim_vars* sv, void (*inf_proc_func_noevent)(infindividual* ii, void* dataptr)){sv->inf_proc_func_noevent=inf_proc_func_noevent;}
+inline static void sim_set_new_inf_proc_noevent_func(sim_vars* sv, void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii)){sv->new_inf_proc_func_noevent=new_inf_proc_func_noevent;}
 
 /**
  * @brief Function that modifies the simulation time to use the creation time of
@@ -302,6 +298,7 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
  */
 #define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM,TESTING) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _ ## TESTING ## _periods(sim_vars* sv, infindividual* ii, infindividual* iiparent, const double inf_start) \
 { \
+  /*printf("Function is %s\n",__func__);*/ \
   GEN_PER_LATENT_ ## LATENT \
   GEN_PER_MAIN_ALTERNATE_ ## MAIN ## _ ## ALTERNATE(IT,IM,TESTING) \
 }
@@ -357,7 +354,7 @@ GEN_PERS_MAIN(2,2)
  * periods to the gen_time_periods_func pointer of the simulation, given the
  * configuration of the model parameters.
  */
-#define PER_COND if(isnan(sv->pars.tdeltat)) {PER_COND_LATENT(0)} else {PER_COND_LATENT(2)};
+#define PER_COND if(isnan(sv->pars.tdeltat)) {PER_COND_LATENT(0)} else if(sv->pars.mtpr==1) {PER_COND_LATENT(1)} else {PER_COND_LATENT(2)};
 
 /**
  * @brief Default processing function that is called when a new transmission event is created.

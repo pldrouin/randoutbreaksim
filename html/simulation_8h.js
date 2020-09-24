@@ -20,9 +20,9 @@ var simulation_8h =
     [ "sim_pars_init", "simulation_8h.html#a7d7687ebb34e4df53eff1ed32e7f7597", null ],
     [ "sim_set_end_inf_proc_func", "simulation_8h.html#a61b18b3426ef3dc7f9712b2b941f3c87", null ],
     [ "sim_set_ii_alloc_proc_func", "simulation_8h.html#af4497a54b084e370fc513b737b510a55", null ],
-    [ "sim_set_inf_proc_noevent_func", "simulation_8h.html#a4858743f38a7af39fc5663f11b5cfc49", null ],
     [ "sim_set_new_event_proc_func", "simulation_8h.html#af5bcf389e2f823c77eaeb9c114ba8217", null ],
     [ "sim_set_new_inf_proc_func", "simulation_8h.html#abcab95ac895e3fbe5d7852aa826edbc6", null ],
-    [ "sim_set_new_pri_inf_proc_func", "simulation_8h.html#a3eac47c612767d7a8c2a70bb804a6f59", null ],
+    [ "sim_set_new_inf_proc_noevent_func", "simulation_8h.html#ac9209a31814b358b6059bee030fb9b69", null ],
+    [ "sim_set_pri_init_proc_func", "simulation_8h.html#a3900f8fcca7ee721e3e345efbf689ad4", null ],
     [ "sim_set_proc_data", "simulation_8h.html#ae122699e5ed7266492671f08ad74f0f1", null ]
 ];

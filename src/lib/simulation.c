@@ -6,6 +6,13 @@
 
 #include "simulation.h"
 
+#define DO_EXPAND(VAL)  VAL ## 1
+#define EXPAND(VAL)     DO_EXPAND(VAL)
+
+#if defined(DEBUG_PRINTF) || (EXPAND(DEBUG_PRINTF) != 1)
+int __ro_debug=0;
+#endif
+
 void sim_pars_init(model_pars* pars)
 {
   pars->tbar=NAN;
@@ -22,7 +29,7 @@ void sim_pars_init(model_pars* pars)
   pars->q=0;
   pars->mbar=NAN;
   pars->kappaq=NAN;
-  pars->pit=0;
+  pars->pit=NAN;
   pars->itbar=NAN;
   pars->kappait=NAN;
   pars->pim=NAN;
@@ -70,10 +77,10 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
   PER_COND;
 
   sv->dataptr=NULL;
+  sv->pri_init_proc_func=dummy_proc_func_sv_ii;
   sv->ii_alloc_proc_func=default_ii_alloc_proc_func;
   sv->new_event_proc_func=default_event_proc_func;
-  sv->new_pri_inf_proc_func=dummy_proc_func_sv_ii;
   sv->new_inf_proc_func=dummy_proc_func_sv_ii;
+  sv->new_inf_proc_func_noevent=dummy_proc_func_sv_ii;
   sv->end_inf_proc_func=dummy_proc_func_two_pars;
-  sv->inf_proc_func_noevent=dummy_proc_func_two_pars;
 }

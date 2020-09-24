@@ -299,7 +299,7 @@ void printusage(const char* name)
   printf("\t--mbar VALUE\t\t\tMean period for the alternate communicable period (required if q>0).\n");
   printf("\t--kappaq VALUE\t\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period.\n");
   printf("\t--m95 VALUE\t\t\t95th percentile of the alternate communicable period.\n");
-  printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption (default value of 0). This option makes a model diverge from a branching process.\n");
+  printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption This option makes a model diverge from a branching process.\n");
   printf("\t--itbar VALUE\t\t\tMean period for the interrupted main communicable period (required if pit>0).\n");
   printf("\t--kappait VALUE\t\t\tkappa parameter for the gamma period used to generate the interrupted main communicable period.\n");
   printf("\t--it95 VALUE\t\t\t95th percentile of the interrupted main communicable period.\n");

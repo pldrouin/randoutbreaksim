@@ -341,20 +341,20 @@ void* simthread(void* arg)
   std_summary_stats stats;
 
   sim_set_proc_data(&sv, &stats);
+  sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
   sim_set_ii_alloc_proc_func(&sv, std_stats_ii_alloc);
 
   if(cp->nimax == UINT32_MAX) sim_set_new_event_proc_func(&sv, std_stats_new_event);
   else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
-  sim_set_new_pri_inf_proc_func(&sv, std_stats_new_pri_inf);
   sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
 
   if(cp->ninfhist) {
     sim_set_end_inf_proc_func(&sv, std_stats_end_inf_rec_ninfs);
-    sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf_rec_ninfs);
+    sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf_rec_ninfs);
 
   } else {
     sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
-    sim_set_inf_proc_noevent_func(&sv, std_stats_noevent_inf);
+    sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf);
   }
 
   branchsim_init(&sv);

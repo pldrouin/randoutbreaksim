@@ -125,7 +125,7 @@ int model_solve_pars(model_pars* pars)
 	} else {
           pars->ima=pars->imbar*pars->kappaim;
           pars->imb=1/pars->kappaim;
-	  printf("Parameters for the interrupted alternate time gamma distribution:\n");
+	  printf("\nParameters for the interrupted alternate time gamma distribution:\n");
 	  printf("pim:\t%22.15e\n",pars->pim);
 	  printf("imbar:\t%22.15e\n",pars->imbar);
 	  printf("kappaim:%22.15e\n",pars->kappaim);
@@ -151,7 +151,7 @@ int model_solve_pars(model_pars* pars)
     } else {
       pars->la=pars->lbar*pars->kappal;
       pars->lb=1/pars->kappal;
-      printf("Parameters for the latent time gamma distribution:\n");
+      printf("\nParameters for the latent time gamma distribution:\n");
       printf("lbar:\t%22.15e\n",pars->lbar);
       printf("kappal:\t%22.15e\n",pars->kappal);
       printf("l95:\t%22.15e\n",pars->l95);
@@ -520,6 +520,11 @@ int model_pars_check(model_pars const* pars)
       fprintf(stderr,"%s: Error: A tdelta value larger or equal to 0 must be defined\n",__func__);
       ret-=8192;
     }
+  }
+
+  if(isnan(pars->mtpr) && !(pars->pricommpertype&ro_pricommper_alt_use_tpr)) {
+    fprintf(stderr,"%s: Error: pri_no_alt_test_fnr cannot be used if testing is not activated for the alternate communicable period\n",__func__);
+    ret-=8192;
   }
 
   if(pars->tmax<=0) {

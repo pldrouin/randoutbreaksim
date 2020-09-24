@@ -12,5 +12,6 @@ var branchsim_8h =
     [ "gen_att_inf_infpop_log_plus_1", "branchsim_8h.html#a67ff11bf6048b877272c5af856d732a4", null ],
     [ "gen_att_inf_infpop_pinf1_log", "branchsim_8h.html#a26666e5e1a86647bafd5f1a67937b27c", null ],
     [ "gen_att_inf_infpop_pinf1_log_p0", "branchsim_8h.html#a72042584e40c42863cf2ce4cccb13f9f", null ],
-    [ "gen_att_inf_infpop_pinf1_log_plus_1", "branchsim_8h.html#ab7a166f8dc029feebad0219e59fcb703", null ]
+    [ "gen_att_inf_infpop_pinf1_log_plus_1", "branchsim_8h.html#ab7a166f8dc029feebad0219e59fcb703", null ],
+    [ "__ro_debug", "branchsim_8h.html#a8d078c3df3fd4ba18a0fdbc446d6d099", null ]
 ];

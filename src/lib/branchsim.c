@@ -36,11 +36,13 @@ int branchsim(sim_vars* sv)
     sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
 
     sv->gen_time_origin_func(sv);
+    if(sv->brsim.iis[1].event_time<-39) __ro_debug=1;
     sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[1].end_comm_period > sv->pars.tmax);
 
     DEBUG_PRINTF("Comm period is %f%s\n",sv->brsim.iis[1].comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
 
-    sv->new_pri_inf_proc_func(sv, sv->brsim.iis+1);
+      //Old position for new_pri_inf_proc_func
+    sv->pri_init_proc_func(sv, sv->brsim.iis+1);
 
     sv->curii=sv->brsim.iis;
     sv->new_event_proc_func(sv);
@@ -52,9 +54,10 @@ int branchsim(sim_vars* sv)
 
     //If no event for the current individual in the primary layer
     if(!sv->curii->nevents) {
-      sv->inf_proc_func_noevent(sv->curii, sv->dataptr);
+      sv->new_inf_proc_func_noevent(sv, sv->curii);
       continue;
     }
+    sv->new_inf_proc_func(sv, sv->brsim.iis+1);
 
     sv->curii->curevent=0;
 
@@ -103,7 +106,7 @@ int branchsim(sim_vars* sv)
       //Generate the communicable period appropriately
       sv->gen_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
       sv->curii->commpertype|=ro_commper_tmax*(sv->curii->end_comm_period > sv->pars.tmax);
-      DEBUG_PRINTF("Comm period is %f%s\n",sv->curii->comm_period,(sv->curii->commpertype&ro_commper_tmax?" (reached end)":"")); \
+      DEBUG_PRINTF("Comm period is %f, type is 0x%08x, end comm is %f%s\n",sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period,(sv->curii->commpertype&ro_commper_tmax?" (reached end)":"")); \
 
       //Generate the number of events
       sv->curii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->curii->comm_period);
@@ -142,7 +145,7 @@ gen_event:
 	  sv->end_inf_proc_func(sv->curii, sv->dataptr);
 	}
 
-      } else sv->inf_proc_func_noevent(sv->curii, sv->dataptr);
+      } else sv->new_inf_proc_func_noevent(sv, sv->curii);
 
       //All events for the current individual have been exhausted
       for(;;) {

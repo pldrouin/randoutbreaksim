@@ -7,14 +7,13 @@ var searchData=
   ['ima_58',['ima',['../structmodel__pars.html#a4bda6ff265b09637011deafa88e0f407',1,'model_pars']]],
   ['imb_59',['imb',['../structmodel__pars.html#a77f419f3ec9310c6d2a5f538d1a4e64e',1,'model_pars']]],
   ['imbar_60',['imbar',['../structmodel__pars.html#a8eca9a98052d0a49ddaa0b5ce99a1a48',1,'model_pars']]],
-  ['inf_5fproc_5ffunc_5fnoevent_61',['inf_proc_func_noevent',['../structsim__vars__.html#afe0cafbe4bf3472b2417b684c0b5099e',1,'sim_vars_']]],
-  ['inf_5ftimeline_62',['inf_timeline',['../structstd__summary__stats.html#a40874a46f008c64e6ad71312da1c3e04',1,'std_summary_stats']]],
-  ['infindividual_63',['infindividual',['../structinfindividual.html',1,'']]],
-  ['infindividual_2eh_64',['infindividual.h',['../infindividual_8h.html',1,'']]],
-  ['init_5fn_5flayers_65',['INIT_N_LAYERS',['../branchsim_8h.html#a5655a86be72747864aa32dadb4fa6b49',1,'branchsim.h']]],
-  ['init_5fninf_5falloc_66',['INIT_NINF_ALLOC',['../standard__summary__stats_8h.html#af129ef530dd15ca11c8d3d8bb4586d58',1,'standard_summary_stats.h']]],
-  ['it95_67',['it95',['../structmodel__pars.html#a3a32c337af79711d1125a738e6a853ff',1,'model_pars']]],
-  ['ita_68',['ita',['../structmodel__pars.html#a8f0e5392cf2df23bec1c98d8b6088c34',1,'model_pars']]],
-  ['itb_69',['itb',['../structmodel__pars.html#a4c7410de6c36d1bf3018c7e907de5431',1,'model_pars']]],
-  ['itbar_70',['itbar',['../structmodel__pars.html#a0c31135837fd2a612f822f33f00e2d47',1,'model_pars']]]
+  ['inf_5ftimeline_61',['inf_timeline',['../structstd__summary__stats.html#a40874a46f008c64e6ad71312da1c3e04',1,'std_summary_stats']]],
+  ['infindividual_62',['infindividual',['../structinfindividual.html',1,'']]],
+  ['infindividual_2eh_63',['infindividual.h',['../infindividual_8h.html',1,'']]],
+  ['init_5fn_5flayers_64',['INIT_N_LAYERS',['../branchsim_8h.html#a5655a86be72747864aa32dadb4fa6b49',1,'branchsim.h']]],
+  ['init_5fninf_5falloc_65',['INIT_NINF_ALLOC',['../standard__summary__stats_8h.html#af129ef530dd15ca11c8d3d8bb4586d58',1,'standard_summary_stats.h']]],
+  ['it95_66',['it95',['../structmodel__pars.html#a3a32c337af79711d1125a738e6a853ff',1,'model_pars']]],
+  ['ita_67',['ita',['../structmodel__pars.html#a8f0e5392cf2df23bec1c98d8b6088c34',1,'model_pars']]],
+  ['itb_68',['itb',['../structmodel__pars.html#a4c7410de6c36d1bf3018c7e907de5431',1,'model_pars']]],
+  ['itbar_69',['itbar',['../structmodel__pars.html#a0c31135837fd2a612f822f33f00e2d47',1,'model_pars']]]
 ];
