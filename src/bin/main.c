@@ -341,7 +341,9 @@ void* simthread(void* arg)
   std_summary_stats stats;
 
   sim_set_proc_data(&sv, &stats);
-  sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
+
+  if(cp->pars.timetype!=ro_time_pri_created) sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
+
   sim_set_ii_alloc_proc_func(&sv, std_stats_ii_alloc);
 
   if(cp->nimax == UINT32_MAX) sim_set_new_event_proc_func(&sv, std_stats_new_event);

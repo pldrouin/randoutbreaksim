@@ -26,7 +26,7 @@ void sim_pars_init(model_pars* pars)
   pars->kappa=NAN;
   pars->lbar=NAN;
   pars->kappal=NAN;
-  pars->q=0;
+  pars->q=NAN;
   pars->mbar=NAN;
   pars->kappaq=NAN;
   pars->pit=NAN;

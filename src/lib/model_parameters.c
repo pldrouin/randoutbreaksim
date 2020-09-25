@@ -161,7 +161,7 @@ int model_solve_pars(model_pars* pars)
   }
 
   printf("\nBranching process effective reproduction number:\n");
-  printf("brReff:\t%22.15e\n",pars->R0*(1+(isnan(pars->q)?0:pars->q)*(pars->mbar/pars->tbar-1)));
+  printf("brReff:\t%22.15e\n",pars->R0*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))));
 
   return 0;
 }

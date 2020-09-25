@@ -295,7 +295,7 @@ void printusage(const char* name)
   printf("\t--lbar VALUE\t\t\tMean latent period (default value of 0).\n");
   printf("\t--kappal VALUE\t\t\tkappa parameter for the gamma distribution used to generate the latent period.\n");
   printf("\t--l95 VALUE\t\t\t95th percentile of the latent period.\n");
-  printf("\t--q VALUE\t\t\tProbability of alternate communicable period (default value of 0).\n");
+  printf("\t--q VALUE\t\t\tProbability of alternate communicable period.\n");
   printf("\t--mbar VALUE\t\t\tMean period for the alternate communicable period (required if q>0).\n");
   printf("\t--kappaq VALUE\t\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period.\n");
   printf("\t--m95 VALUE\t\t\t95th percentile of the alternate communicable period.\n");
