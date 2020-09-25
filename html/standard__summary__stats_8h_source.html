@@ -456,14 +456,12 @@ $(document).ready(function(){initNavTree('standard__summary__stats_8h_source.htm
 <div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;<span class="comment"> * */</span></div>
 <div class="line"><a name="l00368"></a><span class="lineno"><a class="line" href="standard__summary__stats_8h.html#a6f7dbfd8c7c89122e03f6f7139b3925e">  368</a></span>&#160;<span class="keyword">inline</span> <span class="keyword">static</span> <span class="keywordtype">void</span> <a class="code" href="standard__summary__stats_8h.html#a6f7dbfd8c7c89122e03f6f7139b3925e">std_stats_noevent_new_inf_rec_ninfs</a>(<a class="code" href="structsim__vars__.html">sim_vars</a>* sv, <a class="code" href="structinfindividual.html">infindividual</a>* ii)</div>
 <div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;{</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  std_stats_fill_newpostest(sv, ii);</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  ++((*((<a class="code" href="structstd__summary__stats.html">std_summary_stats</a>*)sv-&gt;<a class="code" href="structsim__vars__.html#ad9d50be547359a56e26030911f2d3d96">dataptr</a>)-&gt;ngeninfs)[0]);</div>
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;  ++((*((<a class="code" href="structstd__summary__stats.html">std_summary_stats</a>*)sv-&gt;<a class="code" href="structsim__vars__.html#ad9d50be547359a56e26030911f2d3d96">dataptr</a>)-&gt;ngeninfs)[0]);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160; </div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;  <a class="code" href="standard__summary__stats_8h.html#a8b9665e889b18d0a855705c68ee5d946">std_stats_noevent_new_inf</a>(sv, ii);</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;}</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;  <a class="code" href="standard__summary__stats_8h.html#a8b9665e889b18d0a855705c68ee5d946">std_stats_noevent_new_inf</a>(sv, ii);</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;}</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;<span class="preprocessor">#endif</span></div>
 </div><!-- fragment --></div><!-- contents -->
 </div><!-- doc-content -->
 <div class="ttc" id="astructstd__summary__stats_html_a148cb88ee7eccbe47d87999df43ee134"><div class="ttname"><a href="structstd__summary__stats.html#a148cb88ee7eccbe47d87999df43ee134">std_summary_stats::nimaxedoutmintimeindex</a></div><div class="ttdeci">int32_t nimaxedoutmintimeindex</div><div class="ttdoc">Minimum time index which maxed out the allowed number of infected individuals.</div><div class="ttdef"><b>Definition:</b> <a href="standard__summary__stats_8h_source.html#l00048">standard_summary_stats.h:48</a></div></div>

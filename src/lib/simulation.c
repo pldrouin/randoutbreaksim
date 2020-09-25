@@ -10,7 +10,7 @@
 #define EXPAND(VAL)     DO_EXPAND(VAL)
 
 #if defined(DEBUG_PRINTF) || (EXPAND(DEBUG_PRINTF) != 1)
-int __ro_debug=0;
+int __ro_debug=1;
 #endif
 
 void sim_pars_init(model_pars* pars)

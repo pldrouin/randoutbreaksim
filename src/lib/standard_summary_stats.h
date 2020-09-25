@@ -367,8 +367,6 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii)
  * */
 inline static void std_stats_noevent_new_inf_rec_ninfs(sim_vars* sv, infindividual* ii)
 {
-  std_stats_fill_newpostest(sv, ii);
-
   ++((*((std_summary_stats*)sv->dataptr)->ngeninfs)[0]);
 
   std_stats_noevent_new_inf(sv, ii);

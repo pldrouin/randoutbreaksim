@@ -36,7 +36,6 @@ int branchsim(sim_vars* sv)
     sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
 
     sv->gen_time_origin_func(sv);
-    if(sv->brsim.iis[1].event_time<-39) __ro_debug=1;
     sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[1].end_comm_period > sv->pars.tmax);
 
     DEBUG_PRINTF("Comm period is %f%s\n",sv->brsim.iis[1].comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
