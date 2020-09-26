@@ -76,7 +76,7 @@ void std_stats_init(sim_vars *sv, uint64_t** ngeninfs, uint32_t* ninfbins);
  */
 inline static void std_stats_path_init(std_summary_stats* stats)
 {
-  stats->extinction_time=0;
+  stats->extinction_time=-INFINITY;
   stats->commpersum=0;
   memset(stats->inf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->newinf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
