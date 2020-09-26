@@ -204,13 +204,14 @@ var NAVTREEINDEX0 =
 "structbrsim__vars.html#ae5390c0233e3576af029c2dee5c9f5d3":[0,0,0,1],
 "structconfig__pars.html":[0,0,1],
 "structconfig__pars.html#a0be6f0a2117b8eda638e8f8c2f7f4a8b":[0,0,1,4],
-"structconfig__pars.html#a29793e13f7dc1a082ef28c3552c7849a":[0,0,1,10],
+"structconfig__pars.html#a29793e13f7dc1a082ef28c3552c7849a":[0,0,1,11],
+"structconfig__pars.html#a3172c121a122c6fe601e57525a436c77":[0,0,1,9],
 "structconfig__pars.html#a5ba9627e4ef1f5eeb3f16938208050ec":[0,0,1,1],
 "structconfig__pars.html#a6778bdc19370bf9178ddd497aca9cad3":[0,0,1,7],
 "structconfig__pars.html#a7e4cc89632eded9dcce3b3568277d926":[0,0,1,3],
 "structconfig__pars.html#a8c1ec171a2a342094b410279c11b04e1":[0,0,1,6],
 "structconfig__pars.html#a9b5465501caad8785449605838fa0000":[0,0,1,0],
-"structconfig__pars.html#aa08f5c2d0d095b4ac4a7cd8ed7fca038":[0,0,1,9],
+"structconfig__pars.html#aa08f5c2d0d095b4ac4a7cd8ed7fca038":[0,0,1,10],
 "structconfig__pars.html#aa9b0fbdc022c66e1aa062921e781a1c0":[0,0,1,2],
 "structconfig__pars.html#adccc72c595b77d173051e59fa2a47e4a":[0,0,1,8],
 "structconfig__pars.html#aff5a77c7c325b0cb681f2db40902b969":[0,0,1,5],
@@ -248,6 +249,5 @@ var NAVTREEINDEX0 =
 "structmodel__pars.html#a65992318e940f5727865bf355c0938e7":[0,0,4,30],
 "structmodel__pars.html#a6cc9bd7884927a2b8f64ecbcb2f06927":[0,0,4,35],
 "structmodel__pars.html#a6fbaef2094df86c835fd5b8c8203c3f4":[0,0,4,18],
-"structmodel__pars.html#a77f419f3ec9310c6d2a5f538d1a4e64e":[0,0,4,4],
-"structmodel__pars.html#a7b1725378a8aacc198eabaa6246755b2":[0,0,4,38]
+"structmodel__pars.html#a77f419f3ec9310c6d2a5f538d1a4e64e":[0,0,4,4]
 };

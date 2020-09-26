@@ -220,6 +220,14 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->npaths);
 
+      } else if(!argsdiffer(pbuf, "lmax")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,&cp->lmax);
+
+      } else if(!argsdiffer(pbuf, "nimax")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,&cp->nimax);
+
       } else if(!argsdiffer(pbuf, "nthreads")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->nthreads);
@@ -228,13 +236,9 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->nsetsperthread);
 
-      } else if(!argsdiffer(pbuf, "lmax")) {
+      } else if(!argsdiffer(pbuf, "stream")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,&cp->lmax);
-
-      } else if(!argsdiffer(pbuf, "nimax")) {
-	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,&cp->nimax);
+	sscanf(pbuf,"%"PRIu32,&cp->stream);
 
       } else {
 
@@ -319,14 +323,15 @@ void printusage(const char* name)
   printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
+  printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
+  printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
   printf("\t--tlout VALUE\t\t\tOutput timeline information for each simulated path into the provided file in the binary format as described below.\n");
   printf("\t--tloutbufsize VALUE\t\tPer-thread memory buffer size (in MB) used to accumulate data for timeline output before writing them to disk (default value of 10 MB).\n");
   printf("\t--ninfhist\t\t\tCompute a histogram of the number of infected individuals for each infectious individual.\n");
   printf("\t--npaths VALUE\t\t\tNumber of generated simulation paths (default value of 10000).\n");
   printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1).\n");
   printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise). Using a value of 1 guarantees the same stream of random numbers from one run to another, while using a larger value increases performance by assigning sets to available processing resources. In either case, the RNG stream algorithm is used to guarantee non-overlapping seed streams between threads.\n");
-  printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
-  printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
+  printf("\t--stream VALUE\t\tSelect an RNG stream. Use to set the initial seed of the random number generator.\n");
   printf("\t--help\t\t\t\tPrint this usage information and exit.\n");
   printf("\n\tEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\n");
   printf("\tOptions can be used multiple times and configuration files can be read from configuration files.\n"); 

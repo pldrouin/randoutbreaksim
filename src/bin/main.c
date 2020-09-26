@@ -12,7 +12,7 @@
 
 int main(const int nargs, const char* args[])
 {
-  config_pars cp={.ninfhist=false, .npaths=10000, .nthreads=1, .lmax=UINT32_MAX, .nimax=UINT32_MAX, .tloutbufsize=10, .tlout=0, .oout=STDOUT_FILENO, .eout=STDERR_FILENO};
+  config_pars cp={.ninfhist=false, .npaths=10000, .lmax=UINT32_MAX, .nimax=UINT32_MAX, .nthreads=1, .stream=0, .tloutbufsize=10, .tlout=0, .oout=STDOUT_FILENO, .eout=STDERR_FILENO};
   cp.nsetsperthread=(cp.nthreads>1?100:1);
   pthread_mutex_t tlflock;
 
@@ -23,6 +23,8 @@ int main(const int nargs, const char* args[])
   if(model_solve_pars(&cp.pars)) return 1;
 
   gsl_rng_env_setup();
+
+  rng_skipstreams(cp.nthreads*cp.stream);
 
   if(model_pars_check(&cp.pars)) {
     fprintf(stderr,"%s: Error: While verifying the validity of the simulation parameters.\n",args[0]);
@@ -68,6 +70,7 @@ int main(const int nargs, const char* args[])
       tdata[t].ninfbins=0;
       //tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
       tdata[t].r = gsl_rng_alloc(rngstream_gsl);
+      //rng_writestatefull((rng_stream*)tdata[t].r->state);
       tdata[t].tlflock = &tlflock;
       pthread_create(threads+t,NULL,simthread,tdata+t);
     }
@@ -127,6 +130,7 @@ int main(const int nargs, const char* args[])
     tdata[0].ninfbins=0;
     //tdata[0].r = gsl_rng_alloc(gsl_rng_taus2);
     tdata[0].r = gsl_rng_alloc(rngstream_gsl);
+    //rng_writestatefull((rng_stream*)tdata[0].r->state);
     tdata[0].tlflock = &tlflock;
     simthread(tdata);
     gsl_rng_free(tdata[0].r);
