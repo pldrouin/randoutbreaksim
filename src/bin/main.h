@@ -64,6 +64,7 @@ typedef struct {
   uint32_t nimaxedoutmintimeindex;
   gsl_rng* r;
   pthread_mutex_t* tlflock;
+  pthread_mutex_t* ctflock;
 } thread_data;
 
 void* simthread(void* arg);
@@ -92,7 +93,7 @@ inline static ssize_t tlo_write_reg_path(std_summary_stats const* stats, char* b
 
   const uint32_t nbins=b+1;
   *(uint32_t*)buf=htole32(nbins);
-  buf[4]=(char)stats->extinction;;
+  buf[4]=(char)stats->extinction;
   buf+=5;
 
   for(b=0; b<nbins; ++b) {
@@ -129,7 +130,7 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
 
   const uint32_t nbins=b+1;
   *(uint32_t*)buf=htole32(nbins);
-  buf[4]=(char)stats->extinction;;
+  buf[4]=(char)stats->extinction;
   buf+=5;
   const uint32_t tnbins=2*nbins;
 
@@ -247,3 +248,22 @@ inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* st
 
   return 9+nbins*12;
 }
+
+#ifdef CT_OUTPUT
+inline static int ctcompar(const void* first, const void* second){return ((*(ctentry**)first)->time<(*(ctentry**)second)->time?-1:((*(ctentry**)first)->time>(*(ctentry**)second)->time?1:0));}
+
+inline static void ct_write_func(std_summary_stats const* stats, char* buf)
+{
+  assert(stats->ctentries[0]->id==1);
+  stats->ctentries[0]->event=(int32_t)stats->extinction;
+  uint32_t i;
+
+  for(i=0; i<stats->nctentries; ++i) {
+    //printf("Writing %22.15e %i %i\n",stats->ctentries[i]->time, stats->ctentries[i]->id, stats->ctentries[i]->event);
+    *((uint64_t*)(buf+i*sizeof(ctentry)))=htole64(*(uint64_t*)&stats->ctentries[i]->time);
+    *((uint32_t*)(buf+i*sizeof(ctentry)+8))=htole32(*(uint32_t*)&stats->ctentries[i]->id);
+    *((uint32_t*)(buf+i*sizeof(ctentry)+12))=htole32(*(uint32_t*)&stats->ctentries[i]->event);
+  }
+}
+#endif
+

@@ -12,9 +12,17 @@
 
 int main(const int nargs, const char* args[])
 {
-  config_pars cp={.ninfhist=false, .npaths=10000, .lmax=UINT32_MAX, .nimax=UINT32_MAX, .nthreads=1, .stream=0, .tloutbufsize=10, .tlout=0, .oout=STDOUT_FILENO, .eout=STDERR_FILENO};
+  config_pars cp={.ninfhist=false, .npaths=10000, .lmax=UINT32_MAX, .nimax=UINT32_MAX, .nthreads=1, .stream=0, .tloutbufsize=10, .tlout=0, 
+#ifdef CT_OUTPUT
+    .ctoutbufsize=10, 
+    .ctout=0, 
+#endif
+    .oout=STDOUT_FILENO, .eout=STDERR_FILENO};
   cp.nsetsperthread=(cp.nthreads>1?100:1);
   pthread_mutex_t tlflock;
+#ifdef CT_OUTPUT
+  pthread_mutex_t ctflock;
+#endif
 
   sim_pars_init(&cp.pars);
 
@@ -47,6 +55,12 @@ int main(const int nargs, const char* args[])
     }
   }
 
+#ifdef CT_OUTPUT
+  if(cp.ctout) {
+    pthread_mutex_init(&ctflock, NULL);
+  }
+#endif
+
   thread_data* tdata=(thread_data*)malloc(cp.nthreads*sizeof(thread_data));
   int j;
   const uint32_t nsets=cp.nthreads*cp.nsetsperthread;
@@ -72,6 +86,9 @@ int main(const int nargs, const char* args[])
       tdata[t].r = gsl_rng_alloc(rngstream_gsl);
       //rng_writestatefull((rng_stream*)tdata[t].r->state);
       tdata[t].tlflock = &tlflock;
+#ifdef CT_OUTPUT
+      tdata[t].ctflock = &ctflock;
+#endif
       pthread_create(threads+t,NULL,simthread,tdata+t);
     }
 
@@ -132,6 +149,9 @@ int main(const int nargs, const char* args[])
     tdata[0].r = gsl_rng_alloc(rngstream_gsl);
     //rng_writestatefull((rng_stream*)tdata[0].r->state);
     tdata[0].tlflock = &tlflock;
+#ifdef CT_OUTPUT
+    tdata[0].ctflock = &ctflock;
+#endif
     simthread(tdata);
     gsl_rng_free(tdata[0].r);
   }
@@ -140,6 +160,13 @@ int main(const int nargs, const char* args[])
     close(cp.tlout);
     pthread_mutex_destroy(&tlflock);
   }
+
+#ifdef CT_OUTPUT
+  if(cp.ctout) {
+    close(cp.ctout);
+    pthread_mutex_destroy(&ctflock);
+  }
+#endif
 
   double ninf=tdata[tmaxnpersa].newinf_timeline_mean_ext[tdata[tmaxnpersa].tnpersa-2]+tdata[tmaxnpersa].newinf_timeline_mean_noext[tdata[tmaxnpersa].tnpersa-2];
 
@@ -333,6 +360,21 @@ void* simthread(void* arg)
     }
   }
 
+#ifdef CT_OUTPUT
+  const ssize_t ctobasize=cp->ctoutbufsize*INT64_C(1024*1024);
+  ssize_t ctobsize=0;
+  char* ctoutbuf=NULL;
+
+  if(cp->ctout) {
+    ctoutbuf=(char*)malloc(ctobasize);
+
+    if(!ctoutbuf) {
+      fprintf(stderr,"%s: Error: Cannot allocate memory buffer of size %" PRIu32 " MB for contact tracing output buffer\n",__func__,cp->ctoutbufsize);
+      exit(1);
+    }
+  }
+#endif
+
   sim_vars sv;
   //branchsim_init(&sv,.lambda=0.5,.p=0.8,.tmax=6);
 
@@ -408,7 +450,7 @@ void* simthread(void* arg)
 	if(tlobsize+maxwrite > tlobasize) {
 
 	  if(maxwrite > tlobasize) {
-	    fprintf(stderr,"%s: Error: Timeline output from a single path can exceed the allocated per-thread memory buffer size!\n",__func__);
+	    fprintf(stderr,"%s: Error: Timeline output from a single path cannot exceed the allocated per-thread memory buffer size!\n",__func__);
 	    exit(1);
 	  }
 	  pthread_mutex_lock(data->tlflock);
@@ -423,6 +465,32 @@ void* simthread(void* arg)
 	}
 	tlobsize+=buf_write_func(&stats, tloutbuf+tlobsize);
       }
+
+#ifdef CT_OUTPUT
+      if(cp->ctout) {
+	qsort(stats.ctentries, stats.nctentries, sizeof(ctentry*), ctcompar);
+	maxwrite=stats.nctentries*sizeof(ctentry);
+
+	if(ctobsize+maxwrite > ctobasize) {
+
+	  if(maxwrite > ctobasize) {
+	    fprintf(stderr,"%s: Error: Contact tracing output from a single path cannot exceed the allocated per-thread memory buffer size!\n",__func__);
+	    exit(1);
+	  }
+	  pthread_mutex_lock(data->ctflock);
+	  //printf("Writing %" PRIi64 " bytes\n",(int64_t)ctobsize);
+
+	  if(write(cp->ctout, ctoutbuf, ctobsize)!=ctobsize) {
+	    perror(__func__);
+	    exit(1);
+	  }
+	  pthread_mutex_unlock(data->ctflock);
+	  ctobsize=0;
+	}
+	ct_write_func(&stats, ctoutbuf+ctobsize);
+	ctobsize+=maxwrite;
+      }
+#endif
 
       if(stats.tnpersa > data->tnpersa) {
 	uint32_t diff=stats.tnpersa-data->tnpersa;
@@ -546,6 +614,20 @@ void* simthread(void* arg)
     pthread_mutex_unlock(data->tlflock);
     free(tloutbuf);
   }
+
+#ifdef CT_OUTPUT
+  if(cp->ctout) {
+    pthread_mutex_lock(data->ctflock);
+    //printf("Writing %" PRIi64 " bytes\n",(int64_t)ctobsize);
+
+    if(write(cp->ctout, ctoutbuf, ctobsize)!=ctobsize) {
+      perror(__func__);
+      exit(1);
+    }
+    pthread_mutex_unlock(data->ctflock);
+    free(ctoutbuf);
+  }
+#endif
 
   std_stats_free(&stats);
   branchsim_free(&sv);

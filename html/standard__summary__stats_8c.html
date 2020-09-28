@@ -127,6 +127,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a445375828656d6f9f2eb775781fdf5e0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8c.html#a445375828656d6f9f2eb775781fdf5e0">std_stats_init</a> (<a class="el" href="simulation_8h.html#af56e48cea71d8ff85c6a1651de1707bf">sim_vars</a> *sv, uint64_t **ngeninfs, uint32_t *ninfbins)</td></tr>
 <tr class="memdesc:a445375828656d6f9f2eb775781fdf5e0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Initialises the standard summary statistics.  <a href="standard__summary__stats_8c.html#a445375828656d6f9f2eb775781fdf5e0">More...</a><br /></td></tr>
 <tr class="separator:a445375828656d6f9f2eb775781fdf5e0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa38a2d7cde0950dcc13f741f49b12782"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="standard__summary__stats_8c.html#aa38a2d7cde0950dcc13f741f49b12782">std_stats_free</a> (<a class="el" href="structstd__summary__stats.html">std_summary_stats</a> *stats)</td></tr>
+<tr class="memdesc:aa38a2d7cde0950dcc13f741f49b12782"><td class="mdescLeft">&#160;</td><td class="mdescRight">Frees memory used by the standard summary statistics.  <a href="standard__summary__stats_8c.html#aa38a2d7cde0950dcc13f741f49b12782">More...</a><br /></td></tr>
+<tr class="separator:aa38a2d7cde0950dcc13f741f49b12782"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>User-defined functions to compute standard summary statistics. </p>
@@ -134,6 +137,35 @@ Functions</h2></td></tr>
 
 <p class="definition">Definition in file <a class="el" href="standard__summary__stats_8c_source.html">standard_summary_stats.c</a>.</p>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="aa38a2d7cde0950dcc13f741f49b12782"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa38a2d7cde0950dcc13f741f49b12782">&#9670;&nbsp;</a></span>std_stats_free()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void std_stats_free </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="structstd__summary__stats.html">std_summary_stats</a> *&#160;</td>
+          <td class="paramname"><em>stats</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Frees memory used by the standard summary statistics. </p>
+<p>This function must be called once to free the memory that was allocated by std_stats_init.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">stats</td><td>Pointer to the standard summary statistics. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="standard__summary__stats_8c_source.html#l00037">37</a> of file <a class="el" href="standard__summary__stats_8c_source.html">standard_summary_stats.c</a>.</p>
+
+</div>
+</div>
 <a id="a445375828656d6f9f2eb775781fdf5e0"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a445375828656d6f9f2eb775781fdf5e0">&#9670;&nbsp;</a></span>std_stats_init()</h2>
 

@@ -46,8 +46,8 @@ typedef struct sim_vars_
   void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
-  void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
-  void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii);	//!< Pointer to the user-defined processing function that is called for a new infected individual that does not generate any transmission event.
+  void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
+  void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);	//!< Pointer to the user-defined processing function that is called for a new infected individual that does not generate any transmission event.
   void (*end_inf_proc_func)(infindividual* ii, void* dataptr); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
   ran_log rl;	//!< Handle for the logarithmica random variate generator.
 
@@ -112,7 +112,7 @@ inline static void sim_set_new_event_proc_func(sim_vars* sv, bool (*new_event_pr
  * @param sv: Pointer to the simulation variables.
  * @param new_inf_proc_func: Pointer to the user-defined function.
  */
-inline static void sim_set_new_inf_proc_func(sim_vars* sv, void (*new_inf_proc_func)(sim_vars* sv, infindividual* ii)){sv->new_inf_proc_func=new_inf_proc_func;}
+inline static void sim_set_new_inf_proc_func(sim_vars* sv, void (*new_inf_proc_func)(sim_vars* sv, infindividual* ii, infindividual* parent)){sv->new_inf_proc_func=new_inf_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called when a new
@@ -152,7 +152,7 @@ inline static void sim_set_end_inf_proc_func(sim_vars* sv, void (*end_inf_proc_f
  * @param new_inf_proc_func_noevent: Pointer to the user-defined function. The second
  * argument for this function is the simulation-level data pointer.
  */
-inline static void sim_set_new_inf_proc_noevent_func(sim_vars* sv, void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii)){sv->new_inf_proc_func_noevent=new_inf_proc_func_noevent;}
+inline static void sim_set_new_inf_proc_noevent_func(sim_vars* sv, void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii, infindividual* parent)){sv->new_inf_proc_func_noevent=new_inf_proc_func_noevent;}
 
 /**
  * @brief Function that modifies the simulation time to use the creation time of
@@ -382,6 +382,14 @@ inline static void default_ii_alloc_proc_func(infindividual* ii){ii->dataptr=NUL
  * set. The function does not do anything.
  */
 inline static void dummy_proc_func_sv_ii(sim_vars* sv, infindividual* ii){}
+
+/**
+ * @brief Default processing function.
+ *
+ * This function is called by default if a user-defined function has not been
+ * set. The function does not do anything.
+ */
+inline static void dummy_proc_func_sv_ii2(sim_vars* sv, infindividual* ii, infindividual* ii2){}
 
 /**
  * @brief Default processing function.

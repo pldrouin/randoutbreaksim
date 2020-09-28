@@ -24,4 +24,25 @@ void std_stats_init(sim_vars* sv, uint64_t** ngeninfs, uint32_t* ninfbins)
   }
   stats->lmax=UINT32_MAX;
   stats->nimax=UINT32_MAX;
+
+#ifdef CT_OUTPUT
+  stats->nactentries=INIT_NACTENTRIES;
+  stats->ctentries=(ctentry**)malloc(INIT_NACTENTRIES*sizeof(ctentry*));
+
+  int32_t i;
+  for(i=stats->nactentries-1; i>=0; --i) stats->ctentries[i]=(ctentry*)malloc(sizeof(ctentry));
+#endif
+}
+
+void std_stats_free(std_summary_stats* stats)
+{
+  free(stats->inf_timeline-stats->timelineshift);
+  free(stats->newinf_timeline-stats->timelineshift);
+  free(stats->newpostest_timeline-stats->timelineshift);
+
+#ifdef CT_OUTPUT
+
+  int32_t i;
+  for(i=stats->nactentries-1; i>=0; --i) free(stats->ctentries[i]);
+#endif
 }

@@ -213,6 +213,20 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->tloutbufsize);
 
+#ifdef CT_OUTPUT
+      } else if(!argsdiffer(pbuf, "ctout")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+
+	if((cp->ctout=open(pbuf,O_RDWR|O_CREAT|O_TRUNC,S_IRUSR|S_IWUSR|S_IRGRP|S_IROTH))<0) {
+	  fprintf(stderr,"%s: Error: Cannot open file '%s' in write mode\n",__func__,pbuf);
+	  return -1;
+	}
+
+      } else if(!argsdiffer(pbuf, "ctoutbufsize")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,&cp->ctoutbufsize);
+#endif
+
       } else if(!argsdiffer(pbuf, "ninfhist")) {
 	cp->ninfhist=true;
 
@@ -325,13 +339,17 @@ void printusage(const char* name)
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
-  printf("\t--tlout VALUE\t\t\tOutput timeline information for each simulated path into the provided file in the binary format as described below.\n");
+  printf("\t--tlout FILENAME\t\tOutput timeline information for each simulated path into the provided file in the binary format as described below.\n");
   printf("\t--tloutbufsize VALUE\t\tPer-thread memory buffer size (in MB) used to accumulate data for timeline output before writing them to disk (default value of 10 MB).\n");
+#ifdef CT_OUTPUT
+  printf("\t--ctout FILENAME\t\tOutput contact tracing information for each simulated path into the provided file.\n");
+  printf("\t--ctoutbufsize VALUE\t\tPer-thread memory buffer size (in MB) used to accumulate data for contact tracing output before writing them to disk (default value of 10 MB).\n");
+#endif
   printf("\t--ninfhist\t\t\tCompute a histogram of the number of infected individuals for each infectious individual.\n");
   printf("\t--npaths VALUE\t\t\tNumber of generated simulation paths (default value of 10000).\n");
   printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1).\n");
   printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise). Using a value of 1 guarantees the same stream of random numbers from one run to another, while using a larger value increases performance by assigning sets to available processing resources. In either case, the RNG stream algorithm is used to guarantee non-overlapping seed streams between threads.\n");
-  printf("\t--stream VALUE\t\tSelect an RNG stream. Use to set the initial seed of the random number generator.\n");
+  printf("\t--stream VALUE\t\t\tSelect an RNG stream. Use to set the initial seed of the random number generator.\n");
   printf("\t--help\t\t\t\tPrint this usage information and exit.\n");
   printf("\n\tEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\n");
   printf("\tOptions can be used multiple times and configuration files can be read from configuration files.\n"); 

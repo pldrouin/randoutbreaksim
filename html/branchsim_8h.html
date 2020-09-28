@@ -205,13 +205,13 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>__ro_debug</b></td></t
       </table>
 </div><div class="memdoc">
 <b>Value:</b><div class="fragment"><div class="line">  <span class="keywordflow">if</span>(sv-&gt;pars.pinf==1) { \</div>
-<div class="line">  if(sv-&gt;pars.p == 0)  sv-&gt;<a class="code" href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">gen_att_inf_func</a>=gen_att_inf_infpop_pinf1_log_p0; \</div>
-<div class="line">  else if(sv-&gt;<a class="code" href="structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af">pars</a>.grouptype&amp;ro_group_log_attendees_plus_1) sv-&gt;<a class="code" href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">gen_att_inf_func</a>=gen_att_inf_infpop_pinf1_log_plus_1; \</div>
-<div class="line">  else sv-&gt;<a class="code" href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">gen_att_inf_func</a>=gen_att_inf_infpop_pinf1_log; \</div>
+<div class="line">  if(sv-&gt;pars.p == 0)  sv-&gt;gen_att_inf_func=gen_att_inf_infpop_pinf1_log_p0; \</div>
+<div class="line">  else if(sv-&gt;pars.grouptype&amp;ro_group_log_attendees_plus_1) sv-&gt;gen_att_inf_func=gen_att_inf_infpop_pinf1_log_plus_1; \</div>
+<div class="line">  else sv-&gt;gen_att_inf_func=gen_att_inf_infpop_pinf1_log; \</div>
 <div class="line">} else { \</div>
-<div class="line">  if(sv-&gt;pars.p == 0)  sv-&gt;<a class="code" href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">gen_att_inf_func</a>=gen_att_inf_infpop_log_p0; \</div>
-<div class="line">  else if(sv-&gt;<a class="code" href="structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af">pars</a>.grouptype&amp;ro_group_log_attendees_plus_1) sv-&gt;<a class="code" href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">gen_att_inf_func</a>=gen_att_inf_infpop_log_plus_1; \</div>
-<div class="line">  else sv-&gt;<a class="code" href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">gen_att_inf_func</a>=gen_att_inf_infpop_log; \</div>
+<div class="line">  if(sv-&gt;pars.p == 0)  sv-&gt;gen_att_inf_func=gen_att_inf_infpop_log_p0; \</div>
+<div class="line">  else if(sv-&gt;pars.grouptype&amp;ro_group_log_attendees_plus_1) sv-&gt;gen_att_inf_func=gen_att_inf_infpop_log_plus_1; \</div>
+<div class="line">  else sv-&gt;gen_att_inf_func=gen_att_inf_infpop_log; \</div>
 <div class="line">}</div>
 </div><!-- fragment -->
 <p class="definition">Definition at line <a class="el" href="branchsim_8h_source.html#l00065">65</a> of file <a class="el" href="branchsim_8h_source.html">branchsim.h</a>.</p>
@@ -274,7 +274,7 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>__ro_debug</b></td></t
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00187">187</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="branchsim_8c_source.html#l00186">186</a> of file <a class="el" href="branchsim_8c_source.html">branchsim.c</a>.</p>
 
 </div>
 </div>
@@ -309,8 +309,6 @@ int&#160;</td><td class="memItemRight" valign="bottom"><b>__ro_debug</b></td></t
 </div>
 </div><!-- contents -->
 </div><!-- doc-content -->
-<div class="ttc" id="astructsim__vars___html_aac0335e2677fb786bfaf201d5e4730af"><div class="ttname"><a href="structsim__vars__.html#aac0335e2677fb786bfaf201d5e4730af">sim_vars_::pars</a></div><div class="ttdeci">model_pars pars</div><div class="ttdoc">Simulation input parameters.</div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00038">simulation.h:38</a></div></div>
-<div class="ttc" id="astructsim__vars___html_a282e2679d511fdc6cc8e0826f2bcb77f"><div class="ttname"><a href="structsim__vars__.html#a282e2679d511fdc6cc8e0826f2bcb77f">sim_vars_::gen_att_inf_func</a></div><div class="ttdeci">void(* gen_att_inf_func)(struct sim_vars_ *)</div><div class="ttdoc">Pointer to the function used to generate attendees and new infections during one event.</div><div class="ttdef"><b>Definition:</b> <a href="simulation_8h_source.html#l00045">simulation.h:45</a></div></div>
 <!-- start footer part -->
 <div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
   <ul>

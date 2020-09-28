@@ -32,7 +32,11 @@ uint32_t nthreads;		//!< Number of threads used to perform the simulation.
 uint32_t nsetsperthread;	//!< Number of path sets used for each thread.
 uint32_t stream;		//!< RNG stream index.
 uint32_t tloutbufsize;		//!< Per-thread memory buffer size (in MB) used to accumulate data for timeline output before writing them to disk.
+uint32_t ctoutbufsize;		//!< Per-thread memory buffer size (in MB) used to accumulate data for contact tracing output before writing them to disk.
 int tlout;			//!< File descriptor used to record timeline data for each simulated path.
+#ifdef CT_OUTPUT
+int ctout;			//!< File descriptor used to CT data for each simulated path.
+#endif
 int oout;			//!< File descriptor for the standard output.
 int eout;			//!< File descriptor for the standard error.
 } config_pars;

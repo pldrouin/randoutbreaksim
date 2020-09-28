@@ -16,6 +16,8 @@
 #include "simulation.h"
 
 #define INIT_NINF_ALLOC (16) //!< Initial number of allocated bins for the ninf histogram
+#define INIT_NACTENTRIES (16)
+#define CTENTRIES_GROWFACT (1.5)
 
 extern int __ro_debug;
 #ifdef DEBUG_PRINTF
@@ -23,6 +25,14 @@ extern int __ro_debug;
 #endif
 #define DEBUG_PRINTF(...) //!< Debug print function
 //#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
+
+#ifdef CT_OUTPUT
+typedef struct {
+  double time;
+  int32_t id;
+  int32_t event;
+} ctentry;
+#endif
 
 /**
  * Simulation-level standard summary statistics data struct.
@@ -36,6 +46,12 @@ typedef struct
   uint32_t* newpostest_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that receive a positive test result at some point in this interval with an individual whose communicable period is the alternate period (lower bound included, upper bound excluded). For the last interval, it includes positive test results that occur between floor(tmax) and tmax.
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
   uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
+#ifdef CT_OUTPUT
+  ctentry** ctentries;
+  uint32_t nctentries;
+  uint32_t nactentries;
+  int32_t curctid;
+#endif
   uint32_t npers;		//!< Number of positive integer intervals
   int32_t timelineshift;       //!< Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
   uint32_t tnpersa;              //!< Total number of allocated integer intervals (negative+positive)
@@ -87,6 +103,11 @@ inline static void std_stats_path_init(std_summary_stats* stats)
 #endif
   stats->extinction=true;
   stats->nimaxedoutmintimeindex=UINT32_MAX;
+
+#ifdef CT_OUTPUT
+  stats->nctentries=0;
+  stats->curctid=0;
+#endif
 }
 
 /**
@@ -97,7 +118,7 @@ inline static void std_stats_path_init(std_summary_stats* stats)
  *
  * @param sv: Pointer to the simulation variables.
  * @param ii: Infectious individuals.
- * */
+ **/
 inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii)
 {
   const int32_t newshift=ceil(-ii->end_comm_period+(ii->comm_period+ii->latent_period));
@@ -138,8 +159,33 @@ inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii)
  * sim_set_ii_alloc_proc_func.
  *
  * @param ii: Infectious individuals.
- * */
-inline static void std_stats_ii_alloc(infindividual* ii){ii->dataptr=malloc(sizeof(double));}
+ **/
+inline static void std_stats_ii_alloc(infindividual* ii){
+#ifdef CT_OUTPUT
+  ii->dataptr=malloc(sizeof(uint32_t)+sizeof(int32_t));
+#else
+  ii->dataptr=malloc(sizeof(uint32_t));
+#endif
+}
+
+#ifdef CT_OUTPUT
+inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double time, const int32_t id, const int32_t event){
+  ++(stats->nctentries);
+  DEBUG_PRINTF("%s: %u %22.15e %i %i\n",__func__, stats->nctentries, time, id, event);
+
+  if(stats->nctentries==stats->nactentries) {
+    stats->nactentries*=CTENTRIES_GROWFACT;
+    stats->ctentries=(ctentry**)realloc(stats->ctentries,stats->nactentries*sizeof(ctentry*));
+
+    int32_t i;
+    for(i=stats->nctentries; i<stats->nactentries; ++i) stats->ctentries[i]=(ctentry*)malloc(sizeof(ctentry));
+  }
+
+  stats->ctentries[stats->nctentries-1]->time=time;
+  stats->ctentries[stats->nctentries-1]->id=id;
+  stats->ctentries[stats->nctentries-1]->event=event;
+}
+#endif
 
 /**
  * @brief Frees memory used by the standard summary statistics.
@@ -148,8 +194,8 @@ inline static void std_stats_ii_alloc(infindividual* ii){ii->dataptr=malloc(size
  * std_stats_init.
  *
  * @param stats: Pointer to the standard summary statistics.
- */
-inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_timeline-stats->timelineshift); free(stats->newinf_timeline-stats->timelineshift); free(stats->newpostest_timeline-stats->timelineshift);}
+ **/
+void std_stats_free(std_summary_stats* stats);
 
 /**
  * @brief Processes the number of infections for this new event.
@@ -162,9 +208,13 @@ inline static void std_stats_free(std_summary_stats* stats){free(stats->inf_time
  * @param sv: Pointer to the simulation variables.
  * @return true if the event time does not exceed tmax and new infections were
  * generated, and false otherwise.
- * */
+ **/
 inline static bool std_stats_new_event(sim_vars* sv)
 {
+#ifdef CT_OUTPUT
+    if(sv->curii->nattendees>sv->curii->ninfections) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, sv->curii->event_time, -(int32_t)(sv->curii->nattendees-sv->curii->ninfections), ((int32_t*)sv->curii->dataptr)[1]);
+#endif
+
   if(sv->curii->ninfections) {
     ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
     DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
@@ -193,7 +243,7 @@ inline static bool std_stats_new_event(sim_vars* sv)
  * @param sv: Pointer to the simulation variables.
  * @return true if the event time does not exceed tmax and new infections were
  * generated, and false otherwise.
- * */
+ **/
 inline static bool std_stats_new_event_nimax(sim_vars* sv)
 {
   if(sv->curii->ninfections) {
@@ -219,14 +269,22 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
   return false;
 }
 
-inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii)
+inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
+#ifdef CT_OUTPUT
+  ((int32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
+  std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period-(ii->comm_period+ii->latent_period), ((int32_t*)ii->dataptr)[1], ((int32_t*)parent->dataptr)[1]);
+#endif
   if(ii->commpertype&ro_commper_true_positive_test) {
     const int trt=floor(ii->end_comm_period+sv->pars.tdeltat);
 
     DEBUG_PRINTF("New pos test at %i\n",trt);
 
     if(trt<(int32_t)((std_summary_stats*)sv->dataptr)->npers) ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
+
+#ifdef CT_OUTPUT
+    std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((int32_t*)ii->dataptr)[1], 0);
+#endif
   }
 }
 
@@ -240,14 +298,14 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii)
  *
  * @param sv: Pointer to the simulation variables.
  * @param ii: Infectious individuals.
- * */
-inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii)
+ **/
+inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   ((uint32_t*)ii->dataptr)[0]=0;
   //++(*(uint32_t*)(ii-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(ii-1)->dataptr);
   DEBUG_PRINTF("%s\n",__func__);
-  std_stats_fill_newpostest(sv, ii);
+  std_stats_fill_newpostest(sv, ii, parent);
 }
 
 /**
@@ -267,7 +325,7 @@ inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii)
  *
  * @param ii: Pointer to the infectious individual.
  * @param ptr: Pointer to the summary statistics.
- * */
+ **/
 inline static void std_stats_end_inf(infindividual* ii, void* ptr)
 {
   DEBUG_PRINTF("Number of infections was %u\n",((uint32_t*)ii->dataptr)[0]);
@@ -302,7 +360,7 @@ inline static void std_stats_end_inf(infindividual* ii, void* ptr)
  *
  * @param ii: Pointer to the infectious individual.
  * @param ptr: Pointer to the summary statistics.
- * */
+ **/
 inline static void std_stats_end_inf_rec_ninfs(infindividual* ii, void* ptr)
 {
   if(*(uint32_t*)ii->dataptr >= *((std_summary_stats*)ptr)->ninfbins) {
@@ -329,13 +387,13 @@ inline static void std_stats_end_inf_rec_ninfs(infindividual* ii, void* ptr)
  *
  * @param sv: Pointer to the simulation variables.
  * @param ii: Pointer to the infectious individual.
- * */
-inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii)
+ **/
+inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   DEBUG_PRINTF("%s\n",__func__);
   DEBUG_PRINTF("Number of infections was 0\n");
 
-  std_stats_fill_newpostest(sv, ii);
+  std_stats_fill_newpostest(sv, ii, parent);
 
   ((std_summary_stats*)sv->dataptr)->commpersum+=ii->comm_period;
 
@@ -364,12 +422,12 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii)
  *
  * @param sv: Pointer to the simulation variables.
  * @param ii: Pointer to the infectious individual.
- * */
-inline static void std_stats_noevent_new_inf_rec_ninfs(sim_vars* sv, infindividual* ii)
+ **/
+inline static void std_stats_noevent_new_inf_rec_ninfs(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   ++((*((std_summary_stats*)sv->dataptr)->ngeninfs)[0]);
 
-  std_stats_noevent_new_inf(sv, ii);
+  std_stats_noevent_new_inf(sv, ii, parent);
 }
 
 #endif

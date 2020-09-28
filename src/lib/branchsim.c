@@ -40,7 +40,6 @@ int branchsim(sim_vars* sv)
 
     DEBUG_PRINTF("Comm period is %f%s\n",sv->brsim.iis[1].comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
 
-      //Old position for new_pri_inf_proc_func
     sv->pri_init_proc_func(sv, sv->brsim.iis+1);
 
     sv->curii=sv->brsim.iis;
@@ -53,10 +52,10 @@ int branchsim(sim_vars* sv)
 
     //If no event for the current individual in the primary layer
     if(!sv->curii->nevents) {
-      sv->new_inf_proc_func_noevent(sv, sv->curii);
+      sv->new_inf_proc_func_noevent(sv, sv->curii, sv->brsim.iis);
       continue;
     }
-    sv->new_inf_proc_func(sv, sv->brsim.iis+1);
+    sv->new_inf_proc_func(sv, sv->curii, sv->brsim.iis);
 
     sv->curii->curevent=0;
 
@@ -114,7 +113,7 @@ int branchsim(sim_vars* sv)
       //If the number of events is non-zero
       if(sv->curii->nevents) {
 	sv->curii->curevent=0;
-	sv->new_inf_proc_func(sv, sv->curii);
+	sv->new_inf_proc_func(sv, sv->curii, sv->curii-1);
 	//Generate the event time
 gen_event:
         sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
@@ -144,7 +143,7 @@ gen_event:
 	  sv->end_inf_proc_func(sv->curii, sv->dataptr);
 	}
 
-      } else sv->new_inf_proc_func_noevent(sv, sv->curii);
+      } else sv->new_inf_proc_func_noevent(sv, sv->curii, sv->curii-1);
 
       //All events for the current individual have been exhausted
       for(;;) {
