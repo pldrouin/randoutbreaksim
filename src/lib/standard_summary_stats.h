@@ -29,9 +29,14 @@ extern int __ro_debug;
 #ifdef CT_OUTPUT
 typedef struct {
   double time;
-  int32_t id;
-  int32_t event;
-} ctentry;
+  uint32_t ncontacts;
+} ctpievent;
+
+typedef struct {
+  double time;
+  uint32_t nevents;
+  ctpievent* events;
+} ctposinf;
 #endif
 
 /**
@@ -47,7 +52,8 @@ typedef struct
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
   uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
 #ifdef CT_OUTPUT
-  ctentry** ctentries;
+  ctposinf** ctentries;
+  ssize_t tnctevents;
   uint32_t nctentries;
   uint32_t nactentries;
   int32_t curctid;
@@ -107,6 +113,7 @@ inline static void std_stats_path_init(std_summary_stats* stats)
 #ifdef CT_OUTPUT
   stats->nctentries=0;
   stats->curctid=0;
+  stats->tnctevents=0;
 #endif
 }
 
@@ -162,28 +169,39 @@ inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii)
  **/
 inline static void std_stats_ii_alloc(infindividual* ii){
 #ifdef CT_OUTPUT
-  ii->dataptr=malloc(sizeof(uint32_t)+sizeof(int32_t));
+  ii->dataptr=malloc(2*sizeof(uint32_t));
 #else
   ii->dataptr=malloc(sizeof(uint32_t));
 #endif
 }
 
 #ifdef CT_OUTPUT
-inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double time, const int32_t id, const int32_t event){
+inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double time, const uint32_t nevents){
   ++(stats->nctentries);
-  DEBUG_PRINTF("%s: %u %22.15e %i %i\n",__func__, stats->nctentries, time, id, event);
+  DEBUG_PRINTF("%s: %u %22.15e %i\n",__func__, stats->nctentries, time, nevents);
 
   if(stats->nctentries==stats->nactentries) {
     stats->nactentries*=CTENTRIES_GROWFACT;
-    stats->ctentries=(ctentry**)realloc(stats->ctentries,stats->nactentries*sizeof(ctentry*));
+    stats->ctentries=(ctposinf**)realloc(stats->ctentries,stats->nactentries*sizeof(ctposinf*));
 
     int32_t i;
-    for(i=stats->nctentries; i<stats->nactentries; ++i) stats->ctentries[i]=(ctentry*)malloc(sizeof(ctentry));
+    for(i=stats->nctentries; i<stats->nactentries; ++i) stats->ctentries[i]=(ctposinf*)malloc(sizeof(ctposinf));
   }
 
   stats->ctentries[stats->nctentries-1]->time=time;
-  stats->ctentries[stats->nctentries-1]->id=id;
-  stats->ctentries[stats->nctentries-1]->event=event;
+
+  if(nevents) {
+    stats->ctentries[stats->nctentries-1]->nevents=nevents;
+    stats->ctentries[stats->nctentries-1]->events=(ctpievent*)malloc(nevents*sizeof(ctpievent));
+
+  } else stats->ctentries[stats->nctentries-1]->nevents=0;
+  stats->tnctevents+=nevents;
+}
+
+inline static void std_stats_add_ct_event(ctpievent* ctpie, const double time, const uint32_t ncontacts){
+  DEBUG_PRINTF("%s: %22.15e %i\n",__func__, time, ncontacts);
+  ctpie->time=time;
+  ctpie->ncontacts=ncontacts;
 }
 #endif
 
@@ -212,7 +230,11 @@ void std_stats_free(std_summary_stats* stats);
 inline static bool std_stats_new_event(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
-    if(sv->curii->nattendees>sv->curii->ninfections) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, sv->curii->event_time, -(int32_t)(sv->curii->nattendees-sv->curii->ninfections), ((int32_t*)sv->curii->dataptr)[1]);
+  if(sv->curii->commpertype&ro_commper_true_positive_test) {
+    //printf("%u/%u\n",sv->curii->curevent,((std_summary_stats*)sv->dataptr)->ctentries[((uint32_t*)sv->curii->dataptr)[1]]->nevents);
+    assert(sv->curii->curevent<((std_summary_stats*)sv->dataptr)->ctentries[((uint32_t*)sv->curii->dataptr)[1]]->nevents);
+    std_stats_add_ct_event(((std_summary_stats*)sv->dataptr)->ctentries[((uint32_t*)sv->curii->dataptr)[1]]->events+sv->curii->curevent, sv->curii->event_time, sv->curii->nattendees);
+  }
 #endif
 
   if(sv->curii->ninfections) {
@@ -271,10 +293,6 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 
 inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
-#ifdef CT_OUTPUT
-  ((int32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
-  std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period-(ii->comm_period+ii->latent_period), ((int32_t*)ii->dataptr)[1], ((int32_t*)parent->dataptr)[1]);
-#endif
   if(ii->commpertype&ro_commper_true_positive_test) {
     const int trt=floor(ii->end_comm_period+sv->pars.tdeltat);
 
@@ -283,7 +301,8 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
     if(trt<(int32_t)((std_summary_stats*)sv->dataptr)->npers) ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
 
 #ifdef CT_OUTPUT
-    std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((int32_t*)ii->dataptr)[1], 0);
+    ((uint32_t*)ii->dataptr)[1]=((std_summary_stats*)sv->dataptr)->nctentries;
+    std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ii->nevents);
 #endif
   }
 }

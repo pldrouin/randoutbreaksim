@@ -468,8 +468,10 @@ void* simthread(void* arg)
 
 #ifdef CT_OUTPUT
       if(cp->ctout) {
-	qsort(stats.ctentries, stats.nctentries, sizeof(ctentry*), ctcompar);
-	maxwrite=stats.nctentries*sizeof(ctentry);
+	qsort(stats.ctentries, stats.nctentries, sizeof(ctposinf*), ctcompar);
+	//printf("Entries: %u, tnctevents: %li\n",stats.nctentries,stats.tnctevents);
+	maxwrite=5+stats.nctentries*12+stats.tnctevents*12;
+	//printf("Maxwrite: %li\n",maxwrite);
 
 	if(ctobsize+maxwrite > ctobasize) {
 
@@ -490,6 +492,9 @@ void* simthread(void* arg)
 	ct_write_func(&stats, ctoutbuf+ctobsize);
 	ctobsize+=maxwrite;
       }
+
+      for(j=stats.nctentries-1; j>=0; --j) if(stats.ctentries[j]->nevents) free(stats.ctentries[j]->events);
+
 #endif
 
       if(stats.tnpersa > data->tnpersa) {

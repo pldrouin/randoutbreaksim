@@ -24,6 +24,7 @@ int branchsim(sim_vars* sv)
   int i;
   model_pars const* sim=&(sv->pars);
 
+  sv->brsim.iis[0].commpertype=0;
   sv->brsim.iis[0].nevents=1;
   sv->brsim.iis[0].curevent=0;
   sv->brsim.iis[0].nattendees=1;

@@ -1,6 +1,0 @@
-<map id="branchsim.h" name="branchsim.h">
-<area shape="rect" id="node1" title="Branching simulation functions." alt="" coords="56,5,149,32"/>
-<area shape="rect" id="node2" href="$branchsim_8c.html" title="Branching simulation functions." alt="" coords="5,80,99,107"/>
-<area shape="rect" id="node3" href="$main_8h.html" title="Main function for the simulation executable." alt="" coords="123,80,184,107"/>
-<area shape="rect" id="node4" href="$main_8c.html" title="Main function for the simulation executable." alt="" coords="123,155,184,181"/>
-</map>
