@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 #include <assert.h>
 
@@ -184,7 +185,7 @@ inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double
   }
 
   stats->ctentries[stats->nctentries-1]->postesttime=postesttime*1440; //time in minutes
-  stats->ctentries[stats->nctentries-1]->presymtime=presymtime*1440; //time in minutes
+  stats->ctentries[stats->nctentries-1]->presymtime=(isinf(presymtime)?INT32_MAX:presymtime*1440); //time in minutes
   stats->ctentries[stats->nctentries-1]->id=id;
   stats->ctentries[stats->nctentries-1]->pid=pid;
   stats->ctentries[stats->nctentries-1]->ntracedcts=ntracedcts;
