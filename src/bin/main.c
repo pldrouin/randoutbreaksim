@@ -230,8 +230,8 @@ int main(const int nargs, const char* args[])
   printf("Number of events per infectious individual is %22.15e\n",tdata[0].nevents_mean);
   printf("Number of infections per event is %22.15e\n",ninf_per_event_mean);
 #endif
-  printf("Probability of extinction and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
-  printf("Extinction time, if it occurs is %22.15e +/- %22.15e%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].nimaxedoutmintimeindex<UINT32_MAX?" (nimax reached, could be biased)":""));
+  printf("Probability of extinction and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].nimaxedoutmintimeindex<INT32_MAX?" (nimax reached, could be biased)":""));
+  printf("Extinction time, if it occurs is %22.15e +/- %22.15e%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].nimaxedoutmintimeindex<INT32_MAX?" (nimax reached, could be biased)":""));
 
   int shift=tdata[tmaxnpersa].tnpersa-npers;
   printf("\nCurrent infection timeline, for paths with extinction vs no extinction vs overall is:\n");

@@ -277,10 +277,10 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       const int eti=floor(sv->curii->event_time);
 
-      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax)
+      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax) {
 	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
 
-      else {
+      } else {
 	((std_summary_stats*)sv->dataptr)->extinction=false;
 
 	if(eti < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=eti;
@@ -322,7 +322,7 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       const int eti=floor(sv->curii->event_time);
 
-      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax)
+      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax)
 	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
 
       else {
