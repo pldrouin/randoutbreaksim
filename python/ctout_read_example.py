@@ -1,6 +1,6 @@
 import ctout_read as ctor
 
-entries=ctor.read('../brReff_4.0_cases_ct_C.ctout_new')
+entries=ctor.read('../test.ctout')
 
 #print(entries)
 

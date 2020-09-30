@@ -13,6 +13,7 @@ void std_stats_init(sim_vars* sv, uint64_t** ngeninfs, uint32_t* ninfbins)
   stats->tnpersa=stats->npers=(int)sv->pars.tmax+1;
   stats->inf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->newinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  stats->postest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->newpostest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
 
   if(ngeninfs && ninfbins) {
@@ -38,6 +39,7 @@ void std_stats_free(std_summary_stats* stats)
 {
   free(stats->inf_timeline-stats->timelineshift);
   free(stats->newinf_timeline-stats->timelineshift);
+  free(stats->postest_timeline-stats->timelineshift);
   free(stats->newpostest_timeline-stats->timelineshift);
 
 #ifdef CT_OUTPUT

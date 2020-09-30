@@ -44,9 +44,10 @@ typedef struct
 {
   double extinction_time;	//!< Path extinction time, if any.
   double commpersum;		//!< Sum of communicable periods for all infectious individuals whose communicable period does not occur after tmax.
-  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infected at some point in this interval (lower bound included, upper bound excluded).
-  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval (lower bound included, upper bound excluded). For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
-  uint32_t* newpostest_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that receive a positive test result at some point in this interval with an individual whose communicable period is the alternate period (lower bound included, upper bound excluded). For the last interval, it includes positive test results that occur between floor(tmax) and tmax.
+  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infected at the end of this interval.
+  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval. For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
+  uint32_t* postest_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that have a recent positive test result at the end of this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax.
+  uint32_t* newpostest_timeline;//!< For each integer interval between 0 and floor(tmax), the number of individuals that receive a positive test result at some point in this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax.
   uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual.
   uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
 #ifdef CT_OUTPUT
@@ -65,6 +66,9 @@ typedef struct
   uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   int32_t nimaxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of infected individuals.
+  uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnpers for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
+  uint32_t npostestmaxnpers;    //!< Interval duration for the maximum number of positive test results
+  int32_t npostestmaxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of recent positive test results.
   //uint32_t n_ended_infections;
   bool extinction;		//!< Set to true if extinction does not occur before or at tmax.
 } std_summary_stats;
@@ -99,13 +103,15 @@ inline static void std_stats_path_init(std_summary_stats* stats)
   stats->commpersum=0;
   memset(stats->inf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->newinf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
+  memset(stats->postest_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->newpostest_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   stats->rsum=0;
 #ifdef NUMEVENTSSTATS
   stats->neventssum=0;
 #endif
   stats->extinction=true;
-  stats->nimaxedoutmintimeindex=UINT32_MAX;
+  stats->nimaxedoutmintimeindex=INT32_MAX;
+  stats->npostestmaxedoutmintimeindex=INT32_MAX;
 
 #ifdef CT_OUTPUT
   stats->nctentries=0;
@@ -143,6 +149,12 @@ inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii)
     memcpy(newarray+dshift,stats->newinf_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
     free(stats->newinf_timeline-stats->timelineshift);
     stats->newinf_timeline=newarray+newshift;
+
+    newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+    memset(newarray,0,dshift*sizeof(uint32_t));
+    memcpy(newarray+dshift,stats->postest_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
+    free(stats->postest_timeline-stats->timelineshift);
+    stats->postest_timeline=newarray+newshift;
 
     newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
     memset(newarray,0,dshift*sizeof(uint32_t));
@@ -281,6 +293,51 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
   return false;
 }
 
+/**
+ * @brief Processes the number of infections for this new event.
+ *
+ * Adds the number of infections for this new event to the number of infections from
+ * the current infectious individual, and to the total infection timeline if the event
+ * time does not exceed tmax. If the bin for the recent positive test result timeline
+ * exceeds npostestmax, then set the extinction for the current path to false and
+ * update the value for the minimum time index where the maximum number of
+ * recent positive test results was exceeded if required. This function must be assigned to
+ * the simulation engine through a call of sim_set_new_event_proc_func.
+ *
+ * @param sv: Pointer to the simulation variables.
+ * @return true if the event time does not exceed tmax and new infections were
+ * generated, and false otherwise.
+ **/
+inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
+{
+#ifdef CT_OUTPUT
+  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts;
+  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u from non-infected contacts\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
+#endif
+
+  if(sv->curii->ninfections) {
+    ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
+    DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
+
+    if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+      const int eti=floor(sv->curii->event_time);
+
+      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax)
+	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+
+      else {
+	((std_summary_stats*)sv->dataptr)->extinction=false;
+
+	if(eti < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=eti;
+	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
+	return false;
+      }
+      return (sv->curii->event_time <= sv->pars.tmax);
+    }
+  }
+  return false;
+}
+
 inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   if(ii->commpertype&ro_commper_true_positive_test) {
@@ -296,6 +353,10 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
     DEBUG_PRINTF("Infectious individual ID is %u\n",((uint32_t*)ii->dataptr)[1]);
     DEBUG_PRINTF("ID %u: Successfully traced contacts initialized to 0\n",(((uint32_t*)ii->dataptr)[1]));
 #endif
+    int32_t i;
+    const int32_t end_comm_per=floor(ii->end_comm_period+sv->pars.tdeltat+((std_summary_stats*)sv->dataptr)->npostestmaxnpers);
+
+    for(i=(end_comm_per>=((std_summary_stats*)sv->dataptr)->npers?((std_summary_stats*)sv->dataptr)->npers-1:end_comm_per); i>=trt; --i) ++(((std_summary_stats*)sv->dataptr)->postest_timeline[i]);
   }
 }
 

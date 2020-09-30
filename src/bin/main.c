@@ -307,7 +307,7 @@ void* simthread(void* arg)
   data->pe=0;
   data->te_mean=0;
   data->te_std=0;
-  data->nimaxedoutmintimeindex=UINT32_MAX;
+  data->nimaxedoutmintimeindex=INT32_MAX;
 
   data->inf_timeline_mean_ext=(double*)malloc(data->tnpersa*sizeof(double));
   data->inf_timeline_std_ext=(double*)malloc(data->tnpersa*sizeof(double));

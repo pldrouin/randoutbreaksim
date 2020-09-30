@@ -61,7 +61,7 @@ typedef struct {
   double* newpostest_timeline_std_noext;
   uint64_t* ngeninfs;
   uint32_t ninfbins;
-  uint32_t nimaxedoutmintimeindex;
+  int32_t nimaxedoutmintimeindex;
   gsl_rng* r;
   pthread_mutex_t* tlflock;
   pthread_mutex_t* ctflock;
