@@ -54,10 +54,14 @@ typedef struct
   double q;		//!< Probability of alternate communicable period
   double mbar;		//!< Mean period for the alternate communicable period
   double kappaq;	//!< branchim's kappa parameter for the gamma distribution used to generate the alternate communicable period
-  double pit;		//!< Probability of main communicable period interruption
+#ifdef CT_OUTPUT
+  double ctwindow;      //!< Period prior to individual isolation during which contacts are considered
+  double pt;		//!< Probability of successful contact tracing. Probability must be larger than pit and pim, as it is considered to be applicable to all contacts.
+#endif
+  double pit;		//!< Overall probability of main communicable period interruption
   double itbar;		//!< Mean period for the interrupted main communicable period
   double kappait;	//!< kappa parameter for the gamma distribution used to generate the interrupted main communicable period
-  double pim;		//!< Probability of alternate communicable period interruption
+  double pim;		//!< Overall probability of alternate communicable period interruption
   double imbar;		//!< Mean period for the interrupted alternate communicable period
   double kappaim;	//!< kappa parameter for the gamma distribution used to generate the interrupted alternate communicable period
   double t95;	        //!< Parameter for the 95th percentile of the main communicable period (depends on tbar and kappa)

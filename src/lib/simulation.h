@@ -42,13 +42,14 @@ typedef struct sim_vars_
   void (*gen_time_origin_func)(struct sim_vars_*);	//!<Pointer to the function used to apply a time shift
   void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
   void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
+  void (*gen_time_periods_func_no_int)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods without interruption for a given infectious individual
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
   void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
   void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
   void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);	//!< Pointer to the user-defined processing function that is called for a new infected individual that does not generate any transmission event.
-  void (*end_inf_proc_func)(infindividual* ii, void* dataptr); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
+  void (*end_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
   ran_log rl;	//!< Handle for the logarithmica random variate generator.
 
   union{
@@ -140,7 +141,7 @@ inline static void sim_set_ii_alloc_proc_func(sim_vars* sv, void (*ii_alloc_proc
  * @param end_inf_proc_func: Pointer to the user-defined function. The second
  * argument for this function is the simulation-level data pointer.
  */
-inline static void sim_set_end_inf_proc_func(sim_vars* sv, void (*end_inf_proc_func)(infindividual* ii, void* dataptr)){sv->end_inf_proc_func=end_inf_proc_func;}
+inline static void sim_set_end_inf_proc_func(sim_vars* sv, void (*end_inf_proc_func)(sim_vars* sv, infindividual* ii, infindividual* parent)){sv->end_inf_proc_func=end_inf_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called for an infectious individual that does not generate any transmission event.
@@ -196,8 +197,9 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
 
 #define GEN_PER_INTERRUPTED_MAIN_0
 
-#define GEN_PER_INTERRUPTED_MAIN_1 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar; \
+#define GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) {
+#define GEN_PER_INTERRUPTED_MAIN_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pit) {
+#define GEN_PER_INTERRUPTED_MAIN_1_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar; \
   \
   if (ecp < ii->end_comm_period) { \
     ii->comm_period=sv->pars.itbar; \
@@ -206,12 +208,21 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
     else ii->commpertype|=ro_commper_int; \
-  } \
+  } else ii->commpertype|=ro_commper_int; \
 }
+#ifdef CT_OUTPUT
+#define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE \
+  ii->int_comm_period=sv->pars.itbar; \
+  GEN_PER_INTERRUPTED_MAIN_1_POST
+#else
+#define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT GEN_PER_INTERRUPTED_MAIN_1_POST
+#endif
 
-#define GEN_PER_INTERRUPTED_MAIN_2 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
-  const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb); \
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
+#define GEN_PER_INTERRUPTED_MAIN_2_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
+  const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
+#define GEN_PER_INTERRUPTED_MAIN_2_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pit) { \
+  const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
+#define GEN_PER_INTERRUPTED_MAIN_2_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
   \
   if(ecp < ii->end_comm_period) { \
     ii->comm_period=time; \
@@ -220,8 +231,15 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
     else ii->commpertype|=ro_commper_int; \
-  } \
+  } else ii->commpertype|=ro_commper_int; \
 }
+#ifdef CT_OUTPUT
+#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE \
+  ii->int_comm_period=time; \
+GEN_PER_INTERRUPTED_MAIN_2_POST
+#else
+#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE_TPT GEN_PER_INTERRUPTED_MAIN_2_POST
+#endif
 
 #define GEN_TESTED_ALT_0 ii->commpertype=ro_commper_alt;
 #define GEN_TESTED_ALT_1 ii->commpertype=ro_commper_alt|ro_commper_true_positive_test;
@@ -232,8 +250,9 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
 
 #define GEN_PER_INTERRUPTED_ALT_0
 
-#define GEN_PER_INTERRUPTED_ALT_1 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) {\
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar; \
+#define GEN_PER_INTERRUPTED_ALT_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) {
+#define GEN_PER_INTERRUPTED_ALT_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pim) {
+#define GEN_PER_INTERRUPTED_ALT_1_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar; \
   \
   if (ecp < ii->end_comm_period) { \
     ii->comm_period=sv->pars.imbar; \
@@ -242,12 +261,21 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     if(gsl_rng_uniform(sv->r) < sv->pars.mtpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
     else ii->commpertype|=ro_commper_int; \
-  } \
+  } else ii->commpertype|=ro_commper_int; \
 }
+#ifdef CT_OUTPUT
+#define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE \
+  ii->int_comm_period=sv->pars.imbar; \
+  GEN_PER_INTERRUPTED_ALT_1_POST
+#else
+#define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE_TPT GEN_PER_INTERRUPTED_ALT_1_POST
+#endif
 
-#define GEN_PER_INTERRUPTED_ALT_2 if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { \
-  const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb); \
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
+#define GEN_PER_INTERRUPTED_ALT_2_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { \
+  const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
+#define GEN_PER_INTERRUPTED_ALT_2_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pim) { \
+  const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
+#define GEN_PER_INTERRUPTED_ALT_2_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
   \
   if(ecp < ii->end_comm_period) { \
     ii->comm_period=time; \
@@ -256,14 +284,35 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
     else ii->commpertype|=ro_commper_int; \
-  } \
+  } else ii->commpertype|=ro_commper_int; \
 }
+#ifdef CT_OUTPUT
+#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE \
+  ii->int_comm_period=time; \
+  GEN_PER_INTERRUPTED_ALT_2_POST
+#else
+#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE_TPT GEN_PER_INTERRUPTED_ALT_2_POST
+#endif
 
-#define GEN_PER_ALTERNATE_ONLY_1(IM,TESTING) ii->comm_period=sv->pars.mbar; ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM;
-#define GEN_PER_ALTERNATE_ONLY_2(IM,TESTING) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM;
+#define GEN_PER_ALTERNATE_ONLY_1_PRE ii->comm_period=sv->pars.mbar;
+#define GEN_PER_ALTERNATE_ONLY_2_PRE ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb);
+#define GEN_PER_ALTERNATE_ONLY_POST(IM,TESTING) ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM;
 
-#define GEN_PER_ALTERNATE_1(MAIN,IT,IM,TESTING) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=sv->pars.mbar; ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
-#define GEN_PER_ALTERNATE_2(MAIN,IT,IM,TESTING) if(gsl_rng_uniform(sv->r) < sv->pars.q) {ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else GEN_PER_MAIN_ ## MAIN(IT);
+#define GEN_PER_ALTERNATE_PRE if(gsl_rng_uniform(sv->r) < sv->pars.q) {
+#define GEN_PER_ALTERNATE_1_POST(MAIN,IT,IM,TESTING) ii->comm_period=sv->pars.mbar; ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else {GEN_PER_MAIN_ ## MAIN(IT);}
+#define GEN_PER_ALTERNATE_2_POST(MAIN,IT,IM,TESTING) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else {GEN_PER_MAIN_ ## MAIN(IT);}
+
+#ifdef CT_OUTPUT
+#define GEN_PER_ALTERNATE_ONLY_1(IM,TESTING) ii->presym_comm_period=GEN_PER_ALTERNATE_ONLY_1_PRE GEN_PER_ALTERNATE_ONLY_POST(IM,TESTING)
+#define GEN_PER_ALTERNATE_ONLY_2(IM,TESTING) ii->presym_comm_period=GEN_PER_ALTERNATE_ONLY_2_PRE GEN_PER_ALTERNATE_ONLY_POST(IM,TESTING)
+#define GEN_PER_ALTERNATE_1(MAIN,IT,IM,TESTING) GEN_PER_ALTERNATE_PRE ii->presym_comm_period=GEN_PER_ALTERNATE_1_POST(MAIN,IT,IM,TESTING)
+#define GEN_PER_ALTERNATE_2(MAIN,IT,IM,TESTING) GEN_PER_ALTERNATE_PRE ii->presym_comm_period=GEN_PER_ALTERNATE_2_POST(MAIN,IT,IM,TESTING)
+#else
+#define GEN_PER_ALTERNATE_ONLY_1(IM,TESTING) GEN_PER_ALTERNATE_ONLY_1_PRE GEN_PER_ALTERNATE_ONLY_POST(IM,TESTING)
+#define GEN_PER_ALTERNATE_ONLY_2(IM,TESTING) GEN_PER_ALTERNATE_ONLY_2_PRE GEN_PER_ALTERNATE_ONLY_POST(IM,TESTING)
+#define GEN_PER_ALTERNATE_1(MAIN,IT,IM,TESTING) GEN_PER_ALTERNATE_PRE GEN_PER_ALTERNATE_1_POST(MAIN,IT,IM,TESTING)
+#define GEN_PER_ALTERNATE_2(MAIN,IT,IM,TESTING) GEN_PER_ALTERNATE_PRE GEN_PER_ALTERNATE_2_POST(MAIN,IT,IM,TESTING)
+#endif
 
 #define GEN_PER_MAIN_ALTERNATE_0_1(IT,IM,TESTING) GEN_PER_ALTERNATE_ONLY_1(IM,TESTING);
 #define GEN_PER_MAIN_ALTERNATE_0_2(IT,IM,TESTING) GEN_PER_ALTERNATE_ONLY_2(IM,TESTING);
@@ -337,7 +386,7 @@ GEN_PERS_MAIN(2,2)
  * The preprocessing macros below are used by the main PER_COND macro.
  */
 #define PRI_PER_COND_FULL(TESTING,LATENT,MAIN,ALT) if(sv->pars.pricommpertype&ro_pricommper_alt_use_tpr) sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _0_ ## ALT ## _0_ ## TESTING ## _periods; else sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _0_ ## ALT ## _0_1_periods; 
-#define PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,IM)  sv->gen_time_periods_func=gen_comm_ ##  LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALT ## _ ## IM ## _ ## TESTING ## _periods; if(sv->pars.pricommpertype&ro_pricommper_main) {if(sv->pars.pricommpertype&ro_pricommper_alt) {PRI_PER_COND_FULL(TESTING,LATENT,MAIN,ALT)} else {PRI_PER_COND_FULL(TESTING,LATENT,MAIN,0)}} else {PRI_PER_COND_FULL(TESTING,LATENT,0,ALT)}
+#define PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,IM)  sv->gen_time_periods_func=gen_comm_ ##  LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALT ## _ ## IM ## _ ## TESTING ## _periods; sv->gen_time_periods_func_no_int=gen_comm_ ##  LATENT ## _ ## MAIN ## _0_ ## ALT ## _0_ ## TESTING ## _periods; if(sv->pars.pricommpertype&ro_pricommper_main) {if(sv->pars.pricommpertype&ro_pricommper_alt) {PRI_PER_COND_FULL(TESTING,LATENT,MAIN,ALT)} else {PRI_PER_COND_FULL(TESTING,LATENT,MAIN,0)}} else {PRI_PER_COND_FULL(TESTING,LATENT,0,ALT)}
 #define PER_COND_IM(TESTING,LATENT,MAIN,IT,ALT) if(!(sv->pars.pim>0)) {PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,0)} else if(isinf(sv->pars.kappaim)) {PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,1)} else {PER_COND_WITH_ALT(TESTING,LATENT,MAIN,IT,ALT,2)}
 #define PER_COND_ALT(TESTING,LATENT,MAIN,IT) if(!(sv->pars.q>0)) {sv->gen_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _0_0_ ## TESTING ## _periods; sv->gen_pri_time_periods_func=gen_comm_ ## LATENT ## _ ## MAIN ## _0_0_0_ ## TESTING ## _periods;} else if(isinf(sv->pars.kappaq)) {PER_COND_IM(TESTING,LATENT,MAIN,IT,1)} else {PER_COND_IM(TESTING,LATENT,MAIN,IT,2)};
 #define PER_COND_IT(TESTING,LATENT,MAIN) if(!(sv->pars.pit>0)) {PER_COND_ALT(TESTING,LATENT,MAIN,0)} else if(isinf(sv->pars.kappait)) {PER_COND_ALT(TESTING,LATENT,MAIN,1)} else {PER_COND_ALT(TESTING,LATENT,MAIN,2)};
@@ -390,13 +439,5 @@ inline static void dummy_proc_func_sv_ii(sim_vars* sv, infindividual* ii){}
  * set. The function does not do anything.
  */
 inline static void dummy_proc_func_sv_ii2(sim_vars* sv, infindividual* ii, infindividual* ii2){}
-
-/**
- * @brief Default processing function.
- *
- * This function is called by default if a user-defined function has not been
- * set. The function does not do anything.
- */
-inline static void dummy_proc_func_two_pars(infindividual* inf, void* ptr){}
 
 #endif

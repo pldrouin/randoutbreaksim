@@ -250,32 +250,21 @@ inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* st
 }
 
 #ifdef CT_OUTPUT
-inline static int ctcompar(const void* first, const void* second){return ((*(ctposinf**)first)->time<(*(ctposinf**)second)->time?-1:((*(ctposinf**)first)->time>(*(ctposinf**)second)->time?1:0));}
+inline static int ctcompar(const void* first, const void* second){return ((*(ctposinf**)first)->postesttime<(*(ctposinf**)second)->postesttime?-1:((*(ctposinf**)first)->postesttime>(*(ctposinf**)second)->postesttime?1:0));}
 
 inline static void ct_write_func(std_summary_stats const* stats, char* buf)
 {
-  buf[0]=(char)stats->extinction;
-  *((uint32_t*)(buf+1))=stats->nctentries;
-  buf+=5;
-  uint32_t i, e, ne;
+  uint32_t i;
 
   //printf("Extinction: %u, nctentries: %u\n",stats->extinction,stats->nctentries);
 
   for(i=0; i<stats->nctentries; ++i) {
-    *((uint64_t*)buf)=htole64(*(uint64_t*)&stats->ctentries[i]->time);
-    ne=stats->ctentries[i]->nevents;
-    *((uint32_t*)(buf+8))=htole32(ne);
-    //printf("\t%u: %22.15e, %u\n",i,stats->ctentries[i]->time,ne);
-
-    if(ne) {
-
-      for(e=0; e<ne; ++e) {
-	//printf("\t\t%u: %22.15e, %u\n",e,stats->ctentries[i]->events[e].time,stats->ctentries[i]->events[e].ncontacts);
-	*((uint64_t*)(buf+12+e*12))=htole64(*(uint64_t*)&stats->ctentries[i]->events[e].time);
-	*((uint32_t*)(buf+20+e*12))=htole32(stats->ctentries[i]->events[e].ncontacts);
-      }
-    }
-    buf+=12+ne*12;
+    *((uint32_t*)(buf))=htole32(stats->ctentries[i]->postesttime);
+    *((uint32_t*)(buf+4))=htole32(stats->ctentries[i]->presymtime);
+    *((uint32_t*)(buf+8))=htole32(stats->ctentries[i]->id);
+    *((uint32_t*)(buf+12))=htole32(stats->ctentries[i]->pid);
+    *((uint32_t*)(buf+16))=htole32(stats->ctentries[i]->ntracedcts);
+    buf+=20;
   }
 }
 #endif

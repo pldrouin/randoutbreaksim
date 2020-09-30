@@ -43,7 +43,26 @@ int model_solve_pars(model_pars* pars)
   printf("ta:\t%22.15e\n",pars->ta);
   printf("tb:\t%22.15e\n",pars->tb);
 
+#ifdef CT_OUTPUT
+  if(!(pars->ctwindow>0)) {
+    fprintf(stderr,"%s: Error: The ctwindow parameter value must be strictly positive.\n",__func__);
+    return  -5;
+  }
+
+  if(!(pars->pt>0) || !(pars->pt<=1)) {
+    fprintf(stderr,"%s: Error: The pt parameter value must have a value in the interval (0,1].\n",__func__);
+    return  -5;
+  }
+#endif
+
   if(pars->pit>0) {
+
+#ifdef CT_OUTPUT
+    if(!(pars->pit<=pars->pt)) {
+      fprintf(stderr,"%s: Error: The pit parameter must have a value smaller or equal to the value of the pt parameter.\n",__func__);
+      return -5;
+    }
+#endif
 
     if((isnan(pars->kappait)==0) + (isnan(pars->it95)==0) != 1) {
       fprintf(stderr,"%s: Error: Either the kappait parameter or the it95 parameter must be provided.\n",__func__);
@@ -94,20 +113,27 @@ int model_solve_pars(model_pars* pars)
 
     if(pars->pim>0) {
 
+#ifdef CT_OUTPUT
+      if(!(pars->pim<=pars->pt)) {
+	fprintf(stderr,"%s: Error: The pim parameter must have a value smaller or equal to the value of the pt parameter.\n",__func__);
+	return -9;
+      }
+#endif
+
       if(isnan(pars->imbar) && isnan(pars->kappaim) && isnan(pars->im95)) {
 	pars->imbar=pars->itbar;
 	pars->kappaim=pars->kappait;
 	pars->im95=pars->it95;
-        pars->ima=pars->ita;
-        pars->imb=pars->itb;
+	pars->ima=pars->ita;
+	pars->imb=pars->itb;
 
 	printf("\nParameters for the interrupted alternate time gamma distribution:\n");
 	printf("pim:\t%22.15e\n",pars->pim);
 	printf("imbar:\t%22.15e\n",pars->imbar);
 	printf("kappaim:%22.15e\n",pars->kappaim);
 	printf("im95:\t%22.15e\n",pars->im95);
-        printf("ima:\t%22.15e\n",pars->ima);
-        printf("imb:\t%22.15e\n",pars->imb);
+	printf("ima:\t%22.15e\n",pars->ima);
+	printf("imb:\t%22.15e\n",pars->imb);
 
       } else {
 
@@ -123,15 +149,15 @@ int model_solve_pars(model_pars* pars)
 	  return -10;
 
 	} else {
-          pars->ima=pars->imbar*pars->kappaim;
-          pars->imb=1/pars->kappaim;
+	  pars->ima=pars->imbar*pars->kappaim;
+	  pars->imb=1/pars->kappaim;
 	  printf("\nParameters for the interrupted alternate time gamma distribution:\n");
 	  printf("pim:\t%22.15e\n",pars->pim);
 	  printf("imbar:\t%22.15e\n",pars->imbar);
 	  printf("kappaim:%22.15e\n",pars->kappaim);
 	  printf("im95:\t%22.15e\n",pars->im95);
-          printf("ima:\t%22.15e\n",pars->ima);
-          printf("imb:\t%22.15e\n",pars->imb);
+	  printf("ima:\t%22.15e\n",pars->ima);
+	  printf("imb:\t%22.15e\n",pars->imb);
 	}
       }
     }

@@ -29,6 +29,10 @@ void sim_pars_init(model_pars* pars)
   pars->q=NAN;
   pars->mbar=NAN;
   pars->kappaq=NAN;
+#ifdef CT_OUTPUT
+  pars->ctwindow=INFINITY;
+  pars->pt=NAN;
+#endif
   pars->pit=NAN;
   pars->itbar=NAN;
   pars->kappait=NAN;
@@ -82,5 +86,5 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
   sv->new_event_proc_func=default_event_proc_func;
   sv->new_inf_proc_func=dummy_proc_func_sv_ii2;
   sv->new_inf_proc_func_noevent=dummy_proc_func_sv_ii2;
-  sv->end_inf_proc_func=dummy_proc_func_two_pars;
+  sv->end_inf_proc_func=dummy_proc_func_sv_ii2;
 }
