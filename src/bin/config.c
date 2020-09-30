@@ -328,7 +328,7 @@ void printusage(const char* name)
   printf("\t--kappaq VALUE\t\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period.\n");
   printf("\t--m95 VALUE\t\t\t95th percentile of the alternate communicable period.\n");
 #ifdef CT_OUTPUT
-  printf("\t--ctwindow VALUE\t\t\tPeriod prior to individual isolation during which contacts are considered (default value of inf).\n");
+  printf("\t--ctwindow VALUE\t\tPeriod prior to individual isolation during which contacts are considered (default value of inf).\n");
   printf("\t--pt VALUE\t\t\tProbability of successful contact tracing. Probability must be larger than pit and pim, as it is considered to be applicable to all contacts.\n");
 #endif
   printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption This option makes a model diverge from a branching process.\n");
@@ -363,7 +363,7 @@ void printusage(const char* name)
   printf("\t--npaths VALUE\t\t\tNumber of generated simulation paths (default value of 10000).\n");
   printf("\t--nthreads VALUE\t\tNumber of threads used to perform the simulation (default value of 1).\n");
   printf("\t--nsetsperthread VALUE\t\tNumber of path sets used for each thread (default value of 100 when nthreads>1, and of 1 otherwise). Using a value of 1 guarantees the same stream of random numbers from one run to another, while using a larger value increases performance by assigning sets to available processing resources. In either case, the RNG stream algorithm is used to guarantee non-overlapping seed streams between threads.\n");
-  printf("\t--stream VALUE\t\t\tSelect an RNG stream. Use to set the initial seed of the random number generator.\n");
+  printf("\t--stream VALUE\t\t\tSelect an RNG stream. Use to set the initial seed of the random number generator (default value of 0).\n");
   printf("\t--help\t\t\t\tPrint this usage information and exit.\n");
   printf("\n\tEach option can be used as shown above from the command line. Dash(es) for option names are optional. For configuration files, '=', ':' or spaces as defined by isspace() can be used to separate option names from arguments. Characters following '#' on one line are considered to be comments.\n");
   printf("\tOptions can be used multiple times and configuration files can be read from configuration files.\n"); 

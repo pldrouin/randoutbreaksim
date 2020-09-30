@@ -470,7 +470,7 @@ void* simthread(void* arg)
       if(cp->ctout) {
 	qsort(stats.ctentries, stats.nctentries, sizeof(ctposinf*), ctcompar);
 	//printf("Entries: %u, tnctevents: %li\n",stats.nctentries,stats.tnctevents);
-	maxwrite=stats.nctentries*16;
+	maxwrite=stats.nctentries*20;
 	//printf("Maxwrite: %li\n",maxwrite);
 
 	if(ctobsize+maxwrite > ctobasize) {

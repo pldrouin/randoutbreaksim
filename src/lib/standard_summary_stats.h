@@ -292,8 +292,8 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
 #ifdef CT_OUTPUT
     ((uint32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
     ((uint32_t*)ii->dataptr)[2]=0;
-    DEBUG_PRINTF("ID %u: Successfully traced contacts initialized to 0\n",(((uint32_t*)ii->dataptr)[1]));
     DEBUG_PRINTF("Infectious individual ID is %u\n",((uint32_t*)ii->dataptr)[1]);
+    DEBUG_PRINTF("ID %u: Successfully traced contacts initialized to 0\n",(((uint32_t*)ii->dataptr)[1]));
 #endif
   }
 }
@@ -355,7 +355,7 @@ inline static void std_stats_end_inf(sim_vars* sv, infindividual* ii, infindivid
 #endif
 
 #ifdef CT_OUTPUT
-  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:-INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
+  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
 #endif
 
   //If truncated by tmax
@@ -430,7 +430,7 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
   ((std_summary_stats*)sv->dataptr)->commpersum+=ii->comm_period;
 
 #ifdef CT_OUTPUT
-  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:-INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
+  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
 #endif
 
   //If truncated by tmax
