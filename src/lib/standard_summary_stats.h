@@ -65,10 +65,9 @@ typedef struct
 #endif
   uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
-  int32_t nimaxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of infected individuals.
   uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnpers for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmaxnpers;    //!< Interval duration for the maximum number of positive test results
-  int32_t npostestmaxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of recent positive test results.
+  int32_t maxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of infected individuals or positive test results.
   //uint32_t n_ended_infections;
   bool extinction;		//!< Set to true if extinction does not occur before or at tmax.
 } std_summary_stats;
@@ -110,8 +109,7 @@ inline static void std_stats_path_init(std_summary_stats* stats)
   stats->neventssum=0;
 #endif
   stats->extinction=true;
-  stats->nimaxedoutmintimeindex=INT32_MAX;
-  stats->npostestmaxedoutmintimeindex=INT32_MAX;
+  stats->maxedoutmintimeindex=INT32_MAX;
 
 #ifdef CT_OUTPUT
   stats->nctentries=0;
@@ -277,13 +275,13 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       const int eti=floor(sv->curii->event_time);
 
-      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax) {
+      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax) {
 	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
 
       } else {
 	((std_summary_stats*)sv->dataptr)->extinction=false;
 
-	if(eti < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=eti;
+	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
 	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
 	return false;
       }
@@ -322,14 +320,14 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       const int eti=floor(sv->curii->event_time);
 
-      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax)
+      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->npostestmax)
 	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
 
       else {
 	((std_summary_stats*)sv->dataptr)->extinction=false;
 
-	if(eti < ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->nimaxedoutmintimeindex=eti;
-	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
+	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
+	DEBUG_PRINTF("npostestmax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->postest_timeline[eti],((std_summary_stats*)sv->dataptr)->npostestmax);
 	return false;
       }
       return (sv->curii->event_time <= sv->pars.tmax);

@@ -252,6 +252,14 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->nimax);
 
+      } else if(!argsdiffer(pbuf, "npostestmax")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,&cp->npostestmax);
+
+      } else if(!argsdiffer(pbuf, "npostestmaxnpers")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIu32,&cp->npostestmaxnpers);
+
       } else if(!argsdiffer(pbuf, "nthreads")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->nthreads);
@@ -353,6 +361,8 @@ void printusage(const char* name)
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
+  printf("\t--npostestmax VALUE\t\t\tMaximum number of positive test results during an interval of duration npostestmaxnpers that starts when the test results are received. (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
+  printf("\t--npostestmaxnpers VALUE\t\t\tInterval duration for the maximum number of positive test results (default value of 1).\n");
   printf("\t--tlout FILENAME\t\tOutput timeline information for each simulated path into the provided file in the binary format as described below.\n");
   printf("\t--tloutbufsize VALUE\t\tPer-thread memory buffer size (in MB) used to accumulate data for timeline output before writing them to disk (default value of 10 MB).\n");
 #ifdef CT_OUTPUT
