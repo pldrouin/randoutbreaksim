@@ -451,7 +451,7 @@ void* simthread(void* arg)
       abs_newpostest_timeline=stats.newpostest_timeline-stats.timelineshift;
 
       if(cp->tlout) {
-	maxwrite=9+binsize*stats.tnpersa;
+	maxwrite=16+binsize*stats.tnpersa;
 
 	if(tlobsize+maxwrite > tlobasize) {
 

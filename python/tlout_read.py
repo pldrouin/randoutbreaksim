@@ -22,43 +22,43 @@ def read(filename, callback):
     tltype=np.dtype('<u4')
 
     if(hasreltime):
-        rechdrtype = np.dtype('<u4, <u4, u1')
+        rechdrtype = np.dtype('<u4, <u4, <i4, <i4')
         rechdr=np.fromfile(f, dtype=rechdrtype, count=1)
 
         if(postestresults):
 
             while(rechdr.size):
-                nbins, t0index, extinction = rechdr[0]
+                nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
                 ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),3)
-                callback(ret, t0index, extinction)
+                callback(ret, t0index, maxed_out_time, extinction_time)
                 rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
         else:
 
             while(rechdr.size):
-                nbins, t0index, extinction = rechdr[0]
+                nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
                 ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),2)
-                callback(ret, t0index, extinction)
+                callback(ret, t0index, maxed_out_time, extinction_time)
                 rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
     else:
-        rechdrtype = np.dtype('<u4, u1')
+        rechdrtype = np.dtype('<u4, i4, i4')
         rechdr=np.fromfile(f, dtype=rechdrtype, count=1)
 
         if(postestresults):
 
             while(rechdr.size):
-                nbins, extinction = rechdr[0]
+                nbins, maxed_out_time, extinction_time = rechdr[0]
                 ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),3)
-                callback(ret, 0, extinction)
+                callback(ret, 0, maxed_out_time, extinction_time)
                 rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
         else:
 
             while(rechdr.size):
-                nbins, extinction = rechdr[0]
+                nbins, maxed_out_time, extinction_time = rechdr[0]
                 ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),2)
-                callback(ret, 0, extinction)
+                callback(ret, 0, maxed_out_time, extinction_time)
                 rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
     f.close()
