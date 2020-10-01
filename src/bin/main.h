@@ -45,6 +45,7 @@ typedef struct {
 #endif
   double r_mean;
   double pe;
+  double pm;
   double te_mean;
   double te_std;
   double* inf_timeline_mean_ext;

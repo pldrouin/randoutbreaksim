@@ -106,6 +106,7 @@ int main(const int nargs, const char* args[])
       tdata[0].nevents_mean+=tdata[t].nevents_means;
 #endif
       tdata[0].pe+=tdata[t].pe;
+      tdata[0].pm+=tdata[t].pm;
       tdata[0].te_mean+=tdata[t].te_mean;
       tdata[0].te_std+=tdata[t].te_std;
 
@@ -222,6 +223,7 @@ int main(const int nargs, const char* args[])
     tdata[tmaxnpersa].newpostest_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpersa].newpostest_timeline_std_noext[j]/nnoe-tdata[tmaxnpersa].newpostest_timeline_mean_noext[j]*tdata[tmaxnpersa].newpostest_timeline_mean_noext[j]));
   }
   tdata[0].pe/=cp.npaths;
+  tdata[0].pm/=cp.npaths;
 
   printf("\nComputed simulation results:\n");
   printf("Mean R is %22.15e\n",tdata[0].r_mean);
@@ -231,6 +233,7 @@ int main(const int nargs, const char* args[])
   printf("Number of infections per event is %22.15e\n",ninf_per_event_mean);
 #endif
   printf("Probability of extinction and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased)":""));
+  printf("Probability of reaching maximum as defined by nimax/npostestmax and its statistical uncertainty: %22.15e +/- %22.15e\n",tdata[0].pm,sqrt(tdata[0].pm*(1.-tdata[0].pm)/(cp.npaths-1.)));
   printf("Extinction time, if it occurs is %22.15e +/- %22.15e%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased)":""));
 
   int shift=tdata[tmaxnpersa].tnpersa-npers;
@@ -305,6 +308,7 @@ void* simthread(void* arg)
 #endif
   data->r_mean=0;
   data->pe=0;
+  data->pm=0;
   data->te_mean=0;
   data->te_std=0;
   data->maxedoutmintimeindex=INT32_MAX;
@@ -578,6 +582,8 @@ void* simthread(void* arg)
 
 	data->tnpersa=stats.tnpersa;
       }
+
+      data->pm+=(stats.maxedoutmintimeindex<INT32_MAX);
 
       if(stats.extinction) {
 	data->pe+=stats.extinction;
