@@ -3,7 +3,7 @@ Read a tlout output file from randoutbreaksim.
 
 Load timeline information from a tlout output file, and call a callback function for each path.
 
-Callback function: First argument contains the timelines for the current path, the second argument the index of the bin corresponding to t=0, and the third argument indicates if the path reached extinction or not.
+Callback function: First argument contains the timelines for the current path, the second argument the index of the bin corresponding to t=0, the third argument is the time where the path maxes out an nimax or npostestmax limit, and the fourth is time time where the path goes extinct.
 The first argument can contain two or three timelines, depending on the output file. The first timeline is the number of currently infected individuals, the second timeline is the number of new infections, and the third timeline is the number of new positive tests.
 """
 
