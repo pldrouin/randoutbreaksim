@@ -275,8 +275,15 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       const int eti=floor(sv->curii->event_time);
 
-      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->nimax) {
+      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+sv->curii->ninfections < ((std_summary_stats*)sv->dataptr)->nimax) {
 	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+
+      } else if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax) {
+	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+	((std_summary_stats*)sv->dataptr)->extinction=false;
+
+	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
+	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
 
       } else {
 	((std_summary_stats*)sv->dataptr)->extinction=false;
@@ -320,13 +327,16 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
     if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       const int eti=floor(sv->curii->event_time);
 
-      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] <= ((std_summary_stats*)sv->dataptr)->npostestmax)
+      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->npostestmax)
 	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
 
       else {
 	((std_summary_stats*)sv->dataptr)->extinction=false;
 
-	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
+	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  {
+	  DEBUG_PRINTF("maxedoutmintimeindex reduced from %i to %i\n",((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex,eti);
+	  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
+	}
 	DEBUG_PRINTF("npostestmax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->postest_timeline[eti],((std_summary_stats*)sv->dataptr)->npostestmax);
 	return false;
       }

@@ -235,14 +235,14 @@ int main(const int nargs, const char* args[])
 
   int shift=tdata[tmaxnpersa].tnpersa-npers;
   printf("\nCurrent infection timeline, for paths with extinction vs no extinction vs overall is:\n");
-  for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].inf_timeline_mean_ext[j],tdata[tmaxnpersa].inf_timeline_std_ext[j],tdata[tmaxnpersa].inf_timeline_mean_noext[j],tdata[tmaxnpersa].inf_timeline_std_noext[j],inf_timeline_mean[j],inf_timeline_std[j],(j<tdata[0].maxedoutmintimeindex?"":" (max reached, biased)"));
+  for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].inf_timeline_mean_ext[j],tdata[tmaxnpersa].inf_timeline_std_ext[j],tdata[tmaxnpersa].inf_timeline_mean_noext[j],tdata[tmaxnpersa].inf_timeline_std_noext[j],inf_timeline_mean[j],inf_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased)"));
 
   printf("\nNew infections timeline, for paths with extinction vs no extinction vs overall is:\n");
-  for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].newinf_timeline_mean_ext[j],tdata[tmaxnpersa].newinf_timeline_std_ext[j],tdata[tmaxnpersa].newinf_timeline_mean_noext[j],tdata[tmaxnpersa].newinf_timeline_std_noext[j],newinf_timeline_mean[j],newinf_timeline_std[j],(j<tdata[0].maxedoutmintimeindex?"":" (max reached, biased)"));
+  for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].newinf_timeline_mean_ext[j],tdata[tmaxnpersa].newinf_timeline_std_ext[j],tdata[tmaxnpersa].newinf_timeline_mean_noext[j],tdata[tmaxnpersa].newinf_timeline_std_noext[j],newinf_timeline_mean[j],newinf_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased)"));
 
   if(!isnan(cp.pars.tdeltat)) {
     printf("\nNew positive test timeline, for paths with extinction vs no extinction vs overall is:\n");
-    for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].newpostest_timeline_mean_ext[j],tdata[tmaxnpersa].newpostest_timeline_std_ext[j],tdata[tmaxnpersa].newpostest_timeline_mean_noext[j],tdata[tmaxnpersa].newpostest_timeline_std_noext[j],newpostest_timeline_mean[j],newpostest_timeline_std[j],(j<tdata[0].maxedoutmintimeindex?"":" (max reached, biased)"));
+    for(j=0; j<tdata[tmaxnpersa].tnpersa; ++j) printf("%3i: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",j-shift,tdata[tmaxnpersa].newpostest_timeline_mean_ext[j],tdata[tmaxnpersa].newpostest_timeline_std_ext[j],tdata[tmaxnpersa].newpostest_timeline_mean_noext[j],tdata[tmaxnpersa].newpostest_timeline_std_noext[j],newpostest_timeline_mean[j],newpostest_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased)"));
   }
 
   if(cp.ninfhist) {
@@ -414,7 +414,7 @@ void* simthread(void* arg)
   if(cp->ninfhist) std_stats_init(&sv, &data->ngeninfs, &data->ninfbins);
 
   else std_stats_init(&sv, NULL, NULL);
-  
+
   stats.lmax=cp->lmax;
   stats.nimax=cp->nimax;
   stats.npostestmax=cp->npostestmax;
@@ -495,8 +495,7 @@ void* simthread(void* arg)
 	  pthread_mutex_unlock(data->ctflock);
 	  ctobsize=0;
 	}
-	ct_write_func(&stats, ctoutbuf+ctobsize);
-	ctobsize+=maxwrite;
+	ctobsize+=ct_write_func(&stats, ctoutbuf+ctobsize);
       }
 
 #endif
