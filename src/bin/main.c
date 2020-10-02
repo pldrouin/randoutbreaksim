@@ -101,6 +101,10 @@ int main(const int nargs, const char* args[])
       pthread_join(threads[t],NULL);
       gsl_rng_free(tdata[t].r);
       tdata[0].r_mean+=tdata[t].r_mean;
+      tdata[0].r_mean_prior+=tdata[t].r_mean_prior;
+      tdata[0].r_mean_post+=tdata[t].r_mean_post;
+      tdata[0].n_prior+=tdata[t].n_prior;
+      tdata[0].n_post+=tdata[t].n_post;
       tdata[0].commper_mean+=tdata[t].commper_mean;
 #ifdef NUMEVENTSSTATS
       tdata[0].nevents_mean+=tdata[t].nevents_means;
@@ -179,6 +183,8 @@ int main(const int nargs, const char* args[])
 #endif
   const double nnoe=cp.npaths-tdata[0].pe;
   tdata[0].r_mean/=ninf;
+  tdata[0].r_mean_prior/=tdata[0].n_prior;
+  tdata[0].r_mean_post/=tdata[0].n_post;
   tdata[0].commper_mean/=ninf;
 #ifdef NUMEVENTSSTATS
   tdata[0].nevents_mean/=ninf;
@@ -227,6 +233,8 @@ int main(const int nargs, const char* args[])
 
   printf("\nComputed simulation results:\n");
   printf("Mean R is %22.15e\n",tdata[0].r_mean);
+  printf("Mean R prior is %22.15e\n",tdata[0].r_mean_prior);
+  printf("Mean R post is %22.15e\n",tdata[0].r_mean_post);
   printf("Communicable period is %22.15e\n",tdata[0].commper_mean);
 #ifdef NUMEVENTSSTATS
   printf("Number of events per infectious individual is %22.15e\n",tdata[0].nevents_mean);
@@ -307,6 +315,10 @@ void* simthread(void* arg)
   data->nevents_mean=0;
 #endif
   data->r_mean=0;
+  data->r_mean_prior=0;
+  data->r_mean_post=0;
+  data->n_prior=0;
+  data->n_post=0;
   data->pe=0;
   data->pm=0;
   data->te_mean=0;
@@ -444,7 +456,12 @@ void* simthread(void* arg)
     for(i=npaths-1; i>=0; --i) {
       std_stats_path_init(&stats);
       branchsim(&sv);
+      std_stats_path_end(&sv);
       data->r_mean+=stats.rsum;
+      data->r_mean_prior+=stats.ext_timeline[stats.tnvpers-1].rsumprior;
+      data->r_mean_post+=stats.ext_timeline[stats.tnvpers-1].rsumpost;
+      data->n_prior+=stats.ext_timeline[stats.tnvpers-1].nprior;
+      data->n_post+=stats.ext_timeline[stats.tnvpers-1].npost;
       data->commper_mean+=stats.commpersum;
 #ifdef NUMEVENTSSTATS
       data->nevents_mean+=stats.neventssum;
