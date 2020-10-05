@@ -24,8 +24,8 @@ extern int __ro_debug;
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
 #endif
-#define DEBUG_PRINTF(...) //!< Debug print function
-//#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
+//#define DEBUG_PRINTF(...) //!< Debug print function
+#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
 #ifdef CT_OUTPUT
 typedef struct {
@@ -39,10 +39,8 @@ typedef struct {
 
 typedef struct
 {
-  uint32_t nprior;             //!< Number of infectious individuals whose communicable period end in the timeline bin 
-  uint32_t npost;	       //!< Number of infectious individuals whose communicable period start in the timeline bin
-  uint32_t rsumprior;	       //!< Sum of the number of individuals that get infected during the simulation by the infectious individuals whose communicable period end in the timeline bin
-  uint32_t rsumpost;	       //!< Sum of the number of individuals that get infected during the simulation by the infectious individuals whose communicable period start in the timeline bin
+  double   n;	               //!< Fractional number of infectious creating infections in the timeline bin. Each fractional individual is defined as the number of infections in this bin divided by the total number of infections by the individual.
+  double rsum;	       //!< Sum of the number of individuals that get infected in the timeline bin.
 } ext_timeline_info;
 
 /**
@@ -143,14 +141,23 @@ inline static void std_stats_path_end(sim_vars* sv)
 
   int32_t i;
   std_summary_stats* sss=(std_summary_stats*)sv->dataptr;
-  sss->tnvpers=(maxedoutmintimeindex<INT32_MAX?maxedoutmintimeindex:sss->npers);
+
+  if(maxedoutmintimeindex<INT32_MAX) {
+    sss->tnvpers=maxedoutmintimeindex;
+
+    const uint32_t nzeros=sss->npers-sss->tnvpers;
+    //memset(sss->newinf_timeline+sss->tnvpers,0,nzeros*sizeof(uint32_t));
+    //memset(sss->newpostest_timeline+sss->tnvpers,0,nzeros*sizeof(uint32_t));
+
+  } else sss->tnvpers=sss->npers;
+
   ext_timeline_info* const et=sss->ext_timeline;
 
+  for(i=-sss->timelineshift; i<(int32_t)sss->tnvpers; ++i) printf("rsum[%i]=%22.15e %22.15e\n",i,et[i].rsum,et[i].n);
+
   for(i=-sss->timelineshift+1; i<(int32_t)sss->tnvpers; ++i) {
-    et[i].rsumprior+=et[i-1].rsumprior;
-    et[i].nprior+=et[i-1].nprior;
-    et[i].rsumpost+=et[i-1].rsumpost;
-    et[i].npost+=et[i-1].npost;
+    et[i].n+=et[i-1].n;
+    et[i].rsum+=et[i-1].rsum;
   }
 }
 
@@ -164,6 +171,14 @@ inline static void std_stats_path_end(sim_vars* sv)
  **/
 void std_stats_free(std_summary_stats* stats);
 
+inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii) {
+  //We have to use curii here!
+  if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(sv->curii->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
+  }
+}
+
 /**
  * @brief Allocates memory for a new primary individual.
  *
@@ -173,7 +188,7 @@ void std_stats_free(std_summary_stats* stats);
  * @param sv: Pointer to the simulation variables.
  * @param ii: Infectious individuals.
  **/
-inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii)
+inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
 {
   const int32_t newshift=ceil(-ii->end_comm_period+(ii->comm_period+ii->latent_period));
 
@@ -214,6 +229,12 @@ inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii)
 
     stats->timelineshift=newshift;
     stats->tnpersa=newsize;
+  }
+
+  //We have to use curii here!
+  if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(sv->curii->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
   }
 }
 
@@ -276,7 +297,7 @@ inline static bool std_stats_new_event(sim_vars* sv)
 
   if(sv->curii->ninfections) {
     ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
-    DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
     //The following condition on event_time is looser than the one in the
     //returned value
@@ -311,30 +332,35 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 #endif
 
   if(sv->curii->ninfections) {
+    const int eti=floor(sv->curii->event_time);
     ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
-    DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
-    if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-      const int eti=floor(sv->curii->event_time);
+    if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
+      ((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum+=sv->curii->ninfections;
+      DEBUG_PRINTF("Rsum[%i]+=%22.15e\n",eti,((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum);
 
-      if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+sv->curii->ninfections < ((std_summary_stats*)sv->dataptr)->nimax) {
-	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+      if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
 
-      } else if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax) {
-	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
-	((std_summary_stats*)sv->dataptr)->extinction=false;
+	if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+sv->curii->ninfections < ((std_summary_stats*)sv->dataptr)->nimax) {
+	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
 
-	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
-	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
+	} else if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax) {
+	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+	  ((std_summary_stats*)sv->dataptr)->extinction=false;
 
-      } else {
-	((std_summary_stats*)sv->dataptr)->extinction=false;
+	  if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
+	  DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
 
-	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
-	DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
-	return false;
+	} else {
+	  ((std_summary_stats*)sv->dataptr)->extinction=false;
+
+	  if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
+	  DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
+	  return false;
+	}
+	return (sv->curii->event_time <= sv->pars.tmax);
       }
-      return (sv->curii->event_time <= sv->pars.tmax);
     }
   }
   return false;
@@ -363,26 +389,36 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 #endif
 
   if(sv->curii->ninfections) {
+    const int eti=floor(sv->curii->event_time);
     ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
-    DEBUG_PRINTF("Number of infections incremented to %u\n",((uint32_t*)sv->curii->dataptr)[0]);
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
-    if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-      const int eti=floor(sv->curii->event_time);
+    if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
 
-      if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->npostestmax)
-	((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
-
-      else {
-	((std_summary_stats*)sv->dataptr)->extinction=false;
-
-	if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  {
-	  DEBUG_PRINTF("maxedoutmintimeindex reduced from %i to %i\n",((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex,eti);
-	  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
-	}
-	DEBUG_PRINTF("npostestmax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->postest_timeline[eti],((std_summary_stats*)sv->dataptr)->npostestmax);
-	return false;
+      /*
+      if(sv->curii->event_time <= sv->pars.tmax) {
+	((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum+=sv->curii->ninfections;
+	DEBUG_PRINTF("Rsum[%i]+=%22.15e\n",eti,((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum);
       }
-      return (sv->curii->event_time <= sv->pars.tmax);
+      */
+
+      if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+
+	if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->npostestmax)
+	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+
+	else {
+	  ((std_summary_stats*)sv->dataptr)->extinction=false;
+
+	  if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  {
+	    DEBUG_PRINTF("maxedoutmintimeindex reduced from %i to %i\n",((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex,eti);
+	    ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
+	  }
+	  DEBUG_PRINTF("npostestmax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->postest_timeline[eti],((std_summary_stats*)sv->dataptr)->npostestmax);
+	  return false;
+	}
+	return (sv->curii->event_time <= sv->pars.tmax);
+      }
     }
   }
   return false;
@@ -425,6 +461,7 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
 inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   ((uint32_t*)ii->dataptr)[0]=0;
+  DEBUG_PRINTF("%s: Number of infections initialized to 0.\n",__func__);
 
 #ifdef CT_OUTPUT
   if(ii->commpertype&ro_commper_int) {
@@ -436,6 +473,101 @@ inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii, infindivid
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(ii-1)->dataptr);
   DEBUG_PRINTF("%s\n",__func__);
   std_stats_fill_newpostest(sv, ii, parent);
+}
+
+inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
+{
+  const double start_comm_per=ii->end_comm_period-ii->comm_period;
+  //printf("start_comm: %22.15e vs %u\n",start_comm_per,((std_summary_stats*)sv->dataptr)->npers-1);
+
+  if(start_comm_per<=sv->pars.tmax) {
+    int32_t start_comm_per_i=floor(start_comm_per);
+    int32_t i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
+    double end_comm_per;
+    double nint;
+    double sum;
+    double sumi;
+    int32_t end_comm_per_i;
+
+    DEBUG_PRINTF("latent %22.15e comm %22.15e end %22.15e end corr %22.15e\n",ii->latent_period,ii->comm_period,ii->end_comm_period,end_comm_per);
+
+    for(; i<=start_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+
+    if(ii->end_comm_period > sv->pars.tmax) {
+      end_comm_per=sv->pars.tmax;
+      nint=(end_comm_per-start_comm_per)/ii->comm_period;
+      //Temporary
+      //nint=1;
+      //start_comm_per_i=end_comm_per_i=0;
+      //End Temporary
+      end_comm_per_i=floor(end_comm_per);
+      printf("flag: %22.15e\n",nint);
+
+    } else {
+      end_comm_per=ii->end_comm_period;
+      nint=1;
+      end_comm_per_i=floor(end_comm_per);
+    }
+    assert(start_comm_per_i <= end_comm_per_i);
+    assert(nint>0 && nint<=1);
+
+    if(start_comm_per_i == end_comm_per_i) {
+      if(nint!=1) printf("flag1\n");
+      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nint;
+      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].n+=nint;
+      sum=nint;
+      sumi=((uint32_t*)ii->dataptr)[0]*nint;
+      printf("sum%i=%22.15e, simi%i=%22.15e\n",end_comm_per_i,nint,end_comm_per_i,((uint32_t*)ii->dataptr)[0]*nint);
+
+    } else {
+      ++(((std_summary_stats*)sv->dataptr)->inf_timeline[end_comm_per_i]);
+      double nbuf=(end_comm_per-end_comm_per_i)/ii->comm_period;
+      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nbuf;
+      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].n+=nbuf;
+      sum=nbuf;
+      sumi=((uint32_t*)ii->dataptr)[0]*nbuf;
+      //printf("sum%i=%22.15e\n",end_comm_per_i,nbuf);
+      printf("sum%i=%22.15e, sumi%i=%22.15e\n",end_comm_per_i,nbuf,end_comm_per_i,((uint32_t*)ii->dataptr)[0]*nbuf);
+      nint-=nbuf;
+
+      if(end_comm_per_i - start_comm_per_i > 1) {
+	nbuf=(start_comm_per_i+1-start_comm_per)/ii->comm_period;
+	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nbuf;
+	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=nbuf;
+	sum+=nbuf;
+	sumi+=((uint32_t*)ii->dataptr)[0]*nbuf;
+	//printf("sum%i+=%22.15e\n",start_comm_per_i,nbuf);
+	printf("sum%i+=%22.15e, sumi%i=%22.15e\n",start_comm_per_i,nbuf,start_comm_per_i,((uint32_t*)ii->dataptr)[0]*nbuf);
+	nint-=nbuf;
+	const double pfrac=nint/(end_comm_per_i - start_comm_per_i - 1);
+
+	for(i=start_comm_per_i+1; i<end_comm_per_i; ++i) {
+	  ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+	  ((std_summary_stats*)sv->dataptr)->ext_timeline[i].rsum+=((uint32_t*)ii->dataptr)[0]*pfrac;
+	  ((std_summary_stats*)sv->dataptr)->ext_timeline[i].n+=pfrac;
+	  sum+=pfrac;
+	  sumi+=((uint32_t*)ii->dataptr)[0]*pfrac;
+	  //printf("sum%i+=%22.15e\n",i,pfrac);
+	  printf("sum%i+=%22.15e, sumi%i=%22.15e\n",i,pfrac,i,((uint32_t*)ii->dataptr)[0]*pfrac);
+	}
+
+      } else {
+	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nint;
+	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=nint;
+	sum+=nint;
+	sumi+=((uint32_t*)ii->dataptr)[0]*nint;
+	printf("sum%i=%22.15e, sumi%i=%22.15e\n",start_comm_per_i,nint,start_comm_per_i,((uint32_t*)ii->dataptr)[0]*nint);
+      }
+    }
+    DEBUG_PRINTF("sum=%22.15e, sumi=%22.15e, diff=%22.15e\n",sum,sumi,fabs(sum-1));
+    assert(end_comm_per_i==sv->pars.tmax || fabs(sum-1)<=1e-15);
+
+  } else {
+    int32_t i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
+    const int32_t end_comm_per_i=(ii->end_comm_period >= (int32_t)((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(ii->end_comm_period));
+
+    for(; i<=end_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+  }
 }
 
 /**
@@ -479,16 +611,7 @@ inline static void std_stats_end_inf(sim_vars* sv, infindividual* ii, infindivid
     if(ii->end_comm_period > ((std_summary_stats*)sv->dataptr)->extinction_time) ((std_summary_stats*)sv->dataptr)->extinction_time=ii->end_comm_period;
   }
 
-  const int32_t end_comm_per=(ii->end_comm_period >= (int32_t)((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(ii->end_comm_period));
-  ++(((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per].nprior);
-  ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per].rsumprior+=((uint32_t*)ii->dataptr)[0];
-  DEBUG_PRINTF("RsumPrior[%i]=%u with %u entries\n",end_comm_per,((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per].rsumprior,((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per].nprior);
-  int32_t i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
-  ++(((std_summary_stats*)sv->dataptr)->ext_timeline[i].npost);
-  ((std_summary_stats*)sv->dataptr)->ext_timeline[i].rsumpost+=((uint32_t*)ii->dataptr)[0];
-  DEBUG_PRINTF("RsumPost[%i]=%u with %u entries\n",i,((std_summary_stats*)sv->dataptr)->ext_timeline[i].rsumpost,((std_summary_stats*)sv->dataptr)->ext_timeline[i].npost);
-
-  for(; i<=end_comm_per; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+  std_stats_fill_inf_ext_n(sv, ii);
 }
 
 /**
@@ -537,6 +660,7 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
   DEBUG_PRINTF("Number of infections was 0\n");
 
 #ifdef CT_OUTPUT
+  ((uint32_t*)ii->dataptr)[0]=0;
   if(ii->commpertype&ro_commper_int) {
     ++(((uint32_t*)parent->dataptr)[2]);
     DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)parent->dataptr)[1]),(((uint32_t*)parent->dataptr)[2]));
@@ -560,14 +684,16 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
     if(ii->end_comm_period > ((std_summary_stats*)sv->dataptr)->extinction_time) ((std_summary_stats*)sv->dataptr)->extinction_time=ii->end_comm_period;
   }
 
+  /*
   const int32_t end_comm_per=(ii->end_comm_period >= (int32_t)((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(ii->end_comm_period));
-  ++(((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per].nprior);
-  DEBUG_PRINTF("RsumPrior[%i]=%u with %u entries\n",end_comm_per,((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per].rsumprior,((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per].nprior);
   int32_t i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
   ++(((std_summary_stats*)sv->dataptr)->ext_timeline[i].npost);
   DEBUG_PRINTF("RsumPost[%i]=%u with %u entries\n",i,((std_summary_stats*)sv->dataptr)->ext_timeline[i].rsumpost,((std_summary_stats*)sv->dataptr)->ext_timeline[i].npost);
 
   for(; i<=end_comm_per; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+  */
+
+  std_stats_fill_inf_ext_n(sv, ii);
 }
 
 /**

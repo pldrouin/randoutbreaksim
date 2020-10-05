@@ -101,10 +101,8 @@ int main(const int nargs, const char* args[])
       pthread_join(threads[t],NULL);
       gsl_rng_free(tdata[t].r);
       tdata[0].r_mean+=tdata[t].r_mean;
-      tdata[0].r_mean_prior+=tdata[t].r_mean_prior;
-      tdata[0].r_mean_post+=tdata[t].r_mean_post;
-      tdata[0].n_prior+=tdata[t].n_prior;
-      tdata[0].n_post+=tdata[t].n_post;
+      tdata[0].n_inf+=tdata[t].n_inf;
+      tdata[0].r_mean_new+=tdata[t].r_mean_new;
       tdata[0].commper_mean+=tdata[t].commper_mean;
 #ifdef NUMEVENTSSTATS
       tdata[0].nevents_mean+=tdata[t].nevents_means;
@@ -182,9 +180,10 @@ int main(const int nargs, const char* args[])
   const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
 #endif
   const double nnoe=cp.npaths-tdata[0].pe;
+  printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,ninf);
   tdata[0].r_mean/=ninf;
-  tdata[0].r_mean_prior/=tdata[0].n_prior;
-  tdata[0].r_mean_post/=tdata[0].n_post;
+  printf("r_mean_new %22.15e %22.15e\n",tdata[0].r_mean_new,tdata[0].n_inf);
+  tdata[0].r_mean_new/=tdata[0].n_inf;
   tdata[0].commper_mean/=ninf;
 #ifdef NUMEVENTSSTATS
   tdata[0].nevents_mean/=ninf;
@@ -233,8 +232,7 @@ int main(const int nargs, const char* args[])
 
   printf("\nComputed simulation results:\n");
   printf("Mean R is %22.15e\n",tdata[0].r_mean);
-  printf("Mean R prior is %22.15e\n",tdata[0].r_mean_prior);
-  printf("Mean R post is %22.15e\n",tdata[0].r_mean_post);
+  printf("Mean R new is %22.15e\n",tdata[0].r_mean_new);
   printf("Communicable period is %22.15e\n",tdata[0].commper_mean);
 #ifdef NUMEVENTSSTATS
   printf("Number of events per infectious individual is %22.15e\n",tdata[0].nevents_mean);
@@ -315,10 +313,8 @@ void* simthread(void* arg)
   data->nevents_mean=0;
 #endif
   data->r_mean=0;
-  data->r_mean_prior=0;
-  data->r_mean_post=0;
-  data->n_prior=0;
-  data->n_post=0;
+  data->n_inf=0;
+  data->r_mean_new=0;
   data->pe=0;
   data->pm=0;
   data->te_mean=0;
@@ -404,7 +400,8 @@ void* simthread(void* arg)
 
   sim_set_proc_data(&sv, &stats);
 
-  if(cp->pars.timetype!=ro_time_pri_created) sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
+  if(cp->pars.timetype!=ro_time_pri_created) sim_set_pri_init_proc_func(&sv, std_stats_pri_init_rel);
+  else sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
 
   sim_set_ii_alloc_proc_func(&sv, std_stats_ii_alloc);
 
@@ -458,10 +455,8 @@ void* simthread(void* arg)
       branchsim(&sv);
       std_stats_path_end(&sv);
       data->r_mean+=stats.rsum;
-      data->r_mean_prior+=stats.ext_timeline[stats.tnvpers-1].rsumprior;
-      data->r_mean_post+=stats.ext_timeline[stats.tnvpers-1].rsumpost;
-      data->n_prior+=stats.ext_timeline[stats.tnvpers-1].nprior;
-      data->n_post+=stats.ext_timeline[stats.tnvpers-1].npost;
+      data->n_inf+=stats.ext_timeline[stats.tnvpers-1].n;
+      data->r_mean_new+=stats.ext_timeline[stats.tnvpers-1].rsum;
       data->commper_mean+=stats.commpersum;
 #ifdef NUMEVENTSSTATS
       data->nevents_mean+=stats.neventssum;

@@ -20,8 +20,8 @@ extern int __ro_debug;
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
 #endif
-#define DEBUG_PRINTF(...) //!< Debug print function
-//#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
+//#define DEBUG_PRINTF(...) //!< Debug print function
+#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
 /**
  * @brief Initialises the branching simulation.
@@ -71,4 +71,5 @@ inline static void gen_att_inf_infpop_log_p0(sim_vars* sv){sv->curii->ninfection
   else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) sv->gen_att_inf_func=gen_att_inf_infpop_log_plus_1; \
   else sv->gen_att_inf_func=gen_att_inf_infpop_log; \
 }
+
 #endif

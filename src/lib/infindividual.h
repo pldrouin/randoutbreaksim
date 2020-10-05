@@ -37,13 +37,13 @@ typedef struct infindividual_
     double end_comm_period;   //!< End of communicable period
     double event_time;	      //!< Start time for the current iteration event
     uint32_t nevents;	      //!< Number of events
-    uint32_t curevent;	      //!< Index of the current iteration event
     uint32_t nattendees;      //!< Number of attendees for the current iteration event
 #ifdef CT_OUTPUT
     uint32_t ntracednicts;    //!< Number of successfully traced non-infected contacts for the current iteration event
 #endif
     uint32_t ninfections;     //!< Number of infections for the current iteration event
-    uint32_t curinfection;    //!< Index of the current iteration infection
+    uint32_t cureventi;	      //!< Index of the current iteration event
+    uint32_t curinfectioni;    //!< Index of the current iteration infection
     uint8_t commpertype;      //!< Flags for the type of communicable period (filled using ro_commpertype flags)
 } infindividual;
 

@@ -26,7 +26,7 @@ int branchsim(sim_vars* sv)
 
   sv->brsim.iis[0].commpertype=0;
   sv->brsim.iis[0].nevents=1;
-  sv->brsim.iis[0].curevent=0;
+  sv->brsim.iis[0].cureventi=0;
   sv->brsim.iis[0].nattendees=1;
   sv->brsim.iis[0].ninfections=1;
   sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=0;
@@ -41,10 +41,9 @@ int branchsim(sim_vars* sv)
 
     DEBUG_PRINTF("Latent period is %f, comm period is %f, type is 0x%08x, end comm is %f%s\n",sv->brsim.iis[1].latent_period,sv->brsim.iis[1].comm_period,sv->brsim.iis[1].commpertype,sv->brsim.iis[1].end_comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
 
-    sv->pri_init_proc_func(sv, sv->brsim.iis+1);
-
     sv->curii=sv->brsim.iis;
-    sv->new_event_proc_func(sv);
+    sv->pri_init_proc_func(sv, sv->brsim.iis+1);
+    //sv->new_event_proc_func(sv);
     sv->curii=sv->brsim.iis+1;
     DEBUG_PRINTF("Move to primary layer (%li)\n",sv->curii-sv->brsim.iis);
 
@@ -57,13 +56,12 @@ int branchsim(sim_vars* sv)
       continue;
     }
     sv->new_inf_proc_func(sv, sv->curii, sv->brsim.iis);
-
-    sv->curii->curevent=0;
+    sv->curii->cureventi=0;
 
     for(;;) {
       sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
       //sv->curii->event_time=sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
-      DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->curevent,sv->curii->nevents,sv->curii->event_time);
+      DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->curii->event_time);
 
       //sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
       sv->gen_att_inf_func(sv);
@@ -81,23 +79,23 @@ int branchsim(sim_vars* sv)
       DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 #endif
 
-      if(sv->curii->nattendees<2 || !sv->new_event_proc_func(sv)) {
+      if(!sv->new_event_proc_func(sv)) {
 	DEBUG_PRINTF("New event returned false\n");
 
 	//If the events have been exhausted, go down another layer
-	if(sv->curii->curevent == sv->curii->nevents-1) {
+	if(sv->curii->cureventi == sv->curii->nevents-1) {
 	  sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
 	  goto done_parsing;
 	}
 
 	//Else
 	//Move to the next event for the individual
-	++(sv->curii->curevent);
+	++(sv->curii->cureventi);
 
       } else break;
     }
-    sv->curii->curinfection=0;
-    DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfection,sv->curii->ninfections);
+    sv->curii->curinfectioni=0;
+    DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfectioni,sv->curii->ninfections);
 
     //Create a new infected individual
     for(;;) {
@@ -129,19 +127,19 @@ int branchsim(sim_vars* sv)
 
       //If the number of events is non-zero
       if(sv->curii->nevents) {
-	sv->curii->curevent=0;
+	sv->curii->cureventi=0;
 	sv->new_inf_proc_func(sv, sv->curii, sv->curii-1);
 	//Generate the event time
 gen_event:
         sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
 	//sv->curii->event_time=(sv->curii-1)->event_time+sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
-	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->curevent,sv->curii->nevents,sv->curii->event_time);
+	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->curii->event_time);
 
 	//Generate the number of infections and the associated index for
 	//the current event
 	//Move to the next layer
 	//sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sv->pars.p);
-        sv->gen_att_inf_func(sv);
+	sv->gen_att_inf_func(sv);
 #ifdef CT_OUTPUT
       if((sv->curii->commpertype&ro_commper_true_positive_test) && sv->curii->event_time>=sv->curii->end_comm_period-sv->pars.ctwindow) {
 	sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sv->pars.pt, sv->curii->nattendees-1-sv->curii->ninfections);
@@ -156,17 +154,17 @@ gen_event:
       DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 #endif
 
-	if(sv->curii->nattendees>1 && sv->new_event_proc_func(sv)) {
-	  sv->curii->curinfection=0;
-	  DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfection,sv->curii->ninfections);
+	if(sv->new_event_proc_func(sv)) {
+	  sv->curii->curinfectioni=0;
+	  DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfectioni,sv->curii->ninfections);
 	  continue;
 
 	} else {
 
 	  //If the events have not been exhausted
-	  if(sv->curii->curevent < sv->curii->nevents-1) {
+	  if(sv->curii->cureventi < sv->curii->nevents-1) {
 	    //Move to the next event for the individual
-	    ++(sv->curii->curevent);
+	    ++(sv->curii->cureventi);
 	    goto gen_event;
 	  }
 	  sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
@@ -183,23 +181,23 @@ gen_event:
 	DEBUG_PRINTF("Move to previous layer (%li)\n",sv->curii-sv->brsim.iis);
 
 	//If the infections have been exhausted
-	if(sv->curii->curinfection == sv->curii->ninfections-1) {
+	if(sv->curii->curinfectioni == sv->curii->ninfections-1) {
 
 	  //If the events have been exhausted, go down another layer
-	  if(sv->curii->curevent == sv->curii->nevents-1) {
+	  if(sv->curii->cureventi == sv->curii->nevents-1) {
 	    sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
 	    continue;
 	  }
 
 	  //Else
 	  //Move to the next event for the individual
-	  ++(sv->curii->curevent);
+	  ++(sv->curii->cureventi);
 	  goto gen_event;
 	}
 
 	//Look at the next infected individual in the current event
-	++(sv->curii->curinfection);
-	DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfection,sv->curii->ninfections);
+	++(sv->curii->curinfectioni);
+	DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfectioni,sv->curii->ninfections);
 	break;
       }
     }

@@ -25,6 +25,7 @@
 typedef struct {
   infindividual* iis;	//!< Array of current infectious individuals across all layers
   uint32_t nlayers;	//!< Current maximum number of layers that has been used so far 
+  uint32_t naevents;    //!< Number of allocated events for each layer
 } brsim_vars;
 
 typedef struct {
@@ -46,7 +47,7 @@ typedef struct sim_vars_
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
   void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
-  bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The function is also called at the beginning of the simulation to account for the initial infectious individuals. The returned value from this function determines if new infectious individuals are instantiated for this event.
+  bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The returned value from this function determines if new infectious individuals are instantiated for this event.
   void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
   void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);	//!< Pointer to the user-defined processing function that is called for a new infected individual that does not generate any transmission event.
   void (*end_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
@@ -93,8 +94,7 @@ inline static void sim_set_proc_data(sim_vars* sv, void* dataptr){sv->dataptr=da
  * @brief Sets the user-defined processing function that is called when a new transmission event is created.
  *
  * This function is called after an event time and the number of new infections
- * have been assigned. The function is also called at the beginning of the simulation
- * to account for the initial infectious individuals.
+ * have been assigned.
  *
  * @param sv: Pointer to the simulation variables.
  * @param new_event_proc_func: Pointer to the user-defined function.
