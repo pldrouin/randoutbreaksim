@@ -19,6 +19,7 @@
 
 #include "ran_log.h"
 
+extern int __ro_debug;
 #define DEBUG_PRINTF(...) //!< Debug print function
 //#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
@@ -197,13 +198,16 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
 
 #define GEN_PER_INTERRUPTED_MAIN_0
 
-#define GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) {
-#define GEN_PER_INTERRUPTED_MAIN_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pit) {
-#define GEN_PER_INTERRUPTED_MAIN_1_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar; \
-  \
-  if (ecp < ii->end_comm_period) { \
-    ii->comm_period=sv->pars.itbar; \
-    ii->end_comm_period=ecp; \
+#define GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
+#define GEN_PER_INTERRUPTED_MAIN_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pit) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
+#define GEN_PER_INTERRUPTED_MAIN_POST if (ecp < ii->end_comm_period) { \
+    ii->comm_period=ecp-(inf_start+ii->latent_period); \
+    \
+    if(ii->comm_period<0) { \
+      ii->comm_period=0; \
+      ii->end_comm_period=inf_start+ii->latent_period; \
+      \
+    } else ii->end_comm_period=ecp; \
     \
     if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
@@ -211,34 +215,19 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
   } else ii->commpertype|=ro_commper_int; \
 }
 #ifdef CT_OUTPUT
-#define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE \
-  ii->int_comm_period=sv->pars.itbar; \
-  GEN_PER_INTERRUPTED_MAIN_1_POST
+#define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE GEN_PER_INTERRUPTED_MAIN_POST
 #else
-#define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT GEN_PER_INTERRUPTED_MAIN_1_POST
+#define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT GEN_PER_INTERRUPTED_MAIN_POST
 #endif
 
 #define GEN_PER_INTERRUPTED_MAIN_2_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
-  const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
 #define GEN_PER_INTERRUPTED_MAIN_2_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pit) { \
-  const double time=gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
-#define GEN_PER_INTERRUPTED_MAIN_2_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
-  \
-  if(ecp < ii->end_comm_period) { \
-    ii->comm_period=time; \
-    ii->end_comm_period=ecp; \
-    \
-    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
-    \
-    else ii->commpertype|=ro_commper_int; \
-  } else ii->commpertype|=ro_commper_int; \
-}
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
 #ifdef CT_OUTPUT
-#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE \
-  ii->int_comm_period=time; \
-GEN_PER_INTERRUPTED_MAIN_2_POST
+#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE GEN_PER_INTERRUPTED_MAIN_POST
 #else
-#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE_TPT GEN_PER_INTERRUPTED_MAIN_2_POST
+#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE_TPT GEN_PER_INTERRUPTED_MAIN_POST
 #endif
 
 #define GEN_TESTED_ALT_0 ii->commpertype=ro_commper_alt;
@@ -250,13 +239,16 @@ GEN_PER_INTERRUPTED_MAIN_2_POST
 
 #define GEN_PER_INTERRUPTED_ALT_0
 
-#define GEN_PER_INTERRUPTED_ALT_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) {
-#define GEN_PER_INTERRUPTED_ALT_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pim) {
-#define GEN_PER_INTERRUPTED_ALT_1_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar; \
-  \
-  if (ecp < ii->end_comm_period) { \
-    ii->comm_period=sv->pars.imbar; \
-    ii->end_comm_period=ecp; \
+#define GEN_PER_INTERRUPTED_ALT_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
+#define GEN_PER_INTERRUPTED_ALT_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pim) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
+#define GEN_PER_INTERRUPTED_ALT_POST if (ecp < ii->end_comm_period) { \
+    ii->comm_period=ecp-(inf_start+ii->latent_period); \
+    \
+    if(ii->comm_period<0) { \
+      ii->comm_period=0; \
+      ii->end_comm_period=inf_start+ii->latent_period; \
+      \
+    } else ii->end_comm_period=ecp; \
     \
     if(gsl_rng_uniform(sv->r) < sv->pars.mtpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
     \
@@ -264,34 +256,19 @@ GEN_PER_INTERRUPTED_MAIN_2_POST
   } else ii->commpertype|=ro_commper_int; \
 }
 #ifdef CT_OUTPUT
-#define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE \
-  ii->int_comm_period=sv->pars.imbar; \
-  GEN_PER_INTERRUPTED_ALT_1_POST
+#define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE GEN_PER_INTERRUPTED_ALT_POST
 #else
-#define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE_TPT GEN_PER_INTERRUPTED_ALT_1_POST
+#define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE_TPT GEN_PER_INTERRUPTED_ALT_POST
 #endif
 
 #define GEN_PER_INTERRUPTED_ALT_2_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { \
-  const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
 #define GEN_PER_INTERRUPTED_ALT_2_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pim) { \
-  const double time=gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
-#define GEN_PER_INTERRUPTED_ALT_2_POST const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + time; \
-  \
-  if(ecp < ii->end_comm_period) { \
-    ii->comm_period=time; \
-    ii->end_comm_period=ecp; \
-    \
-    if(gsl_rng_uniform(sv->r) < sv->pars.ttpr) ii->commpertype|=ro_commper_int|ro_commper_true_positive_test; \
-    \
-    else ii->commpertype|=ro_commper_int; \
-  } else ii->commpertype|=ro_commper_int; \
-}
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
 #ifdef CT_OUTPUT
-#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE \
-  ii->int_comm_period=time; \
-  GEN_PER_INTERRUPTED_ALT_2_POST
+#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE GEN_PER_INTERRUPTED_ALT_POST
 #else
-#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE_TPT GEN_PER_INTERRUPTED_ALT_2_POST
+#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE_TPT GEN_PER_INTERRUPTED_ALT_POST
 #endif
 
 #define GEN_PER_ALTERNATE_ONLY_1_PRE ii->comm_period=sv->pars.mbar;
@@ -347,7 +324,7 @@ GEN_PER_INTERRUPTED_MAIN_2_POST
  */
 #define GEN_PER(LATENT,MAIN,IT,ALTERNATE,IM,TESTING) static inline void gen_comm_ ## LATENT ## _ ## MAIN ## _ ## IT ## _ ## ALTERNATE ## _ ## IM ## _ ## TESTING ## _periods(sim_vars* sv, infindividual* ii, infindividual* iiparent, const double inf_start) \
 { \
-  /*printf("Function is %s\n",__func__);*/ \
+  DEBUG_PRINTF("Function is %s\n",__func__); \
   GEN_PER_LATENT_ ## LATENT \
   GEN_PER_MAIN_ALTERNATE_ ## MAIN ## _ ## ALTERNATE(IT,IM,TESTING) \
 }

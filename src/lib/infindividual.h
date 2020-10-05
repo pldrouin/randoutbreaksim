@@ -31,7 +31,6 @@ typedef struct infindividual_
     double comm_period;       //!< Communicable period
 #ifdef CT_OUTPUT
     double presym_comm_period; //!< Pre-symptomatic communicable period for symptomatic individuals
-    double int_comm_period;    //!< Duration of the interrupted communicable period
     void (*gen_ct_time_periods_func)(struct sim_vars_*, struct infindividual_* ii, struct infindividual_* iiparent, const double inf_start);	//!< Effective time period function used for the current event
 #endif
     double end_comm_period;   //!< End of communicable period
