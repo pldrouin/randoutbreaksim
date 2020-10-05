@@ -20,8 +20,8 @@ extern int __ro_debug;
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
 #endif
-//#define DEBUG_PRINTF(...) //!< Debug print function
-#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
+#define DEBUG_PRINTF(...) //!< Debug print function
+//#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
 /**
  * @brief Initialises the branching simulation.

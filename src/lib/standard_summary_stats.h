@@ -24,8 +24,8 @@ extern int __ro_debug;
 #ifdef DEBUG_PRINTF
 #undef DEBUG_PRINTF
 #endif
-//#define DEBUG_PRINTF(...) //!< Debug print function
-#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
+#define DEBUG_PRINTF(...) //!< Debug print function
+//#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
 #ifdef CT_OUTPUT
 typedef struct {
@@ -39,8 +39,8 @@ typedef struct {
 
 typedef struct
 {
-  double   n;	               //!< Fractional number of infectious creating infections in the timeline bin. Each fractional individual is defined as the number of infections in this bin divided by the total number of infections by the individual.
-  double rsum;	       //!< Sum of the number of individuals that get infected in the timeline bin.
+  uint32_t   n;	               //!< Number of infectious creating infections in the timeline bin.
+  uint32_t rsum;	       //!< Sum of the number of individuals that get infected in the timeline bin.
 } ext_timeline_info;
 
 /**
@@ -153,7 +153,7 @@ inline static void std_stats_path_end(sim_vars* sv)
 
   ext_timeline_info* const et=sss->ext_timeline;
 
-  for(i=-sss->timelineshift; i<(int32_t)sss->tnvpers; ++i) printf("rsum[%i]=%22.15e %22.15e\n",i,et[i].rsum,et[i].n);
+  //for(i=-sss->timelineshift; i<(int32_t)sss->tnvpers; ++i) printf("rsum[%i]=%u %u\n",i,et[i].rsum,et[i].n);
 
   for(i=-sss->timelineshift+1; i<(int32_t)sss->tnvpers; ++i) {
     et[i].n+=et[i-1].n;
@@ -337,8 +337,6 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
     if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
-      ((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum+=sv->curii->ninfections;
-      DEBUG_PRINTF("Rsum[%i]+=%22.15e\n",eti,((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum);
 
       if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
 
@@ -394,13 +392,6 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
     if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
-
-      /*
-      if(sv->curii->event_time <= sv->pars.tmax) {
-	((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum+=sv->curii->ninfections;
-	DEBUG_PRINTF("Rsum[%i]+=%22.15e\n",eti,((std_summary_stats*)sv->dataptr)->ext_timeline[eti].rsum);
-      }
-      */
 
       if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
 
@@ -477,97 +468,22 @@ inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii, infindivid
 
 inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
 {
+  int32_t i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
+  const int32_t end_comm_per_i=(ii->end_comm_period >= (int32_t)((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(ii->end_comm_period));
+
   const double start_comm_per=ii->end_comm_period-ii->comm_period;
-  //printf("start_comm: %22.15e vs %u\n",start_comm_per,((std_summary_stats*)sv->dataptr)->npers-1);
 
   if(start_comm_per<=sv->pars.tmax) {
     int32_t start_comm_per_i=floor(start_comm_per);
-    int32_t i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
-    double end_comm_per;
-    double nint;
-    double sum;
-    double sumi;
-    int32_t end_comm_per_i;
-
-    DEBUG_PRINTF("latent %22.15e comm %22.15e end %22.15e end corr %22.15e\n",ii->latent_period,ii->comm_period,ii->end_comm_period,end_comm_per);
-
-    for(; i<=start_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
-
-    if(ii->end_comm_period > sv->pars.tmax) {
-      end_comm_per=sv->pars.tmax;
-      nint=(end_comm_per-start_comm_per)/ii->comm_period;
-      //Temporary
-      //nint=1;
-      //start_comm_per_i=end_comm_per_i=0;
-      //End Temporary
-      end_comm_per_i=floor(end_comm_per);
-      printf("flag: %22.15e\n",nint);
-
-    } else {
-      end_comm_per=ii->end_comm_period;
-      nint=1;
-      end_comm_per_i=floor(end_comm_per);
-    }
-    assert(start_comm_per_i <= end_comm_per_i);
-    assert(nint>0 && nint<=1);
-
-    if(start_comm_per_i == end_comm_per_i) {
-      if(nint!=1) printf("flag1\n");
-      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nint;
-      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].n+=nint;
-      sum=nint;
-      sumi=((uint32_t*)ii->dataptr)[0]*nint;
-      printf("sum%i=%22.15e, simi%i=%22.15e\n",end_comm_per_i,nint,end_comm_per_i,((uint32_t*)ii->dataptr)[0]*nint);
-
-    } else {
-      ++(((std_summary_stats*)sv->dataptr)->inf_timeline[end_comm_per_i]);
-      double nbuf=(end_comm_per-end_comm_per_i)/ii->comm_period;
-      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nbuf;
-      ((std_summary_stats*)sv->dataptr)->ext_timeline[end_comm_per_i].n+=nbuf;
-      sum=nbuf;
-      sumi=((uint32_t*)ii->dataptr)[0]*nbuf;
-      //printf("sum%i=%22.15e\n",end_comm_per_i,nbuf);
-      printf("sum%i=%22.15e, sumi%i=%22.15e\n",end_comm_per_i,nbuf,end_comm_per_i,((uint32_t*)ii->dataptr)[0]*nbuf);
-      nint-=nbuf;
-
-      if(end_comm_per_i - start_comm_per_i > 1) {
-	nbuf=(start_comm_per_i+1-start_comm_per)/ii->comm_period;
-	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nbuf;
-	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=nbuf;
-	sum+=nbuf;
-	sumi+=((uint32_t*)ii->dataptr)[0]*nbuf;
-	//printf("sum%i+=%22.15e\n",start_comm_per_i,nbuf);
-	printf("sum%i+=%22.15e, sumi%i=%22.15e\n",start_comm_per_i,nbuf,start_comm_per_i,((uint32_t*)ii->dataptr)[0]*nbuf);
-	nint-=nbuf;
-	const double pfrac=nint/(end_comm_per_i - start_comm_per_i - 1);
-
-	for(i=start_comm_per_i+1; i<end_comm_per_i; ++i) {
-	  ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
-	  ((std_summary_stats*)sv->dataptr)->ext_timeline[i].rsum+=((uint32_t*)ii->dataptr)[0]*pfrac;
-	  ((std_summary_stats*)sv->dataptr)->ext_timeline[i].n+=pfrac;
-	  sum+=pfrac;
-	  sumi+=((uint32_t*)ii->dataptr)[0]*pfrac;
-	  //printf("sum%i+=%22.15e\n",i,pfrac);
-	  printf("sum%i+=%22.15e, sumi%i=%22.15e\n",i,pfrac,i,((uint32_t*)ii->dataptr)[0]*pfrac);
-	}
-
-      } else {
-	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0]*nint;
-	((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=nint;
-	sum+=nint;
-	sumi+=((uint32_t*)ii->dataptr)[0]*nint;
-	printf("sum%i=%22.15e, sumi%i=%22.15e\n",start_comm_per_i,nint,start_comm_per_i,((uint32_t*)ii->dataptr)[0]*nint);
-      }
-    }
-    DEBUG_PRINTF("sum=%22.15e, sumi=%22.15e, diff=%22.15e\n",sum,sumi,fabs(sum-1));
-    assert(end_comm_per_i==sv->pars.tmax || fabs(sum-1)<=1e-15);
-
-  } else {
-    int32_t i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
-    const int32_t end_comm_per_i=(ii->end_comm_period >= (int32_t)((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(ii->end_comm_period));
-
-    for(; i<=end_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0];
+    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=1;
   }
+  /*
+  ((std_summary_stats*)sv->dataptr)->ext_timeline[i].rsum+=((uint32_t*)ii->dataptr)[0];
+  ((std_summary_stats*)sv->dataptr)->ext_timeline[i].n+=1;
+  */
+
+  for(; i<=end_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
 }
 
 /**
