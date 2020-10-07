@@ -52,7 +52,7 @@ typedef struct sim_vars_
   void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
   void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);	//!< Pointer to the user-defined processing function that is called for a new infected individual that does not generate any transmission event.
   void (*end_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
-  ran_log rl;	//!< Handle for the logarithmica random variate generator.
+  ran_log rl;	//!< Handle for the logarithmic random variate generator.
 
   union{
     brsim_vars brsim;

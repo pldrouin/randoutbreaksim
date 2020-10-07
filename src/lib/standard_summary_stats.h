@@ -41,7 +41,11 @@ typedef struct
 {
   uint32_t   n;	               //!< Number of infectious creating infections in the timeline bin.
   uint32_t rsum;	       //!< Sum of the number of individuals that get infected in the timeline bin.
-  uint32_t* inf;               //!< Timeline of the number of individuals that are infected, but not isolated, with the infection occurring in the timeline bin.
+  double commpersum;   	       //!< Sum of communicable periods for all infectious individuals whose communicable period does not start after tmax in the timeline bin.
+#ifdef NUMEVENTSSTATS
+  uint32_t neventssum;	       //!< Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax in the timeline bin.
+#endif
+  uint64_t* ngeninfs;	       //!< Number of generated infections from each infectious individual in the timeline bin.
 } ext_timeline_info;
 
 /**
@@ -49,15 +53,14 @@ typedef struct
  */
 typedef struct
 {
-  double extinction_time;	//!< Path extinction time, if any. //** Affected by max. Can be fixed easily in post processing => Done
-  double commpersum;		//!< Sum of communicable periods for all infectious individuals whose communicable period does not start after tmax. //**Affected by max
-  //uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infected, but not isolated, at some point in this interval. //**Affected by max
+  double extinction_time;	//!< Path extinction time, if any. 
+  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infected, but not isolated, at some point in this interval.
   uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval. For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
-  uint32_t* postest_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that have a recent positive test result at the end of this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax. //**Affected by max but we don't care
+  uint32_t* postest_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that have a recent positive test result at the end of this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax.
   uint32_t* newpostest_timeline;//!< For each integer interval between 0 and floor(tmax), the number of individuals that receive a positive test result at some point in this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax. //**Affected by max but fixed shift so can be recovered
   ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used.
-  uint64_t** ngeninfs;	        //!< Number of generated infections from each infectious individual. //**Affected by max
-  uint32_t* ninfbins;		//!< Number of allocated infectious individuals.
+  uint32_t nainfbins;		//!< Number of allocated infectious individual bins.
+  uint32_t ninfbins;		//!< Number of used infectious individual bins.
 #ifdef CT_OUTPUT
   ctposinf** ctentries;
   uint32_t nctentries;
@@ -68,10 +71,6 @@ typedef struct
   int32_t timelineshift;       //!< Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
   uint32_t tnpersa;              //!< Total number of allocated integer intervals (negative+positive)
   uint32_t tnvpers;             //!< Total number of valid periods (starting from -timelineshift)
-  uint32_t rsum;		//!< Sum of the number of individuals that get infected during the simulation by the infectious individuals whose last transmission event does not occur after tmax. //**Affected by max
-#ifdef NUMEVENTSSTATS
-  uint32_t neventssum;		//!< Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax. //**Affected by max
-#endif
   uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnpers for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
@@ -88,12 +87,8 @@ typedef struct
  * statistics, if used.
  *
  * @param sv: Pointer to the simulation variables.
- * @param ngeninfs: Pointer to an array of number of generated infections to be
- * filled. Ignored if NULL.
- * @param ninfbins: Pointer to the length of the ngeninfs array. Ignored if
- * NULL.
  */
-void std_stats_init(sim_vars *sv, uint64_t** ngeninfs, uint32_t* ninfbins);
+void std_stats_init(sim_vars *sv, bool ngeninfs);
 
 /**
  * @brief Initialises elements of the standard summary statistics
@@ -108,23 +103,33 @@ void std_stats_init(sim_vars *sv, uint64_t** ngeninfs, uint32_t* ninfbins);
 inline static void std_stats_path_init(std_summary_stats* stats)
 {
   stats->extinction_time=-INFINITY;
-  stats->commpersum=0;
-  //memset(stats->inf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
+  memset(stats->inf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->newinf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->postest_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   memset(stats->newpostest_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
   int32_t i;
   ext_timeline_info* const set=stats->ext_timeline-stats->timelineshift;
 
-  for(i=stats->tnpersa-1; i>=0; --i) {
-    set[i].n=set[i].rsum=0;
-    //printf("%i: Setting at %p->%p over %lu\n",i,set+i,set[i].inf+i-stats->timelineshift,(stats->tnpersa-i)*sizeof(uint32_t));
-    memset(set[i].inf+i-stats->timelineshift,0,(stats->tnpersa-i)*sizeof(uint32_t));
-  }
-  stats->rsum=0;
+  if(stats->nainfbins) {
+    stats->ninfbins=1;
+
+    for(i=stats->tnpersa-1; i>=0; --i) {
+      set[i].n=set[i].rsum=set[i].commpersum=0;
 #ifdef NUMEVENTSSTATS
-  stats->neventssum=0;
+      set[i].neventssum=0;
 #endif
+      memset(set[i].ngeninfs,0,stats->nainfbins*sizeof(uint64_t));
+    }
+
+  } else {
+
+    for(i=stats->tnpersa-1; i>=0; --i) {
+      set[i].n=set[i].rsum=set[i].commpersum=0;
+#ifdef NUMEVENTSSTATS
+      set[i].neventssum=0;
+#endif
+    }
+  }
   stats->extinction=true;
   stats->maxedoutmintimeindex=INT32_MAX;
 
@@ -159,13 +164,37 @@ inline static void std_stats_path_end(sim_vars* sv)
 
   //for(i=-sss->timelineshift; i<(int32_t)sss->tnvpers; ++i) printf("rsum[%i]=%u %u\n",i,et[i].rsum,et[i].n);
 
-  for(i=sss->tnvpers-2; i>=-sss->timelineshift; --i) {
-    et[i].n+=et[i+1].n;
-    et[i].rsum+=et[i+1].rsum;
+  if(sss->ninfbins) {
 
-    for(j=sss->tnvpers-1; j>i; --j) et[i].inf[j]+=et[i+1].inf[j];
+    for(i=sss->tnvpers-2; i>=-sss->timelineshift; --i) {
+      //printf("et[%i].n (%u) += %u\n",i,et[i].n,et[i+1].n);
+      et[i].n+=et[i+1].n;
+      et[i].rsum+=et[i+1].rsum;
+      et[i].commpersum+=et[i+1].commpersum;
+#ifdef NUMEVENTSSTATS
+      et[i].neventssum+=et[i+1].neventssum;
+#endif
+
+      for(j=sss->ninfbins-1; j>=0; --j) {
+	//printf("et[%i].ngeninfs[%i] (%lu) += %lu\n",i,j,et[i].ngeninfs[j],et[i+1].ngeninfs[j]);
+	et[i].ngeninfs[j]+=et[i+1].ngeninfs[j];
+      }
+    }
+
+  } else {
+
+    for(i=sss->tnvpers-2; i>=-sss->timelineshift; --i) {
+      et[i].n+=et[i+1].n;
+      et[i].rsum+=et[i+1].rsum;
+      et[i].commpersum+=et[i+1].commpersum;
+#ifdef NUMEVENTSSTATS
+      et[i].neventssum+=et[i+1].neventssum;
+#endif
+    }
   }
-  memset(et[0].inf+sss->tnvpers,0,(sss->npers-sss->tnvpers)*sizeof(uint32_t));
+  memset(sss->inf_timeline+sss->tnvpers,0,(sss->npers-sss->tnvpers)*sizeof(uint32_t));
+  memset(sss->newinf_timeline+sss->tnvpers,0,(sss->npers-sss->tnvpers)*sizeof(uint32_t));
+  memset(sss->newpostest_timeline+sss->tnvpers,0,(sss->npers-sss->tnvpers)*sizeof(uint32_t));
 }
 
 /**
@@ -204,15 +233,13 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
     const uint32_t dshift=newshift-stats->timelineshift;
     const uint32_t newsize=newshift+stats->npers;
 
-    /*
     uint32_t* newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
     memset(newarray,0,dshift*sizeof(uint32_t));
     memcpy(newarray+dshift,stats->inf_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
     free(stats->inf_timeline-stats->timelineshift);
     stats->inf_timeline=newarray+newshift;
-    */
 
-    uint32_t* newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+    newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
     memset(newarray,0,dshift*sizeof(uint32_t));
     memcpy(newarray+dshift,stats->newinf_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
     free(stats->newinf_timeline-stats->timelineshift);
@@ -237,11 +264,15 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
 
     int32_t i;
 
-    for(i=dshift-1; i>=0; --i) {
-      newarray=(uint32_t*)malloc((newsize-i)*sizeof(uint32_t));
-      //printf("%i: New allocation at %p over %lu\n",i,newarray,(newsize-i)*sizeof(uint32_t));
-      memset(newarray,0,(newsize-i)*sizeof(uint32_t));
-      newarray_ext[i].inf=newarray+newshift-i;
+    if(stats->nainfbins) {
+      uint64_t* newarray64;
+
+      for(i=dshift-1; i>=0; --i) {
+	newarray64=(uint64_t*)malloc(stats->nainfbins*sizeof(uint64_t));
+	memset(newarray64,0,stats->nainfbins*sizeof(uint64_t));
+	newarray_ext[i].ngeninfs=newarray64;
+	//printf("ext_timeline[%i].ngeninfs=%p\n",i-newshift,newarray64);
+      }
     }
     stats->ext_timeline=newarray_ext+newshift;
 
@@ -495,9 +526,15 @@ inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
     const int32_t end_comm_per_i=(ii->end_comm_period >= (int32_t)((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(ii->end_comm_period));
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0];
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=1;
+    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].commpersum+=ii->comm_period;
+#ifdef NUMEVENTSSTATS
+    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].neventssum+=ii->nevents;
+#endif
     int32_t i;
 
-    for(i=start_latent_per_i; i<=end_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->ext_timeline[start_latent_per_i].inf[i]);
+    for(i=start_latent_per_i; i<=end_comm_per_i; ++i) {
+      ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+    }
   }
 }
 
@@ -523,11 +560,6 @@ inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
 inline static void std_stats_end_inf(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   DEBUG_PRINTF("Number of infections was %u\n",((uint32_t*)ii->dataptr)[0]);
-  ((std_summary_stats*)sv->dataptr)->rsum+=((uint32_t*)ii->dataptr)[0];
-  ((std_summary_stats*)sv->dataptr)->commpersum+=ii->comm_period;
-#ifdef NUMEVENTSSTATS
-  ((std_summary_stats*)sv->dataptr)->neventssum+=ii->nevents;
-#endif
 
 #ifdef CT_OUTPUT
   if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
@@ -559,12 +591,29 @@ inline static void std_stats_end_inf(sim_vars* sv, infindividual* ii, infindivid
  **/
 inline static void std_stats_end_inf_rec_ninfs(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
-  if(*(uint32_t*)ii->dataptr >= *((std_summary_stats*)sv->dataptr)->ninfbins) {
-     *((std_summary_stats*)sv->dataptr)->ngeninfs=(uint64_t*)realloc(*((std_summary_stats*)sv->dataptr)->ngeninfs,(*(uint32_t*)ii->dataptr+1)*sizeof(uint64_t));
-     memset(*((std_summary_stats*)sv->dataptr)->ngeninfs+*((std_summary_stats*)sv->dataptr)->ninfbins,0,(*(uint32_t*)ii->dataptr+1-*((std_summary_stats*)sv->dataptr)->ninfbins)*sizeof(uint64_t));
-    *((std_summary_stats*)sv->dataptr)->ninfbins=*(uint64_t*)ii->dataptr+1;
+  const double start_comm_per=ii->end_comm_period-ii->comm_period;
+
+  if(start_comm_per<=sv->pars.tmax) {
+    std_summary_stats* const stats=(std_summary_stats*)sv->dataptr;
+
+    if(((uint32_t*)ii->dataptr)[0] >= stats->ninfbins) {
+      stats->ninfbins=((uint32_t*)ii->dataptr)[0]+1;
+
+      if(stats->ninfbins>stats->nainfbins) {
+	ext_timeline_info* const set=stats->ext_timeline-stats->timelineshift;
+	int32_t i;
+
+	for(i=stats->tnpersa-1; i>=0; --i) {
+	  set[i].ngeninfs=(uint64_t*)realloc(set[i].ngeninfs,stats->ninfbins*sizeof(uint64_t));
+	  //printf("ext_timeline[%i].ngeninfs=%p\n",i-stats->timelineshift,set[i].ngeninfs);
+	  memset(set[i].ngeninfs+stats->nainfbins,0,(stats->ninfbins-stats->nainfbins)*sizeof(uint64_t));
+	}
+	stats->nainfbins=stats->ninfbins;
+      }
+    }
+    const int32_t start_comm_per_i=floor(start_comm_per);
+    ++(stats->ext_timeline[start_comm_per_i].ngeninfs[((uint32_t*)ii->dataptr)[0]]);
   }
-  ++((*((std_summary_stats*)sv->dataptr)->ngeninfs)[*(uint32_t*)ii->dataptr]);
 
   std_stats_end_inf(sv, ii, parent);
 }
@@ -600,8 +649,6 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
 
   std_stats_fill_newpostest(sv, ii, parent);
 
-  ((std_summary_stats*)sv->dataptr)->commpersum+=ii->comm_period;
-
 #ifdef CT_OUTPUT
   if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
 #endif
@@ -632,7 +679,12 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
  **/
 inline static void std_stats_noevent_new_inf_rec_ninfs(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
-  ++((*((std_summary_stats*)sv->dataptr)->ngeninfs)[0]);
+  const double start_comm_per=ii->end_comm_period-ii->comm_period;
+
+  if(start_comm_per<=sv->pars.tmax) {
+    const int32_t start_comm_per_i=floor(start_comm_per);
+    ++(((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].ngeninfs[0]);
+  }
 
   std_stats_noevent_new_inf(sv, ii, parent);
 }
