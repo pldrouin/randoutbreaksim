@@ -204,6 +204,7 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     ii->comm_period=ecp-(inf_start+ii->latent_period); \
     \
     if(ii->comm_period<0) { \
+      ii->latent_period+=ii->comm_period; \
       ii->comm_period=0; \
       ii->end_comm_period=inf_start+ii->latent_period; \
       \
@@ -245,6 +246,7 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     ii->comm_period=ecp-(inf_start+ii->latent_period); \
     \
     if(ii->comm_period<0) { \
+      ii->latent_period+=ii->comm_period; \
       ii->comm_period=0; \
       ii->end_comm_period=inf_start+ii->latent_period; \
       \
