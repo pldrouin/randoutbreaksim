@@ -54,6 +54,10 @@ int branchsim(sim_vars* sv);
  */
 void branchsim_free(sim_vars* sv);
 
+inline static uint32_t gen_att_infpop_log_plus_1(sim_vars* sv){return (uint32_t)ran_log_finite(&sv->rl)+1;}
+inline static uint32_t gen_att_infpop_log(sim_vars* sv){return (uint32_t)ran_log_finite_gt1(&sv->rl);}
+inline static uint32_t gen_att_infpop_log_p0(sim_vars* sv){return 2;}
+
 inline static void gen_att_inf_infpop_pinf1_log_plus_1(sim_vars* sv){sv->curii->ninfections=(uint32_t)ran_log_finite(&sv->rl); sv->curii->nattendees=sv->curii->ninfections+1;}
 inline static void gen_att_inf_infpop_pinf1_log(sim_vars* sv){sv->curii->nattendees=(uint32_t)ran_log_finite_gt1(&sv->rl); sv->curii->ninfections=sv->curii->nattendees-1;}
 inline static void gen_att_inf_infpop_pinf1_log_p0(sim_vars* sv){sv->curii->ninfections=1; sv->curii->nattendees=2;}
@@ -63,13 +67,13 @@ inline static void gen_att_inf_infpop_log(sim_vars* sv){sv->curii->nattendees=(u
 inline static void gen_att_inf_infpop_log_p0(sim_vars* sv){sv->curii->ninfections=(gsl_rng_uniform(sv->r) < sv->pars.pinf); sv->curii->nattendees=2;}
 
 #define BR_GENINF_COND if(sv->pars.pinf==1) { \
-  if(sv->pars.p == 0)  sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log_p0; \
-  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log_plus_1; \
-  else sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log; \
+  if(sv->pars.p == 0)  {sv->gen_att_func=gen_att_infpop_log_p0; sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log_p0;} \
+  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) {sv->gen_att_func=gen_att_infpop_log_plus_1; sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log_plus_1;} \
+  else {sv->gen_att_func=gen_att_infpop_log; sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log;} \
 } else { \
-  if(sv->pars.p == 0)  sv->gen_att_inf_func=gen_att_inf_infpop_log_p0; \
-  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) sv->gen_att_inf_func=gen_att_inf_infpop_log_plus_1; \
-  else sv->gen_att_inf_func=gen_att_inf_infpop_log; \
+  if(sv->pars.p == 0)  {sv->gen_att_func=gen_att_infpop_log_p0; sv->gen_att_inf_func=gen_att_inf_infpop_log_p0;} \
+  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) {sv->gen_att_func=gen_att_infpop_log_plus_1; sv->gen_att_inf_func=gen_att_inf_infpop_log_plus_1;} \
+  else {sv->gen_att_func=gen_att_infpop_log; sv->gen_att_inf_func=gen_att_inf_infpop_log;} \
 }
 
 #endif

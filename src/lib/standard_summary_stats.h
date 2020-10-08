@@ -478,7 +478,19 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
 
 #ifdef CT_OUTPUT
     ((uint32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
-    ((uint32_t*)ii->dataptr)[2]=0;
+
+    //If the CT window starts before the communicable period, generate
+    //pseudo-events and calculate the number of traced contacts
+    if(ii->comm_period<sv->pars.ctwindow) {
+      const uint32_t nevents=gsl_ran_poisson(sv->r, sv->pars.lambda*(sv->pars.ctwindow-ii->comm_period));
+      int e;
+      ((uint32_t*)ii->dataptr)[2]=0;
+      DEBUG_PRINTF("Number of pre-events is %u during %f\n",nevents,sv->pars.ctwindow-ii->comm_period);
+
+      for(e=nevents-1; e>=0; --e) ((uint32_t*)ii->dataptr)[2]+=gsl_ran_binomial(sv->r, sv->pars.pt, sv->gen_att_func(sv)-1);
+      DEBUG_PRINTF("Traced contacts start at %u\n",((uint32_t*)ii->dataptr)[2]);
+
+    } else ((uint32_t*)ii->dataptr)[2]=0;
     DEBUG_PRINTF("Infectious individual ID is %u\n",((uint32_t*)ii->dataptr)[1]);
     DEBUG_PRINTF("ID %u: Successfully traced contacts initialized to 0\n",(((uint32_t*)ii->dataptr)[1]));
 #endif

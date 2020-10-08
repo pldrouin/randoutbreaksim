@@ -45,6 +45,7 @@ typedef struct sim_vars_
   void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
   void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*gen_time_periods_func_no_int)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods without interruption for a given infectious individual
+  uint32_t (*gen_att_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees during one event
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
   void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
