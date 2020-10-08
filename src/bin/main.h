@@ -75,7 +75,7 @@ inline static ssize_t tlo_write_reg_path(std_summary_stats const* stats, char* b
 {
   int32_t b;
 
-  for(b=stats->npers-1; b>0; --b) {
+  for(b=stats->tnvpers-1; b>0; --b) {
     //printf("TotInf[%" PRIi32 "]=%" PRIu32 ",\tInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->newinf_timeline[b],b,inf_timeline[b]);
 
     if(stats->inf_timeline[b]) break;
@@ -112,7 +112,7 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
 {
   int32_t b;
 
-  for(b=stats->npers-1; b>0; --b) {
+  for(b=stats->tnvpers-1; b>0; --b) {
     //printf("TotInf[%" PRIi32 "]=%" PRIu32 ",\tInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->newinf_timeline[b],b,stats->inf_timeline[b]);
 
     if(stats->inf_timeline[b] || stats->newpostest_timeline[b]) break;
@@ -150,10 +150,10 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
 
 inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, char* buf)
 {
-  int32_t bmin=-(int32_t)stats->timelineshift;
-  int32_t bmax;
+  int32_t bmin=-(int32_t)stats->tlshift;
+  int32_t bmax=bmin+stats->tnvpers-1;
 
-  for(bmax=stats->npers-1; bmax>bmin; --bmax) {
+  for(; bmax>bmin; --bmax) {
     //printf("TotInf[%" PRIi32 "]=%" PRIu32 ",\tInf[%" PRIi32 "]=%" PRIu32 "\n",bmax,stats->newinf_timeline[bmax],bmax,stats->inf_timeline[bmax]);
 
     if(stats->inf_timeline[bmax]) break;
@@ -201,10 +201,10 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
 
 inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* stats, char* buf)
 {
-  int32_t bmin=-(int32_t)stats->timelineshift;
-  int32_t bmax;
+  int32_t bmin=-(int32_t)stats->tlshift;
+  int32_t bmax=bmin+stats->tnvpers-1;
 
-  for(bmax=stats->npers-1; bmax>bmin; --bmax) {
+  for(; bmax>bmin; --bmax) {
     //printf("TotInf[%" PRIi32 "]=%" PRIu32 ",\tInf[%" PRIi32 "]=%" PRIu32 "\n",bmax,stats->newinf_timeline[bmax],bmax,stats->inf_timeline[bmax]);
 
     if(stats->inf_timeline[bmax] || stats->newpostest_timeline[bmax]) break;

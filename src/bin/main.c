@@ -78,7 +78,7 @@ int main(const int nargs, const char* args[])
       tdata[t].npathsperset=npathsperset;
       tdata[t].id=t;
       tdata[t].nsets=nsets;
-      tdata[t].tnpersa=tdata[t].npers=npers;
+      tdata[t].npers=npers;
       tdata[t].set=&set;
       //tdata[t].r = gsl_rng_alloc(gsl_rng_taus2);
       tdata[t].r = gsl_rng_alloc(rngstream_gsl);
@@ -141,7 +141,7 @@ int main(const int nargs, const char* args[])
     tdata[0].npathsperset=npathsperset;
     tdata[0].id=0;
     tdata[0].nsets=nsets;
-    tdata[0].tnpersa=tdata[0].npers=npers;
+    tdata[0].npers=npers;
     tdata[0].set=&set;
     //tdata[0].r = gsl_rng_alloc(gsl_rng_taus2);
     tdata[0].r = gsl_rng_alloc(rngstream_gsl);
@@ -172,7 +172,7 @@ int main(const int nargs, const char* args[])
   const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
 #endif
   const double nnoe=cp.npaths-tdata[0].pe;
-  //printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,tdata[0].n_inf);
+  printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,tdata[0].n_inf);
   tdata[0].r_mean/=tdata[0].n_inf;
   tdata[0].commper_mean/=tdata[0].n_inf;
 #ifdef NUMEVENTSSTATS
@@ -297,6 +297,7 @@ void* simthread(void* arg)
 {
   thread_data* data=(thread_data*)arg;
   config_pars const* cp=data->cp;
+  data->tnpersa=data->npers;
   data->commper_mean=0;
 #ifdef NUMEVENTSSTATS
   data->nevents_mean=0;
@@ -430,7 +431,7 @@ void* simthread(void* arg)
   uint32_t* abs_inf_timeline;
   uint32_t* abs_newinf_timeline;
   uint32_t* abs_newpostest_timeline;
-  uint32_t curtnpersa;
+  int32_t dshift;
   int i;
   ssize_t maxwrite;
   const ssize_t binsize=(2+1*(!isnan(cp->pars.tdeltat)))*sizeof(uint32_t);
@@ -447,21 +448,21 @@ void* simthread(void* arg)
       std_stats_path_init(&stats);
       branchsim(&sv);
       std_stats_path_end(&sv);
-      curtnpersa=stats.timelineshift+stats.tnvpers;
-      eti=stats.ext_timeline-stats.timelineshift;
+      eti=stats.ext_timeline-stats.tlshift;
       data->n_inf+=eti->n;
       data->r_mean+=eti->rsum;
       data->commper_mean+=eti->commpersum;
 #ifdef NUMEVENTSSTATS
-      data->nevents_mean+=stats.ext_timeline[-stats.timelineshift].neventssum;
+      data->nevents_mean+=stats.eti->neventssum;
 #endif
       //nr+=stats.n_ended_infections;
-      abs_inf_timeline=stats.inf_timeline-stats.timelineshift;
-      abs_newinf_timeline=stats.newinf_timeline-stats.timelineshift;
-      abs_newpostest_timeline=stats.newpostest_timeline-stats.timelineshift;
+      abs_inf_timeline=stats.inf_timeline-stats.tlshifta;
+      abs_newinf_timeline=stats.newinf_timeline-stats.tlshifta;
+      abs_newpostest_timeline=stats.newpostest_timeline-stats.tlshifta;
+      dshift=stats.tlshifta-stats.tlshift;
 
       if(cp->tlout) {
-	maxwrite=16+binsize*curtnpersa;
+	maxwrite=16+binsize*stats.tnvpers;
 
 	if(tlobsize+maxwrite > tlobasize) {
 
@@ -507,7 +508,6 @@ void* simthread(void* arg)
 	}
 	ctobsize+=ct_write_func(&stats, ctoutbuf+ctobsize);
       }
-
 #endif
 
       if(stats.tnpersa > data->tnpersa) {
@@ -588,7 +588,7 @@ void* simthread(void* arg)
 
 	data->tnpersa=stats.tnpersa;
       }
-      
+
       if(stats.ninfbins > data->ninfbins) {
 	data->ngeninfs=(uint64_t*)realloc(data->ngeninfs,stats.ninfbins*sizeof(uint64_t));
 	memset(data->ngeninfs+data->ninfbins,0,(stats.ninfbins-data->ninfbins)*sizeof(uint64_t));
@@ -602,7 +602,7 @@ void* simthread(void* arg)
 	data->te_mean+=stats.extinction_time;
 	data->te_std+=stats.extinction_time*stats.extinction_time;
 
-	for(j=curtnpersa-1; j>=0; --j) {
+	for(j=stats.tnvpers-1; j>=dshift; --j) {
 	  data->inf_timeline_mean_ext[j]+=abs_inf_timeline[j];
 	  data->inf_timeline_std_ext[j]+=(double)abs_inf_timeline[j]*abs_inf_timeline[j];
 	  data->newinf_timeline_mean_ext[j]+=abs_newinf_timeline[j];
@@ -615,7 +615,7 @@ void* simthread(void* arg)
 
 	if(stats.maxedoutmintimeindex < data->maxedoutmintimeindex) data->maxedoutmintimeindex=stats.maxedoutmintimeindex;
 
-	for(j=curtnpersa-1; j>=0; --j) {
+	for(j=stats.tnvpers-1; j>=dshift; --j) {
 	  data->inf_timeline_mean_noext[j]+=abs_inf_timeline[j];
 	  data->inf_timeline_std_noext[j]+=(double)abs_inf_timeline[j]*abs_inf_timeline[j];
 	  data->newinf_timeline_mean_noext[j]+=abs_newinf_timeline[j];
@@ -625,7 +625,9 @@ void* simthread(void* arg)
 	}
       }
 
-      for(j=stats.ninfbins-1; j>=0; --j) data->ngeninfs[j]+=eti->ngeninfs[j];
+      for(j=stats.ninfbins-1; j>=0; --j) {
+	data->ngeninfs[j]+=eti->ngeninfs[j];
+      }
     }
     curset=__sync_fetch_and_add(data->set,1);
 

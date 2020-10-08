@@ -68,9 +68,10 @@ typedef struct
   int32_t curctid;
 #endif
   uint32_t npers;		//!< Number of positive integer intervals
-  int32_t timelineshift;       //!< Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
-  uint32_t tnpersa;              //!< Total number of allocated integer intervals (negative+positive)
-  uint32_t tnvpers;             //!< Total number of valid periods (starting from -timelineshift)
+  int32_t  tlshifta;            //!< Allocated integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
+  int32_t  tlshift;             //!< Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
+  uint32_t tnpersa;             //!< Total number of allocated integer intervals (negative+positive)
+  uint32_t tnvpers;             //!< Total number of valid periods (starting from -tlshift)
   uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnpers for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
@@ -103,17 +104,18 @@ void std_stats_init(sim_vars *sv, bool ngeninfs);
 inline static void std_stats_path_init(std_summary_stats* stats)
 {
   stats->extinction_time=-INFINITY;
-  memset(stats->inf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
-  memset(stats->newinf_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
-  memset(stats->postest_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
-  memset(stats->newpostest_timeline-stats->timelineshift,0,stats->tnpersa*sizeof(uint32_t));
+  const uint32_t nerase=stats->tlshift+stats->npers;
+  memset(stats->inf_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+  memset(stats->newinf_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+  memset(stats->postest_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+  memset(stats->newpostest_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
   int32_t i;
-  ext_timeline_info* const set=stats->ext_timeline-stats->timelineshift;
+  ext_timeline_info* const set=stats->ext_timeline-stats->tlshift;
 
   if(stats->nainfbins) {
     stats->ninfbins=1;
 
-    for(i=stats->tnpersa-1; i>=0; --i) {
+    for(i=nerase-1; i>=0; --i) {
       set[i].n=set[i].rsum=set[i].commpersum=0;
 #ifdef NUMEVENTSSTATS
       set[i].neventssum=0;
@@ -121,17 +123,11 @@ inline static void std_stats_path_init(std_summary_stats* stats)
       memset(set[i].ngeninfs,0,stats->nainfbins*sizeof(uint64_t));
     }
 
-  } else {
+  } else memset(stats->ext_timeline-stats->tlshift,0,nerase*sizeof(ext_timeline_info));
 
-    for(i=stats->tnpersa-1; i>=0; --i) {
-      set[i].n=set[i].rsum=set[i].commpersum=0;
-#ifdef NUMEVENTSSTATS
-      set[i].neventssum=0;
-#endif
-    }
-  }
   stats->extinction=true;
   stats->maxedoutmintimeindex=INT32_MAX;
+  stats->tlshift=0;
 
 #ifdef CT_OUTPUT
   stats->nctentries=0;
@@ -156,17 +152,21 @@ inline static void std_stats_path_end(sim_vars* sv)
   std_summary_stats* sss=(std_summary_stats*)sv->dataptr;
 
   if(maxedoutmintimeindex<INT32_MAX) {
-    sss->tnvpers=maxedoutmintimeindex;
+    sss->tnvpers=(maxedoutmintimeindex<sss->npers?maxedoutmintimeindex+1:sss->npers)+sss->tlshift;
 
-  } else sss->tnvpers=sss->npers;
+  } else sss->tnvpers=sss->npers+sss->tlshift;
 
-  ext_timeline_info* const et=sss->ext_timeline;
+  //printf("Shift %i/%i, tnpers %u/%u\n",sss->tlshift,sss->tlshifta,sss->tnvpers,sss->tnpersa);
 
-  //for(i=-sss->timelineshift; i<(int32_t)sss->tnvpers; ++i) printf("rsum[%i]=%u %u\n",i,et[i].rsum,et[i].n);
+  ext_timeline_info* const et=sss->ext_timeline-sss->tlshift;
+
+  //for(i=-sss->tlshift; i<(int32_t)sss->tnvpers; ++i) printf("rsum[%i]=%u %u\n",i,et[i].rsum,et[i].n);
+
+  //for(i=sss->tnvpers-sss->tlshift-1; i>=-sss->tlshift; --i) printf("newinf_timeline[%i]=%i\n",i,sss->newinf_timeline[i]);
 
   if(sss->ninfbins) {
 
-    for(i=sss->tnvpers-2; i>=-sss->timelineshift; --i) {
+    for(i=sss->tnvpers-2; i>=0; --i) {
       //printf("et[%i].n (%u) += %u\n",i,et[i].n,et[i+1].n);
       et[i].n+=et[i+1].n;
       et[i].rsum+=et[i+1].rsum;
@@ -174,16 +174,18 @@ inline static void std_stats_path_end(sim_vars* sv)
 #ifdef NUMEVENTSSTATS
       et[i].neventssum+=et[i+1].neventssum;
 #endif
+      //printf("Address et[%i].ngeninfs=%p\n",i-sss->tlshift,et[i].ngeninfs);
 
       for(j=sss->ninfbins-1; j>=0; --j) {
-	//printf("et[%i].ngeninfs[%i] (%lu) += %lu\n",i,j,et[i].ngeninfs[j],et[i+1].ngeninfs[j]);
+	//printf("et[%i].ngeninfs[%i] (%lu) += %lu\n",i-sss->tlshift,j,et[i].ngeninfs[j],et[i+1].ngeninfs[j]);
 	et[i].ngeninfs[j]+=et[i+1].ngeninfs[j];
+	//if(i==0) printf("et[%i].ngeninfs[%i] = %lu\n",i-sss->tlshift,j,et[i].ngeninfs[j]);
       }
     }
 
   } else {
 
-    for(i=sss->tnvpers-2; i>=-sss->timelineshift; --i) {
+    for(i=sss->tnvpers-2; i>=0; --i) {
       et[i].n+=et[i+1].n;
       et[i].rsum+=et[i+1].rsum;
       et[i].commpersum+=et[i+1].commpersum;
@@ -192,9 +194,6 @@ inline static void std_stats_path_end(sim_vars* sv)
 #endif
     }
   }
-  memset(sss->inf_timeline+sss->tnvpers,0,(sss->npers-sss->tnvpers)*sizeof(uint32_t));
-  memset(sss->newinf_timeline+sss->tnvpers,0,(sss->npers-sss->tnvpers)*sizeof(uint32_t));
-  memset(sss->newpostest_timeline+sss->tnvpers,0,(sss->npers-sss->tnvpers)*sizeof(uint32_t));
 }
 
 /**
@@ -228,56 +227,60 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
 {
   const int32_t newshift=ceil(-ii->end_comm_period+(ii->comm_period+ii->latent_period));
 
-  if(newshift>((std_summary_stats*)sv->dataptr)->timelineshift) {
+  if(newshift > ((std_summary_stats*)sv->dataptr)->tlshift) {
     std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
-    const uint32_t dshift=newshift-stats->timelineshift;
-    const uint32_t newsize=newshift+stats->npers;
+    stats->tlshift=newshift;
 
-    uint32_t* newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memset(newarray,0,dshift*sizeof(uint32_t));
-    memcpy(newarray+dshift,stats->inf_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
-    free(stats->inf_timeline-stats->timelineshift);
-    stats->inf_timeline=newarray+newshift;
+    if(newshift > stats->tlshifta) {
+      const uint32_t dshift=newshift-stats->tlshifta;
+      const uint32_t newsize=newshift+stats->npers;
 
-    newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memset(newarray,0,dshift*sizeof(uint32_t));
-    memcpy(newarray+dshift,stats->newinf_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
-    free(stats->newinf_timeline-stats->timelineshift);
-    stats->newinf_timeline=newarray+newshift;
+      uint32_t* newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->inf_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->inf_timeline-stats->tlshifta);
+      stats->inf_timeline=newarray+newshift;
 
-    newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memset(newarray,0,dshift*sizeof(uint32_t));
-    memcpy(newarray+dshift,stats->postest_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
-    free(stats->postest_timeline-stats->timelineshift);
-    stats->postest_timeline=newarray+newshift;
+      newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->newinf_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->newinf_timeline-stats->tlshifta);
+      stats->newinf_timeline=newarray+newshift;
 
-    newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memset(newarray,0,dshift*sizeof(uint32_t));
-    memcpy(newarray+dshift,stats->newpostest_timeline-stats->timelineshift,stats->tnpersa*sizeof(uint32_t));
-    free(stats->newpostest_timeline-stats->timelineshift);
-    stats->newpostest_timeline=newarray+newshift;
+      newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->postest_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->postest_timeline-stats->tlshifta);
+      stats->postest_timeline=newarray+newshift;
 
-    ext_timeline_info* newarray_ext=malloc(newsize*sizeof(ext_timeline_info));
-    memset(newarray_ext,0,dshift*sizeof(ext_timeline_info));
-    memcpy(newarray_ext+dshift,stats->ext_timeline-stats->timelineshift,stats->tnpersa*sizeof(ext_timeline_info));
-    free(stats->ext_timeline-stats->timelineshift);
+      newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->newpostest_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->newpostest_timeline-stats->tlshifta);
+      stats->newpostest_timeline=newarray+newshift;
 
-    int32_t i;
+      ext_timeline_info* newarray_ext=malloc(newsize*sizeof(ext_timeline_info));
+      memset(newarray_ext,0,dshift*sizeof(ext_timeline_info));
+      memcpy(newarray_ext+dshift,stats->ext_timeline-stats->tlshifta,stats->tnpersa*sizeof(ext_timeline_info));
+      free(stats->ext_timeline-stats->tlshifta);
 
-    if(stats->nainfbins) {
-      uint64_t* newarray64;
+      int32_t i;
 
-      for(i=dshift-1; i>=0; --i) {
-	newarray64=(uint64_t*)malloc(stats->nainfbins*sizeof(uint64_t));
-	memset(newarray64,0,stats->nainfbins*sizeof(uint64_t));
-	newarray_ext[i].ngeninfs=newarray64;
-	//printf("ext_timeline[%i].ngeninfs=%p\n",i-newshift,newarray64);
+      if(stats->nainfbins) {
+	uint64_t* newarray64;
+
+	for(i=dshift-1; i>=0; --i) {
+	  newarray64=(uint64_t*)malloc(stats->nainfbins*sizeof(uint64_t));
+	  memset(newarray64,0,stats->nainfbins*sizeof(uint64_t));
+	  newarray_ext[i].ngeninfs=newarray64;
+	  //printf("ext_timeline[%i].ngeninfs=%p\n",i-newshift,newarray64);
+	}
       }
-    }
-    stats->ext_timeline=newarray_ext+newshift;
+      stats->ext_timeline=newarray_ext+newshift;
 
-    stats->timelineshift=newshift;
-    stats->tnpersa=newsize;
+      stats->tlshifta=newshift;
+      stats->tnpersa=newsize;
+    }
   }
 
   //We have to use curii here!
@@ -600,13 +603,14 @@ inline static void std_stats_end_inf_rec_ninfs(sim_vars* sv, infindividual* ii, 
       stats->ninfbins=((uint32_t*)ii->dataptr)[0]+1;
 
       if(stats->ninfbins>stats->nainfbins) {
-	ext_timeline_info* const set=stats->ext_timeline-stats->timelineshift;
+	ext_timeline_info* const set=stats->ext_timeline-stats->tlshifta;
 	int32_t i;
+	const uint32_t dnbins=stats->ninfbins-stats->nainfbins;
 
 	for(i=stats->tnpersa-1; i>=0; --i) {
 	  set[i].ngeninfs=(uint64_t*)realloc(set[i].ngeninfs,stats->ninfbins*sizeof(uint64_t));
-	  //printf("ext_timeline[%i].ngeninfs=%p\n",i-stats->timelineshift,set[i].ngeninfs);
-	  memset(set[i].ngeninfs+stats->nainfbins,0,(stats->ninfbins-stats->nainfbins)*sizeof(uint64_t));
+	  //printf("ext_timeline[%i].ngeninfs=%p\n",i-stats->tlshifta,set[i].ngeninfs);
+	  memset(set[i].ngeninfs+stats->nainfbins,0,dnbins*sizeof(uint64_t));
 	}
 	stats->nainfbins=stats->ninfbins;
       }

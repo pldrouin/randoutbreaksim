@@ -10,8 +10,8 @@ void std_stats_init(sim_vars* sv, bool ngeninfs)
 {
   std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
 
-  stats->timelineshift=0;
-  stats->tnpersa=stats->npers=(int)sv->pars.tmax+1;
+  stats->tlshift=stats->tlshifta=0;
+  stats->tnvpers=stats->tnpersa=stats->npers=(int)sv->pars.tmax+1;
   stats->inf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->newinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->postest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
@@ -44,22 +44,22 @@ void std_stats_init(sim_vars* sv, bool ngeninfs)
 
 void std_stats_free(std_summary_stats* stats)
 {
-  free(stats->inf_timeline-stats->timelineshift);
-  free(stats->newinf_timeline-stats->timelineshift);
-  free(stats->postest_timeline-stats->timelineshift);
-  free(stats->newpostest_timeline-stats->timelineshift);
+  free(stats->inf_timeline-stats->tlshifta);
+  free(stats->newinf_timeline-stats->tlshifta);
+  free(stats->postest_timeline-stats->tlshifta);
+  free(stats->newpostest_timeline-stats->tlshifta);
 
-  ext_timeline_info* const set=stats->ext_timeline-stats->timelineshift;
+  ext_timeline_info* const set=stats->ext_timeline-stats->tlshifta;
   int32_t i;
 
   if(stats->nainfbins) {
 
     for(i=stats->tnpersa-1; i>=0; --i) {
-      //printf("Free ext_timeline[%i] (%p)\n",i-stats->timelineshift,set[i].ngeninfs);
+      //printf("Free ext_timeline[%i] (%p)\n",i-stats->tlshifta,set[i].ngeninfs);
       free(set[i].ngeninfs);
     }
   }
-  free(stats->ext_timeline-stats->timelineshift);
+  free(stats->ext_timeline-stats->tlshifta);
 
 #ifdef CT_OUTPUT
 
