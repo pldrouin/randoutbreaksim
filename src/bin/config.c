@@ -83,6 +83,10 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "group_log_invitees")) {
 	cp->pars.grouptype=ro_group_log_invitees;
 
+      } else if(!argsdiffer(pbuf, "g_ave")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.g_ave);
+
       } else if(!argsdiffer(pbuf, "p")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.p);
