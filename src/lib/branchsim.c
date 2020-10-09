@@ -168,7 +168,7 @@ int branchsim(sim_vars* sv)
       sv->gen_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
 #endif
       sv->curii->commpertype|=ro_commper_tmax*(sv->curii->end_comm_period > sim->tmax);
-      DEBUG_PRINTF("Event time: %f, Latent period is %f, comm period is %f, type is %u, end comm is %f%s\n",(sv->curii-1)->event_time,sv->curii->latent_period,sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period,(sv->curii->commpertype&ro_commper_tmax?" (reached end)":""));
+      DEBUG_PRINTF("Event time: %f, latent period is %f, comm period is %f, type is %u, end comm is %f%s\n",(sv->curii-1)->event_time,sv->curii->latent_period,sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period,(sv->curii->commpertype&ro_commper_tmax?" (reached end)":""));
 
 #ifdef CT_OUTPUT
       GEN_LATENT_CONTACTS;

@@ -16,8 +16,8 @@ int model_solve_pars(model_pars* pars)
   printf("lambda_uncut:\t%22.15e\n",pars->lambda_uncut);
   printf("tbar:\t\t%22.15e\n",pars->tbar);
   printf("g_ave:\t\t%22.15e\n",pars->g_ave);
-  printf("mu:\t\t%22.15e\n",pars->mu);
-  printf("p:\t\t%22.15e\n",pars->p);
+  //printf("mu:\t\t%22.15e\n",pars->mu);
+  //printf("p:\t\t%22.15e\n",pars->p);
   printf("pinf:\t\t%22.15e\n",pars->pinf);
   printf("R0:\t\t%22.15e\n",pars->R0);
 
@@ -200,9 +200,22 @@ int model_solve_R0_group(model_pars* pars)
     return -1;
   }
 
-  if(!isnan(pars->lambda) && !isnan(pars->lambda_uncut)) {
-    fprintf(stderr,"%s: Error: Solving other R0 parameters based on the values for both lambda and lambda_uncut is not currently supported.\n",__func__);
-    return -1;
+  if(!isnan(pars->lambda)) {
+
+    if(!isnan(pars->lambda_uncut)) {
+      fprintf(stderr,"%s: Error: Solving other R0 parameters based on the values for both lambda and lambda_uncut is not currently supported.\n",__func__);
+      return -1;
+    }
+
+    if(pars->lambda<=0) {
+      fprintf(stderr,"%s: Error: lambda must be greater than 0\n",__func__);
+      return -4;
+    }
+  }
+
+  if(!isnan(pars->lambda_uncut) && pars->lambda_uncut<=0) {
+    fprintf(stderr,"%s: Error: lambda_uncut must be greater than 0\n",__func__);
+    return -4;
   }
 
   if(!isnan(pars->pinf) && (!(pars->pinf>=0) || !(pars->pinf<=1))) {
@@ -215,14 +228,16 @@ int model_solve_R0_group(model_pars* pars)
     return -3;
   }
 
-  if(!isnan(pars->lambda) && pars->lambda<=0) {
-    fprintf(stderr,"%s: Error: lambda must be greater than 0\n",__func__);
-    return -4;
-  }
+  if(!(pars->grouptype&ro_group_gauss)) {
 
-  if(!isnan(pars->lambda_uncut) && pars->lambda_uncut<=0) {
-    fprintf(stderr,"%s: Error: lambda_uncut must be greater than 0\n",__func__);
-    return -4;
+    if(!isnan(pars->sigma)) {
+      fprintf(stderr,"%s: Error: sigma cannot be used if the group distribution is not Gaussian.\n",__func__);
+      return -5;
+    }
+
+  } else if(!(pars->sigma>0)) {
+      fprintf(stderr,"%s: Error: A positive value for sigma must be defined.\n",__func__);
+      return -6;
   }
 
   if(!isnan(pars->R0) && pars->R0<=0) {
@@ -238,6 +253,9 @@ int model_solve_R0_group(model_pars* pars)
 
     else if(pars->grouptype&ro_group_log) ret=model_solve_log_group(pars);
 
+    //ro_group_gauss
+    else ret=model_solve_gauss_group(pars);
+
     if(ret) return ret;
 
     //Solve for the missing parameter
@@ -249,15 +267,24 @@ int model_solve_R0_group(model_pars* pars)
 
 	if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
 
-	else if(pars->grouptype&ro_group_log)  ret=model_solve_log_lambda_uncut_from_lambda(pars);
+	else if(pars->grouptype&ro_group_log) ret=model_solve_log_lambda_uncut_from_lambda(pars);
+	
+	//ro_group_gauss
+	else ret=model_solve_gauss_lambda_uncut_from_lambda(pars);
 
       } else if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_from_lambda_uncut(pars);
 
       else if(pars->grouptype&ro_group_log) ret=model_solve_log_lambda_from_lambda_uncut(pars);
 
+      //ro_group_gauss
+      else ret=model_solve_gauss_lambda_from_lambda_uncut(pars);
+
     } else if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
 
     else if(pars->grouptype&ro_group_log)  ret=model_solve_log_lambda_uncut_from_lambda(pars);
+
+    //ro_group_gauss
+    else ret=model_solve_gauss_lambda_uncut_from_lambda(pars);
 
     if(ret) return ret;
 
@@ -275,6 +302,9 @@ int model_solve_R0_group(model_pars* pars)
     if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_group(pars);
 
     else if(pars->grouptype&ro_group_log) ret=model_solve_log_group(pars);
+
+    //ro_group_gauss
+    else ret=model_solve_gauss_group(pars);
 
     if(ret) return ret;
 
@@ -301,7 +331,7 @@ int model_solve_log_plus_1_group(model_pars* pars)
 
     pars->mu=pars->g_ave-1;
     //Solve for p numerically from mu
-    ret=model_solve_p_from_mu(pars);
+    ret=model_solve_log_p_from_mu(pars);
 
     if(ret) return ret;
 
@@ -323,13 +353,17 @@ int model_solve_log_plus_1_group(model_pars* pars)
 	return -1;
       }
       //Solve for p numerically from mu
-      ret=model_solve_p_from_mu(pars);
+      ret=model_solve_log_p_from_mu(pars);
 
       if(ret) return ret;
     }
 
     pars->g_ave=pars->mu+1;
   }
+  printf("\nParameters for the log+1 group distribution:\n");
+  printf("g_ave:\t%22.15e\n",pars->g_ave);
+  printf("p:\t%22.15e\n",pars->p);
+  printf("mu:\t%22.15e\n",pars->mu);
   return 0;
 }
 
@@ -346,7 +380,7 @@ int model_solve_log_group(model_pars* pars)
     }
 
     //Solve for p numerically from g_ave
-    ret=model_solve_p_from_mean(pars->g_ave,pars);
+    ret=model_solve_log_p_from_mean(pars->g_ave,pars);
 
     if(ret) return ret;
     pars->mu=-pars->p/((1-pars->p)*log(1-pars->p));
@@ -370,7 +404,7 @@ int model_solve_log_group(model_pars* pars)
 	return -1;
       }
       //Solve for p numerically from mu
-      ret=model_solve_p_from_mu(pars);
+      ret=model_solve_log_p_from_mu(pars);
 
       if(ret) return ret;
     }
@@ -379,10 +413,46 @@ int model_solve_log_group(model_pars* pars)
 
     else pars->g_ave=-pars->p*pars->p/((1-pars->p)*(log(1-pars->p)+pars->p));
   }
+  printf("\nParameters for the log group distribution:\n");
+  printf("g_ave:\t%22.15e\n",pars->g_ave);
+  printf("p:\t%22.15e\n",pars->p);
+  printf("mu:\t%22.15e\n",pars->mu);
   return 0;
 }
 
-int model_solve_p_from_mu(model_pars* pars)
+int model_solve_gauss_group(model_pars* pars)
+{
+  int ret;
+
+  //If g_ave is provided
+  if(!isnan(pars->g_ave)) {
+
+    if(!(pars->g_ave>=2)) {
+      fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
+      return -1;
+    }
+
+    //Solve for mu numerically from g_ave
+    //ret=model_solve_gauss_mu_from_mean(pars->g_ave,pars);
+    ret=-1;
+
+    if(ret) return ret;
+
+  } else {
+    //Else if mu is provided
+
+    //Solve for g_ave numerically from mu
+    const double alpha=(2-pars->mu)/pars->sigma;
+    pars->g_ave=pars->mu+pars->sigma*gsl_ran_ugaussian_pdf(alpha)/gsl_cdf_ugaussian_Q(alpha);
+  }
+  printf("\nParameters for the Gaussian group distribution:\n");
+  printf("g_ave:\t%22.15e\n",pars->g_ave);
+  printf("mu:\t%22.15e\n",pars->mu);
+  printf("sigma:\t%22.15e\n",pars->sigma);
+  return 0;
+}
+
+int model_solve_log_p_from_mu(model_pars* pars)
 {
   if(pars->mu==1) pars->p=0;
 
@@ -409,7 +479,7 @@ int model_solve_p_from_mu(model_pars* pars)
   return 0;
 }
 
-int model_solve_p_from_mean(const double mean, model_pars* pars)
+int model_solve_log_p_from_mean(const double mean, model_pars* pars)
 {
   if(mean==2) pars->p=0;
 

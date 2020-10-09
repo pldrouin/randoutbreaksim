@@ -18,6 +18,7 @@ void sim_pars_init(model_pars* pars)
   pars->tbar=NAN;
   pars->p=NAN;
   pars->mu=NAN;
+  pars->sigma=NAN;
   pars->g_ave=NAN;
   pars->lambda=NAN;
   pars->lambda_uncut=NAN;

@@ -105,6 +105,10 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.mu);
 
+      } else if(!argsdiffer(pbuf, "sigma")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.sigma);
+
       } else if(!argsdiffer(pbuf, "pinf")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.pinf);
@@ -351,7 +355,8 @@ void printusage(const char* name)
   printf("\t--group_gauss\t\t\tNumber of invitees/attendees in an event to be distributed as a Gaussian-distributed variable truncated below 2.\n");
   printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees (g_ave>=2).\n");
   printf("\t--p VALUE\t\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).\n");
-  printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu >= 1).\n");
+  printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution (mu >= 1) or of an unbounded Gaussian distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
+  printf("\t--sigma VALUE\t\t\tParameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--pinf VALUE\t\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event.\n");
   //printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
   printf("\t--R0 VALUE\t\t\tBasic reproduction number.\n");

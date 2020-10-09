@@ -9,6 +9,8 @@
 
 #include <stdbool.h>
 
+#include <gsl/gsl_randist.h>
+#include <gsl/gsl_cdf.h>
 #include <gsl/gsl_sf_gamma.h>
 #include <gsl/gsl_sf_psi.h>
 
@@ -42,7 +44,8 @@ typedef struct
 {
   double tbar;		//!< Mean main communicable period
   double p;		//!< Parameter for the logarithmic distribution used to draw then number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).
-  double mu;		//!< Parameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu >= 1)
+  double mu;		//!< Parameter for the mean of an unbounded logarithmic distribution (mu=-1/log(1-p)*p/(1-p), mu >= 1) or of an unbounded Gaussian used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
+  double sigma;         //!< Parameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
   double g_ave;		//!< Parameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees.
   double lambda;	//!< Rate of events for a given individual. Events are defined to include at least two invitees.
   double lambda_uncut;  //!< Rate of events for a given individual, including events of one invitee.
@@ -138,6 +141,16 @@ int model_solve_log_plus_1_group(model_pars* pars);
 int model_solve_log_group(model_pars* pars);
 
 /**
+ * @brief Solve for the value of the mu, sigma and g_ave parameters of the
+ * Gaussian distribution, given two of the parameters.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+int model_solve_gauss_group(model_pars* pars);
+
+/**
  * @brief Solve for the value of lambda uncut, given lambda, for the log
  * plus 1 distribution.
  *
@@ -156,6 +169,16 @@ inline static int model_solve_log_plus_1_lambda_uncut_from_lambda(model_pars* pa
  * otherwise.
  */
 inline static int model_solve_log_lambda_uncut_from_lambda(model_pars* pars){const double l1mp=log(1-pars->p); pars->lambda_uncut=(pars->p==0?INFINITY:l1mp/(l1mp+pars->p)*pars->lambda); return 0;}
+
+/**
+ * @brief Solve for the value of lambda uncut, given lambda, for the Gaussian
+ * distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_gauss_lambda_uncut_from_lambda(model_pars* pars){pars->lambda_uncut=pars->lambda/gsl_cdf_ugaussian_Q((2-pars->mu)/pars->sigma); return 0;}
 
 /**
  * @brief Solve for the value of lambda, given lambda uncut, for the log
@@ -187,6 +210,16 @@ inline static int model_solve_log_lambda_from_lambda_uncut(model_pars* pars){
 }
 
 /**
+ * @brief Solve for the value of lambda, given lambda uncut, for the Gaussian
+ * distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_gauss_lambda_from_lambda_uncut(model_pars* pars){pars->lambda=pars->lambda_uncut*gsl_cdf_ugaussian_Q((2-pars->mu)/pars->sigma); return 0;}
+
+/**
  * @brief Solve for the value of the p parameter of the logarithmic
  * distribution, given mu.
  *
@@ -194,7 +227,7 @@ inline static int model_solve_log_lambda_from_lambda_uncut(model_pars* pars){
  * @return 0 if the parameters could be determined, and a non-zero value
  * otherwise.
  */
-int model_solve_p_from_mu(model_pars* pars);
+int model_solve_log_p_from_mu(model_pars* pars);
 
 /**
  * @brief Solve for the value of the p parameter of the truncated logarithmic
@@ -205,7 +238,7 @@ int model_solve_p_from_mu(model_pars* pars);
  * @return 0 if the parameters could be determined, and a non-zero value
  * otherwise.
  */
-int model_solve_p_from_mean(const double mean, model_pars* pars);
+int model_solve_log_p_from_mean(const double mean, model_pars* pars);
 
 /**
  * @brief Solve for gamma distribution related simulation parameters.
