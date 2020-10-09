@@ -1,0 +1,8 @@
+<map id="sim_vars_" name="sim_vars_">
+<area shape="rect" id="node1" title=" " alt="" coords="190,184,273,211"/>
+<area shape="rect" id="node2" href="$structmodel__pars.html" title=" " alt="" coords="5,95,95,121"/>
+<area shape="rect" id="node3" href="$structran__log.html" title=" " alt="" coords="119,95,183,121"/>
+<area shape="rect" id="node4" href="$structinfindividual__.html" title=" " alt="" coords="204,5,301,32"/>
+<area shape="rect" id="node5" href="$structbrsim__vars.html" title=" " alt="" coords="285,95,372,121"/>
+<area shape="rect" id="node6" href="$structfpsim__vars.html" title=" " alt="" coords="396,95,483,121"/>
+</map>
