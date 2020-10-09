@@ -68,11 +68,11 @@ inline static void gen_att_inf_infpop_log_p0(sim_vars* sv){sv->curii->ninfection
 
 #define BR_GENINF_COND if(sv->pars.pinf==1) { \
   if(sv->pars.p == 0)  {sv->gen_att_func=gen_att_infpop_log_p0; sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log_p0;} \
-  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) {sv->gen_att_func=gen_att_infpop_log_plus_1; sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log_plus_1;} \
+  else if(sv->pars.grouptype&ro_group_log_plus_1) {sv->gen_att_func=gen_att_infpop_log_plus_1; sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log_plus_1;} \
   else {sv->gen_att_func=gen_att_infpop_log; sv->gen_att_inf_func=gen_att_inf_infpop_pinf1_log;} \
 } else { \
   if(sv->pars.p == 0)  {sv->gen_att_func=gen_att_infpop_log_p0; sv->gen_att_inf_func=gen_att_inf_infpop_log_p0;} \
-  else if(sv->pars.grouptype&ro_group_log_attendees_plus_1) {sv->gen_att_func=gen_att_infpop_log_plus_1; sv->gen_att_inf_func=gen_att_inf_infpop_log_plus_1;} \
+  else if(sv->pars.grouptype&ro_group_log_plus_1) {sv->gen_att_func=gen_att_infpop_log_plus_1; sv->gen_att_inf_func=gen_att_inf_infpop_log_plus_1;} \
   else {sv->gen_att_func=gen_att_infpop_log; sv->gen_att_inf_func=gen_att_inf_infpop_log;} \
 }
 

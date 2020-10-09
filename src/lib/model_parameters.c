@@ -8,15 +8,6 @@
 
 int model_solve_pars(model_pars* pars)
 {
-  if((isnan(pars->tbar)==0) + (isnan(pars->lambda)==0) + (isnan(pars->lambda_uncut)==0) + (isnan(pars->g_ave)==0 || isnan(pars->p)==0 || isnan(pars->mu)==0) + (isnan(pars->pinf)==0) + (isnan(pars->R0)==0) != 4) {
-    fprintf(stderr,"%s: Error: An invalid combination of tbar, lambda, lambda_uncut, g_ave, p, mu, pinf and R0 parameters was provided.\n",__func__);
-    return -1;
-  }
-
-  if(!isnan(pars->lambda) && !isnan(pars->lambda_uncut)) {
-    fprintf(stderr,"%s: Error: Solving other R0 parameters based on the values for both lambda and lambda_uncut is not currently supported.\n",__func__);
-    return -1;
-  }
 
   if(model_solve_R0_group(pars)) return -2;
   
@@ -202,8 +193,17 @@ int model_solve_pars(model_pars* pars)
 
 int model_solve_R0_group(model_pars* pars)
 {
-  double l1mp;
   int ret;
+
+  if((isnan(pars->tbar)==0) + (isnan(pars->lambda)==0) + (isnan(pars->lambda_uncut)==0) + (isnan(pars->g_ave)==0 || isnan(pars->p)==0 || isnan(pars->mu)==0) + (isnan(pars->pinf)==0) + (isnan(pars->R0)==0) != 4) {
+    fprintf(stderr,"%s: Error: An invalid combination of tbar, lambda, lambda_uncut, g_ave, p, mu, pinf and R0 parameters was provided.\n",__func__);
+    return -1;
+  }
+
+  if(!isnan(pars->lambda) && !isnan(pars->lambda_uncut)) {
+    fprintf(stderr,"%s: Error: Solving other R0 parameters based on the values for both lambda and lambda_uncut is not currently supported.\n",__func__);
+    return -1;
+  }
 
   if(!isnan(pars->pinf) && (!(pars->pinf>=0) || !(pars->pinf<=1))) {
     fprintf(stderr,"%s: Error: The pinf parameter must have a value in the interval (0,1]\n",__func__);
@@ -232,62 +232,13 @@ int model_solve_R0_group(model_pars* pars)
 
   //If g_ave, p or mu is provided as an input
   if(!isnan(pars->g_ave) || !isnan(pars->p) || !isnan(pars->mu)) {
+    ret=0;
 
-    //If g_ave is provided
-    if(!isnan(pars->g_ave)) {
+    if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_group(pars);
 
-      if(!(pars->g_ave>=2)) {
-	fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
-	return -1;
-      }
+    else if(pars->grouptype&ro_group_log) ret=model_solve_log_group(pars);
 
-      if(pars->grouptype&ro_group_log_attendees_plus_1) {
-	pars->mu=pars->g_ave-1;
-	//Solve for p numerically from mu
-	ret=model_solve_p_from_mu(pars);
-
-	if(ret) return ret;
-
-      } else {
-	//Solve for p numerically from g_ave
-	ret=model_solve_p_from_mean(pars->g_ave,pars);
-
-	if(ret) return ret;
-	pars->mu=-pars->p/((1-pars->p)*log(1-pars->p));
-      }
-      l1mp=log(1-pars->p);
-
-    } else {
-
-      //Else if p is provided
-      if(!isnan(pars->p)) {
-
-	if(!(pars->p>=0) || !(pars->p<1)) {
-	  fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
-	  return -1;
-	}
-	pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
-
-	//Else if it is mu that is provided
-      } else {
-
-	if(!(pars->mu>=1)) {
-	  fprintf(stderr,"%s: Error: mu must be greater than or equal to 1\n",__func__);
-	  return -1;
-	}
-	//Solve for p numerically from mu
-	ret=model_solve_p_from_mu(pars);
-
-	if(ret) return ret;
-      }
-      l1mp=log(1-pars->p);
-
-      if(pars->grouptype&ro_group_log_attendees_plus_1) pars->g_ave=pars->mu+1;
-
-      else if(pars->p == 0) pars->g_ave=2;
-      
-      else pars->g_ave=-pars->p*pars->p/((1-pars->p)*(l1mp+pars->p));
-    }
+    if(ret) return ret;
 
     //Solve for the missing parameter
 
@@ -296,24 +247,20 @@ int model_solve_R0_group(model_pars* pars)
       if(isnan(pars->lambda_uncut)) {
 	pars->lambda=pars->R0/(pars->tbar*(pars->g_ave-1)*pars->pinf);
 
-	if(pars->grouptype&ro_group_log_attendees_plus_1) pars->lambda_uncut=pars->lambda;
+	if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
 
-	else if(pars->grouptype&ro_group_log_attendees)  pars->lambda_uncut=(pars->g_ave==2?INFINITY:l1mp/(l1mp+pars->p)*pars->lambda);
+	else if(pars->grouptype&ro_group_log)  ret=model_solve_log_lambda_uncut_from_lambda(pars);
 
-      } else if(pars->grouptype&ro_group_log_attendees_plus_1) pars->lambda=pars->lambda_uncut;
+      } else if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_from_lambda_uncut(pars);
 
-      else if(pars->grouptype&ro_group_log_attendees) {
+      else if(pars->grouptype&ro_group_log) ret=model_solve_log_lambda_from_lambda_uncut(pars);
 
-	if(pars->g_ave==2) {
-	  fprintf(stderr,"%s: Error: lambda cannot be computed from lambda_uncut for group_log_attendees distribution if g_ave=2\n",__func__);
-	  return -1;
-	}
-	pars->lambda=(l1mp+pars->p)/l1mp*pars->lambda_uncut;
-      }
+    } else if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
 
-    } else if(pars->grouptype&ro_group_log_attendees_plus_1) pars->lambda_uncut=pars->lambda;
+    else if(pars->grouptype&ro_group_log)  ret=model_solve_log_lambda_uncut_from_lambda(pars);
 
-    else if(pars->grouptype&ro_group_log_attendees)  pars->lambda_uncut=(pars->g_ave==2?INFINITY:l1mp/(l1mp+pars->p)*pars->lambda);
+    if(ret) return ret;
+
 
     if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*(pars->g_ave-1)*pars->pinf;
 
@@ -325,30 +272,112 @@ int model_solve_R0_group(model_pars* pars)
   } else {
     pars->g_ave=pars->R0/(pars->lambda*pars->tbar*pars->pinf)+1;
 
+    if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_group(pars);
+
+    else if(pars->grouptype&ro_group_log) ret=model_solve_log_group(pars);
+
+    if(ret) return ret;
+
+    if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
+
+    else if(pars->grouptype&ro_group_log)  ret=model_solve_log_lambda_uncut_from_lambda(pars);
+
+    if(ret) return ret;
+  }
+  return 0;
+}
+
+int model_solve_log_plus_1_group(model_pars* pars)
+{
+  int ret;
+
+  //If g_ave is provided
+  if(!isnan(pars->g_ave)) {
+
     if(!(pars->g_ave>=2)) {
-      fprintf(stderr,"%s: Error: Computed g_ave is smaller than 2. The choice of the other input parameters that were provided is invalid.\n",__func__);
+      fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
       return -1;
     }
 
-    if(pars->grouptype&ro_group_log_attendees_plus_1) {
-      pars->mu=pars->g_ave-1;
+    pars->mu=pars->g_ave-1;
+    //Solve for p numerically from mu
+    ret=model_solve_p_from_mu(pars);
 
-      if(pars->mu==1) pars->p=0;
+    if(ret) return ret;
 
-      else {
-	//Solve for p numerically from mu
-	ret=model_solve_p_from_mu(pars);
+  } else {
+    //Else if p is provided
+    if(!isnan(pars->p)) {
 
-	if(ret) return ret;
+      if(!(pars->p>=0) || !(pars->p<1)) {
+	fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
+	return -1;
       }
+      pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
 
+      //Else if it is mu that is provided
     } else {
-      //Solve for p numerically from g_ave
-      ret=model_solve_p_from_mean(pars->g_ave,pars);
+
+      if(!(pars->mu>=1)) {
+	fprintf(stderr,"%s: Error: mu must be greater than or equal to 1\n",__func__);
+	return -1;
+      }
+      //Solve for p numerically from mu
+      ret=model_solve_p_from_mu(pars);
 
       if(ret) return ret;
-      pars->mu=-pars->p/((1-pars->p)*log(1-pars->p));
     }
+
+    pars->g_ave=pars->mu+1;
+  }
+  return 0;
+}
+
+int model_solve_log_group(model_pars* pars)
+{
+  int ret;
+
+  //If g_ave is provided
+  if(!isnan(pars->g_ave)) {
+
+    if(!(pars->g_ave>=2)) {
+      fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
+      return -1;
+    }
+
+    //Solve for p numerically from g_ave
+    ret=model_solve_p_from_mean(pars->g_ave,pars);
+
+    if(ret) return ret;
+    pars->mu=-pars->p/((1-pars->p)*log(1-pars->p));
+
+  } else {
+
+    //Else if p is provided
+    if(!isnan(pars->p)) {
+
+      if(!(pars->p>=0) || !(pars->p<1)) {
+	fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
+	return -1;
+      }
+      pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
+
+      //Else if it is mu that is provided
+    } else {
+
+      if(!(pars->mu>=1)) {
+	fprintf(stderr,"%s: Error: mu must be greater than or equal to 1\n",__func__);
+	return -1;
+      }
+      //Solve for p numerically from mu
+      ret=model_solve_p_from_mu(pars);
+
+      if(ret) return ret;
+    }
+
+    if(pars->p == 0) pars->g_ave=2;
+
+    else pars->g_ave=-pars->p*pars->p/((1-pars->p)*(log(1-pars->p)+pars->p));
   }
   return 0;
 }
@@ -597,8 +626,8 @@ int model_pars_check(model_pars const* pars)
     ret-=32768;
   }
 
-  if(pars->popsize==0 && (pars->grouptype&ro_group_log_invitees)) {
-    fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated using a logarithmically-distributed number of invitees\n",__func__);
+  if(pars->popsize==0 && (pars->grouptype&ro_group_invitees)) {
+    fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated based on a number of invitees\n",__func__);
     ret-=65536;
   }
 

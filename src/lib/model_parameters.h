@@ -33,7 +33,7 @@ enum ro_time_model{ro_time_pri_created=1, ro_time_pri_infectious=2, ro_time_pri_
  * ro_log_group_invitees_plus_1, ro_log_attendees and ro_log_invitees are mutually
  * exclusive options that indicate how the number of individuals at events are distributed.  
  **/
-enum ro_group_model_flags {ro_group_log_attendees_plus_1=1, ro_group_log_invitees_plus_1=2, ro_group_log_attendees=4, ro_group_log_invitees=8};
+enum ro_group_model_flags {ro_group_invitees=1, ro_group_log_plus_1=2, ro_group_log=4, ro_group_gauss=8, ro_group_dist_mask=ro_group_log_plus_1|ro_group_log|ro_group_gauss};
 
 /**
  * Model parameters.
@@ -116,6 +116,75 @@ int model_solve_pars(model_pars* pars);
  * otherwise.
  */
 int model_solve_R0_group(model_pars* pars);
+
+/**
+ * @brief Solve for the value of the p, mu and g_ave parameters of the
+ * logarithmic plus 1 distribution, given one of the parameters.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+int model_solve_log_plus_1_group(model_pars* pars);
+
+/**
+ * @brief Solve for the value of the p, mu and g_ave parameters of the
+ * logarithmic distribution, given one of the parameters.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+int model_solve_log_group(model_pars* pars);
+
+/**
+ * @brief Solve for the value of lambda uncut, given lambda, for the log
+ * plus 1 distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_log_plus_1_lambda_uncut_from_lambda(model_pars* pars){pars->lambda_uncut=pars->lambda; return 0;}
+
+/**
+ * @brief Solve for the value of lambda uncut, given lambda, for the log
+ * distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_log_lambda_uncut_from_lambda(model_pars* pars){const double l1mp=log(1-pars->p); pars->lambda_uncut=(pars->p==0?INFINITY:l1mp/(l1mp+pars->p)*pars->lambda); return 0;}
+
+/**
+ * @brief Solve for the value of lambda, given lambda uncut, for the log
+ * plus 1 distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_log_plus_1_lambda_from_lambda_uncut(model_pars* pars){pars->lambda=pars->lambda_uncut; return 0;}
+
+/**
+ * @brief Solve for the value of lambda, given lambda uncut, for the log
+ * distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_log_lambda_from_lambda_uncut(model_pars* pars){
+
+  if(pars->p==0) {
+    fprintf(stderr,"%s: Error: lambda cannot be computed from lambda_uncut for group_log_attendees distribution if p=0\n",__func__);
+    return -1;
+  }
+  const double l1mp=log(1-pars->p);
+  pars->lambda=(l1mp+pars->p)/l1mp*pars->lambda_uncut;
+  return 0;
+}
 
 /**
  * @brief Solve for the value of the p parameter of the logarithmic

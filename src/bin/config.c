@@ -78,14 +78,20 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.lambdap);
 
-      } else if(!argsdiffer(pbuf, "group_log_attendees_plus_1")) {
-	cp->pars.grouptype=ro_group_log_attendees_plus_1;
+      } else if(!argsdiffer(pbuf, "group_attendees")) {
+	cp->pars.grouptype=(cp->pars.grouptype&ro_group_dist_mask);
 
-      } else if(!argsdiffer(pbuf, "group_log_attendees")) {
-	cp->pars.grouptype=ro_group_log_attendees;
+      } else if(!argsdiffer(pbuf, "group_invitees")) {
+	cp->pars.grouptype=(cp->pars.grouptype&ro_group_dist_mask)|ro_group_invitees;
 
-      } else if(!argsdiffer(pbuf, "group_log_invitees")) {
-	cp->pars.grouptype=ro_group_log_invitees;
+      } else if(!argsdiffer(pbuf, "group_log_plus_1")) {
+	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_log_plus_1;
+
+      } else if(!argsdiffer(pbuf, "group_log")) {
+	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_log;
+
+      } else if(!argsdiffer(pbuf, "group_gauss")) {
+	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_gauss;
 
       } else if(!argsdiffer(pbuf, "g_ave")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
@@ -316,10 +322,10 @@ void printusage(const char* name)
   printf("\tmu is the mean of an unbounded logarithmic distribution with parameter p (mu = -p / ((1 - p) * log(1 - p))).\n");
   printf("\tThe expression of g_ave as a function of p depends on the type of group distribution that is selected for the events.\n");
   printf("\tAn event is defined to include at least two invitees.\n");
-  printf("\n\t--group_log_attendees_plus_1, the default distribution from branchsim, indicates that the number of attendees in an event is to be distributed according to a logarithmically-distributed variable plus 1. For an infinite population, a fixed communicable period, and when pinf=1, this results in the total number of infections from a given infectious individual to follow a negative binomial distribution. The expression for g_ave with this distribution is\n");
+  printf("\n\t--group_log_plus_1, the default distribution from branchsim, indicates that the number of invitees/attendees in an event is to be distributed according to a logarithmically-distributed variable plus 1. For an infinite population, a fixed communicable period, and when pinf=1 and group_attendees are used, this results in the total number of infections from a given infectious individual to follow a negative binomial distribution. The expression for g_ave with this distribution is\n");
   printf("\t\tg_ave = mu + 1.\n");
 
-  printf("\n\t--group_log_attendees indicates that the number of attendees in an event is to be distributed according to a logarithmically-distributed variable (truncated below 2). In this case, it is the distribution of the number of individuals in a group that is motivated from empirical evidence, instead of the distribution for the total number of infections from a given infectious individual. The expression for g_ave with this distribution is\n");
+  printf("\n\t--group_log indicates that the number of invitees/attendees in an event is to be distributed according to a logarithmically-distributed variable (truncated below 2). In this case, it is the distribution of the number of individuals in a group that is motivated from empirical evidence, instead of the distribution for the total number of infections from a given infectious individual. When using group_attendees, the expression for g_ave with this distribution is\n");
   printf("\t\tg_ave = -p * p / ((1 - p) * (log(1 - p) + p)).\n");
 
   printf("\n\nBRANCHING PROCESS EFFECTIVE REPRODUCTION NUMBER:\n\n");
@@ -338,9 +344,11 @@ void printusage(const char* name)
   printf("\t--lambda VALUE\t\t\tRate of events for a given individual. Events are defined to include at least two invitees.\n");
   printf("\t--lambda_uncut VALUE\t\tRate of events for a given individual, including events of one invitee.\n");
   //printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
-  printf("\t--group_log_attendees_plus_1\tNumber of individuals in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
-  printf("\t--group_log_attendees\t\tNumber of attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
-  printf("\t--group_log_invitees\t\tNumber of invitees for an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
+  printf("\t--group_attendees\t\tThe group distributions are applicable to the number of attendees (default).\n");
+  printf("\t--group_invitees\t\tThe group distributions are applicable to the number of invitees.\n");
+  printf("\t--group_log_plus_1\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
+  printf("\t--group_log\t\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
+  printf("\t--group_gauss\t\t\tNumber of invitees/attendees in an event to be distributed as a Gaussian-distributed variable truncated below 2.\n");
   printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees (g_ave>=2).\n");
   printf("\t--p VALUE\t\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).\n");
   printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu >= 1).\n");
