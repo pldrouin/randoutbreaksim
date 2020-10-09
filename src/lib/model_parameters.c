@@ -8,21 +8,27 @@
 
 int model_solve_pars(model_pars* pars)
 {
-  if((isnan(pars->tbar)==0) + (isnan(pars->lambda)==0) + (isnan(pars->g_ave)==0 || isnan(pars->p)==0 || isnan(pars->mu)==0) + (isnan(pars->pinf)==0) + (isnan(pars->R0)==0) != 4) {
-    fprintf(stderr,"%s: Error: An invalid combination of tbar, lambda, g_ave, p, mu, pinf and R0 parameters was provided.\n",__func__);
+  if((isnan(pars->tbar)==0) + (isnan(pars->lambda)==0) + (isnan(pars->lambda_uncut)==0) + (isnan(pars->g_ave)==0 || isnan(pars->p)==0 || isnan(pars->mu)==0) + (isnan(pars->pinf)==0) + (isnan(pars->R0)==0) != 4) {
+    fprintf(stderr,"%s: Error: An invalid combination of tbar, lambda, lambda_uncut, g_ave, p, mu, pinf and R0 parameters was provided.\n",__func__);
+    return -1;
+  }
+
+  if(!isnan(pars->lambda) && !isnan(pars->lambda_uncut)) {
+    fprintf(stderr,"%s: Error: Solving other R0 parameters based on the values for both lambda and lambda_uncut is not currently supported.\n",__func__);
     return -1;
   }
 
   if(model_solve_R0_group(pars)) return -2;
   
   printf("\nBasic reproduction parameters are:\n");
-  printf("lambda:\t%22.15e\n",pars->lambda);
-  printf("tbar:\t%22.15e\n",pars->tbar);
-  printf("g_ave:\t%22.15e\n",pars->g_ave);
-  printf("mu:\t%22.15e\n",pars->mu);
-  printf("p:\t%22.15e\n",pars->p);
-  printf("pinf:\t%22.15e\n",pars->pinf);
-  printf("R0:\t%22.15e\n",pars->R0);
+  printf("lambda:\t\t%22.15e\n",pars->lambda);
+  printf("lambda_uncut:\t%22.15e\n",pars->lambda_uncut);
+  printf("tbar:\t\t%22.15e\n",pars->tbar);
+  printf("g_ave:\t\t%22.15e\n",pars->g_ave);
+  printf("mu:\t\t%22.15e\n",pars->mu);
+  printf("p:\t\t%22.15e\n",pars->p);
+  printf("pinf:\t\t%22.15e\n",pars->pinf);
+  printf("R0:\t\t%22.15e\n",pars->R0);
 
   if((isnan(pars->kappa)==0) + (isnan(pars->t95)==0) != 1) {
     fprintf(stderr,"%s: Error: Either the kappa parameter or the t95 parameter must be provided.\n",__func__);
@@ -62,6 +68,7 @@ int model_solve_pars(model_pars* pars)
       fprintf(stderr,"%s: Error: The pit parameter must have a value smaller or equal to the value of the pt parameter.\n",__func__);
       return -5;
     }
+    pars->pitnet=pars->pit/pars->pt;
 #endif
 
     if((isnan(pars->kappait)==0) + (isnan(pars->it95)==0) != 1) {
@@ -118,6 +125,7 @@ int model_solve_pars(model_pars* pars)
 	fprintf(stderr,"%s: Error: The pim parameter must have a value smaller or equal to the value of the pt parameter.\n",__func__);
 	return -9;
       }
+      pars->pimnet=pars->pim/pars->pt;
 #endif
 
       if(isnan(pars->imbar) && isnan(pars->kappaim) && isnan(pars->im95)) {
@@ -212,6 +220,11 @@ int model_solve_R0_group(model_pars* pars)
     return -4;
   }
 
+  if(!isnan(pars->lambda_uncut) && pars->lambda_uncut<=0) {
+    fprintf(stderr,"%s: Error: lambda_uncut must be greater than 0\n",__func__);
+    return -4;
+  }
+
   if(!isnan(pars->R0) && pars->R0<=0) {
     fprintf(stderr,"%s: Error: R0j must be greater than 0\n",__func__);
     return -5;
@@ -242,6 +255,7 @@ int model_solve_R0_group(model_pars* pars)
 	if(ret) return ret;
 	pars->mu=-pars->p/((1-pars->p)*log(1-pars->p));
       }
+      l1mp=log(1-pars->p);
 
     } else {
 
@@ -266,26 +280,46 @@ int model_solve_R0_group(model_pars* pars)
 
 	if(ret) return ret;
       }
+      l1mp=log(1-pars->p);
 
       if(pars->grouptype&ro_group_log_attendees_plus_1) pars->g_ave=pars->mu+1;
 
       else if(pars->p == 0) pars->g_ave=2;
       
-      else {
-	l1mp=log(1-pars->p);
-	pars->g_ave=-pars->p*pars->p/((1-pars->p)*(l1mp+pars->p));
-      }
+      else pars->g_ave=-pars->p*pars->p/((1-pars->p)*(l1mp+pars->p));
     }
 
     //Solve for the missing parameter
 
-    if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*(pars->g_ave-1)*pars->pinf;
+    if(isnan(pars->lambda)) {
 
-    else if(isnan(pars->lambda)) pars->lambda=pars->R0/(pars->tbar*(pars->g_ave-1)*pars->pinf);
+      if(isnan(pars->lambda_uncut)) {
+	pars->lambda=pars->R0/(pars->tbar*(pars->g_ave-1)*pars->pinf);
+
+	if(pars->grouptype&ro_group_log_attendees_plus_1) pars->lambda_uncut=pars->lambda;
+
+	else if(pars->grouptype&ro_group_log_attendees)  pars->lambda_uncut=(pars->g_ave==2?INFINITY:l1mp/(l1mp+pars->p)*pars->lambda);
+
+      } else if(pars->grouptype&ro_group_log_attendees_plus_1) pars->lambda=pars->lambda_uncut;
+
+      else if(pars->grouptype&ro_group_log_attendees) {
+
+	if(pars->g_ave==2) {
+	  fprintf(stderr,"%s: Error: lambda cannot be computed from lambda_uncut for group_log_attendees distribution if g_ave=2\n",__func__);
+	  return -1;
+	}
+	pars->lambda=(l1mp+pars->p)/l1mp*pars->lambda_uncut;
+      }
+
+    } else if(pars->grouptype&ro_group_log_attendees_plus_1) pars->lambda_uncut=pars->lambda;
+
+    else if(pars->grouptype&ro_group_log_attendees)  pars->lambda_uncut=(pars->g_ave==2?INFINITY:l1mp/(l1mp+pars->p)*pars->lambda);
+
+    if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*(pars->g_ave-1)*pars->pinf;
 
     else if(isnan(pars->tbar)) pars->tbar=pars->R0/(pars->lambda*(pars->g_ave-1)*pars->pinf);
 
-    else pars->pinf=pars->R0/(pars->lambda*pars->tbar*(pars->g_ave-1));
+    else if(isnan(pars->pinf)) pars->pinf=pars->R0/(pars->lambda*pars->tbar*(pars->g_ave-1));
 
   //Else if g_ave, p and mu are unknown
   } else {

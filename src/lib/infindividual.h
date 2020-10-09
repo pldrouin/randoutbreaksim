@@ -39,6 +39,7 @@ typedef struct infindividual_
     uint32_t nattendees;      //!< Number of attendees for the current iteration event
 #ifdef CT_OUTPUT
     uint32_t ntracednicts;    //!< Number of successfully traced non-infected contacts for the current iteration event
+    uint32_t ntracedicts;      //!< Number of successfully traced infected contacts for the current iteration event
 #endif
     uint32_t ninfections;     //!< Number of infections for the current iteration event
     uint32_t cureventi;	      //!< Index of the current iteration event

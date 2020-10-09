@@ -70,6 +70,10 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.lambda);
 
+      } else if(!argsdiffer(pbuf, "lambda_uncut")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.lambda_uncut);
+
       } else if(!argsdiffer(pbuf, "lambdap")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.lambdap);
@@ -332,6 +336,7 @@ void printusage(const char* name)
   printf("\t--kappa VALUE\t\t\tkappa parameter for the gamma distribution used to generate the main communicable period.\n");
   printf("\t--t95 VALUE\t\t\t95th percentile of the main communicable period.\n");
   printf("\t--lambda VALUE\t\t\tRate of events for a given individual. Events are defined to include at least two invitees.\n");
+  printf("\t--lambda_uncut VALUE\t\tRate of events for a given individual, including events of one invitee.\n");
   //printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
   printf("\t--group_log_attendees_plus_1\tNumber of individuals in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
   printf("\t--group_log_attendees\t\tNumber of attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");

@@ -106,15 +106,20 @@ int branchsim(sim_vars* sv)
       //sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
       sv->gen_att_inf_func(sv);
 #ifdef CT_OUTPUT
-      if((sv->curii->commpertype&ro_commper_true_positive_test) && sv->curii->event_time>=sv->curii->end_comm_period-sim->ctwindow) {
-	sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1-sv->curii->ninfections);
-	sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func;
-
-      } else {
-	sv->curii->ntracednicts=0;
-	sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func_no_int;
+#define GEN_CONTACTS_AND_TRACE \
+      if((sv->curii->commpertype&ro_commper_true_positive_test) && sv->curii->event_time>=sv->curii->end_comm_period-sim->ctwindow) { \
+	sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1-sv->curii->ninfections); \
+ \
+	if(sv->curii->ninfections) sv->curii->ntracedicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->ninfections); \
+	else sv->curii->ntracedicts=0; \
+	sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func; \
+ \
+      } else { \
+	sv->curii->ntracednicts=sv->curii->ntracedicts=0; \
+	sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func_no_int; \
       }
-      DEBUG_PRINTF("%u attendees, %u infections and %u non-infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
+      GEN_CONTACTS_AND_TRACE;
+      DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
 #else
       DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 #endif
@@ -191,15 +196,8 @@ gen_event:
 	//sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
 	sv->gen_att_inf_func(sv);
 #ifdef CT_OUTPUT
-      if((sv->curii->commpertype&ro_commper_true_positive_test) && sv->curii->event_time>=sv->curii->end_comm_period-sim->ctwindow) {
-	sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1-sv->curii->ninfections);
-	sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func;
-
-      } else {
-	sv->curii->ntracednicts=0;
-	sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func_no_int;
-      }
-      DEBUG_PRINTF("%u attendees, %u infections and %u non-infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
+      GEN_CONTACTS_AND_TRACE;
+      DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
 #else
       DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 #endif

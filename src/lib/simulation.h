@@ -199,8 +199,12 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
 
 #define GEN_PER_INTERRUPTED_MAIN_0
 
-#define GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
-#define GEN_PER_INTERRUPTED_MAIN_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pit) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
+#ifdef CT_OUTPUT
+//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+  #define GEN_PER_INTERRUPTED_MAIN_1_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pitnet) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
+#else
+  #define GEN_PER_INTERRUPTED_MAIN_1_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
+#endif
 #define GEN_PER_INTERRUPTED_MAIN_POST if (ecp < ii->end_comm_period) { \
     ii->comm_period=ecp-(inf_start+ii->latent_period); \
     \
@@ -216,21 +220,17 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     else ii->commpertype|=ro_commper_int; \
   } else ii->commpertype|=ro_commper_int; \
 }
-#ifdef CT_OUTPUT
 #define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE GEN_PER_INTERRUPTED_MAIN_POST
-#else
-#define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE_TPT GEN_PER_INTERRUPTED_MAIN_POST
-#endif
 
-#define GEN_PER_INTERRUPTED_MAIN_2_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
-#define GEN_PER_INTERRUPTED_MAIN_2_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pit) { \
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
 #ifdef CT_OUTPUT
-#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE GEN_PER_INTERRUPTED_MAIN_POST
+//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+#define GEN_PER_INTERRUPTED_MAIN_2_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pitnet) { \
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
 #else
-#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE_TPT GEN_PER_INTERRUPTED_MAIN_POST
+#define GEN_PER_INTERRUPTED_MAIN_2_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
 #endif
+#define GEN_PER_INTERRUPTED_MAIN_2 GEN_PER_INTERRUPTED_MAIN_2_PRE GEN_PER_INTERRUPTED_MAIN_POST
 
 #define GEN_TESTED_ALT_0 ii->commpertype=ro_commper_alt;
 #define GEN_TESTED_ALT_1 ii->commpertype=ro_commper_alt|ro_commper_true_positive_test;
@@ -241,8 +241,12 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
 
 #define GEN_PER_INTERRUPTED_ALT_0
 
-#define GEN_PER_INTERRUPTED_ALT_1_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
-#define GEN_PER_INTERRUPTED_ALT_1_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pim) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
+#ifdef CT_OUTPUT
+//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+#define GEN_PER_INTERRUPTED_ALT_1_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pimnet) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
+#else
+#define GEN_PER_INTERRUPTED_ALT_1_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
+#endif
 #define GEN_PER_INTERRUPTED_ALT_POST if (ecp < ii->end_comm_period) { \
     ii->comm_period=ecp-(inf_start+ii->latent_period); \
     \
@@ -258,21 +262,17 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
     else ii->commpertype|=ro_commper_int; \
   } else ii->commpertype|=ro_commper_int; \
 }
-#ifdef CT_OUTPUT
 #define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE GEN_PER_INTERRUPTED_ALT_POST
-#else
-#define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE_TPT GEN_PER_INTERRUPTED_ALT_POST
-#endif
 
-#define GEN_PER_INTERRUPTED_ALT_2_PRE_TPT if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { \
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
-#define GEN_PER_INTERRUPTED_ALT_2_PRE if(gsl_rng_uniform(sv->r) < sv->pars.pim) { \
-  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
 #ifdef CT_OUTPUT
-#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE GEN_PER_INTERRUPTED_ALT_POST
+//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+#define GEN_PER_INTERRUPTED_ALT_2_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pimnet) { \
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
 #else
-#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE_TPT GEN_PER_INTERRUPTED_ALT_POST
+#define GEN_PER_INTERRUPTED_ALT_2_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { \
+  const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
 #endif
+#define GEN_PER_INTERRUPTED_ALT_2 GEN_PER_INTERRUPTED_ALT_2_PRE GEN_PER_INTERRUPTED_ALT_POST
 
 #define GEN_PER_ALTERNATE_ONLY_1_PRE ii->comm_period=sv->pars.mbar;
 #define GEN_PER_ALTERNATE_ONLY_2_PRE ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb);

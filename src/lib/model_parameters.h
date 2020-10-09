@@ -45,6 +45,7 @@ typedef struct
   double mu;		//!< Parameter for the mean of an unbounded logarithmic distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (mu=-1/log(1-p)*p/(1-p), mu >= 1)
   double g_ave;		//!< Parameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees.
   double lambda;	//!< Rate of events for a given individual. Events are defined to include at least two invitees.
+  double lambda_uncut;  //!< Rate of events for a given individual, including events of one invitee.
   double lambdap;	//!< Total rate of events for a finite population. Events are defined to include at least two invitees
   double pinf;		//!< Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event.
   double R0;		//!< Basic reproduction number
@@ -57,6 +58,8 @@ typedef struct
 #ifdef CT_OUTPUT
   double ctwindow;      //!< Period prior to individual isolation during which contacts are considered
   double pt;		//!< Probability of successful contact tracing. Probability must be larger than pit and pim, as it is considered to be applicable to all contacts.
+  double pitnet;        //!< Probability of main communicable period interruption, net of the probability of tracing the contact.
+  double pimnet;        //!< Probability of alternate communicable period interruption, net of the probability of tracing the contact.
 #endif
   double pit;		//!< Overall probability of main communicable period interruption
   double itbar;		//!< Mean period for the interrupted main communicable period

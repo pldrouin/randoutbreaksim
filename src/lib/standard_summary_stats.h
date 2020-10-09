@@ -343,8 +343,8 @@ inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double
 inline static bool std_stats_new_event(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
-  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts;
-  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u from non-infected contacts\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
+  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
+  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
 #endif
 
   if(sv->curii->ninfections) {
@@ -379,8 +379,8 @@ inline static bool std_stats_new_event(sim_vars* sv)
 inline static bool std_stats_new_event_nimax(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
-  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts;
-  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u from non-infected contacts\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
+  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
+  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
 #endif
 
   if(sv->curii->ninfections) {
@@ -434,8 +434,8 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
-  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts;
-  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u from non-infected contacts\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
+  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
+  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
 #endif
 
   if(sv->curii->ninfections) {
@@ -504,12 +504,6 @@ inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii, infindivid
   ((uint32_t*)ii->dataptr)[0]=0;
   DEBUG_PRINTF("%s: Number of infections initialized to 0.\n",__func__);
 
-#ifdef CT_OUTPUT
-  if(ii->commpertype&ro_commper_int) {
-    ++(((uint32_t*)parent->dataptr)[2]);
-    DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)parent->dataptr)[1]),(((uint32_t*)parent->dataptr)[2]));
-  }
-#endif
   //++(*(uint32_t*)(ii-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(ii-1)->dataptr);
   DEBUG_PRINTF("%s\n",__func__);
@@ -641,13 +635,7 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
   DEBUG_PRINTF("%s\n",__func__);
   DEBUG_PRINTF("Number of infections was 0\n");
 
-#ifdef CT_OUTPUT
   ((uint32_t*)ii->dataptr)[0]=0;
-  if(ii->commpertype&ro_commper_int) {
-    ++(((uint32_t*)parent->dataptr)[2]);
-    DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)parent->dataptr)[1]),(((uint32_t*)parent->dataptr)[2]));
-  }
-#endif
 
   std_stats_fill_newpostest(sv, ii, parent);
 
