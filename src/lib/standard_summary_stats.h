@@ -344,7 +344,7 @@ inline static bool std_stats_new_event(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
   ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[2]));
 #endif
 
   if(sv->curii->ninfections) {
@@ -380,7 +380,7 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
   ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[2]));
 #endif
 
   if(sv->curii->ninfections) {
@@ -435,7 +435,7 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
   ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("ID %u: Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[1]),(((uint32_t*)sv->curii->dataptr)[2]));
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[2]));
 #endif
 
   if(sv->curii->ninfections) {
@@ -478,6 +478,7 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
 
 #ifdef CT_OUTPUT
     ((uint32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
+    DEBUG_PRINTF("True positive test with ID %u\n",((uint32_t*)ii->dataptr)[1]);
     ((uint32_t*)ii->dataptr)[2]=0;
 #endif
     int32_t i;
@@ -540,7 +541,7 @@ inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
  * After an infectious infectious individual participated to its last
  * transmission event, this function adds the total number of infections from
  * the individual to the R sum, the individual's communicable period to the sum
- * of communicable periods and the number of transmission events t+=((uint32_t*)ii->dataptr)[1]his individual
+ * of communicable periods and the number of transmission events this individual
  * participated to to the sum of events. If the individual was still infectious
  * at tmax, then the path is set to not go extinct. Otherwise, the
  * extinction time for the generating path is updated if its current value was

@@ -44,7 +44,7 @@ typedef struct infindividual_
     uint32_t ninfections;     //!< Number of infections for the current iteration event
     uint32_t cureventi;	      //!< Index of the current iteration event
     uint32_t curinfectioni;    //!< Index of the current iteration infection
-    uint8_t commpertype;      //!< Flags for the type of communicable period (filled using ro_commpertype flags)
+    uint8_t commpertype;      //!< Flags for the type of communicable period (filled using ro_commper_type flags)
 } infindividual;
 
 #endif

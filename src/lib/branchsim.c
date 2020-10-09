@@ -46,7 +46,7 @@ int branchsim(sim_vars* sv)
     sv->gen_time_origin_func(sv);
     sv->brsim.iis[1].commpertype|=ro_commper_tmax*(sv->brsim.iis[1].end_comm_period > sim->tmax);
 
-    DEBUG_PRINTF("Latent period is %f, comm period is %f, type is 0x%08x, end comm is %f%s\n",sv->brsim.iis[1].latent_period,sv->brsim.iis[1].comm_period,sv->brsim.iis[1].commpertype,sv->brsim.iis[1].end_comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
+    DEBUG_PRINTF("Latent period is %f, comm period is %f, type is %u, end comm is %f%s\n",sv->brsim.iis[1].latent_period,sv->brsim.iis[1].comm_period,sv->brsim.iis[1].commpertype,sv->brsim.iis[1].end_comm_period,(sv->brsim.iis[1].commpertype&ro_commper_tmax?" (reached end)":"")); \
 
     sv->curii=sv->brsim.iis;
     sv->pri_init_proc_func(sv, sv->brsim.iis+1);
@@ -73,12 +73,11 @@ int branchsim(sim_vars* sv)
 	  sv->curii->event_time=end_latent_per-ct_latent_overlap*gsl_rng_uniform(sv->r); \
 	  sv->curii->nattendees=sv->gen_att_func(sv); \
 	  sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1); \
+          DEBUG_PRINTF("%u attendees, %u successfully traced contacts were generated\n",sv->curii->nattendees,sv->curii->ntracednicts); \
 	  sv->new_event_proc_func(sv); \
 	} \
       } \
-    } \
-    DEBUG_PRINTF("Infectious individual ID is %u\n",((uint32_t*)sv->curii->dataptr)[1]); \
-    DEBUG_PRINTF("ID %u: Successfully traced contacts initialized to 0\n",(((uint32_t*)sv->curii->dataptr)[1]));
+    }
     GEN_LATENT_CONTACTS;
 #endif
 
@@ -87,7 +86,12 @@ int branchsim(sim_vars* sv)
 
     //If no event for the current individual in the primary layer
     if(!sv->curii->nevents) {
+#ifdef CT_OUTPUT
+      if(!npevents) sv->new_inf_proc_func_noevent(sv, sv->curii, sv->brsim.iis);
+      else sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
+#else
       sv->new_inf_proc_func_noevent(sv, sv->curii, sv->brsim.iis);
+#endif
       continue;
     }
 
@@ -164,7 +168,7 @@ int branchsim(sim_vars* sv)
       sv->gen_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
 #endif
       sv->curii->commpertype|=ro_commper_tmax*(sv->curii->end_comm_period > sim->tmax);
-      DEBUG_PRINTF("Event time: %f, Latent period is %f, comm period is %f, type is 0x%08x, end comm is %f%s\n",(sv->curii-1)->event_time,sv->curii->latent_period,sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period,(sv->curii->commpertype&ro_commper_tmax?" (reached end)":""));
+      DEBUG_PRINTF("Event time: %f, Latent period is %f, comm period is %f, type is %u, end comm is %f%s\n",(sv->curii-1)->event_time,sv->curii->latent_period,sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period,(sv->curii->commpertype&ro_commper_tmax?" (reached end)":""));
 
 #ifdef CT_OUTPUT
       GEN_LATENT_CONTACTS;
@@ -218,7 +222,14 @@ gen_event:
 	  sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
 	}
 
-      } else sv->new_inf_proc_func_noevent(sv, sv->curii, sv->curii-1);
+      } else {
+#ifdef CT_OUTPUT
+	if(!npevents) sv->new_inf_proc_func_noevent(sv, sv->curii, sv->brsim.iis);
+	else sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
+#else
+	sv->new_inf_proc_func_noevent(sv, sv->curii, sv->curii-1);
+#endif
+      }
 
       //All events for the current individual have been exhausted
       for(;;) {
