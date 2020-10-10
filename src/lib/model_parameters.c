@@ -442,7 +442,7 @@ int model_solve_gauss_group(model_pars* pars)
     //Else if mu is provided
 
     //Solve for g_ave numerically from mu
-    const double alpha=(2-pars->mu)/pars->sigma;
+    const double alpha=(1.5-pars->mu)/pars->sigma;
     pars->g_ave=pars->mu+pars->sigma*gsl_ran_ugaussian_pdf(alpha)/gsl_cdf_ugaussian_Q(alpha);
   }
   printf("\nParameters for the Gaussian group distribution:\n");

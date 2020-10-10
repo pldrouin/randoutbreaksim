@@ -178,7 +178,7 @@ inline static int model_solve_log_lambda_uncut_from_lambda(model_pars* pars){con
  * @return 0 if the parameters could be determined, and a non-zero value
  * otherwise.
  */
-inline static int model_solve_gauss_lambda_uncut_from_lambda(model_pars* pars){pars->lambda_uncut=pars->lambda/gsl_cdf_ugaussian_Q((2-pars->mu)/pars->sigma); return 0;}
+inline static int model_solve_gauss_lambda_uncut_from_lambda(model_pars* pars){pars->lambda_uncut=pars->lambda/gsl_cdf_ugaussian_Q((1.5-pars->mu)/pars->sigma); return 0;}
 
 /**
  * @brief Solve for the value of lambda, given lambda uncut, for the log
@@ -217,7 +217,7 @@ inline static int model_solve_log_lambda_from_lambda_uncut(model_pars* pars){
  * @return 0 if the parameters could be determined, and a non-zero value
  * otherwise.
  */
-inline static int model_solve_gauss_lambda_from_lambda_uncut(model_pars* pars){pars->lambda=pars->lambda_uncut*gsl_cdf_ugaussian_Q((2-pars->mu)/pars->sigma); return 0;}
+inline static int model_solve_gauss_lambda_from_lambda_uncut(model_pars* pars){pars->lambda=pars->lambda_uncut*gsl_cdf_ugaussian_Q((1.5-pars->mu)/pars->sigma); return 0;}
 
 /**
  * @brief Solve for the value of the p parameter of the logarithmic
