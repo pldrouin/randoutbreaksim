@@ -32,7 +32,7 @@ void sim_pars_init(model_pars* pars)
   pars->mbar=NAN;
   pars->kappaq=NAN;
 #ifdef CT_OUTPUT
-  pars->ctwindow=INFINITY;
+  pars->ctwindow=0;
   pars->pt=NAN;
 #endif
   pars->pit=NAN;
