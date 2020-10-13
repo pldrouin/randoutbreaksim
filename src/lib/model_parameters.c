@@ -9,7 +9,10 @@
 int model_solve_pars(model_pars* pars)
 {
 
-  if(model_solve_R0_group(pars)) return -2;
+  if(model_solve_R0_group(pars)) {
+    fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
+    return -2;
+  }
   
   printf("\nBasic reproduction parameters are:\n");
   printf("lambda:\t\t%22.15e\n",pars->lambda);
@@ -434,6 +437,7 @@ int model_solve_gauss_group(model_pars* pars)
 
     //Solve for mu numerically from g_ave
     //ret=model_solve_gauss_mu_from_mean(pars->g_ave,pars);
+    fprintf(stderr,"%s: Error: Solving g_ave from mu for a Gaussian distribution is not supported yet\n",__func__);
     ret=-1;
 
     if(ret) return ret;
