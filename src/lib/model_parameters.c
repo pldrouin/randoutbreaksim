@@ -44,8 +44,8 @@ int model_solve_pars(model_pars* pars)
   printf("tb:\t%22.15e\n",pars->tb);
 
 #ifdef CT_OUTPUT
-  if(!(pars->ctwindow>0)) {
-    fprintf(stderr,"%s: Error: The ctwindow parameter value must be strictly positive.\n",__func__);
+  if(!(pars->ctwindow>=0)) {
+    fprintf(stderr,"%s: Error: The ctwindow parameter value must be non-negative.\n",__func__);
     return  -5;
   }
 
