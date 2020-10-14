@@ -239,7 +239,7 @@ inline static void std_stats_path_end(sim_vars* sv)
       }
 
       if(single) {
-	i=sss->tlppt0idx-sss->tlshift+tnvpers;
+	i=-sss->tlshift+tnvpers;
 	l=sss->tlppt0idx+j+1;
 	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
 	sss->inf_timeline[l]=sss->inf_timeline[i];
@@ -262,7 +262,7 @@ inline static void std_stats_path_end(sim_vars* sv)
       }
 
       if(single) {
-	i=sss->tlppt0idx-sss->tlshift;
+	i=-sss->tlshift;
 	l=sss->tlppt0idx+j-1;
 	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
 	sss->inf_timeline[l]=sss->inf_timeline[i];
