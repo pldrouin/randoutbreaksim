@@ -41,9 +41,9 @@ typedef struct
 {
   uint32_t   n;	               //!< Number of infectious creating infections in the timeline bin.
   uint32_t rsum;	       //!< Sum of the number of individuals that get infected in the timeline bin.
-  double commpersum;   	       //!< Sum of communicable periods for all infectious individuals whose communicable period does not start after tmax in the timeline bin.
+  double commpersum;   	       //!< Sum of communicable periods for all infectious individuals whose communicable period start before tmax in the timeline bin.
 #ifdef NUMEVENTSSTATS
-  uint32_t neventssum;	       //!< Sum of the number of transmission events for all infectious individuals whose communicable period does not occur after tmax in the timeline bin.
+  uint32_t neventssum;	       //!< Sum of the number of transmission events for all infectious individuals whose communicable period occurs before tmax in the timeline bin.
 #endif
   uint64_t* ngeninfs;	       //!< Number of generated infections from each infectious individual in the timeline bin.
 } ext_timeline_info;
@@ -53,11 +53,11 @@ typedef struct
  */
 typedef struct
 {
-  double extinction_time;	//!< Path extinction time, if any. 
-  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that are infected, but not isolated, at some point in this interval.
-  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval. For the last interval, it includes the infectious that occur between floor(tmax) and tmax.
-  uint32_t* postest_timeline;	//!< For each integer interval between 0 and floor(tmax), the number of individuals that have a recent positive test result at the end of this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax.
-  uint32_t* newpostest_timeline;//!< For each integer interval between 0 and floor(tmax), the number of individuals that receive a positive test result at some point in this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax. //**Affected by max but fixed shift so can be recovered
+  double extinction_time;	//!< *Path extinction time, if any. 
+  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that are infected, but not isolated, at some point in this interval.
+  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that get infected at some point in this interval. For the last interval,
+  uint32_t* postest_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that have a recent positive test result at the end of this interval.
+  uint32_t* newpostest_timeline;//!< For each integer interval between 0 and floor(nbinsperunit*tmax), the number of individuals that receive a positive test result at some point in this interval.
   ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used.
   uint32_t nainfbins;		//!< Number of allocated infectious individual bins.
   uint32_t ninfbins;		//!< Number of used infectious individual bins.
@@ -67,18 +67,22 @@ typedef struct
   uint32_t nactentries;
   int32_t curctid;
 #endif
-  uint32_t npers;		//!< Number of positive integer intervals
-  int32_t  tlshifta;            //!< Allocated integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
-  int32_t  tlshift;             //!< Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
-  uint32_t tnpersa;             //!< Total number of allocated integer intervals (negative+positive)
-  uint32_t tnvpers;             //!< Total number of valid periods (starting from -tlshift)
+  int32_t npers;		//!< Number of positive integer intervals
+  int32_t nbinsperunit;		//!< Number of timeline bins per unit of time.
+  int32_t  tlshifta;            //!< *Allocated integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
+  int32_t  tlshift;             //!< *Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
+  uint32_t tnpersa;             //!< *Total number of allocated integer intervals (negative+positive)
+  int32_t  tlppt0idx;           //!< Timeline post-processing t=0 index
+  int32_t tlppnnpers;		//!< Timeline post-processing number of negative periods
+  uint32_t tlpptnvpers;		//!< Timeline post-processing total number of valid periods
   uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
-  uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
+  uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and floor(nbinsperunit*tmax)-1. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnpers for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmaxnpers;    //!< Interval duration for the maximum number of positive test results
-  int32_t maxedoutmintimeindex; //!< Minimum time index which maxed out the allowed number of infected individuals or positive test results.
+  int32_t maxedoutmintimeindex; //!< *Minimum time index which maxed out the allowed number of infected individuals or positive test results.
   //uint32_t n_ended_infections;
-  bool extinction;		//!< Set to true if extinction does not occur before or at tmax. //**Affected by max, but can be fixed easily in post processing => Done
+  bool extinction;		//!< *Set to true if extinction does not occur before tmax.
+  bool timerelfirstpostestresults; //!< Indicate that the output time values are relative to the time of the first positive test results. This require the times to be recomputed in post processing.
 } std_summary_stats;
 
 /**
@@ -89,7 +93,7 @@ typedef struct
  *
  * @param sv: Pointer to the simulation variables.
  */
-void std_stats_init(sim_vars *sv, bool ngeninfs);
+void std_stats_init(sim_vars *sv, const uint32_t nbinsperunit, bool ngeninfs, bool timerelfirstpostestresults);
 
 /**
  * @brief Initialises elements of the standard summary statistics
@@ -146,27 +150,29 @@ inline static void std_stats_path_end(sim_vars* sv)
 {
   const int32_t maxedoutmintimeindex=((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex;
 
-  if(((std_summary_stats*)sv->dataptr)->extinction && maxedoutmintimeindex<INT32_MAX) ((std_summary_stats*)sv->dataptr)->extinction=false;
-
   int32_t i,j;
   std_summary_stats* sss=(std_summary_stats*)sv->dataptr;
+  uint32_t tnvpers;
 
   if(maxedoutmintimeindex<INT32_MAX) {
-    sss->tnvpers=(maxedoutmintimeindex<sss->npers?maxedoutmintimeindex+1:sss->npers)+sss->tlshift;
+    tnvpers=(maxedoutmintimeindex<sss->npers?maxedoutmintimeindex+1:sss->npers)+sss->tlshift;
 
-  } else sss->tnvpers=sss->npers+sss->tlshift;
+  } else {
+    tnvpers=sss->npers+sss->tlshift;
+  }
 
-  //printf("Shift %i/%i, tnpers %u/%u\n",sss->tlshift,sss->tlshifta,sss->tnvpers,sss->tnpersa);
+  //printf("Shift %i/%i, tnpers %u/%u\n",sss->tlshift,sss->tlshifta,tnvpers,sss->tnpersa);
 
   ext_timeline_info* const et=sss->ext_timeline-sss->tlshift;
 
-  //for(i=-sss->tlshift; i<(int32_t)sss->tnvpers; ++i) printf("rsum[%i]=%u %u\n",i,et[i].rsum,et[i].n);
+  //for(i=-sss->tlshift; i<(int32_t)tnvpers; ++i) printf("rsum[%i]=%u %u\n",i,et[i].rsum,et[i].n);
 
-  //for(i=sss->tnvpers-sss->tlshift-1; i>=-sss->tlshift; --i) printf("newinf_timeline[%i]=%i\n",i,sss->newinf_timeline[i]);
+  //for(i=tnvpers-sss->tlshift-1; i>=-sss->tlshift; --i) printf("newinf_timeline[%i]=%i\n",i,sss->newinf_timeline[i]);
+  //for(i=sss->npers-1; i>=0; --i) printf("inf_timeline[%i]=%i\n",i,sss->inf_timeline[i]);
 
   if(sss->ninfbins) {
 
-    for(i=sss->tnvpers-2; i>=0; --i) {
+    for(i=tnvpers-2; i>=0; --i) {
       //printf("et[%i].n (%u) += %u\n",i,et[i].n,et[i+1].n);
       et[i].n+=et[i+1].n;
       et[i].rsum+=et[i+1].rsum;
@@ -185,7 +191,7 @@ inline static void std_stats_path_end(sim_vars* sv)
 
   } else {
 
-    for(i=sss->tnvpers-2; i>=0; --i) {
+    for(i=tnvpers-2; i>=0; --i) {
       et[i].n+=et[i+1].n;
       et[i].rsum+=et[i+1].rsum;
       et[i].commpersum+=et[i+1].commpersum;
@@ -193,6 +199,78 @@ inline static void std_stats_path_end(sim_vars* sv)
       et[i].neventssum+=et[i+1].neventssum;
 #endif
     }
+  }
+
+  if(sss->timerelfirstpostestresults) {
+    uint32_t const* const nptt=sss->newpostest_timeline-sss->tlshift;
+    int32_t k;
+    int32_t z;
+    bool single;
+
+    sss->tlpptnvpers=sss->tlppt0idx=sss->tlppnnpers=0;
+
+    for(z=0; z<tnvpers; ++z) if(nptt[z]) {
+    //z=sss->tlshift;
+    //while(true) {
+      sss->tlppt0idx=z-sss->tlshift;
+      sss->tlppnnpers=(uint32_t)ceil(z*0.5);
+      sss->tlpptnvpers=(uint32_t)ceil((tnvpers-z)*0.5)+sss->tlppnnpers;
+
+      if(sss->maxedoutmintimeindex<INT32_MAX) sss->maxedoutmintimeindex=(int32_t)floor((sss->maxedoutmintimeindex-sss->tlppt0idx)*0.5);
+      sss->extinction_time-=sss->tlppt0idx/(double)sss->nbinsperunit;
+      //printf("Before merging: %i negatives and %u total. First positive test found at %i\n",sss->tlshift,tnvpers,z);
+      //printf("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",sss->tlppt0idx,sss->tlppnnpers,sss->tlpptnvpers,sss->maxedoutmintimeindex);
+      break;
+    }
+
+    if(sss->tlpptnvpers) {
+      //Check if the last index is even. If it is, there is a single fine bin in
+      //the last merged bin
+      single=!((tnvpers-1-z)%2);
+      j=-sss->tlppnnpers+sss->tlpptnvpers-1-single;
+
+      for(k=0; k<=j; ++k) {
+	i=2*k;
+	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",k,i,sss->inf_timeline[i],i+1,sss->inf_timeline[i+1]);
+	sss->inf_timeline[k]=(sss->inf_timeline[i]>sss->inf_timeline[i+1]?sss->inf_timeline[i]:sss->inf_timeline[i+1]);
+	sss->newinf_timeline[k]=sss->newinf_timeline[i]+sss->newinf_timeline[i+1];
+	sss->newpostest_timeline[k]=sss->newpostest_timeline[i]+sss->newpostest_timeline[i+1];
+      }
+
+      if(single) {
+	i=-sss->tlshift+tnvpers;
+	//printf("[%i] = [%i] (%u)\n",j+1,i,sss->inf_timeline[i]);
+	sss->inf_timeline[j+1]=sss->inf_timeline[i];
+	sss->newinf_timeline[j+1]=sss->newinf_timeline[i];
+	sss->newpostest_timeline[j+1]=sss->newpostest_timeline[i];
+      } 
+
+      //Check if the first (negative) index is odd. If it is, there is a single fine bin in
+      //the first merged bin
+      single=z%2;
+      j=-sss->tlppnnpers+single;
+
+      for(k=-1; k>=j; --k) {
+	i=2*k;
+	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",k,i,sss->inf_timeline[i],i+1,sss->inf_timeline[i+1]);
+	sss->inf_timeline[k]=(sss->inf_timeline[i]>sss->inf_timeline[i+1]?sss->inf_timeline[i]:sss->inf_timeline[i+1]);
+	sss->newinf_timeline[k]=sss->newinf_timeline[i]+sss->newinf_timeline[i+1];
+	sss->newpostest_timeline[k]=sss->newpostest_timeline[i]+sss->newpostest_timeline[i+1];
+      }
+
+      if(single) {
+	i=-sss->tlshift;
+	//printf("[%i] = [%i] (%u)\n",j-1,i,sss->inf_timeline[i]);
+	sss->inf_timeline[j-1]=sss->inf_timeline[i];
+	sss->newinf_timeline[j-1]=sss->newinf_timeline[i];
+	sss->newpostest_timeline[j-1]=sss->newpostest_timeline[i];
+      } 
+    }
+
+  } else {
+    sss->tlppt0idx=0;
+    sss->tlppnnpers=sss->tlshift;
+    sss->tlpptnvpers=tnvpers;
   }
 }
 
@@ -208,9 +286,9 @@ void std_stats_free(std_summary_stats* stats);
 
 inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii) {
   //We have to use curii here!
-  if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(sv->curii->event_time));
-    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
+  if((int)(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time) < ((std_summary_stats*)sv->dataptr)->npers && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
   }
 }
 
@@ -225,7 +303,7 @@ inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii) {
  **/
 inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
 {
-  const int32_t newshift=ceil(-ii->end_comm_period+(ii->comm_period+ii->latent_period));
+  const int32_t newshift=ceil(((std_summary_stats*)sv->dataptr)->nbinsperunit*(-ii->end_comm_period+(ii->comm_period+ii->latent_period)));
 
   if(newshift > ((std_summary_stats*)sv->dataptr)->tlshift) {
     std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
@@ -284,9 +362,9 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
   }
 
   //We have to use curii here!
-  if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(sv->curii->event_time));
-    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
+  if((int)(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time) < ((std_summary_stats*)sv->dataptr)->npers && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
   }
 }
 
@@ -333,11 +411,11 @@ inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double
  *
  * Adds the number of infections for this new event to the number of infections from
  * the current infectious individual, and to the total infection timeline if the event
- * time does not exceed tmax.  This function must be assigned to
+ * time is before tmax.  This function must be assigned to
  * the simulation engine through a call of sim_set_new_event_proc_func.
  *
  * @param sv: Pointer to the simulation variables.
- * @return true if the event time does not exceed tmax and new infections were
+ * @return true if the event time is before tmax and new infections were
  * generated, and false otherwise.
  **/
 inline static bool std_stats_new_event(sim_vars* sv)
@@ -351,11 +429,9 @@ inline static bool std_stats_new_event(sim_vars* sv)
     ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
-    //The following condition on event_time is looser than the one in the
-    //returned value
-    if((int)sv->curii->event_time <= (int)sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-      ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(sv->curii->event_time)]+=sv->curii->ninfections;
-      return (sv->curii->event_time <= sv->pars.tmax);
+    if(sv->curii->event_time < sv->pars.tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+      ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+      return true;
     }
   }
   return false;
@@ -366,14 +442,14 @@ inline static bool std_stats_new_event(sim_vars* sv)
  *
  * Adds the number of infections for this new event to the number of infections from
  * the current infectious individual, and to the total infection timeline if the event
- * time does not exceed tmax. If the incremented bin for the total infection timeline
+ * time is before tmax. If the incremented bin for the total infection timeline
  * exceeds nimax, then set the extinction for the current path to false and
  * update the value for the minimum time index where the maximum number of
  * infectious individuals was exceeded if required. This function must be assigned to
  * the simulation engine through a call of sim_set_new_event_proc_func.
  *
  * @param sv: Pointer to the simulation variables.
- * @return true if the event time does not exceed tmax and new infections were
+ * @return true if the event time is before tmax and new infections were
  * generated, and false otherwise.
  **/
 inline static bool std_stats_new_event_nimax(sim_vars* sv)
@@ -384,11 +460,11 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 #endif
 
   if(sv->curii->ninfections) {
-    const int eti=floor(sv->curii->event_time);
     ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
-    if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
+    if(sv->curii->event_time < sv->pars.tmax) {
+      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
 
       if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
 
@@ -409,7 +485,7 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 	  DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
 	  return false;
 	}
-	return (sv->curii->event_time <= sv->pars.tmax);
+	return true;
       }
     }
   }
@@ -421,14 +497,14 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
  *
  * Adds the number of infections for this new event to the number of infections from
  * the current infectious individual, and to the total infection timeline if the event
- * time does not exceed tmax. If the bin for the recent positive test result timeline
+ * time is before tmax. If the bin for the recent positive test result timeline
  * exceeds npostestmax, then set the extinction for the current path to false and
  * update the value for the minimum time index where the maximum number of
  * recent positive test results was exceeded if required. This function must be assigned to
  * the simulation engine through a call of sim_set_new_event_proc_func.
  *
  * @param sv: Pointer to the simulation variables.
- * @return true if the event time does not exceed tmax and new infections were
+ * @return true if the event time is before tmax and new infections were
  * generated, and false otherwise.
  **/
 inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
@@ -439,11 +515,11 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 #endif
 
   if(sv->curii->ninfections) {
-    const int eti=floor(sv->curii->event_time);
     ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
 
-    if((int)sv->curii->event_time <= (int)sv->pars.tmax) {
+    if(sv->curii->event_time < sv->pars.tmax) {
+      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
 
       if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
 
@@ -460,7 +536,7 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 	  DEBUG_PRINTF("npostestmax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->postest_timeline[eti],((std_summary_stats*)sv->dataptr)->npostestmax);
 	  return false;
 	}
-	return (sv->curii->event_time <= sv->pars.tmax);
+	return true;
       }
     }
   }
@@ -470,11 +546,11 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   if(ii->commpertype&ro_commper_true_positive_test) {
-    const int trt=floor(ii->end_comm_period+sv->pars.tdeltat);
+    const int trt=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat));
 
     DEBUG_PRINTF("New pos test at %i\n",trt);
 
-    if(trt<(int32_t)((std_summary_stats*)sv->dataptr)->npers) ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
+    if(trt<((std_summary_stats*)sv->dataptr)->npers) ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
 
 #ifdef CT_OUTPUT
     ((uint32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
@@ -482,9 +558,9 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
     ((uint32_t*)ii->dataptr)[2]=0;
 #endif
     int32_t i;
-    const int32_t end_comm_per=floor(ii->end_comm_period+sv->pars.tdeltat+((std_summary_stats*)sv->dataptr)->npostestmaxnpers);
+    const int32_t end_comm_per_i=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat+((std_summary_stats*)sv->dataptr)->npostestmaxnpers));
 
-    for(i=(end_comm_per>=((std_summary_stats*)sv->dataptr)->npers?((std_summary_stats*)sv->dataptr)->npers-1:end_comm_per); i>=trt; --i) ++(((std_summary_stats*)sv->dataptr)->postest_timeline[i]);
+    for(i=(end_comm_per_i>=((std_summary_stats*)sv->dataptr)->npers?((std_summary_stats*)sv->dataptr)->npers-1:end_comm_per_i); i>=trt; --i) ++(((std_summary_stats*)sv->dataptr)->postest_timeline[i]);
   }
 }
 
@@ -513,24 +589,23 @@ inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii, infindivid
 
 inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
 {
-
   const double start_comm_per=ii->end_comm_period-ii->comm_period;
+  const int32_t start_latent_per_i=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*(ii->end_comm_period-(ii->comm_period+ii->latent_period)));
+  const int32_t end_comm_per_i=(((std_summary_stats*)sv->dataptr)->nbinsperunit*ii->end_comm_period >= ((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*ii->end_comm_period));
+  int32_t i;
 
-  if(start_comm_per<=sv->pars.tmax) {
-    const int32_t start_latent_per_i=floor(ii->end_comm_period-(ii->comm_period+ii->latent_period));
-    const int32_t start_comm_per_i=floor(start_comm_per);
-    const int32_t end_comm_per_i=(ii->end_comm_period >= (int32_t)((std_summary_stats*)sv->dataptr)->npers ? ((std_summary_stats*)sv->dataptr)->npers-1 : floor(ii->end_comm_period));
+  if(start_comm_per<sv->pars.tmax) {
+    const int32_t start_comm_per_i=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*start_comm_per);
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0];
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=1;
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].commpersum+=ii->comm_period;
 #ifdef NUMEVENTSSTATS
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].neventssum+=ii->nevents;
 #endif
-    int32_t i;
+  }
 
-    for(i=start_latent_per_i; i<=end_comm_per_i; ++i) {
-      ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
-    }
+  for(i=start_latent_per_i; i<=end_comm_per_i; ++i) {
+    ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
   }
 }
 
@@ -589,7 +664,7 @@ inline static void std_stats_end_inf_rec_ninfs(sim_vars* sv, infindividual* ii, 
 {
   const double start_comm_per=ii->end_comm_period-ii->comm_period;
 
-  if(start_comm_per<=sv->pars.tmax) {
+  if(start_comm_per<sv->pars.tmax) {
     std_summary_stats* const stats=(std_summary_stats*)sv->dataptr;
 
     if(((uint32_t*)ii->dataptr)[0] >= stats->ninfbins) {
@@ -608,7 +683,7 @@ inline static void std_stats_end_inf_rec_ninfs(sim_vars* sv, infindividual* ii, 
 	stats->nainfbins=stats->ninfbins;
       }
     }
-    const int32_t start_comm_per_i=floor(start_comm_per);
+    const int32_t start_comm_per_i=floor(stats->nbinsperunit*start_comm_per);
     ++(stats->ext_timeline[start_comm_per_i].ngeninfs[((uint32_t*)ii->dataptr)[0]]);
   }
 
@@ -672,8 +747,8 @@ inline static void std_stats_noevent_new_inf_rec_ninfs(sim_vars* sv, infindividu
 {
   const double start_comm_per=ii->end_comm_period-ii->comm_period;
 
-  if(start_comm_per<=sv->pars.tmax) {
-    const int32_t start_comm_per_i=floor(start_comm_per);
+  if(start_comm_per<sv->pars.tmax) {
+    const int32_t start_comm_per_i=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*start_comm_per);
     ++(((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].ngeninfs[0]);
   }
 

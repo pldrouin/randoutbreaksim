@@ -12,7 +12,7 @@ var standard__summary__stats_8h =
     [ "std_stats_fill_newpostest", "standard__summary__stats_8h.html#abca4033916312079d3a2962eadbb2543", null ],
     [ "std_stats_free", "standard__summary__stats_8h.html#aa38a2d7cde0950dcc13f741f49b12782", null ],
     [ "std_stats_ii_alloc", "standard__summary__stats_8h.html#a6817859a53a32feb92636e9986da48cb", null ],
-    [ "std_stats_init", "standard__summary__stats_8h.html#a989d28988fb15acce649852eccf0bd23", null ],
+    [ "std_stats_init", "standard__summary__stats_8h.html#a7e48bd471bfd6ac6f97a903ac3e2ade0", null ],
     [ "std_stats_new_event", "standard__summary__stats_8h.html#aec5a65871a38a80d6a609baef1c314fe", null ],
     [ "std_stats_new_event_nimax", "standard__summary__stats_8h.html#a43b768c341a076d5e5b2253b9dfab9de", null ],
     [ "std_stats_new_event_npostestmax", "standard__summary__stats_8h.html#a89a2c20f5ae6364539f0fabc3a7da903", null ],

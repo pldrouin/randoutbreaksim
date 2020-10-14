@@ -7,16 +7,20 @@ var structstd__summary__stats =
     [ "lmax", "structstd__summary__stats.html#a68ed8f4856c0c06225b77e25e1ba56e6", null ],
     [ "maxedoutmintimeindex", "structstd__summary__stats.html#a5b91639bfd5662d72eb30e80629f3afb", null ],
     [ "nainfbins", "structstd__summary__stats.html#a674edafa7c2d58245fe239b50d59410b", null ],
+    [ "nbinsperunit", "structstd__summary__stats.html#a88045dcbad084a2bdca7c0d537aa7d79", null ],
     [ "newinf_timeline", "structstd__summary__stats.html#a9f1399b1a96c10fc895ca4138cc0cae0", null ],
     [ "newpostest_timeline", "structstd__summary__stats.html#a1a4469f6d6346c2c1218880021c3189a", null ],
     [ "nimax", "structstd__summary__stats.html#a8e83d6a8048fe685966daa2fc88b9786", null ],
     [ "ninfbins", "structstd__summary__stats.html#ae7b791ae4143018fe9cd72df38039d30", null ],
-    [ "npers", "structstd__summary__stats.html#af9a151e1652f1cbcdd66f9db6780e324", null ],
+    [ "npers", "structstd__summary__stats.html#a5692c490e4607c8ac651ee17d3e98ab0", null ],
     [ "npostestmax", "structstd__summary__stats.html#ae164276299e063211e451d40224ab885", null ],
     [ "npostestmaxnpers", "structstd__summary__stats.html#ab174bf9afad860d56a639cf6081494e4", null ],
     [ "postest_timeline", "structstd__summary__stats.html#acd11be3b63130e0de5173f46fb718642", null ],
+    [ "timerelfirstpostestresults", "structstd__summary__stats.html#a3b9774d0359ac227a1419a63bfb1b9ef", null ],
+    [ "tlppnnpers", "structstd__summary__stats.html#a2e396b075b2f47ad38cc6cabc3cbeb16", null ],
+    [ "tlppt0idx", "structstd__summary__stats.html#af6b54552d1d6d46d9d8ac8ad1e11fa2f", null ],
+    [ "tlpptnvpers", "structstd__summary__stats.html#a81431467e8f5b95dac9f75b26fb23785", null ],
     [ "tlshift", "structstd__summary__stats.html#a004bedeff4c407696e0681fe1b5c470a", null ],
     [ "tlshifta", "structstd__summary__stats.html#a0d8063962cd1061921d5988aed3009cb", null ],
-    [ "tnpersa", "structstd__summary__stats.html#a8c36935604a78b458da7ab1404453c71", null ],
-    [ "tnvpers", "structstd__summary__stats.html#a8f48319d699b9acefd1445e69fcc37f6", null ]
+    [ "tnpersa", "structstd__summary__stats.html#a8c36935604a78b458da7ab1404453c71", null ]
 ];

@@ -6,12 +6,15 @@
 
 #include "standard_summary_stats.h"
 
-void std_stats_init(sim_vars* sv, bool ngeninfs)
+void std_stats_init(sim_vars* sv, const uint32_t nbinsperunit, bool ngeninfs, bool timerelfirstpostestresults)
 {
   std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
 
+  stats->timerelfirstpostestresults=timerelfirstpostestresults;
+  stats->nbinsperunit=(1+timerelfirstpostestresults)*nbinsperunit;
+
   stats->tlshift=stats->tlshifta=0;
-  stats->tnvpers=stats->tnpersa=stats->npers=(int)sv->pars.tmax+1;
+  stats->tnpersa=stats->npers=(int)(stats->nbinsperunit*sv->pars.tmax);
   stats->inf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->newinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->postest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));

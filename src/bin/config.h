@@ -25,8 +25,10 @@ typedef struct
 {
 model_pars pars; 		//!< Simulation parameters
 bool ninfhist;			//!< Request or the generation of a histogram of number of infections.
+bool timerelfirstpostestresults;  //!< Indicate that the output time values are relative to the time of the first positive test results.
 uint32_t npaths;		//!< Number of simulation paths.
 uint32_t lmax;			//!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
+int32_t nbinsperunit;		//!< Number of timeline bins per unit of time.
 uint32_t nimax;			//!< Maximum number of infectious individuals for a given time integet interval.
 uint32_t npostestmax;		//!< Maximum number of positive test results during an interval of duration npostestmaxnpers for each individual that starts when the test results are received.
 uint32_t npostestmaxnpers;      //!< Interval duration for the maximum number of positive test results

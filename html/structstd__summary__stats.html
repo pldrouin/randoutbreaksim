@@ -105,23 +105,23 @@ Collaboration diagram for std_summary_stats:</div>
 Data Fields</h2></td></tr>
 <tr class="memitem:acbd17fcad2eb7abd3430ec4ff8275d3d"><td class="memItemLeft" align="right" valign="top"><a id="acbd17fcad2eb7abd3430ec4ff8275d3d"></a>
 double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#acbd17fcad2eb7abd3430ec4ff8275d3d">extinction_time</a></td></tr>
-<tr class="memdesc:acbd17fcad2eb7abd3430ec4ff8275d3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Path extinction time, if any. <br /></td></tr>
+<tr class="memdesc:acbd17fcad2eb7abd3430ec4ff8275d3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">*Path extinction time, if any. <br /></td></tr>
 <tr class="separator:acbd17fcad2eb7abd3430ec4ff8275d3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a40874a46f008c64e6ad71312da1c3e04"><td class="memItemLeft" align="right" valign="top"><a id="a40874a46f008c64e6ad71312da1c3e04"></a>
 uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a40874a46f008c64e6ad71312da1c3e04">inf_timeline</a></td></tr>
-<tr class="memdesc:a40874a46f008c64e6ad71312da1c3e04"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(tmax), the number of individuals that are infected, but not isolated, at some point in this interval. <br /></td></tr>
+<tr class="memdesc:a40874a46f008c64e6ad71312da1c3e04"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that are infected, but not isolated, at some point in this interval. <br /></td></tr>
 <tr class="separator:a40874a46f008c64e6ad71312da1c3e04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f1399b1a96c10fc895ca4138cc0cae0"><td class="memItemLeft" align="right" valign="top"><a id="a9f1399b1a96c10fc895ca4138cc0cae0"></a>
 uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a9f1399b1a96c10fc895ca4138cc0cae0">newinf_timeline</a></td></tr>
-<tr class="memdesc:a9f1399b1a96c10fc895ca4138cc0cae0"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(tmax), the number of individuals that get infected at some point in this interval. For the last interval, it includes the infectious that occur between floor(tmax) and tmax. <br /></td></tr>
+<tr class="memdesc:a9f1399b1a96c10fc895ca4138cc0cae0"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that get infected at some point in this interval. For the last interval,. <br /></td></tr>
 <tr class="separator:a9f1399b1a96c10fc895ca4138cc0cae0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acd11be3b63130e0de5173f46fb718642"><td class="memItemLeft" align="right" valign="top"><a id="acd11be3b63130e0de5173f46fb718642"></a>
 uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#acd11be3b63130e0de5173f46fb718642">postest_timeline</a></td></tr>
-<tr class="memdesc:acd11be3b63130e0de5173f46fb718642"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(tmax), the number of individuals that have a recent positive test result at the end of this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax. <br /></td></tr>
+<tr class="memdesc:acd11be3b63130e0de5173f46fb718642"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that have a recent positive test result at the end of this interval. <br /></td></tr>
 <tr class="separator:acd11be3b63130e0de5173f46fb718642"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a4469f6d6346c2c1218880021c3189a"><td class="memItemLeft" align="right" valign="top"><a id="a1a4469f6d6346c2c1218880021c3189a"></a>
 uint32_t *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a1a4469f6d6346c2c1218880021c3189a">newpostest_timeline</a></td></tr>
-<tr class="memdesc:a1a4469f6d6346c2c1218880021c3189a"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(tmax), the number of individuals that receive a positive test result at some point in this interval. For the last interval, it includes positive test results that occur between floor(tmax) and tmax. //&zwj;**Affected by max but fixed shift so can be recovered. <br /></td></tr>
+<tr class="memdesc:a1a4469f6d6346c2c1218880021c3189a"><td class="mdescLeft">&#160;</td><td class="mdescRight">For each integer interval between 0 and floor(nbinsperunit*tmax), the number of individuals that receive a positive test result at some point in this interval. <br /></td></tr>
 <tr class="separator:a1a4469f6d6346c2c1218880021c3189a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0bd89cf4c05f92f384a148c39ff44dbe"><td class="memItemLeft" align="right" valign="top"><a id="a0bd89cf4c05f92f384a148c39ff44dbe"></a>
 <a class="el" href="structext__timeline__info.html">ext_timeline_info</a> *&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a0bd89cf4c05f92f384a148c39ff44dbe">ext_timeline</a></td></tr>
@@ -135,33 +135,45 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#ae7b791ae4143018fe9cd72df38039d30">ninfbins</a></td></tr>
 <tr class="memdesc:ae7b791ae4143018fe9cd72df38039d30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of used infectious individual bins. <br /></td></tr>
 <tr class="separator:ae7b791ae4143018fe9cd72df38039d30"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af9a151e1652f1cbcdd66f9db6780e324"><td class="memItemLeft" align="right" valign="top"><a id="af9a151e1652f1cbcdd66f9db6780e324"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#af9a151e1652f1cbcdd66f9db6780e324">npers</a></td></tr>
-<tr class="memdesc:af9a151e1652f1cbcdd66f9db6780e324"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of positive integer intervals. <br /></td></tr>
-<tr class="separator:af9a151e1652f1cbcdd66f9db6780e324"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5692c490e4607c8ac651ee17d3e98ab0"><td class="memItemLeft" align="right" valign="top"><a id="a5692c490e4607c8ac651ee17d3e98ab0"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a5692c490e4607c8ac651ee17d3e98ab0">npers</a></td></tr>
+<tr class="memdesc:a5692c490e4607c8ac651ee17d3e98ab0"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of positive integer intervals. <br /></td></tr>
+<tr class="separator:a5692c490e4607c8ac651ee17d3e98ab0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a88045dcbad084a2bdca7c0d537aa7d79"><td class="memItemLeft" align="right" valign="top"><a id="a88045dcbad084a2bdca7c0d537aa7d79"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a88045dcbad084a2bdca7c0d537aa7d79">nbinsperunit</a></td></tr>
+<tr class="memdesc:a88045dcbad084a2bdca7c0d537aa7d79"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of timeline bins per unit of time. <br /></td></tr>
+<tr class="separator:a88045dcbad084a2bdca7c0d537aa7d79"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0d8063962cd1061921d5988aed3009cb"><td class="memItemLeft" align="right" valign="top"><a id="a0d8063962cd1061921d5988aed3009cb"></a>
 int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a0d8063962cd1061921d5988aed3009cb">tlshifta</a></td></tr>
-<tr class="memdesc:a0d8063962cd1061921d5988aed3009cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Allocated integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals. <br /></td></tr>
+<tr class="memdesc:a0d8063962cd1061921d5988aed3009cb"><td class="mdescLeft">&#160;</td><td class="mdescRight">*Allocated integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals <br /></td></tr>
 <tr class="separator:a0d8063962cd1061921d5988aed3009cb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a004bedeff4c407696e0681fe1b5c470a"><td class="memItemLeft" align="right" valign="top"><a id="a004bedeff4c407696e0681fe1b5c470a"></a>
 int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a004bedeff4c407696e0681fe1b5c470a">tlshift</a></td></tr>
-<tr class="memdesc:a004bedeff4c407696e0681fe1b5c470a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals. <br /></td></tr>
+<tr class="memdesc:a004bedeff4c407696e0681fe1b5c470a"><td class="mdescLeft">&#160;</td><td class="mdescRight">*Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals <br /></td></tr>
 <tr class="separator:a004bedeff4c407696e0681fe1b5c470a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8c36935604a78b458da7ab1404453c71"><td class="memItemLeft" align="right" valign="top"><a id="a8c36935604a78b458da7ab1404453c71"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a8c36935604a78b458da7ab1404453c71">tnpersa</a></td></tr>
-<tr class="memdesc:a8c36935604a78b458da7ab1404453c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total number of allocated integer intervals (negative+positive) <br /></td></tr>
+<tr class="memdesc:a8c36935604a78b458da7ab1404453c71"><td class="mdescLeft">&#160;</td><td class="mdescRight">*Total number of allocated integer intervals (negative+positive) <br /></td></tr>
 <tr class="separator:a8c36935604a78b458da7ab1404453c71"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8f48319d699b9acefd1445e69fcc37f6"><td class="memItemLeft" align="right" valign="top"><a id="a8f48319d699b9acefd1445e69fcc37f6"></a>
-uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a8f48319d699b9acefd1445e69fcc37f6">tnvpers</a></td></tr>
-<tr class="memdesc:a8f48319d699b9acefd1445e69fcc37f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Total number of valid periods (starting from -tlshift) <br /></td></tr>
-<tr class="separator:a8f48319d699b9acefd1445e69fcc37f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af6b54552d1d6d46d9d8ac8ad1e11fa2f"><td class="memItemLeft" align="right" valign="top"><a id="af6b54552d1d6d46d9d8ac8ad1e11fa2f"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#af6b54552d1d6d46d9d8ac8ad1e11fa2f">tlppt0idx</a></td></tr>
+<tr class="memdesc:af6b54552d1d6d46d9d8ac8ad1e11fa2f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timeline post-processing t=0 index. <br /></td></tr>
+<tr class="separator:af6b54552d1d6d46d9d8ac8ad1e11fa2f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2e396b075b2f47ad38cc6cabc3cbeb16"><td class="memItemLeft" align="right" valign="top"><a id="a2e396b075b2f47ad38cc6cabc3cbeb16"></a>
+int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a2e396b075b2f47ad38cc6cabc3cbeb16">tlppnnpers</a></td></tr>
+<tr class="memdesc:a2e396b075b2f47ad38cc6cabc3cbeb16"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timeline post-processing number of negative periods. <br /></td></tr>
+<tr class="separator:a2e396b075b2f47ad38cc6cabc3cbeb16"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a81431467e8f5b95dac9f75b26fb23785"><td class="memItemLeft" align="right" valign="top"><a id="a81431467e8f5b95dac9f75b26fb23785"></a>
+uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a81431467e8f5b95dac9f75b26fb23785">tlpptnvpers</a></td></tr>
+<tr class="memdesc:a81431467e8f5b95dac9f75b26fb23785"><td class="mdescLeft">&#160;</td><td class="mdescRight">Timeline post-processing total number of valid periods. <br /></td></tr>
+<tr class="separator:a81431467e8f5b95dac9f75b26fb23785"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a68ed8f4856c0c06225b77e25e1ba56e6"><td class="memItemLeft" align="right" valign="top"><a id="a68ed8f4856c0c06225b77e25e1ba56e6"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a68ed8f4856c0c06225b77e25e1ba56e6">lmax</a></td></tr>
 <tr class="memdesc:a68ed8f4856c0c06225b77e25e1ba56e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals. <br /></td></tr>
 <tr class="separator:a68ed8f4856c0c06225b77e25e1ba56e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e83d6a8048fe685966daa2fc88b9786"><td class="memItemLeft" align="right" valign="top"><a id="a8e83d6a8048fe685966daa2fc88b9786"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a8e83d6a8048fe685966daa2fc88b9786">nimax</a></td></tr>
-<tr class="memdesc:a8e83d6a8048fe685966daa2fc88b9786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of infectious individuals for a given integer interval between 0 and floor(tmax). Extinction is set to false and the simulation does not proceed further if this maximum is exceeded. <br /></td></tr>
+<tr class="memdesc:a8e83d6a8048fe685966daa2fc88b9786"><td class="mdescLeft">&#160;</td><td class="mdescRight">Maximum number of infectious individuals for a given integer interval between 0 and floor(nbinsperunit*tmax)-1. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded. <br /></td></tr>
 <tr class="separator:a8e83d6a8048fe685966daa2fc88b9786"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae164276299e063211e451d40224ab885"><td class="memItemLeft" align="right" valign="top"><a id="ae164276299e063211e451d40224ab885"></a>
 uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#ae164276299e063211e451d40224ab885">npostestmax</a></td></tr>
@@ -173,12 +185,16 @@ uint32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="
 <tr class="separator:ab174bf9afad860d56a639cf6081494e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5b91639bfd5662d72eb30e80629f3afb"><td class="memItemLeft" align="right" valign="top"><a id="a5b91639bfd5662d72eb30e80629f3afb"></a>
 int32_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a5b91639bfd5662d72eb30e80629f3afb">maxedoutmintimeindex</a></td></tr>
-<tr class="memdesc:a5b91639bfd5662d72eb30e80629f3afb"><td class="mdescLeft">&#160;</td><td class="mdescRight">Minimum time index which maxed out the allowed number of infected individuals or positive test results. <br /></td></tr>
+<tr class="memdesc:a5b91639bfd5662d72eb30e80629f3afb"><td class="mdescLeft">&#160;</td><td class="mdescRight">*Minimum time index which maxed out the allowed number of infected individuals or positive test results. <br /></td></tr>
 <tr class="separator:a5b91639bfd5662d72eb30e80629f3afb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac229de531e51ab996d8d9943836a81df"><td class="memItemLeft" align="right" valign="top"><a id="ac229de531e51ab996d8d9943836a81df"></a>
 bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#ac229de531e51ab996d8d9943836a81df">extinction</a></td></tr>
-<tr class="memdesc:ac229de531e51ab996d8d9943836a81df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set to true if extinction does not occur before or at tmax. //&zwj;**Affected by max, but can be fixed easily in post processing =&gt; Done. <br /></td></tr>
+<tr class="memdesc:ac229de531e51ab996d8d9943836a81df"><td class="mdescLeft">&#160;</td><td class="mdescRight">*Set to true if extinction does not occur before tmax. <br /></td></tr>
 <tr class="separator:ac229de531e51ab996d8d9943836a81df"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3b9774d0359ac227a1419a63bfb1b9ef"><td class="memItemLeft" align="right" valign="top"><a id="a3b9774d0359ac227a1419a63bfb1b9ef"></a>
+bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structstd__summary__stats.html#a3b9774d0359ac227a1419a63bfb1b9ef">timerelfirstpostestresults</a></td></tr>
+<tr class="memdesc:a3b9774d0359ac227a1419a63bfb1b9ef"><td class="mdescLeft">&#160;</td><td class="mdescRight">Indicate that the output time values are relative to the time of the first positive test results. This require the times to be recomputed in post processing. <br /></td></tr>
+<tr class="separator:a3b9774d0359ac227a1419a63bfb1b9ef"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Simulation-level standard summary statistics data struct. </p>

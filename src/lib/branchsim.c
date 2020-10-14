@@ -6,7 +6,6 @@
  * <david.maybury@tpsgc-pwgsc.gc.ca>
  */
 
-#include <assert.h>
 #include "branchsim.h"
 
 void branchsim_init(sim_vars* sv)
@@ -180,7 +179,6 @@ int branchsim(sim_vars* sv)
 
       //If the number of events is non-zero
       if(sv->curii->nevents) {
-	assert(sv->curii->nevents==0 || (sv->curii->nevents>0 && sv->curii->comm_period>0));
 	sv->curii->cureventi=0;
 
 #ifdef CT_OUTPUT

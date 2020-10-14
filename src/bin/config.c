@@ -221,6 +221,9 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "time_rel_pri_test_results")) {
 	cp->pars.timetype=ro_time_pri_test_results;
 
+      } else if(!argsdiffer(pbuf, "time_rel_first_pos_test_results")) {
+	cp->timerelfirstpostestresults=true;
+
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.tmax);
@@ -265,6 +268,10 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "lmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->lmax);
+
+      } else if(!argsdiffer(pbuf, "nbinsperunit")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%"PRIi32,&cp->nbinsperunit);
 
       } else if(!argsdiffer(pbuf, "nimax")) {
 
@@ -368,7 +375,7 @@ void printusage(const char* name)
   printf("\t--kappaq VALUE\t\t\tkappa parameter for the gamma distribution used to generate the alternate communicable period.\n");
   printf("\t--m95 VALUE\t\t\t95th percentile of the alternate communicable period.\n");
 #ifdef CT_OUTPUT
-  printf("\t--ctwindow VALUE\t\tPeriod prior to individual isolation during which contacts are considered (default value of inf).\n");
+  printf("\t--ctwindow VALUE\t\tPeriod prior to individual isolation during which contacts are considered (default value of 0).\n");
   printf("\t--pt VALUE\t\t\tProbability of successful contact tracing. Probability must be larger than pit and pim, as it is considered to be applicable to all contacts.\n");
 #endif
   printf("\t--pit VALUE\t\t\tProbability of main communicable period interruption This option makes a model diverge from a branching process.\n");
@@ -389,9 +396,11 @@ void printusage(const char* name)
   printf("\t--time_rel_pri_infectious\tRecorded event time is relative to the time the generated primary individuals become infectious.\n");
   printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
   printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
+  printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
+  printf("\t--nbinsperunit VALUE\t\tNumber of timeline bins per unit of time.\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
   printf("\t--npostestmax VALUE\t\tMaximum number of positive test results during an interval of duration npostestmaxnpers that starts when the test results are received. (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
   printf("\t--npostestmaxnpers VALUE\tInterval duration for the maximum number of positive test results (default value of 1).\n");
