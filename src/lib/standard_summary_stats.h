@@ -218,8 +218,8 @@ inline static void std_stats_path_end(sim_vars* sv)
 
       if(sss->maxedoutmintimeindex<INT32_MAX) sss->maxedoutmintimeindex=(int32_t)floor((sss->maxedoutmintimeindex-sss->tlppt0idx)*0.5);
       sss->extinction_time-=sss->tlppt0idx/(double)sss->nbinsperunit;
-      printf("Before merging: %i negatives and %u total. First positive test found at %i\n",sss->tlshift,tnvpers,z);
-      printf("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",sss->tlppt0idx,sss->tlppnnpers,sss->tlpptnvpers,sss->maxedoutmintimeindex);
+      //printf("Before merging: %i negatives and %u total. First positive test found at %i\n",sss->tlshift,tnvpers,z);
+      //printf("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",sss->tlppt0idx,sss->tlppnnpers,sss->tlpptnvpers,sss->maxedoutmintimeindex);
       break;
     }
 
@@ -232,7 +232,7 @@ inline static void std_stats_path_end(sim_vars* sv)
       for(k=0; k<=j; ++k) {
 	i=sss->tlppt0idx+2*k;
 	l=sss->tlppt0idx+k;
-	printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
+	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
 	sss->inf_timeline[l]=(sss->inf_timeline[i]>sss->inf_timeline[i+1]?sss->inf_timeline[i]:sss->inf_timeline[i+1]);
 	sss->newinf_timeline[l]=sss->newinf_timeline[i]+sss->newinf_timeline[i+1];
 	sss->newpostest_timeline[l]=sss->newpostest_timeline[i]+sss->newpostest_timeline[i+1];
@@ -241,7 +241,7 @@ inline static void std_stats_path_end(sim_vars* sv)
       if(single) {
 	i=sss->tlppt0idx-sss->tlshift+tnvpers;
 	l=sss->tlppt0idx+j+1;
-	printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
+	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
 	sss->inf_timeline[l]=sss->inf_timeline[i];
 	sss->newinf_timeline[l]=sss->newinf_timeline[i];
 	sss->newpostest_timeline[l]=sss->newpostest_timeline[i];
@@ -255,7 +255,7 @@ inline static void std_stats_path_end(sim_vars* sv)
       for(k=-1; k>=j; --k) {
 	i=sss->tlppt0idx+2*k;
 	l=sss->tlppt0idx+k;
-	printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
+	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
 	sss->inf_timeline[l]=(sss->inf_timeline[i]>sss->inf_timeline[i+1]?sss->inf_timeline[i]:sss->inf_timeline[i+1]);
 	sss->newinf_timeline[l]=sss->newinf_timeline[i]+sss->newinf_timeline[i+1];
 	sss->newpostest_timeline[l]=sss->newpostest_timeline[i]+sss->newpostest_timeline[i+1];
@@ -264,7 +264,7 @@ inline static void std_stats_path_end(sim_vars* sv)
       if(single) {
 	i=sss->tlppt0idx-sss->tlshift;
 	l=sss->tlppt0idx+j-1;
-	printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
+	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
 	sss->inf_timeline[l]=sss->inf_timeline[i];
 	sss->newinf_timeline[l]=sss->newinf_timeline[i];
 	sss->newpostest_timeline[l]=sss->newpostest_timeline[i];
