@@ -172,6 +172,93 @@ inline static void std_stats_path_end(sim_vars* sv)
   //for(i=tnvpers-sss->tlshift-1; i>=-sss->tlshift; --i) printf("newinf_timeline[%i]=%i\n",i,sss->newinf_timeline[i]);
   //for(i=sss->npers-1; i>=0; --i) printf("inf_timeline[%i]=%i\n",i,sss->inf_timeline[i]);
 
+  if(sss->timerelfirstpostestresults) {
+    uint32_t const* const nptt=sss->newpostest_timeline-sss->tlshift;
+    int32_t k;
+    int32_t z;
+    bool single;
+    int32_t tlppt0idx;
+
+    sss->tlpptnvpers=tlppt0idx=sss->tlppnnpers=0;
+
+    for(z=0; z<tnvpers; ++z) if(nptt[z]) {
+    //z=sss->tlshift;
+    //while(true) {
+      tlppt0idx=z-sss->tlshift;
+      sss->tlppnnpers=(uint32_t)ceil(z*0.5);
+      
+      if(tnvpers-z>sss->npers) {
+	tnvpers=z+sss->npers;
+
+	if(sss->inf_timeline[tlppt0idx+sss->npers]) sss->extinction=false;
+      }
+      sss->tlpptnvpers=(uint32_t)ceil((tnvpers-z)*0.5)+sss->tlppnnpers;
+      //if(sss->extinction && sss->tlpptnvpers-sss->tlppnnpers>0.5*sss->npers) __ro_debug=1;
+      //if(sss->extinction && tnvpers-z>sss->npers && sss->inf_timeline[tlppt0idx+sss->npers]) __ro_debug=1;
+      //else __ro_debug=0;
+
+      if(sss->maxedoutmintimeindex<INT32_MAX) sss->maxedoutmintimeindex=(int32_t)floor((sss->maxedoutmintimeindex-tlppt0idx)*0.5);
+      sss->extinction_time-=tlppt0idx/(double)sss->nbinsperunit;
+      DEBUG_PRINTF("Before merging: %i negatives and %u total. First positive test found at %i\n",sss->tlshift,tnvpers,z);
+      DEBUG_PRINTF("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",tlppt0idx,sss->tlppnnpers,sss->tlpptnvpers,sss->maxedoutmintimeindex);
+      break;
+    }
+
+    if(sss->tlpptnvpers) {
+      sss->pp_inf_timeline=sss->inf_timeline+tlppt0idx;
+      sss->pp_newinf_timeline=sss->newinf_timeline+tlppt0idx;
+      sss->pp_newpostest_timeline=sss->newpostest_timeline+tlppt0idx;
+      //Check if the last index is even. If it is, there is a single fine bin in
+      //the last merged bin
+      j=(tnvpers-sss->tlshift-tlppt0idx)/2;
+      single=(j!=sss->tlpptnvpers-sss->tlppnnpers);;
+
+      for(k=0; k<j; ++k) {
+	i=2*k;
+	DEBUG_PRINTF("[%i] = [%i] (%u) + [%i] (%u)\n",k,i+tlppt0idx,sss->pp_inf_timeline[i],i+1+tlppt0idx,sss->pp_inf_timeline[i+1]);
+	sss->pp_inf_timeline[k]=(sss->pp_inf_timeline[i]>sss->pp_inf_timeline[i+1]?sss->pp_inf_timeline[i]:sss->pp_inf_timeline[i+1]);
+	sss->pp_newinf_timeline[k]=sss->pp_newinf_timeline[i]+sss->pp_newinf_timeline[i+1];
+	sss->pp_newpostest_timeline[k]=sss->pp_newpostest_timeline[i]+sss->pp_newpostest_timeline[i+1];
+      }
+
+      if(single) {
+	i=-sss->tlshift+tnvpers-1;
+	DEBUG_PRINTF("[%i] = [%i] (%u)\n",j,i,sss->inf_timeline[i]);
+	sss->pp_inf_timeline[j]=sss->inf_timeline[i];
+	sss->pp_newinf_timeline[j]=sss->newinf_timeline[i];
+	sss->pp_newpostest_timeline[j]=sss->newpostest_timeline[i];
+      } 
+
+      //Check if the first (negative) index is odd. If it is, there is a single fine bin in
+      //the first merged bin
+      single=z%2;
+      j=-sss->tlppnnpers+single;
+
+      for(k=-1; k>=j; --k) {
+	i=2*k;
+	DEBUG_PRINTF("[%i] = [%i] (%u) + [%i] (%u)\n",k,i+tlppt0idx,sss->pp_inf_timeline[i],i+1+tlppt0idx,sss->pp_inf_timeline[i+1]);
+	sss->pp_inf_timeline[k]=(sss->pp_inf_timeline[i]>sss->pp_inf_timeline[i+1]?sss->pp_inf_timeline[i]:sss->pp_inf_timeline[i+1]);
+	sss->pp_newinf_timeline[k]=sss->pp_newinf_timeline[i]+sss->pp_newinf_timeline[i+1];
+      }
+
+      if(single) {
+	i=-sss->tlshift;
+	DEBUG_PRINTF("[%i] = [%i] (%u)\n",j-1,i,sss->inf_timeline[i]);
+	sss->pp_inf_timeline[j-1]=sss->inf_timeline[i];
+	sss->pp_newinf_timeline[j-1]=sss->newinf_timeline[i];
+      } 
+
+      memset(sss->pp_newpostest_timeline-sss->tlppnnpers,0,sss->tlppnnpers*sizeof(uint32_t));
+    }
+
+  } else {
+    sss->tlppnnpers=sss->tlshift;
+    sss->tlpptnvpers=tnvpers;
+    sss->pp_inf_timeline=sss->inf_timeline;
+    sss->pp_newinf_timeline=sss->newinf_timeline;
+    sss->pp_newpostest_timeline=sss->newpostest_timeline;
+  }
+
   if(sss->ninfbins) {
 
     for(i=tnvpers-2; i>=0; --i) {
@@ -201,84 +288,6 @@ inline static void std_stats_path_end(sim_vars* sv)
       et[i].neventssum+=et[i+1].neventssum;
 #endif
     }
-  }
-
-  if(sss->timerelfirstpostestresults) {
-    uint32_t const* const nptt=sss->newpostest_timeline-sss->tlshift;
-    int32_t k;
-    int32_t z;
-    bool single;
-    int32_t tlppt0idx;
-
-    sss->tlpptnvpers=tlppt0idx=sss->tlppnnpers=0;
-
-    for(z=0; z<tnvpers; ++z) if(nptt[z]) {
-    //z=sss->tlshift;
-    //while(true) {
-      tlppt0idx=z-sss->tlshift;
-      sss->tlppnnpers=(uint32_t)ceil(z*0.5);
-      sss->tlpptnvpers=(uint32_t)ceil((tnvpers-z)*0.5)+sss->tlppnnpers;
-
-      if(sss->maxedoutmintimeindex<INT32_MAX) sss->maxedoutmintimeindex=(int32_t)floor((sss->maxedoutmintimeindex-tlppt0idx)*0.5);
-      sss->extinction_time-=tlppt0idx/(double)sss->nbinsperunit;
-      //printf("Before merging: %i negatives and %u total. First positive test found at %i\n",sss->tlshift,tnvpers,z);
-      //printf("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",tlppt0idx,sss->tlppnnpers,sss->tlpptnvpers,sss->maxedoutmintimeindex);
-      break;
-    }
-
-    if(sss->tlpptnvpers) {
-      sss->pp_inf_timeline=sss->inf_timeline+tlppt0idx;
-      sss->pp_newinf_timeline=sss->newinf_timeline+tlppt0idx;
-      sss->pp_newpostest_timeline=sss->newpostest_timeline+tlppt0idx;
-      //Check if the last index is even. If it is, there is a single fine bin in
-      //the last merged bin
-      single=!((tnvpers-1-z)%2);
-      j=-sss->tlppnnpers+sss->tlpptnvpers-1-single;
-
-      for(k=0; k<=j; ++k) {
-	i=2*k;
-	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
-	sss->pp_inf_timeline[k]=(sss->pp_inf_timeline[i]>sss->pp_inf_timeline[i+1]?sss->pp_inf_timeline[i]:sss->pp_inf_timeline[i+1]);
-	sss->pp_newinf_timeline[k]=sss->pp_newinf_timeline[i]+sss->pp_newinf_timeline[i+1];
-	sss->pp_newpostest_timeline[k]=sss->pp_newpostest_timeline[i]+sss->pp_newpostest_timeline[i+1];
-      }
-
-      if(single) {
-	i=-sss->tlshift+tnvpers;
-	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
-	sss->pp_inf_timeline[j+1]=sss->inf_timeline[i];
-	sss->pp_newinf_timeline[j+1]=sss->newinf_timeline[i];
-	sss->pp_newpostest_timeline[j+1]=sss->newpostest_timeline[i];
-      } 
-
-      //Check if the first (negative) index is odd. If it is, there is a single fine bin in
-      //the first merged bin
-      single=z%2;
-      j=-sss->tlppnnpers+single;
-
-      for(k=-1; k>=j; --k) {
-	i=2*k;
-	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
-	sss->pp_inf_timeline[k]=(sss->pp_inf_timeline[i]>sss->pp_inf_timeline[i+1]?sss->pp_inf_timeline[i]:sss->pp_inf_timeline[i+1]);
-	sss->pp_newinf_timeline[k]=sss->pp_newinf_timeline[i]+sss->pp_newinf_timeline[i+1];
-      }
-
-      if(single) {
-	i=-sss->tlshift;
-	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
-	sss->pp_inf_timeline[j-1]=sss->inf_timeline[i];
-	sss->pp_newinf_timeline[j-1]=sss->newinf_timeline[i];
-      } 
-
-      memset(sss->pp_newpostest_timeline-sss->tlppnnpers,0,sss->tlppnnpers*sizeof(uint32_t));
-    }
-
-  } else {
-    sss->tlppnnpers=sss->tlshift;
-    sss->tlpptnvpers=tnvpers;
-    sss->pp_inf_timeline=sss->inf_timeline;
-    sss->pp_newinf_timeline=sss->newinf_timeline;
-    sss->pp_newpostest_timeline=sss->newpostest_timeline;
   }
 }
 
