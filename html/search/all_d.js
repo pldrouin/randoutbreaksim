@@ -9,7 +9,10 @@ var searchData=
   ['pit_150',['pit',['../structmodel__pars.html#ad74f2a750a43cf77e5fb5cfd7cbde1dc',1,'model_pars']]],
   ['popsize_151',['popsize',['../structmodel__pars.html#ac44bac41a41e3cb3b057cd45e3a93102',1,'model_pars']]],
   ['postest_5ftimeline_152',['postest_timeline',['../structstd__summary__stats.html#acd11be3b63130e0de5173f46fb718642',1,'std_summary_stats']]],
-  ['pri_5finit_5fproc_5ffunc_153',['pri_init_proc_func',['../structsim__vars__.html#ae1c906f73ec8b51b01d3f43266445676',1,'sim_vars_']]],
-  ['pricommpertype_154',['pricommpertype',['../structmodel__pars.html#accb0825b67f69fe2cf424917b323343b',1,'model_pars']]],
-  ['printusage_155',['printusage',['../config_8c.html#ad58728259679e01f1f114c6a3328fbcd',1,'printusage(const char *name):&#160;config.c'],['../config_8h.html#ad58728259679e01f1f114c6a3328fbcd',1,'printusage(const char *name):&#160;config.c']]]
+  ['pp_5finf_5ftimeline_153',['pp_inf_timeline',['../structstd__summary__stats.html#a250cff9a07ba69ccb2c04905b004f91d',1,'std_summary_stats']]],
+  ['pp_5fnewinf_5ftimeline_154',['pp_newinf_timeline',['../structstd__summary__stats.html#acc1e7914a73488e5ae0f119a4ea976bf',1,'std_summary_stats']]],
+  ['pp_5fnewpostest_5ftimeline_155',['pp_newpostest_timeline',['../structstd__summary__stats.html#ab24cc3e00ea54bfefbfad70baf4981c2',1,'std_summary_stats']]],
+  ['pri_5finit_5fproc_5ffunc_156',['pri_init_proc_func',['../structsim__vars__.html#ae1c906f73ec8b51b01d3f43266445676',1,'sim_vars_']]],
+  ['pricommpertype_157',['pricommpertype',['../structmodel__pars.html#accb0825b67f69fe2cf424917b323343b',1,'model_pars']]],
+  ['printusage_158',['printusage',['../config_8c.html#ad58728259679e01f1f114c6a3328fbcd',1,'printusage(const char *name):&#160;config.c'],['../config_8h.html#ad58728259679e01f1f114c6a3328fbcd',1,'printusage(const char *name):&#160;config.c']]]
 ];

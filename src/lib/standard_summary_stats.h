@@ -58,6 +58,9 @@ typedef struct
   uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that get infected at some point in this interval. For the last interval,
   uint32_t* postest_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that have a recent positive test result at the end of this interval.
   uint32_t* newpostest_timeline;//!< For each integer interval between 0 and floor(nbinsperunit*tmax), the number of individuals that receive a positive test result at some point in this interval.
+  uint32_t* pp_inf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that are infected, but not isolated, at some point in this interval.
+  uint32_t* pp_newinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and floor(nbinsperunit*tmax)-1, the number of individuals that get infected at some point in this interval. For the last interval,
+  uint32_t* pp_newpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and floor(nbinsperunit*tmax), the number of individuals that receive a positive test result at some point in this interval.
   ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used.
   uint32_t nainfbins;		//!< Number of allocated infectious individual bins.
   uint32_t ninfbins;		//!< Number of used infectious individual bins.
@@ -203,48 +206,50 @@ inline static void std_stats_path_end(sim_vars* sv)
 
   if(sss->timerelfirstpostestresults) {
     uint32_t const* const nptt=sss->newpostest_timeline-sss->tlshift;
-    int32_t k,l;
+    int32_t k;
     int32_t z;
     bool single;
+    int32_t tlppt0idx;
 
-    sss->tlpptnvpers=sss->tlppt0idx=sss->tlppnnpers=0;
+    sss->tlpptnvpers=tlppt0idx=sss->tlppnnpers=0;
 
     for(z=0; z<tnvpers; ++z) if(nptt[z]) {
     //z=sss->tlshift;
     //while(true) {
-      sss->tlppt0idx=z-sss->tlshift;
+      tlppt0idx=z-sss->tlshift;
       sss->tlppnnpers=(uint32_t)ceil(z*0.5);
       sss->tlpptnvpers=(uint32_t)ceil((tnvpers-z)*0.5)+sss->tlppnnpers;
 
-      if(sss->maxedoutmintimeindex<INT32_MAX) sss->maxedoutmintimeindex=(int32_t)floor((sss->maxedoutmintimeindex-sss->tlppt0idx)*0.5);
-      sss->extinction_time-=sss->tlppt0idx/(double)sss->nbinsperunit;
+      if(sss->maxedoutmintimeindex<INT32_MAX) sss->maxedoutmintimeindex=(int32_t)floor((sss->maxedoutmintimeindex-tlppt0idx)*0.5);
+      sss->extinction_time-=tlppt0idx/(double)sss->nbinsperunit;
       //printf("Before merging: %i negatives and %u total. First positive test found at %i\n",sss->tlshift,tnvpers,z);
-      //printf("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",sss->tlppt0idx,sss->tlppnnpers,sss->tlpptnvpers,sss->maxedoutmintimeindex);
+      //printf("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",tlppt0idx,sss->tlppnnpers,sss->tlpptnvpers,sss->maxedoutmintimeindex);
       break;
     }
 
     if(sss->tlpptnvpers) {
+      sss->pp_inf_timeline=sss->inf_timeline+tlppt0idx;
+      sss->pp_newinf_timeline=sss->newinf_timeline+tlppt0idx;
+      sss->pp_newpostest_timeline=sss->newpostest_timeline+tlppt0idx;
       //Check if the last index is even. If it is, there is a single fine bin in
       //the last merged bin
       single=!((tnvpers-1-z)%2);
       j=-sss->tlppnnpers+sss->tlpptnvpers-1-single;
 
       for(k=0; k<=j; ++k) {
-	i=sss->tlppt0idx+2*k;
-	l=sss->tlppt0idx+k;
+	i=2*k;
 	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
-	sss->inf_timeline[l]=(sss->inf_timeline[i]>sss->inf_timeline[i+1]?sss->inf_timeline[i]:sss->inf_timeline[i+1]);
-	sss->newinf_timeline[l]=sss->newinf_timeline[i]+sss->newinf_timeline[i+1];
-	sss->newpostest_timeline[l]=sss->newpostest_timeline[i]+sss->newpostest_timeline[i+1];
+	sss->pp_inf_timeline[k]=(sss->pp_inf_timeline[i]>sss->pp_inf_timeline[i+1]?sss->pp_inf_timeline[i]:sss->pp_inf_timeline[i+1]);
+	sss->pp_newinf_timeline[k]=sss->pp_newinf_timeline[i]+sss->pp_newinf_timeline[i+1];
+	sss->pp_newpostest_timeline[k]=sss->pp_newpostest_timeline[i]+sss->pp_newpostest_timeline[i+1];
       }
 
       if(single) {
 	i=-sss->tlshift+tnvpers;
-	l=sss->tlppt0idx+j+1;
 	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
-	sss->inf_timeline[l]=sss->inf_timeline[i];
-	sss->newinf_timeline[l]=sss->newinf_timeline[i];
-	sss->newpostest_timeline[l]=sss->newpostest_timeline[i];
+	sss->pp_inf_timeline[j+1]=sss->inf_timeline[i];
+	sss->pp_newinf_timeline[j+1]=sss->newinf_timeline[i];
+	sss->pp_newpostest_timeline[j+1]=sss->newpostest_timeline[i];
       } 
 
       //Check if the first (negative) index is odd. If it is, there is a single fine bin in
@@ -253,28 +258,28 @@ inline static void std_stats_path_end(sim_vars* sv)
       j=-sss->tlppnnpers+single;
 
       for(k=-1; k>=j; --k) {
-	i=sss->tlppt0idx+2*k;
-	l=sss->tlppt0idx+k;
+	i=2*k;
 	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
-	sss->inf_timeline[l]=(sss->inf_timeline[i]>sss->inf_timeline[i+1]?sss->inf_timeline[i]:sss->inf_timeline[i+1]);
-	sss->newinf_timeline[l]=sss->newinf_timeline[i]+sss->newinf_timeline[i+1];
-	sss->newpostest_timeline[l]=sss->newpostest_timeline[i]+sss->newpostest_timeline[i+1];
+	sss->pp_inf_timeline[k]=(sss->pp_inf_timeline[i]>sss->pp_inf_timeline[i+1]?sss->pp_inf_timeline[i]:sss->pp_inf_timeline[i+1]);
+	sss->pp_newinf_timeline[k]=sss->pp_newinf_timeline[i]+sss->pp_newinf_timeline[i+1];
+	sss->pp_newpostest_timeline[k]=sss->pp_newpostest_timeline[i]+sss->pp_newpostest_timeline[i+1];
       }
 
       if(single) {
 	i=-sss->tlshift;
-	l=sss->tlppt0idx+j-1;
 	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
-	sss->inf_timeline[l]=sss->inf_timeline[i];
-	sss->newinf_timeline[l]=sss->newinf_timeline[i];
-	sss->newpostest_timeline[l]=sss->newpostest_timeline[i];
+	sss->pp_inf_timeline[j-1]=sss->inf_timeline[i];
+	sss->pp_newinf_timeline[j-1]=sss->newinf_timeline[i];
+	sss->pp_newpostest_timeline[j-1]=sss->newpostest_timeline[i];
       } 
     }
 
   } else {
-    sss->tlppt0idx=0;
     sss->tlppnnpers=sss->tlshift;
     sss->tlpptnvpers=tnvpers;
+    sss->pp_inf_timeline=sss->inf_timeline;
+    sss->pp_newinf_timeline=sss->newinf_timeline;
+    sss->pp_newpostest_timeline=sss->newpostest_timeline;
   }
 }
 

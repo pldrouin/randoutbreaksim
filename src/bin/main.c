@@ -487,9 +487,9 @@ void* simthread(void* arg)
       data->nevents_mean+=stats.ext_timeline->neventssum;
 #endif
       //nr+=stats.n_ended_infections;
-      abs_inf_timeline=stats.inf_timeline+stats.tlppt0idx-stats.tlppnnpers;
-      abs_newinf_timeline=stats.newinf_timeline+stats.tlppt0idx-stats.tlppnnpers;
-      abs_newpostest_timeline=stats.newpostest_timeline+stats.tlppt0idx-stats.tlppnnpers;
+      abs_inf_timeline=stats.pp_inf_timeline-stats.tlppnnpers;
+      abs_newinf_timeline=stats.pp_newinf_timeline-stats.tlppnnpers;
+      abs_newpostest_timeline=stats.pp_newpostest_timeline-stats.tlppnnpers;
       dshift=stats.tlshifta-stats.tlshift;
 
       if(cp->tlout) {
