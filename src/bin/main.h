@@ -262,7 +262,7 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
 
 inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, char* buf)
 {
-  int32_t bmin=stats->tlppt0idx-stats->tlshift;
+  int32_t bmin=-stats->tlppnnpers;
   int32_t bmax=bmin+stats->tlpptnvpers-1;
 
   for(; bmax>bmin; --bmax) {
@@ -313,7 +313,7 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
 
 inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* stats, char* buf)
 {
-  int32_t bmin=stats->tlppt0idx-stats->tlshift;
+  int32_t bmin=-stats->tlppnnpers;
   int32_t bmax=bmin+stats->tlpptnvpers-1;
 
   for(; bmax>bmin; --bmax) {

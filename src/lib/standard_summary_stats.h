@@ -75,7 +75,6 @@ typedef struct
   int32_t  tlshifta;            //!< *Allocated integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
   int32_t  tlshift;             //!< *Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
   uint32_t tnpersa;             //!< *Total number of allocated integer intervals (negative+positive)
-  int32_t  tlppt0idx;           //!< Timeline post-processing t=0 index
   int32_t tlppnnpers;		//!< Timeline post-processing number of negative periods
   uint32_t tlpptnvpers;		//!< Timeline post-processing total number of valid periods
   uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
