@@ -262,7 +262,6 @@ inline static void std_stats_path_end(sim_vars* sv)
 	//printf("[%i] = [%i] (%u) + [%i] (%u)\n",l,i,sss->newpostest_timeline[i],i+1,sss->newpostest_timeline[i+1]);
 	sss->pp_inf_timeline[k]=(sss->pp_inf_timeline[i]>sss->pp_inf_timeline[i+1]?sss->pp_inf_timeline[i]:sss->pp_inf_timeline[i+1]);
 	sss->pp_newinf_timeline[k]=sss->pp_newinf_timeline[i]+sss->pp_newinf_timeline[i+1];
-	sss->pp_newpostest_timeline[k]=sss->pp_newpostest_timeline[i]+sss->pp_newpostest_timeline[i+1];
       }
 
       if(single) {
@@ -270,8 +269,9 @@ inline static void std_stats_path_end(sim_vars* sv)
 	//printf("[%i] = [%i] (%u)\n",l,i,sss->newpostest_timeline[i]);
 	sss->pp_inf_timeline[j-1]=sss->inf_timeline[i];
 	sss->pp_newinf_timeline[j-1]=sss->newinf_timeline[i];
-	sss->pp_newpostest_timeline[j-1]=sss->newpostest_timeline[i];
       } 
+
+      memset(sss->pp_newpostest_timeline-sss->tlppnnpers,0,sss->tlppnnpers*sizeof(uint32_t));
     }
 
   } else {

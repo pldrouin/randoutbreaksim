@@ -396,7 +396,7 @@ void printusage(const char* name)
   printf("\t--time_rel_pri_infectious\tRecorded event time is relative to the time the generated primary individuals become infectious.\n");
   printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
   printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
-  printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result.\n");
+  printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result. This operation is performed in post-processing, independently of the previous time operations. It should be combined with --time_rel_pri_test_results to ensure consistency in the duration of the simulated paths.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
