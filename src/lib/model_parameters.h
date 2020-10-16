@@ -291,6 +291,73 @@ inline static void logroot(double* x, double* diff, void* params){const double o
 inline static void loggt1root(double* x, double* diff, void* params){const double omx=1-*x; const double l=log(omx); const double lpx=l+*x; *diff=*(double*)params+ *x * *x/(omx*lpx); *x-=*diff*lpx*lpx*omx*omx/(*x * (2 * lpx - *x * l)); *diff/=*(double*)params;} 
 
 /**
+ * @brief Computes g_ave (truncated Gaussian distribution) from the mean and the
+ * standard deviation.
+ */
+inline static double gauss_trunc_g_ave(const double mu, const double sigma)
+{
+  int32_t i;
+  int32_t mui=floor(mu+0.5);
+  const double dmu=mu-mui;
+  const double psmu=dmu-0.5;
+  const double nsmu=dmu+0.5;
+  int32_t nbins=mui-2;
+  int32_t lasti=0;
+  double lastrangeint;
+  double newrangeint;
+  double lastint=gsl_cdf_ugaussian_P((-nbins-1-psmu)/sigma);;
+  double newint;
+  double mean=0;
+  double fint=0;
+  double dint;
+  double meanbuf;
+  double fintbuf;
+
+  for(i=-nbins; i<=0; ++i) {
+    //printf("i: %i, lastint: %22.15e, fint: %22.15e, mean: %22.15e\n", i, lastint, fint, mean);
+
+    newint=gsl_cdf_ugaussian_P((i-psmu)/sigma);
+    dint=newint-lastint;
+    //printf("dint: %22.15e\n",dint);
+    fint+=dint;
+    mean+=dint*i;
+    lastint=newint;
+  }
+  lastrangeint=lastint;
+
+  for(;;) {
+    fintbuf=0;
+    meanbuf=0;
+    newrangeint=lastint=gsl_cdf_ugaussian_P((lasti+nbins-psmu)/sigma);
+
+    for(i=lasti+nbins; i>lasti+1; --i) {
+      //printf("i: %i, lastint: %22.15e, fintbuf: %22.15e, meanbuf: %22.15e\n", i, lastint, fintbuf, meanbuf);
+      newint=gsl_cdf_ugaussian_P((i-nsmu)/sigma);
+      dint=lastint-newint;
+      //printf("dint: %22.15e\n",dint);
+      fintbuf+=dint;
+      meanbuf+=dint*i;
+      lastint=newint;
+    }
+    //printf("i: %i, lastint: %22.15e, fintbuf: %22.15e, meanbuf: %22.15e\n", lasti+1, lastint, fintbuf, meanbuf);
+    dint=lastint-lastrangeint;
+    //printf("dint: %22.15e\n",dint);
+    fintbuf+=dint;
+    meanbuf+=dint*(lasti+1);
+
+    if(newrangeint==1 || (fint+fintbuf == fint && mean+meanbuf == mean)) break;
+    fint+=fintbuf;
+    mean+=meanbuf;
+    lastrangeint=newrangeint;
+    lasti+=nbins;
+    nbins*=2;
+    //printf("nbins to %i\n",nbins);
+  }
+
+  return mean/fint+mui;
+}
+
+/**
  * @brief Computes the discrepancy between an evaluation of gamma cumulative
  * distribution function and the 95th percentile.
  *

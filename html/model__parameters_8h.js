@@ -22,6 +22,7 @@ var model__parameters_8h =
       [ "ro_time_pri_end_comm", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2a333ebb79dc4a2bf289eea3adaa1f27dc", null ],
       [ "ro_time_pri_test_results", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2aaf7c3545712aeef92787cd1241fec866", null ]
     ] ],
+    [ "gauss_trunc_g_ave", "model__parameters_8h.html#ad3ccf58fdd77fc08202e7f716c71a0c3", null ],
     [ "gkapparoot", "model__parameters_8h.html#acf51a1f2b9eabe0496061944e4872065", null ],
     [ "gpercroot", "model__parameters_8h.html#a3d757fa02920ff161046b12b01b41205", null ],
     [ "gpercrootfunc", "model__parameters_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93", null ],

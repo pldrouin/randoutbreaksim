@@ -446,8 +446,10 @@ int model_solve_gauss_group(model_pars* pars)
     //Else if mu is provided
 
     //Solve for g_ave numerically from mu
-    const double alpha=(1.5-pars->mu)/pars->sigma;
-    pars->g_ave=pars->mu+pars->sigma*gsl_ran_ugaussian_pdf(alpha)/gsl_cdf_ugaussian_Q(alpha);
+    //const double alpha=(1.5-pars->mu)/pars->sigma;
+    //pars->g_ave=pars->mu+pars->sigma*gsl_ran_ugaussian_pdf(alpha)/gsl_cdf_ugaussian_Q(alpha);
+    //printf("g_ave %22.15e vs %22.15e\n",pars->g_ave,gauss_trunc_g_ave(pars->mu,pars->sigma));
+    pars->g_ave=gauss_trunc_g_ave(pars->mu,pars->sigma);
   }
   printf("\nParameters for the Gaussian group distribution:\n");
   printf("g_ave:\t%22.15e\n",pars->g_ave);
