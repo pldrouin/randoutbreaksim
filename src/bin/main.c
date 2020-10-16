@@ -384,7 +384,7 @@ void* simthread(void* arg)
       exit(1);
     }
 
-    if(cp->pars.timetype!=ro_time_pri_created) {
+    if(cp->pars.timetype!=ro_time_pri_created || cp->timerelfirstpostestresults) {
 
       if(isnan(cp->pars.tdeltat)) buf_write_func=tlo_write_reltime_path;
       else buf_write_func=tlo_write_reltime_postest_path;
