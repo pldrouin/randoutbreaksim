@@ -314,17 +314,27 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
   double meanbuf;
   double fintbuf;
 
-  for(i=-nbins; i<=0; ++i) {
-    //printf("i: %i, lastint: %22.15e, fint: %22.15e, mean: %22.15e\n", i, lastint, fint, mean);
+  if(mu != mui) {
 
-    newint=gsl_cdf_ugaussian_P((i-psmu)/sigma);
-    dint=newint-lastint;
-    //printf("dint: %22.15e\n",dint);
-    fint+=dint;
-    mean+=dint*i;
-    lastint=newint;
+    for(i=-nbins; i<=0; ++i) {
+      //printf("i: %i, lastint: %22.15e, fint: %22.15e, mean: %22.15e\n", i, lastint, fint, mean);
+
+      newint=gsl_cdf_ugaussian_P((i-psmu)/sigma);
+      dint=newint-lastint;
+      //printf("dint: %22.15e\n",dint);
+      fint+=dint;
+      mean+=dint*i;
+      lastint=newint;
+    }
+    lastrangeint=lastint;
+
+  } else {
+    mean=0;
+    lastrangeint=gsl_cdf_ugaussian_P((nbins-psmu)/sigma);;
+    fint=lastrangeint-lastint;
+    lasti=nbins;
+    nbins*=2;
   }
-  lastrangeint=lastint;
 
   for(;;) {
     fintbuf=0;
@@ -346,7 +356,7 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
     fintbuf+=dint;
     meanbuf+=dint*(lasti+1);
 
-    if(newrangeint==1 || (fint+fintbuf == fint && mean+meanbuf == mean)) break;
+    if(newrangeint==1) break;
     fint+=fintbuf;
     mean+=meanbuf;
     lastrangeint=newrangeint;
