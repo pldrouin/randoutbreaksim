@@ -25,6 +25,7 @@ var model__parameters_8h =
     ] ],
     [ "gauss_trunc_g_ave", "model__parameters_8h.html#ad3ccf58fdd77fc08202e7f716c71a0c3", null ],
     [ "gaussmuroot", "model__parameters_8h.html#a8530f28b5e3b39ea8f41a16a7ba627e6", null ],
+    [ "gaussrmuroot", "model__parameters_8h.html#a8a5a5b035dcc07bd577c2209ddc1d3b5", null ],
     [ "gkapparoot", "model__parameters_8h.html#acf51a1f2b9eabe0496061944e4872065", null ],
     [ "gpercroot", "model__parameters_8h.html#a3d757fa02920ff161046b12b01b41205", null ],
     [ "gpercrootfunc", "model__parameters_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93", null ],

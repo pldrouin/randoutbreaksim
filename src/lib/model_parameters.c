@@ -233,13 +233,17 @@ int model_solve_R0_group(model_pars* pars)
 
   if(!(pars->grouptype&ro_group_gauss)) {
 
-    if(!isnan(pars->sigma)) {
-      fprintf(stderr,"%s: Error: sigma cannot be used if the group distribution is not Gaussian.\n",__func__);
+    if(!isnan(pars->sigma) && !isnan(pars->rsigma)) {
+      fprintf(stderr,"%s: Error: sigma and rsigma cannot be used if the group distribution is not Gaussian.\n",__func__);
       return -5;
     }
 
-  } else if(!(pars->sigma>0)) {
-      fprintf(stderr,"%s: Error: A positive value for sigma must be defined.\n",__func__);
+  } else if(!isnan(pars->sigma) && !isnan(pars->rsigma)) {
+      fprintf(stderr,"%s: Error: Either sigma or rsigma must be defined.\n",__func__);
+      return -6;
+    
+  } else if(!(pars->sigma>0) && !(pars->rsigma>0)) {
+      fprintf(stderr,"%s: Error: A positive value for sigma or rsigma must be defined.\n",__func__);
       return -6;
   }
 
@@ -434,24 +438,50 @@ int model_solve_gauss_group(model_pars* pars)
       return -1;
     }
 
-    pars->mu=pars->g_ave;
-    double othermu=pars->g_ave+pars->sigma;
-    double params[4]={pars->sigma, pars->g_ave, othermu, gauss_trunc_g_ave(othermu, pars->sigma) - pars->g_ave};
-    root_finder* rf=root_finder_init(gaussmuroot, params);
-    double diff;
+    //If sigma is defined
+    if(pars->sigma>0) {
+      pars->mu=pars->g_ave;
+      double othermu=pars->g_ave+pars->sigma;
+      double params[4]={pars->sigma, pars->g_ave, othermu, gauss_trunc_g_ave(othermu, pars->sigma) - pars->g_ave};
+      root_finder* rf=root_finder_init(gaussmuroot, params);
+      double diff;
 
-    int ret=root_finder_find(rf, RF_GAUSSMU_EPSF, 100, 0, 1e100, &pars->mu, &diff);
+      int ret=root_finder_find(rf, RF_GAUSSMU_EPSF, 100, 0, 1e100, &pars->mu, &diff);
 
-    if(ret) {
+      if(ret) {
 
-      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_GAUSSMU_EPSF);
+	if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_GAUSSMU_EPSF);
 
-      else if(ret==-2) {
-	fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
-	return ret;
+	else if(ret==-2) {
+	  fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	  return ret;
+	}
       }
+      root_finder_free(rf);
+      pars->rsigma=pars->sigma/pars->mu;
+
+    //Else if rsigma is defined
+    } else {
+      pars->mu=pars->g_ave;
+      double othermu=pars->g_ave*(1+pars->rsigma);
+      double params[4]={pars->rsigma, pars->g_ave, othermu, gauss_trunc_g_ave(othermu, othermu*pars->rsigma) - pars->g_ave};
+      root_finder* rf=root_finder_init(gaussrmuroot, params);
+      double diff;
+
+      int ret=root_finder_find(rf, RF_GAUSSMU_EPSF, 100, 0, 1e100, &pars->mu, &diff);
+
+      if(ret) {
+
+	if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_GAUSSMU_EPSF);
+
+	else if(ret==-2) {
+	  fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	  return ret;
+	}
+      }
+      root_finder_free(rf);
+      pars->sigma=pars->rsigma*pars->mu;
     }
-    root_finder_free(rf);
 
   } else {
     //Else if mu is provided
@@ -460,12 +490,17 @@ int model_solve_gauss_group(model_pars* pars)
     //const double alpha=(1.5-pars->mu)/pars->sigma;
     //pars->g_ave=pars->mu+pars->sigma*gsl_ran_ugaussian_pdf(alpha)/gsl_cdf_ugaussian_Q(alpha);
     //printf("g_ave %22.15e vs %22.15e\n",pars->g_ave,gauss_trunc_g_ave(pars->mu,pars->sigma));
+
+    if(pars->sigma>0) pars->rsigma=pars->sigma/pars->mu;
+    else pars->sigma=pars->rsigma*pars->mu;
+
     pars->g_ave=gauss_trunc_g_ave(pars->mu,pars->sigma);
   }
   printf("\nParameters for the Gaussian group distribution:\n");
   printf("g_ave:\t%22.15e\n",pars->g_ave);
   printf("mu:\t%22.15e\n",pars->mu);
   printf("sigma:\t%22.15e\n",pars->sigma);
+  printf("rsigma:\t%22.15e\n",pars->rsigma);
   return 0;
 }
 

@@ -37,6 +37,7 @@ var structmodel__pars =
     [ "pricommpertype", "structmodel__pars.html#accb0825b67f69fe2cf424917b323343b", null ],
     [ "q", "structmodel__pars.html#adb88f8b9eb957e317793965d7e3eb781", null ],
     [ "R0", "structmodel__pars.html#a6cc9bd7884927a2b8f64ecbcb2f06927", null ],
+    [ "rsigma", "structmodel__pars.html#a11a57a0732193cfde011cb2d13dc8dd2", null ],
     [ "sigma", "structmodel__pars.html#a69f9a105568a4e94d7f0714e95b1b379", null ],
     [ "t95", "structmodel__pars.html#a855468f6d0c56265ff697a6f36e549ce", null ],
     [ "ta", "structmodel__pars.html#ac3294a6592b42ba683557cd85c4a9396", null ],

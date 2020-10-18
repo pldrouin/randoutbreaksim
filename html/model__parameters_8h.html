@@ -249,8 +249,11 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 <tr class="memdesc:ad3ccf58fdd77fc08202e7f716c71a0c3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes g_ave (truncated Gaussian distribution) from the mean and the standard deviation. <br /></td></tr>
 <tr class="separator:ad3ccf58fdd77fc08202e7f716c71a0c3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8530f28b5e3b39ea8f41a16a7ba627e6"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a8530f28b5e3b39ea8f41a16a7ba627e6">gaussmuroot</a> (double *x, double *diff, void *params)</td></tr>
-<tr class="memdesc:a8530f28b5e3b39ea8f41a16a7ba627e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes mu for a discretized truncated Gaussian distribution using the secant method.  <a href="model__parameters_8h.html#a8530f28b5e3b39ea8f41a16a7ba627e6">More...</a><br /></td></tr>
+<tr class="memdesc:a8530f28b5e3b39ea8f41a16a7ba627e6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes mu for a discretized truncated Gaussian distribution, given g_ave and sigma, using the secant method.  <a href="model__parameters_8h.html#a8530f28b5e3b39ea8f41a16a7ba627e6">More...</a><br /></td></tr>
 <tr class="separator:a8530f28b5e3b39ea8f41a16a7ba627e6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a5a5b035dcc07bd577c2209ddc1d3b5"><td class="memItemLeft" align="right" valign="top">static void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a8a5a5b035dcc07bd577c2209ddc1d3b5">gaussrmuroot</a> (double *x, double *diff, void *params)</td></tr>
+<tr class="memdesc:a8a5a5b035dcc07bd577c2209ddc1d3b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes mu for a discretized truncated Gaussian distribution, given g_ave and rsigma, using the secant method.  <a href="model__parameters_8h.html#a8a5a5b035dcc07bd577c2209ddc1d3b5">More...</a><br /></td></tr>
+<tr class="separator:a8a5a5b035dcc07bd577c2209ddc1d3b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0370fa93232a3ea9443c9f3cdd54ac93"><td class="memItemLeft" align="right" valign="top">static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="model__parameters_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">gpercrootfunc</a> (const double a, const double t)</td></tr>
 <tr class="memdesc:a0370fa93232a3ea9443c9f3cdd54ac93"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the discrepancy between an evaluation of gamma cumulative distribution function and the 95th percentile.  <a href="model__parameters_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93">More...</a><br /></td></tr>
 <tr class="separator:a0370fa93232a3ea9443c9f3cdd54ac93"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -360,7 +363,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </table>
 </div><div class="memdoc">
 
-<p>Computes mu for a discretized truncated Gaussian distribution using the secant method. </p>
+<p>Computes mu for a discretized truncated Gaussian distribution, given g_ave and sigma, using the secant method. </p>
 <p>this function estimates the value of mu for a discretized truncaed Gaussian distribution, using the secant method.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
@@ -371,7 +374,62 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00386">386</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00387">387</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+
+</div>
+</div>
+<a id="a8a5a5b035dcc07bd577c2209ddc1d3b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a5a5b035dcc07bd577c2209ddc1d3b5">&#9670;&nbsp;</a></span>gaussrmuroot()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static void gaussrmuroot </td>
+          <td>(</td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>x</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double *&#160;</td>
+          <td class="paramname"><em>diff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">void *&#160;</td>
+          <td class="paramname"><em>params</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Computes mu for a discretized truncated Gaussian distribution, given g_ave and rsigma, using the secant method. </p>
+<p>this function estimates the value of mu for a discretized truncaed Gaussian distribution, using the secant method.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">x</td><td>Current value for mu (input/output) </td></tr>
+    <tr><td class="paramname">diff</td><td>Current value for the discrepancy between the mean evaluated using the current mu parameter value and g_ave. (output) </td></tr>
+    <tr><td class="paramname">params</td><td>Pointer to an array of parameters. First parameter is the rsigma parameter for the Gaussian distribution, the second parameters is g_ave, the third parameter is the former mu value and the fourth parameter is the former discrepancy of the evaluated mean value with g_ave. (input/output) </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00404">404</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -426,7 +484,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00431">431</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00449">449</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -481,7 +539,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00414">414</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00432">432</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -530,7 +588,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the discrepancy between the evaluated CDF and the 95th percentile. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00399">399</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00417">417</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -585,7 +643,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00292">292</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00293">293</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -640,7 +698,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00280">280</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00281">281</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -670,7 +728,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters are valid. If the parameters are invalid, an error is printed on stderr. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00608">608</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00643">643</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -718,7 +776,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00526">526</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00561">561</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -747,7 +805,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00426">426</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00430">430</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -784,7 +842,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00221">221</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00222">222</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -821,7 +879,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00182">182</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00183">183</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -850,7 +908,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00373">373</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00377">377</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -887,7 +945,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00202">202</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00203">203</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -924,7 +982,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00172">172</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00173">173</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -964,7 +1022,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00499">499</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00534">534</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -993,7 +1051,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00472">472</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00507">507</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -1022,7 +1080,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00323">323</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8c_source.html#l00327">327</a> of file <a class="el" href="model__parameters_8c_source.html">model_parameters.c</a>.</p>
 
 </div>
 </div>
@@ -1059,7 +1117,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00192">192</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00193">193</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>
@@ -1096,7 +1154,7 @@ static double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" h
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>0 if the parameters could be determined, and a non-zero value otherwise. </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00162">162</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__parameters_8h_source.html#l00163">163</a> of file <a class="el" href="model__parameters_8h_source.html">model_parameters.h</a>.</p>
 
 </div>
 </div>

@@ -47,6 +47,7 @@ typedef struct
   double p;		//!< Parameter for the logarithmic distribution used to draw then number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).
   double mu;		//!< Parameter for the mean of an unbounded logarithmic distribution (mu=-1/log(1-p)*p/(1-p), mu >= 1) or of an unbounded Gaussian used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
   double sigma;         //!< Parameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
+  double rsigma;        //!< Parameter for the relative standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
   double g_ave;		//!< Parameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees.
   double lambda;	//!< Rate of events for a given individual. Events are defined to include at least two invitees.
   double lambda_uncut;  //!< Rate of events for a given individual, including events of one invitee.
@@ -369,8 +370,8 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
 }
 
 /**
- * @brief Computes mu for a discretized truncated Gaussian distribution using the secant
- * method.
+ * @brief Computes mu for a discretized truncated Gaussian distribution, given g_ave and sigma,
+ * using the secant method.
  *
  * this function estimates the value of mu for a discretized truncaed Gaussian distribution,
  * using the secant method.
@@ -384,6 +385,23 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
  * of the evaluated mean value with g_ave. (input/output)
  */
 inline static void gaussmuroot(double* x, double* diff, void* params){const double oldx=*x; *diff=gauss_trunc_g_ave(*x, (*(double*)params))-*(((double*)params)+1); /*printf("%22.15e %22.15e %22.15e %22.15e\n",*diff,*x,*(((double*)params)+2),*(((double*)params)+3));*/ *x-=*diff * (*x - *(((double*)params)+2)) / (*diff - *(((double*)params)+3)); *(((double*)params)+2)=oldx; *(((double*)params)+3)=*diff;} 
+
+/**
+ * @brief Computes mu for a discretized truncated Gaussian distribution, given g_ave and rsigma,
+ * using the secant method.
+ *
+ * this function estimates the value of mu for a discretized truncaed Gaussian distribution,
+ * using the secant method.
+ *
+ * @param x: Current value for mu (input/output)
+ * @param diff: Current value for the discrepancy between the mean evaluated
+ * using the current mu parameter value and g_ave. (output)
+ * @param params: Pointer to an array of parameters. First parameter is the rsigma parameter
+ * for the Gaussian distribution, the second parameters is g_ave, the third parameter
+ * is the former mu value and the fourth parameter is the former discrepancy
+ * of the evaluated mean value with g_ave. (input/output)
+ */
+inline static void gaussrmuroot(double* x, double* diff, void* params){const double oldx=*x; *diff=gauss_trunc_g_ave(*x, *x * (*(double*)params))-*(((double*)params)+1); /*printf("%22.15e %22.15e %22.15e %22.15e\n",*diff,*x,*(((double*)params)+2),*(((double*)params)+3));*/ *x-=*diff * (*x - *(((double*)params)+2)) / (*diff - *(((double*)params)+3)); *(((double*)params)+2)=oldx; *(((double*)params)+3)=*diff;} 
 
 /**
  * @brief Computes the discrepancy between an evaluation of gamma cumulative
