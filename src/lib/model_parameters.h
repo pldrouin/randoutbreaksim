@@ -19,6 +19,7 @@
 #define RF_P_EPSF (1e-15)	//!< EPS for the mu and g_ave discrepancy
 #define RF_GPERC_EPSF (1e-15)	//!< EPS for the x95 CDF discrepancy
 #define RF_GKAPPA_EPSF (1e-15)  //!< EPS for the kappa CDF discrepancy
+#define RF_GAUSSMU_EPSF (1e-15)  //!< EPS for the Gaussian mu mean discrepancy
 
 /**
  * Primary individual communicable period model type. Flags used to specify the model.
@@ -356,6 +357,23 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
 
   return mean/fint+mui;
 }
+
+/**
+ * @brief Computes mu for a discretized truncated Gaussian distribution using the secant
+ * method.
+ *
+ * this function estimates the value of mu for a discretized truncaed Gaussian distribution,
+ * using the secant method.
+ *
+ * @param x: Current value for mu (input/output)
+ * @param diff: Current value for the discrepancy between the mean evaluated
+ * using the current mu parameter value and g_ave. (output)
+ * @param params: Pointer to an array of parameters. First parameter is the sigma parameter
+ * for the Gaussian distribution, the second parameters is g_ave, the third parameter
+ * is the former mu value and the fourth parameter is the former discrepancy
+ * of the evaluated mean value with g_ave. (input/output)
+ */
+inline static void gaussmuroot(double* x, double* diff, void* params){const double oldx=*x; *diff=gauss_trunc_g_ave(*x, (*(double*)params))-*(((double*)params)+1); /*printf("%22.15e %22.15e %22.15e %22.15e\n",*diff,*x,*(((double*)params)+2),*(((double*)params)+3));*/ *x-=*diff * (*x - *(((double*)params)+2)) / (*diff - *(((double*)params)+3)); *(((double*)params)+2)=oldx; *(((double*)params)+3)=*diff;} 
 
 /**
  * @brief Computes the discrepancy between an evaluation of gamma cumulative

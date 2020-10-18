@@ -1,5 +1,7 @@
 var NAVTREEINDEX1 =
 {
+"structconfig__pars.html#ae51dfbde0450e9c8853f6cea91718fcc":[0,0,1,6],
+"structconfig__pars.html#aff5a77c7c325b0cb681f2db40902b969":[0,0,1,8],
 "structext__timeline__info.html":[0,0,2],
 "structext__timeline__info.html#a07d1c95137114d8b33cac91c14d1d736":[0,0,2,0],
 "structext__timeline__info.html#ad53abeb4eebe50d38b9dfa8603e454f3":[0,0,2,3],

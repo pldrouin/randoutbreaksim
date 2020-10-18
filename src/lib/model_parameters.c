@@ -425,7 +425,6 @@ int model_solve_log_group(model_pars* pars)
 
 int model_solve_gauss_group(model_pars* pars)
 {
-  int ret;
 
   //If g_ave is provided
   if(!isnan(pars->g_ave)) {
@@ -435,12 +434,24 @@ int model_solve_gauss_group(model_pars* pars)
       return -1;
     }
 
-    //Solve for mu numerically from g_ave
-    //ret=model_solve_gauss_mu_from_mean(pars->g_ave,pars);
-    fprintf(stderr,"%s: Error: Solving g_ave from mu for a Gaussian distribution is not supported yet\n",__func__);
-    ret=-1;
+    pars->mu=pars->g_ave;
+    double othermu=pars->g_ave+pars->sigma;
+    double params[4]={pars->sigma, pars->g_ave, othermu, gauss_trunc_g_ave(othermu, pars->sigma) - pars->g_ave};
+    root_finder* rf=root_finder_init(gaussmuroot, params);
+    double diff;
 
-    if(ret) return ret;
+    int ret=root_finder_find(rf, RF_GAUSSMU_EPSF, 100, 0, 1e100, &pars->mu, &diff);
+
+    if(ret) {
+
+      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_GAUSSMU_EPSF);
+
+      else if(ret==-2) {
+	fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	return ret;
+      }
+    }
+    root_finder_free(rf);
 
   } else {
     //Else if mu is provided

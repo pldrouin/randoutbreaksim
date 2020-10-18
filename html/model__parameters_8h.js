@@ -1,6 +1,7 @@
 var model__parameters_8h =
 [
     [ "model_pars", "structmodel__pars.html", "structmodel__pars" ],
+    [ "RF_GAUSSMU_EPSF", "model__parameters_8h.html#af130eec4745557043748c39e548ffe94", null ],
     [ "RF_GKAPPA_EPSF", "model__parameters_8h.html#a9490e75206749a4db7fecb0f706fc861", null ],
     [ "RF_GPERC_EPSF", "model__parameters_8h.html#ace26d7f9e0547638346a1bb80558a2e5", null ],
     [ "RF_P_EPSF", "model__parameters_8h.html#a6fc0390a031aa231126fd62ea0efb676", null ],
@@ -23,6 +24,7 @@ var model__parameters_8h =
       [ "ro_time_pri_test_results", "model__parameters_8h.html#a7e22dc2a44f4d26ab4d378d88c6cbfd2aaf7c3545712aeef92787cd1241fec866", null ]
     ] ],
     [ "gauss_trunc_g_ave", "model__parameters_8h.html#ad3ccf58fdd77fc08202e7f716c71a0c3", null ],
+    [ "gaussmuroot", "model__parameters_8h.html#a8530f28b5e3b39ea8f41a16a7ba627e6", null ],
     [ "gkapparoot", "model__parameters_8h.html#acf51a1f2b9eabe0496061944e4872065", null ],
     [ "gpercroot", "model__parameters_8h.html#a3d757fa02920ff161046b12b01b41205", null ],
     [ "gpercrootfunc", "model__parameters_8h.html#a0370fa93232a3ea9443c9f3cdd54ac93", null ],
