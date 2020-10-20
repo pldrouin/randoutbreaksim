@@ -440,6 +440,12 @@ int model_solve_gauss_group(model_pars* pars)
 
     //If sigma is defined
     if(pars->sigma>0) {
+
+      if(gauss_trunc_g_ave(0,pars->sigma) < pars->g_ave) {
+	fprintf(stderr,"%s: Error: The provided g_ave and sigma values do not allow for a positive mu value\n",__func__);
+	return -1;
+      }
+
       pars->mu=pars->g_ave;
       double othermu=pars->g_ave+pars->sigma;
       double params[4]={pars->sigma, pars->g_ave, othermu, gauss_trunc_g_ave(othermu, pars->sigma) - pars->g_ave};
@@ -485,6 +491,11 @@ int model_solve_gauss_group(model_pars* pars)
 
   } else {
     //Else if mu is provided
+    
+    if(!(pars->mu>0)) {
+      fprintf(stderr,"%s: Error: The Gaussian mu parameter must be greater than 0.\n",__func__);
+      return -1;
+    }
 
     //Solve for g_ave numerically from mu
     //const double alpha=(1.5-pars->mu)/pars->sigma;
