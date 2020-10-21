@@ -492,8 +492,8 @@ int model_solve_gauss_group(model_pars* pars)
   } else {
     //Else if mu is provided
     
-    if(!(pars->mu>0)) {
-      fprintf(stderr,"%s: Error: The Gaussian mu parameter must be greater than 0.\n",__func__);
+    if(!(pars->mu>=0)) {
+      fprintf(stderr,"%s: Error: The Gaussian mu parameter must be non-negative.\n",__func__);
       return -1;
     }
 
