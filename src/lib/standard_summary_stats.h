@@ -54,7 +54,7 @@ typedef struct
 typedef struct
 {
   double extinction_time;	//!< *Path extinction time, if any. 
-  int32_t abs_tmax;		//!< Absolute maximum simulation time, including period before post-processing origin.
+  double abs_tmax;		//!< Absolute maximum simulation time, including period before post-processing origin.
   double first_pos_test_results_time; //!< Absolute time for the first positive test results.
   uint32_t* inf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval.
   uint32_t* newinf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval,
@@ -140,7 +140,7 @@ inline static void std_stats_path_init(sim_vars* sv)
 
   if(sv->pars.timetype==ro_time_first_pos_test_results) {
     stats->abs_maxnpers=INT32_MAX;
-    stats->abs_tmax=stats->abs_maxnpers/stats->nbinsperunit;
+    stats->abs_tmax=((double)stats->abs_maxnpers)/stats->nbinsperunit;
     stats->first_pos_test_results_time=INFINITY;
     stats->abs_npers=0;
 
@@ -622,9 +622,7 @@ inline static void first_pos_test_results_update(sim_vars* sv, infindividual* ii
     stats->first_pos_test_results_time=ii->end_comm_period+sv->pars.tdeltat;
 
     stats->abs_maxnpers=floor(stats->nbinsperunit*stats->first_pos_test_results_time)+stats->npers;
-    stats->abs_tmax=stats->abs_maxnpers/stats->nbinsperunit;
-    //stats->abs_tmax=stats->first_pos_test_results_time+sv->pars.tmax;
-    //stats->abs_maxnpers=(int)(stats->nbinsperunit*stats->abs_tmax);
+    stats->abs_tmax=((double)stats->abs_maxnpers)/stats->nbinsperunit;
 
     newsize=(int32_t)(stats->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat+stats->npostestmaxnunits));
 
