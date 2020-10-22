@@ -12,7 +12,7 @@
 
 int main(const int nargs, const char* args[])
 {
-  config_pars cp={.ninfhist=false, .timerelfirstpostestresults=false, .npaths=10000, .lmax=UINT32_MAX, .nbinsperunit=1, .nimax=UINT32_MAX, .npostestmax=UINT32_MAX, .npostestmaxnpers=1, .nthreads=1, .stream=0, .tloutbufsize=10, .tlout=0, 
+  config_pars cp={.ninfhist=false, .npaths=10000, .lmax=UINT32_MAX, .nbinsperunit=1, .nimax=UINT32_MAX, .npostestmax=UINT32_MAX, .npostestmaxnunits=1, .nthreads=1, .stream=0, .tloutbufsize=10, .tlout=0, 
 #ifdef CT_OUTPUT
     .ctoutbufsize=10, 
     .ctout=0, 
@@ -205,7 +205,7 @@ int main(const int nargs, const char* args[])
   const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
 #endif
   const double nnoe=cp.npaths-tdata[0].pe;
-  printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,tdata[0].n_inf);
+  //printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,tdata[0].n_inf);
   tdata[0].r_mean/=tdata[0].n_inf;
   tdata[0].commper_mean/=tdata[0].n_inf;
 #ifdef NUMEVENTSSTATS
@@ -384,7 +384,7 @@ void* simthread(void* arg)
       exit(1);
     }
 
-    if(cp->pars.timetype!=ro_time_pri_created || cp->timerelfirstpostestresults) {
+    if(cp->pars.timetype!=ro_time_pri_created) {
 
       if(isnan(cp->pars.tdeltat)) buf_write_func=tlo_write_reltime_path;
       else buf_write_func=tlo_write_reltime_postest_path;
@@ -424,8 +424,33 @@ void* simthread(void* arg)
 
   sim_set_proc_data(&sv, &stats);
 
-  if(cp->pars.timetype!=ro_time_pri_created) sim_set_pri_init_proc_func(&sv, std_stats_pri_init_rel);
-  else sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
+  if(cp->pars.timetype==ro_time_pri_created || cp->pars.timetype==ro_time_first_pos_test_results) sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
+  else sim_set_pri_init_proc_func(&sv, std_stats_pri_init_rel);
+
+  if( cp->pars.timetype==ro_time_first_pos_test_results) {
+    sim_set_new_inf_proc_func(&sv, std_stats_new_inf_first_pos_test_results);
+
+    if(cp->ninfhist) {
+      sim_set_end_inf_proc_func(&sv, std_stats_end_inf_rec_ninfs);
+      sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf_rec_ninfs_first_pos_test_results);
+
+    } else {
+      sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
+      sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf_first_pos_test_results);
+    }
+
+  } else {
+    sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
+
+    if(cp->ninfhist) {
+      sim_set_end_inf_proc_func(&sv, std_stats_end_inf_rec_ninfs);
+      sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf_rec_ninfs);
+
+    } else {
+      sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
+      sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf);
+    }
+  }
 
   sim_set_ii_alloc_proc_func(&sv, std_stats_ii_alloc);
 
@@ -435,27 +460,17 @@ void* simthread(void* arg)
     else sim_set_new_event_proc_func(&sv, std_stats_new_event_npostestmax);
 
   } else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
-  sim_set_new_inf_proc_func(&sv, std_stats_new_inf);
-
-  if(cp->ninfhist) {
-    sim_set_end_inf_proc_func(&sv, std_stats_end_inf_rec_ninfs);
-    sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf_rec_ninfs);
-
-  } else {
-    sim_set_end_inf_proc_func(&sv, std_stats_end_inf);
-    sim_set_new_inf_proc_noevent_func(&sv, std_stats_noevent_new_inf);
-  }
 
   branchsim_init(&sv);
 
-  if(cp->ninfhist) std_stats_init(&sv, cp->nbinsperunit, true, cp->timerelfirstpostestresults);
+  if(cp->ninfhist) std_stats_init(&sv, cp->nbinsperunit, true);
 
-  else std_stats_init(&sv, cp->nbinsperunit, false, cp->timerelfirstpostestresults);
+  else std_stats_init(&sv, cp->nbinsperunit, false);
 
   stats.lmax=cp->lmax;
   stats.nimax=cp->nimax;
   stats.npostestmax=cp->npostestmax;
-  stats.npostestmaxnpers=cp->npostestmaxnpers;
+  stats.npostestmaxnunits=cp->npostestmaxnunits;
   int i,j,k;
   uint32_t curset=data->id;
   uint32_t initpath;
@@ -476,9 +491,13 @@ void* simthread(void* arg)
     //printf("npaths %u\n",npaths);
 
     for(i=npaths-1; i>=0; --i) {
-      std_stats_path_init(&stats);
+      std_stats_path_init(&sv);
       branchsim(&sv);
-      std_stats_path_end(&sv);
+
+      if(!std_stats_path_end(&sv)) {
+	++i;
+	continue;
+      }
       eti=stats.ext_timeline-stats.tlshift;
       data->n_inf+=eti->n;
       data->r_mean+=eti->rsum;

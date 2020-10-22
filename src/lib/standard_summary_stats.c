@@ -6,15 +6,24 @@
 
 #include "standard_summary_stats.h"
 
-void std_stats_init(sim_vars* sv, const uint32_t nbinsperunit, bool ngeninfs, bool timerelfirstpostestresults)
+void std_stats_init(sim_vars* sv, const uint32_t nbinsperunit, bool ngeninfs)
 {
   std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
 
-  stats->timerelfirstpostestresults=timerelfirstpostestresults;
-  stats->nbinsperunit=(1+timerelfirstpostestresults)*nbinsperunit;
+  if(sv->pars.timetype==ro_time_first_pos_test_results) {
+    stats->nbinsperunit=2*nbinsperunit;
+    stats->tnpersa=stats->npers=(uint32_t)(stats->nbinsperunit*sv->pars.tmax);
+    stats->abs_maxnpers=INT32_MAX;
+    stats->first_pos_test_results_time=stats->abs_tmax=INFINITY;
+    stats->abs_npers=0;
+
+  } else {
+    stats->nbinsperunit=nbinsperunit;
+    stats->tnpersa=stats->npers=stats->abs_maxnpers=stats->abs_npers=(uint32_t)(stats->nbinsperunit*sv->pars.tmax);
+    stats->abs_tmax=sv->pars.tmax;
+  }
 
   stats->tlshift=stats->tlshifta=0;
-  stats->tnpersa=stats->npers=(int)(stats->nbinsperunit*sv->pars.tmax);
   stats->inf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->newinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->postest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));

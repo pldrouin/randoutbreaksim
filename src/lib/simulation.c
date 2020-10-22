@@ -65,6 +65,7 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
 
   switch(pars->timetype) {
     case ro_time_pri_created:
+    case ro_time_first_pos_test_results:
       sv->gen_time_origin_func=gen_time_origin_pri_created;
       break;
 

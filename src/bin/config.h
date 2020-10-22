@@ -30,8 +30,8 @@ uint32_t npaths;		//!< Number of simulation paths.
 uint32_t lmax;			//!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
 int32_t nbinsperunit;		//!< Number of timeline bins per unit of time.
 uint32_t nimax;			//!< Maximum number of infectious individuals for a given time integet interval.
-uint32_t npostestmax;		//!< Maximum number of positive test results during an interval of duration npostestmaxnpers for each individual that starts when the test results are received.
-uint32_t npostestmaxnpers;      //!< Interval duration for the maximum number of positive test results
+uint32_t npostestmax;		//!< Maximum number of positive test results during an interval of duration npostestmaxnunits for each individual that starts when the test results are received.
+uint32_t npostestmaxnunits;      //!< Interval duration for the maximum number of positive test results
 uint32_t nthreads;		//!< Number of threads used to perform the simulation.
 uint32_t nsetsperthread;	//!< Number of path sets used for each thread.
 uint32_t stream;		//!< RNG stream index.

@@ -216,6 +216,9 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "pri_no_alt_test_fnr")) {
 	cp->pars.pricommpertype&=~ro_pricommper_alt_use_tpr;
 
+      } else if(!argsdiffer(pbuf, "time_rel_pri_created")) {
+	cp->pars.timetype=ro_time_pri_created;
+
       } else if(!argsdiffer(pbuf, "time_rel_pri_infectious")) {
 	cp->pars.timetype=ro_time_pri_infectious;
 
@@ -226,7 +229,7 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	cp->pars.timetype=ro_time_pri_test_results;
 
       } else if(!argsdiffer(pbuf, "time_rel_first_pos_test_results")) {
-	cp->timerelfirstpostestresults=true;
+	cp->pars.timetype=ro_time_first_pos_test_results;
 
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
@@ -295,9 +298,9 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->npostestmax);
 
-      } else if(!argsdiffer(pbuf, "npostestmaxnpers")) {
+      } else if(!argsdiffer(pbuf, "npostestmaxnunits")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%"PRIu32,&cp->npostestmaxnpers);
+	sscanf(pbuf,"%"PRIu32,&cp->npostestmaxnunits);
 
       } else if(!argsdiffer(pbuf, "nthreads")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
@@ -398,17 +401,18 @@ void printusage(const char* name)
   printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period. This option makes a model diverge from a branching process.\n");
   printf("\t--pri_no_alt_test_fnr\t\tThe alternate communicable period for a primary infectious individual cannot result in a false negative test. This option makes a model diverge from a branching process.\n");
 
+  printf("\t--time_rel_pri_created\t\tRecorded event time is relative to the time the primary individuals are generated.\n");
   printf("\t--time_rel_pri_infectious\tRecorded event time is relative to the time the generated primary individuals become infectious.\n");
   printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
   printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
-  printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result. This operation is performed in post-processing, independently of the previous time operations. It should be combined with --time_rel_pri_test_results, --pri_no_main_period and --pri_no_alt_test_fnr to ensure that all simulated paths are allowed to reach tmax.\n");
+  printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result. This operation is performed in post-processing.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nbinsperunit VALUE\t\tNumber of timeline bins per unit of time.\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
-  printf("\t--npostestmax VALUE\t\tMaximum number of positive test results during an interval of duration npostestmaxnpers that starts when the test results are received. (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
-  printf("\t--npostestmaxnpers VALUE\tInterval duration for the maximum number of positive test results (default value of 1).\n");
+  printf("\t--npostestmax VALUE\t\tMaximum number of positive test results during an interval of duration npostestmaxunits that starts when the test results are received. (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
+  printf("\t--npostestmaxunits VALUE\tInterval duration for the maximum number of positive test results (default value of 1).\n");
   printf("\t--tlout FILENAME\t\tOutput timeline information for each simulated path into the provided file in the binary format as described below.\n");
   printf("\t--tloutbufsize VALUE\t\tPer-thread memory buffer size (in MB) used to accumulate data for timeline output before writing them to disk (default value of 10 MB).\n");
 #ifdef CT_OUTPUT
