@@ -54,15 +54,15 @@ typedef struct
 typedef struct
 {
   double extinction_time;	//!< *Path extinction time, if any. 
-  double abs_tmax;		//!< Absolute maximum simulation time, including period before post-processing origin.
+  int32_t abs_tmax;		//!< Absolute maximum simulation time, including period before post-processing origin.
   double first_pos_test_results_time; //!< Absolute time for the first positive test results.
-  uint32_t* inf_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*abs_tmax)-1, the number of individuals that are infected, but not isolated, at some point in this interval.
-  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*abs_tmax)-1, the number of individuals that get infected at some point in this interval. For the last interval,
-  uint32_t* postest_timeline;	//!< For each integer interval between 0 and floor(nbinsperunit*abs_tmax)-1, the number of individuals that have a recent positive test result at the end of this interval.
-  uint32_t* newpostest_timeline;//!< For each integer interval between 0 and floor(nbinsperunit*abs_tmax), the number of individuals that receive a positive test result at some point in this interval.
-  uint32_t* pp_inf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and floor(nbinsperunit*abs_tmax)-1, the number of individuals that are infected, but not isolated, at some point in this interval.
-  uint32_t* pp_newinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and floor(nbinsperunit*abs_tmax)-1, the number of individuals that get infected at some point in this interval. For the last interval,
-  uint32_t* pp_newpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and floor(nbinsperunit*abs_tmax), the number of individuals that receive a positive test result at some point in this interval.
+  uint32_t* inf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval.
+  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval,
+  uint32_t* postest_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that have a recent positive test result at the end of this interval.
+  uint32_t* newpostest_timeline;//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval.
+  uint32_t* pp_inf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval.
+  uint32_t* pp_newinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval,
+  uint32_t* pp_newpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval.
   ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used.
   uint32_t nainfbins;		//!< Number of allocated infectious individual bins.
   uint32_t ninfbins;		//!< Number of used infectious individual bins.
@@ -72,9 +72,9 @@ typedef struct
   uint32_t nactentries;
   int32_t curctid;
 #endif
-  int32_t abs_maxnpers;		//!< Absolute maximum number of potential positive integer intervals for the simulation. This number can decrease during the simulation of a path (=floor(nbinsperunit*abs_tmax)).
+  int32_t abs_maxnpers;		//!< Absolute maximum number of potential positive integer intervals for the simulation. This number can decrease during the simulation of a path (=nbinsperunit*abs_tmax).
   int32_t abs_npers;		//!< Actual number of absolute simulated positive integer intervals. This number can only increase during the simulation of a path (=floor(nbinsperunit*(end_comm_period+tdeltat+npostestmaxnunits)) for positive tests and floor(nbinsperunit*end_comm_period) for negative tests when using time_rel_first_pos_test).
-  int32_t npers;		//!< Maximum number of desired positive integer intervals (=floor(nbinsperunit*tmax).
+  int32_t npers;		//!< Maximum number of desired positive integer intervals (=nbinsperunit*tmax).
   int32_t nbinsperunit;		//!< Number of timeline bins per unit of time.
   int32_t  tlshifta;            //!< *Allocated integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
   int32_t  tlshift;             //!< *Integral shift of the timeline origin (to allow for negative time bins). Corresponds also to the number of negative integer intervals
@@ -82,7 +82,7 @@ typedef struct
   int32_t tlppnnpers;		//!< Timeline post-processing number of negative periods
   uint32_t tlpptnvpers;		//!< Timeline post-processing total number of valid periods
   uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
-  uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and floor(nbinsperunit*abs_tmax)-1. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
+  uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and nbinsperunit*abs_tmax-1. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnunits for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmaxnunits;    //!< Interval duration for the maximum number of positive test results
   int32_t maxedoutmintimeindex; //!< *Minimum time index which maxed out the allowed number of infected individuals or positive test results.
@@ -140,7 +140,8 @@ inline static void std_stats_path_init(sim_vars* sv)
 
   if(sv->pars.timetype==ro_time_first_pos_test_results) {
     stats->abs_maxnpers=INT32_MAX;
-    stats->first_pos_test_results_time=stats->abs_tmax=INFINITY;
+    stats->abs_tmax=stats->abs_maxnpers/stats->nbinsperunit;
+    stats->first_pos_test_results_time=INFINITY;
     stats->abs_npers=0;
 
   } else stats->tlshift=0;
@@ -180,14 +181,19 @@ inline static bool std_stats_path_end(sim_vars* sv)
 
     int32_t k;
     bool single;
-    int32_t tlppt0idx=floor(stats->nbinsperunit*stats->first_pos_test_results_time);;
+    int32_t tlppt0idx=floor(stats->nbinsperunit*stats->first_pos_test_results_time);
 
     stats->tlppnnpers=(uint32_t)ceil(tlppt0idx*0.5);
+
+    //if(tnvpers-tlppt0idx<stats->npers && stats->extinction==false && maxedoutmintimeindex!=tnvpers) {
+    //  printf("tnvpers=%u, tlppt0idx=%i, diff=%i, npers=%i, ext=%i, maxoutidx=%i\n",tnvpers,tlppt0idx,tnvpers-tlppt0idx,stats->npers,stats->extinction,maxedoutmintimeindex);
+    //}
+    //assert(tnvpers-tlppt0idx>=stats->npers || stats->extinction==true || maxedoutmintimeindex==tnvpers);
 
     if(tnvpers-tlppt0idx>stats->npers) {
       tnvpers=tlppt0idx+stats->npers;
 
-      if(stats->inf_timeline[tlppt0idx+stats->npers]) stats->extinction=false;
+      if(stats->inf_timeline[tnvpers]) stats->extinction=false;
     }
     stats->tlpptnvpers=(uint32_t)ceil((tnvpers-tlppt0idx)*0.5)+stats->tlppnnpers;
     //if(stats->extinction && stats->tlpptnvpers-stats->tlppnnpers>0.5*stats->npers) __ro_debug=1;
@@ -195,7 +201,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
     //else __ro_debug=0;
 
     if(stats->maxedoutmintimeindex<INT32_MAX) stats->maxedoutmintimeindex=(int32_t)floor((stats->maxedoutmintimeindex-tlppt0idx)*0.5);
-    stats->extinction_time-=tlppt0idx/(double)stats->nbinsperunit;
+    stats->extinction_time-=stats->first_pos_test_results_time;
     DEBUG_PRINTF("Before merging: %i negatives and %u total. First positive test found at %i\n",stats->tlshift,tnvpers,tlppt0idx);
     DEBUG_PRINTF("First positive test found at %i => %i negative periods and %u total valid periods. maxedoutmintimeindex set to %i\n",tlppt0idx,stats->tlppnnpers,stats->tlpptnvpers,stats->maxedoutmintimeindex);
 
@@ -614,17 +620,22 @@ inline static void first_pos_test_results_update(sim_vars* sv, infindividual* ii
   if(ii->commpertype&ro_commper_true_positive_test && ii->end_comm_period+sv->pars.tdeltat < stats->first_pos_test_results_time) {
     std_summary_stats* const stats=(std_summary_stats*)sv->dataptr;
     stats->first_pos_test_results_time=ii->end_comm_period+sv->pars.tdeltat;
-    stats->abs_tmax=stats->first_pos_test_results_time+sv->pars.tmax;
+
+    stats->abs_maxnpers=floor(stats->nbinsperunit*stats->first_pos_test_results_time)+stats->npers;
+    stats->abs_tmax=stats->abs_maxnpers/stats->nbinsperunit;
+    //stats->abs_tmax=stats->first_pos_test_results_time+sv->pars.tmax;
+    //stats->abs_maxnpers=(int)(stats->nbinsperunit*stats->abs_tmax);
+
     newsize=(int32_t)(stats->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat+stats->npostestmaxnunits));
 
-    if(newsize > stats->abs_npers) stats->abs_npers=newsize;
+    if(newsize > stats->abs_npers) stats->abs_npers=(newsize<=stats->abs_maxnpers?newsize:stats->abs_maxnpers);
 
-    newsize=stats->abs_maxnpers=(int)(stats->nbinsperunit*stats->abs_tmax);
+    newsize=stats->abs_maxnpers;
 
   } else {
-    newsize=(int)(stats->nbinsperunit*ii->end_comm_period);
+    newsize=(int32_t)(stats->nbinsperunit*ii->end_comm_period)+1;
 
-    if(newsize > stats->abs_npers) stats->abs_npers=newsize;
+    if(newsize > stats->abs_npers) stats->abs_npers=(newsize<=stats->abs_maxnpers?newsize:stats->abs_maxnpers);
   }
 
   if(newsize > stats->tnpersa) {

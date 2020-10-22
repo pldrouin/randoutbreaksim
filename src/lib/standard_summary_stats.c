@@ -14,7 +14,8 @@ void std_stats_init(sim_vars* sv, const uint32_t nbinsperunit, bool ngeninfs)
     stats->nbinsperunit=2*nbinsperunit;
     stats->tnpersa=stats->npers=(uint32_t)(stats->nbinsperunit*sv->pars.tmax);
     stats->abs_maxnpers=INT32_MAX;
-    stats->first_pos_test_results_time=stats->abs_tmax=INFINITY;
+    stats->abs_tmax=stats->abs_maxnpers/stats->nbinsperunit;
+    stats->first_pos_test_results_time=INFINITY;
     stats->abs_npers=0;
 
   } else {

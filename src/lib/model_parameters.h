@@ -90,7 +90,7 @@ typedef struct
   double ttpr;		//!< True positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the main period, for which a positive test would allow for the interruption of a child's communicable period
   double mtpr;		//!< True positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the alternate period, for which a positive test would allow for the interruption of a child's communicable period
   double tdeltat;	//!< Time delay between the end of the applicable communicable period and test results.
-  double tmax;		//!< Maximum simulation period used to instantiate new infectious individuals
+  int32_t tmax;		//!< Maximum simulation time units used to instantiate new infectious individuals
   uint32_t nstart;	//!< Initial number of infectious individuals
   uint32_t popsize;     //!< Population size (finite population simulation)
   uint8_t pricommpertype;	//!< Primary individual communicable period type bit field (composed using ro_pricommper_model_flags) 
@@ -298,7 +298,7 @@ inline static void loggt1root(double* x, double* diff, void* params){const doubl
  */
 inline static double gauss_trunc_g_ave(const double mu, const double sigma)
 {
-  int32_t i;
+  int32_t i; //Discrete random value relative to mui
   int32_t mui=floor(mu+0.5);
   const double dmu=mu-mui;
   const double psmu=dmu-0.5;
@@ -357,14 +357,15 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
     fintbuf+=dint;
     meanbuf+=dint*(lasti+1);
 
-    if(newrangeint==1) break;
     fint+=fintbuf;
     mean+=meanbuf;
+    if(newrangeint==1) break;
     lastrangeint=newrangeint;
     lasti+=nbins;
     nbins*=2;
     //printf("nbins to %i\n",nbins);
   }
+  //printf("mean=%22.15e, fint=%22.15e, mui=%i\n",mean,fint,mui);
 
   return mean/fint+mui;
 }

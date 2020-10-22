@@ -50,7 +50,7 @@ void sim_pars_init(model_pars* pars)
   pars->ttpr=NAN;
   pars->mtpr=NAN;
   pars->tdeltat=NAN;
-  pars->tmax=INFINITY;
+  pars->tmax=INT32_MAX;
   pars->nstart=1;
   pars->popsize=0;
   pars->pricommpertype=ro_pricommper_main|ro_pricommper_alt|ro_pricommper_alt_use_tpr;

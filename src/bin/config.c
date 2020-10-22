@@ -233,7 +233,7 @@ int config(config_pars* cp, const int nargs, const char* args[])
 
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
-	sscanf(pbuf,"%lf",&cp->pars.tmax);
+	sscanf(pbuf,"%i",&cp->pars.tmax);
 
       } else if(!argsdiffer(pbuf, "nstart")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
@@ -406,7 +406,7 @@ void printusage(const char* name)
   printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
   printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
   printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result. This operation is performed in post-processing.\n");
-  printf("\t--tmax VALUE\t\t\tMaximum simulation period used to instantiate new infectious individuals (default value of INFINITY).\n");
+  printf("\t--tmax VALUE\t\t\tMaximum simulation time used to instantiate new infectious individuals (default value of INFINITY).\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nbinsperunit VALUE\t\tNumber of timeline bins per unit of time.\n");
@@ -431,7 +431,7 @@ void printusage(const char* name)
   printf("\n\nBINARY TIMELINE OUTPUT FILE:\n");
   printf("\n\tAll fields are stored in little endian.\n");
   printf("\n\tFile header:\n");
-  printf("\t\t-Unsigned 32 bit value: floor(tmax)+1, the number of time bins starting from t=0.\n");
+  printf("\t\t-Unsigned 32 bit value: tmax, the number of time bins starting from t=0.\n");
   printf("\t\t-8 bit field:\n");
   printf("\t\t\tBits 0 to 2: A value from the three lower significant bits is used to indicate the model of the time origin. A value of 1 for primary individual creation time, 2 for time primary individual becomes infectious (time_rel_pri_infectious), 3 for end of communicable period for primary individual (time_rel_pri_end_comm), 4 for test results for primary individual (time_rel_pri_test_results).\n");
   printf("\t\t\tBit 3: Indicates if a timeline is included for positive test results.\n");
