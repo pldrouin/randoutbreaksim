@@ -205,7 +205,7 @@ int main(const int nargs, const char* args[])
   const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
 #endif
   const double nnoe=cp.npaths-tdata[0].pe;
-  //printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,tdata[0].n_inf);
+  printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,tdata[0].n_inf);
   tdata[0].r_mean/=tdata[0].n_inf;
   tdata[0].commper_mean/=tdata[0].n_inf;
 #ifdef NUMEVENTSSTATS

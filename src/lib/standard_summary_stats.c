@@ -12,11 +12,10 @@ void std_stats_init(sim_vars* sv, const uint32_t nbinsperunit, bool ngeninfs)
 
   if(sv->pars.timetype==ro_time_first_pos_test_results) {
     stats->nbinsperunit=2*nbinsperunit;
-    stats->tnpersa=stats->npers=stats->nbinsperunit*sv->pars.tmax;
+    stats->tnpersa=stats->npers=stats->abs_npers=stats->nbinsperunit*sv->pars.tmax;
     stats->abs_maxnpers=INT32_MAX;
     stats->abs_tmax=((double)stats->abs_maxnpers)/stats->nbinsperunit;
     stats->first_pos_test_results_time=INFINITY;
-    stats->abs_npers=0;
 
   } else {
     stats->nbinsperunit=nbinsperunit;

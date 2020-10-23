@@ -179,7 +179,7 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
       memset(data->newpostest_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
     }
     data->tlppnnpers+=ndiff;
-    data->tlpptnvpers+=ndiff+pdiff;
+    data->tlpptnvpers=newsize;
   }
 }
 

@@ -150,6 +150,9 @@ inline static void std_stats_path_init(sim_vars* sv)
   stats->nctentries=0;
   stats->curctid=0;
 #endif
+  if(stats->ext_timeline[0].n!=0) {
+    printf("ext: %u, %u, %u, %u\n",stats->ext_timeline[0].n,nerase,stats->tlshift,stats->abs_npers);
+  }
 }
 
 /**
@@ -280,6 +283,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
   } else {
 
     for(i=tnvpers-2; i>=0; --i) {
+      //printf("et[%i].n (%u) += %u\n",i,et[i].n,et[i+1].n);
       et[i].n+=et[i+1].n;
       et[i].rsum+=et[i+1].rsum;
       et[i].commpersum+=et[i+1].commpersum;
@@ -623,8 +627,9 @@ inline static void first_pos_test_results_update(sim_vars* sv, infindividual* ii
 
     stats->abs_maxnpers=floor(stats->nbinsperunit*stats->first_pos_test_results_time)+stats->npers;
     stats->abs_tmax=((double)stats->abs_maxnpers)/stats->nbinsperunit;
+    assert(stats->abs_tmax*stats->nbinsperunit == stats->abs_maxnpers);
 
-    newsize=(int32_t)(stats->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat+stats->npostestmaxnunits));
+    newsize=(int32_t)(stats->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat+stats->npostestmaxnunits))+1;
 
     if(newsize > stats->abs_npers) stats->abs_npers=(newsize<=stats->abs_maxnpers?newsize:stats->abs_maxnpers);
 
@@ -654,10 +659,9 @@ inline static void first_pos_test_results_update(sim_vars* sv, infindividual* ii
     stats->ext_timeline=(ext_timeline_info*)realloc(stats->ext_timeline,newsize*sizeof(ext_timeline_info));
     memset(stats->ext_timeline+stats->tnpersa,0,dsize*sizeof(ext_timeline_info));
 
-    int32_t i;
-
     if(stats->nainfbins) {
       uint64_t* newarray64;
+      int32_t i;
 
       for(i=dsize-1; i>=0; --i) {
 	newarray64=(uint64_t*)malloc(stats->nainfbins*sizeof(uint64_t));
