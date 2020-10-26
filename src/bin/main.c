@@ -423,6 +423,8 @@ void* simthread(void* arg)
   std_summary_stats stats;
 
   sim_set_proc_data(&sv, &stats);
+  sim_set_path_init_proc_func(&sv, std_stats_path_init);
+  sim_set_path_end_proc_func(&sv, std_stats_path_end);
 
   if(cp->pars.timetype==ro_time_pri_created || cp->pars.timetype==ro_time_first_pos_test_results) sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
   else sim_set_pri_init_proc_func(&sv, std_stats_pri_init_rel);
@@ -491,13 +493,8 @@ void* simthread(void* arg)
     //printf("npaths %u\n",npaths);
 
     for(i=npaths-1; i>=0; --i) {
-      std_stats_path_init(&sv);
       branchsim(&sv);
 
-      if(!std_stats_path_end(&sv)) {
-	++i;
-	continue;
-      }
       eti=stats.ext_timeline-stats.tlshift;
       data->n_inf+=eti->n;
       data->r_mean+=eti->rsum;

@@ -231,6 +231,15 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "time_rel_first_pos_test_results")) {
 	cp->pars.timetype=ro_time_first_pos_test_results;
 
+      } else if(!argsdiffer(pbuf, "include_all_paths")) {
+	cp->pars.pathtype=ro_all_paths;
+
+      } else if(!argsdiffer(pbuf, "observable_paths_only")) {
+	cp->pars.pathtype=ro_observable_paths_only;
+
+      } else if(!argsdiffer(pbuf, "non-observable_paths_only")) {
+	cp->pars.pathtype=ro_non_observable_paths_only;
+
       } else if(!argsdiffer(pbuf, "tmax")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%i",&cp->pars.tmax);
@@ -406,6 +415,9 @@ void printusage(const char* name)
   printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
   printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
   printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result. This operation is performed in post-processing.\n");
+  printf("\t--include_all_paths\t\tIndicate that observable and non-observable paths should be included in the simulation results.\n");
+  printf("\t--observable_paths_only\t\tIndicate that only observable paths should be included in the simulation results.\n");
+  printf("\t--non-observable_paths_only\tIndicate that only non-observable paths should be included in the simulation results.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation time used to instantiate new infectious individuals (default value of INFINITY).\n");
   printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");

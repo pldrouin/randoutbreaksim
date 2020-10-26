@@ -39,6 +39,11 @@ enum ro_time_model{ro_time_pri_created=1, ro_time_pri_infectious=2, ro_time_pri_
 enum ro_group_model_flags {ro_group_invitees=1, ro_group_log_plus_1=2, ro_group_log=4, ro_group_gauss=8, ro_group_dist_mask=ro_group_log_plus_1|ro_group_log|ro_group_gauss};
 
 /**
+ * Path model.
+ */
+enum ro_path_model {ro_all_paths, ro_observable_paths_only, ro_non_observable_paths_only};
+
+/**
  * Model parameters.
  */
 typedef struct 
@@ -96,6 +101,7 @@ typedef struct
   uint8_t pricommpertype;	//!< Primary individual communicable period type bit field (composed using ro_pricommper_model_flags) 
   uint8_t grouptype;   	//!< Group type bit field (composed using ro_group_model_flags)
   uint8_t timetype;     //!< Recorded time origin (value set using ro_time_model)
+  uint8_t pathtype;        //!< Indicate which type of path, observable or not, should be included in the simulation results (value set using ro_path_model)
 } model_pars;
 
 /**

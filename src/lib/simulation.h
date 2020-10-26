@@ -47,6 +47,8 @@ typedef struct sim_vars_
   void (*gen_time_periods_func_no_int)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods without interruption for a given infectious individual
   uint32_t (*gen_att_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees during one event
   void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
+  void (*path_init_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path initialisation function.
+  bool (*path_end_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path termination function. The returned value from this function determines if the simulated path is to be included in the simulation.
   void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
   bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The returned value from this function determines if new infectious individuals are instantiated for this event. The function can also be called in CT_OUTPUT mode for contact events during the latent phase of the individual.
@@ -116,6 +118,22 @@ inline static void sim_set_new_event_proc_func(sim_vars* sv, bool (*new_event_pr
  * @param new_inf_proc_func: Pointer to the user-defined function.
  */
 inline static void sim_set_new_inf_proc_func(sim_vars* sv, void (*new_inf_proc_func)(sim_vars* sv, infindividual* ii, infindividual* parent)){sv->new_inf_proc_func=new_inf_proc_func;}
+
+/**
+ * @brief Sets the user-defined processing function that is called when a new
+ * path is simulated.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void sim_set_path_init_proc_func(sim_vars* sv, void (*path_init_proc_func)(sim_vars* sv)){sv->path_init_proc_func=path_init_proc_func;}
+
+/**
+ * @brief Sets the user-defined processing function that is called when a simulated path has ended. The returned value
+ * from this function determines if the simulated path is to be included in the simulation.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void sim_set_path_end_proc_func(sim_vars* sv, bool (*path_end_proc_func)(sim_vars* sv)){sv->path_end_proc_func=path_end_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called when a new
@@ -403,6 +421,22 @@ inline static bool default_event_proc_func(sim_vars* sv){return (sv->curii->even
  * @param ii: New infectious individual.
  */
 inline static void default_ii_alloc_proc_func(infindividual* ii){ii->dataptr=NULL;}
+
+/**
+ * @brief Default processing function.
+ *
+ * This function is called by default if a user-defined function has not been
+ * set. The function does not do anything.
+ */
+inline static void dummy_proc_func_sv(sim_vars* sv){}
+
+/**
+ * @brief Default processing function.
+ *
+ * This function is called by default if a user-defined function has not been
+ * set. The function does not do anything.
+ */
+inline static bool dummy_proc_bool_func_sv(sim_vars* sv){return true;}
 
 /**
  * @brief Default processing function.

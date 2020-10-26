@@ -56,6 +56,7 @@ void sim_pars_init(model_pars* pars)
   pars->pricommpertype=ro_pricommper_main|ro_pricommper_alt|ro_pricommper_alt_use_tpr;
   pars->grouptype=ro_group_log_plus_1;
   pars->timetype=ro_time_pri_created;
+  pars->pathtype=ro_all_paths;
 }
 
 void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
@@ -85,6 +86,8 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
   PER_COND;
 
   sv->dataptr=NULL;
+  sv->path_init_proc_func=dummy_proc_func_sv;
+  sv->path_end_proc_func=dummy_proc_bool_func_sv;
   sv->pri_init_proc_func=dummy_proc_func_sv_ii;
   sv->ii_alloc_proc_func=default_ii_alloc_proc_func;
   sv->new_event_proc_func=default_event_proc_func;

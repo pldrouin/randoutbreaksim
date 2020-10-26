@@ -700,6 +700,29 @@ int model_pars_check(model_pars const* pars)
     ret-=256;
   }
 
+  if(pars->timetype==ro_time_first_pos_test_results) {
+
+    if(pars->pathtype!=ro_observable_paths_only) {
+    fprintf(stderr,"%s: Error: Invalid configuration for the combination of time origin and path type. Time relative to first positive test results cannot be used unless only observable paths are selected.\n",__func__);
+    ret-=512;
+    }
+
+    if(pars->mtpr<=0) {
+      fprintf(stderr,"%s: Error: Invalid configuration for the combination of time origin and true positive rate for the testing of a parent whose communicable period is the alternate period. The mtpr parameter must be greater than 0 when requiring time relative to first positive test results.\n",__func__);
+      ret-=512;
+    }
+  }
+
+  if(pars->pathtype==ro_observable_paths_only && (!(pars->q>0) || pars->mtpr<=0)) {
+    fprintf(stderr,"%s: Error: Invalid configuration for the combination of path type and communicable period type or true positive rate for the testing of a parent whose communicable period is the alternate period. The q parameter must be greater than 0 and a defined mtpr parameter must be greater than 0 if only observable paths are selected.\n",__func__);
+    ret-=2048;
+  }
+
+  if(pars->pathtype==ro_non_observable_paths_only && !(!(pars->q==1) || pars->mtpr<1 || pars->ttpr<1)) {
+    fprintf(stderr,"%s: Error: Invalid configuration for the combination of path type and communicable period type or true positive rate. A defined q parameter must be smaller than 1 or either mtpr or ttpr must be smaller than 1 if only non-observable paths are selected.\n",__func__);
+    ret-=2048;
+  }
+
   //If testing is performed
   if(!isnan(pars->tdeltat)) {
 

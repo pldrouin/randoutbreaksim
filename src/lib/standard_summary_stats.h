@@ -55,15 +55,15 @@ typedef struct
 {
   double extinction_time;	//!< *Path extinction time, if any. 
   double abs_tmax;		//!< Absolute maximum simulation time, including period before post-processing origin.
-  double first_pos_test_results_time; //!< Absolute time for the first positive test results.
-  uint32_t* inf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval.
-  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval,
-  uint32_t* postest_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that have a recent positive test result at the end of this interval.
-  uint32_t* newpostest_timeline;//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval.
-  uint32_t* pp_inf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval.
-  uint32_t* pp_newinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval,
-  uint32_t* pp_newpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval.
-  ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used.
+  double first_pos_test_results_time; //!< Absolute time for the first positive test results. Only populated with time_rel_first_pos_test_results.
+  uint32_t* inf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval. First index is -tlshift.
+  uint32_t* newinf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. First index is -tlshift.
+  uint32_t* postest_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that have a recent positive test result at the end of this interval. First index is -tlshift.
+  uint32_t* newpostest_timeline;//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval. First index is -tlshift.
+  uint32_t* pp_inf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval. First index is -tlshift.
+  uint32_t* pp_newinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval, First index is -tlshift.
+  uint32_t* pp_newpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval. First index is -tlshift.
+  ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used. First index is -tlshift.
   uint32_t nainfbins;		//!< Number of allocated infectious individual bins.
   uint32_t ninfbins;		//!< Number of used infectious individual bins.
 #ifdef CT_OUTPUT
@@ -170,6 +170,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
   int32_t i,j;
   std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
   uint32_t tnvpers;
+  bool includepath;
 
   if(maxedoutmintimeindex<INT32_MAX) {
     tnvpers=(maxedoutmintimeindex<stats->abs_npers?maxedoutmintimeindex+1:stats->abs_npers)+stats->tlshift;
@@ -181,6 +182,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
   if(sv->pars.timetype==ro_time_first_pos_test_results) {
 
     if(isinf(stats->first_pos_test_results_time)) return false;
+    includepath=true;
 
     int32_t k;
     bool single;
@@ -259,6 +261,28 @@ inline static bool std_stats_path_end(sim_vars* sv)
     stats->pp_inf_timeline=stats->inf_timeline;
     stats->pp_newinf_timeline=stats->newinf_timeline;
     stats->pp_newpostest_timeline=stats->newpostest_timeline;
+
+    if(sv->pars.pathtype==ro_all_paths) includepath=true;
+
+    else if(sv->pars.pathtype==ro_observable_paths_only) {
+      uint32_t* const ptt=stats->postest_timeline-stats->tlshift;
+      includepath=false;
+
+      for(i=tnvpers-1; i>=0; --i) if(ptt[i]) {
+	includepath=true;
+	break;
+      }
+
+    } else { //Non-observable paths only
+      uint32_t* const ptt=stats->postest_timeline-stats->tlshift;
+      includepath=true;
+
+      for(i=tnvpers-1; i>=0; --i) if(ptt[i]) {
+	includepath=false;
+	break;
+      }
+    }
+
   }
 
   if(stats->ninfbins) {
@@ -292,7 +316,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
 #endif
     }
   }
-  return true;
+  return includepath;
 }
 
 /**
@@ -627,7 +651,6 @@ inline static void first_pos_test_results_update(sim_vars* sv, infindividual* ii
 
     stats->abs_maxnpers=floor(stats->nbinsperunit*stats->first_pos_test_results_time)+stats->npers;
     stats->abs_tmax=((double)stats->abs_maxnpers)/stats->nbinsperunit;
-    assert(stats->abs_tmax*stats->nbinsperunit == stats->abs_maxnpers);
 
     newsize=(int32_t)(stats->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat+stats->npostestmaxnunits))+1;
 
