@@ -45,9 +45,9 @@ int branchsim(sim_vars* sv)
       sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
 
       sv->gen_time_origin_func(sv);
-      DEBUG_PRINTF("Latent period is %f, comm period is %f, type is %u, end comm is %f\n",sv->brsim.iis[1].latent_period,sv->brsim.iis[1].comm_period,sv->brsim.iis[1].commpertype,sv->brsim.iis[1].end_comm_period); \
+      DEBUG_PRINTF("Latent period is %f, comm period is %f, type is %u, end comm is %f\n",sv->brsim.iis[1].latent_period,sv->brsim.iis[1].comm_period,sv->brsim.iis[1].commpertype,sv->brsim.iis[1].end_comm_period);
 
-	sv->curii=sv->brsim.iis;
+      sv->curii=sv->brsim.iis;
       sv->pri_init_proc_func(sv, sv->brsim.iis+1);
       sv->curii=sv->brsim.iis+1;
       DEBUG_PRINTF("Move to primary layer (%li)\n",sv->curii-sv->brsim.iis);

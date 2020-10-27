@@ -273,7 +273,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
 	break;
       }
 
-    } else { //Non-observable paths only
+    } else { //Non-observable paths only. Current implementation is not efficient at all
       uint32_t* const ptt=stats->postest_timeline-stats->tlshift;
       includepath=true;
 
