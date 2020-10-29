@@ -498,7 +498,7 @@ inline static void std_stats_calc_obs_child_inf_after_time_cut(sim_vars* sv)
 #else
 	sv->gen_time_periods_func(sv, &stats->iibuf, ii, ii->event_time);
 #endif
-	((std_stats_inf_data*)sv->curii->dataptr)->nobsinf+=((stats->iibuf.commpertype&ro_commper_true_positive_test)!=0);
+	((std_stats_inf_data*)sv->curii->dataptr)->nobsinf+=((stats->iibuf.commpertype&ro_commper_int_true_positive_test)==ro_commper_int_true_positive_test);
 	DEBUG_PRINTF("Adding %u to the number of observed infections, for a total of %u\n",((stats->iibuf.commpertype&ro_commper_true_positive_test)!=0),((std_stats_inf_data*)sv->curii->dataptr)->nobsinf);
       }
     }
@@ -670,7 +670,7 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
     ((std_stats_inf_data*)ii->dataptr)->ntracedcts=0;
 #endif
 #ifdef OBSREFF_OUTPUT
-    ++(((std_stats_inf_data*)parent->dataptr)->nobsinf);
+    if(ii->commpertype&ro_commper_int) ++(((std_stats_inf_data*)parent->dataptr)->nobsinf);
     DEBUG_PRINTF("Number of observed infections for the parent increased by 1, for a total of %u\n",,((std_stats_inf_data*)parent->dataptr)->nobsinf);
 #endif
     int32_t i;
