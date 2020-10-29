@@ -382,8 +382,8 @@ inline static ssize_t ct_write_func(std_summary_stats const* stats, char* buf)
     for(i=0; i<stats->nctentries; ++i) {
       *((uint32_t*)(buf))=htole32(stats->ctentries[i]->postesttime);
       *((uint32_t*)(buf+4))=htole32(stats->ctentries[i]->presymtime);
-      *((uint32_t*)(buf+8))=htole32(stats->ctentries[i]->id);
-      *((uint32_t*)(buf+12))=htole32(stats->ctentries[i]->pid);
+      *((int32_t*)(buf+8))=htole32(stats->ctentries[i]->id);
+      *((int32_t*)(buf+12))=htole32(stats->ctentries[i]->pid);
       *((uint32_t*)(buf+16))=htole32(stats->ctentries[i]->ntracedcts);
       buf+=20;
     }
@@ -395,8 +395,8 @@ inline static ssize_t ct_write_func(std_summary_stats const* stats, char* buf)
       if(floor(stats->ctentries[i]->postesttime/1440.) <= stats->maxedoutmintimeindex) {
 	*((uint32_t*)(buf))=htole32(stats->ctentries[i]->postesttime);
 	*((uint32_t*)(buf+4))=htole32(stats->ctentries[i]->presymtime);
-	*((uint32_t*)(buf+8))=htole32(stats->ctentries[i]->id);
-	*((uint32_t*)(buf+12))=htole32(stats->ctentries[i]->pid);
+	*((int32_t*)(buf+8))=htole32(stats->ctentries[i]->id);
+	*((int32_t*)(buf+12))=htole32(stats->ctentries[i]->pid);
 	*((uint32_t*)(buf+16))=htole32(stats->ctentries[i]->ntracedcts);
 	buf+=20;
       }

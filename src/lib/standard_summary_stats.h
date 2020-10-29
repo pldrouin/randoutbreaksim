@@ -31,8 +31,8 @@ extern int __ro_debug;
 typedef struct {
   int32_t postesttime;
   int32_t presymtime;
-  uint32_t id;
-  uint32_t pid;
+  int32_t id;
+  int32_t pid;
   uint32_t ntracedcts;
 } ctposinf;
 #endif
@@ -430,9 +430,9 @@ inline static void std_stats_ii_alloc(infindividual* ii){
 }
 
 #ifdef CT_OUTPUT
-inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double postesttime, const double presymtime, const uint32_t id, const uint32_t pid, const uint32_t ntracedcts){
+inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double postesttime, const double presymtime, const int32_t id, const int32_t pid, const uint32_t ntracedcts){
   ++(stats->nctentries);
-  DEBUG_PRINTF("%s: %u %22.15e %22.15e %u %u %u\n",__func__, stats->nctentries, postesttime, presymtime, id, pid, ntracedcts);
+  DEBUG_PRINTF("%s: %u %22.15e %22.15e %i %i %u\n",__func__, stats->nctentries, postesttime, presymtime, id, pid, ntracedcts);
 
   if(stats->nctentries==stats->nactentries) {
     stats->nactentries*=CTENTRIES_GROWFACT;
@@ -598,8 +598,8 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii)
     if(trt<((std_summary_stats*)sv->dataptr)->abs_maxnpers) ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
 
 #ifdef CT_OUTPUT
-    ((uint32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
-    DEBUG_PRINTF("True positive test with ID %u\n",((uint32_t*)ii->dataptr)[1]);
+    ((int32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
+    DEBUG_PRINTF("True positive test with ID %u\n",((int32_t*)ii->dataptr)[1]);
     ((uint32_t*)ii->dataptr)[2]=0;
 #endif
     int32_t i;
@@ -762,7 +762,7 @@ inline static void std_stats_end_inf(sim_vars* sv, infindividual* ii, infindivid
   DEBUG_PRINTF("Number of infections was %u\n",((uint32_t*)ii->dataptr)[0]);
 
 #ifdef CT_OUTPUT
-  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
+  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((int32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((int32_t*)parent->dataptr)[1]:-((int32_t*)parent->dataptr)[1]), ((uint32_t*)ii->dataptr)[2]);
 #endif
 
   //If truncated by abs_tmax
@@ -845,7 +845,7 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
   std_stats_fill_newpostest(sv, ii);
 
 #ifdef CT_OUTPUT
-  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((uint32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((uint32_t*)parent->dataptr)[1]:0), ((uint32_t*)ii->dataptr)[2]);
+  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((int32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((int32_t*)parent->dataptr)[1]:-((int32_t*)parent->dataptr)[1]), ((uint32_t*)ii->dataptr)[2]);
 #endif
 
   //If truncated by tmax
