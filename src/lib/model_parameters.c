@@ -713,8 +713,8 @@ int model_pars_check(model_pars const* pars)
     }
   }
 
-  if(pars->pathtype==ro_observable_paths_only && (!(pars->q>0) || pars->mtpr<=0)) {
-    fprintf(stderr,"%s: Error: Invalid configuration for the combination of path type and communicable period type or true positive rate for the testing of a parent whose communicable period is the alternate period. The q parameter must be greater than 0 and a defined mtpr parameter must be greater than 0 if only observable paths are selected.\n",__func__);
+  if(pars->pathtype==ro_observable_paths_only && (!(pars->q>0) || pars->mtpr<=0) && pars->ttpr<=0) {
+    fprintf(stderr,"%s: Error: Invalid configuration for the combination of path type and communicable period type or true positive rate for the testing of a parent whose communicable period is the alternate period. The q parameter must be greater than 0 and, if defined,  ttpr and mtpr parameters must be greater than 0 if only observable paths are selected.\n",__func__);
     ret-=2048;
   }
 

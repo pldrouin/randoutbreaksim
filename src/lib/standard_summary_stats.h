@@ -45,6 +45,10 @@ typedef struct
 #ifdef NUMEVENTSSTATS
   uint32_t neventssum;	       //!< Sum of the number of transmission events for all infectious individuals whose communicable period occurs before tmax in the timeline bin.
 #endif
+#ifdef OBSREFF_OUTPUT
+  uint32_t nobs;               //!< Number of observable (who test positive) infectious creating infections in the timeline bin
+  uint32_t robssum;            //!< Sum of the number of observable (who test positive) individuals that get infected in the timeline bin.
+#endif
   uint64_t* ngeninfs;	       //!< Number of generated infections from each infectious individual in the timeline bin.
 } ext_timeline_info;
 
@@ -56,6 +60,9 @@ typedef struct
   double extinction_time;	//!< *Path extinction time, if any. 
   double abs_tmax;		//!< Absolute maximum simulation time, including period before post-processing origin.
   double first_pos_test_results_time; //!< Absolute time for the first positive test results. Only populated with time_rel_first_pos_test_results.
+#ifdef OBSREFF_OUTPUT
+  infindividual iibuf;
+#endif
   uint32_t* inf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval. First index is -tlshift.
   uint32_t* newinf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. First index is -tlshift.
   uint32_t* postest_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that have a recent positive test result at the end of this interval. First index is -tlshift.
@@ -89,6 +96,17 @@ typedef struct
   //uint32_t n_ended_infections;
   bool extinction;		//!< *Set to true if extinction does not occur before abs_tmax.
 } std_summary_stats;
+
+typedef struct {
+  uint32_t ninf;
+#ifdef OBSREFF_OUTPUT
+  uint32_t nobsinf;
+#endif
+#ifdef CT_OUTPUT
+  int32_t id;
+  uint32_t ntracedcts;
+#endif
+} std_stats_inf_data;
 
 /**
  * @brief Initialises the standard summary statistics.
@@ -129,6 +147,9 @@ inline static void std_stats_path_init(sim_vars* sv)
       set[i].n=set[i].rsum=set[i].commpersum=0;
 #ifdef NUMEVENTSSTATS
       set[i].neventssum=0;
+#endif
+#ifdef OBSREFF_OUTPUT
+      set[i].nobs=set[i].robssum=0;
 #endif
       memset(set[i].ngeninfs,0,stats->nainfbins*sizeof(uint64_t));
     }
@@ -295,6 +316,10 @@ inline static bool std_stats_path_end(sim_vars* sv)
 #ifdef NUMEVENTSSTATS
       et[i].neventssum+=et[i+1].neventssum;
 #endif
+#ifdef OBSREFF_OUTPUT
+      et[i].nobs+=et[i+1].nobs;
+      et[i].robssum+=et[i+1].robssum;
+#endif
       //printf("Address et[%i].ngeninfs=%p\n",i-stats->tlshift,et[i].ngeninfs);
 
       for(j=stats->ninfbins-1; j>=0; --j) {
@@ -313,6 +338,10 @@ inline static bool std_stats_path_end(sim_vars* sv)
       et[i].commpersum+=et[i+1].commpersum;
 #ifdef NUMEVENTSSTATS
       et[i].neventssum+=et[i+1].neventssum;
+#endif
+#ifdef OBSREFF_OUTPUT
+      et[i].nobs+=et[i+1].nobs;
+      et[i].robssum+=et[i+1].robssum;
 #endif
     }
   }
@@ -422,11 +451,7 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
  * @param ii: Infectious individuals.
  **/
 inline static void std_stats_ii_alloc(infindividual* ii){
-#ifdef CT_OUTPUT
-  ii->dataptr=malloc(3*sizeof(uint32_t));
-#else
-  ii->dataptr=malloc(sizeof(uint32_t));
-#endif
+  ii->dataptr=malloc(sizeof(std_stats_inf_data));
 }
 
 #ifdef CT_OUTPUT
@@ -452,6 +477,35 @@ inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double
 #endif
 
 /**
+ * @brief Compute the number of observed child infections for events occurring
+ * after a time cut.
+ *
+ * Adds the number of observed infections for the current event to the number of observed infections from
+ * the current infectious individual, for events that return false.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+#ifdef OBSREFF_OUTPUT
+inline static void std_stats_calc_obs_child_inf_after_time_cut(sim_vars* sv)
+{
+    if(sv->curii->commpertype&ro_commper_true_positive_test) {
+      infindividual* ii=sv->curii;
+      std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
+
+      for(ii->curinfectioni=0; ii->curinfectioni<ii->ninfections; ++(ii->curinfectioni)) {
+#ifdef CT_OUTPUT
+	ii->gen_ct_time_periods_func(sv, &stats->iibuf, ii, ii->event_time);
+#else
+	sv->gen_time_periods_func(sv, &stats->iibuf, ii, ii->event_time);
+#endif
+	((std_stats_inf_data*)sv->curii->dataptr)->nobsinf+=((stats->iibuf.commpertype&ro_commper_true_positive_test)!=0);
+	DEBUG_PRINTF("Adding %u to the number of observed infections, for a total of %u\n",((stats->iibuf.commpertype&ro_commper_true_positive_test)!=0),((std_stats_inf_data*)sv->curii->dataptr)->nobsinf);
+      }
+    }
+}
+#endif
+
+/**
  * @brief Processes the number of infections for this new event.
  *
  * Adds the number of infections for this new event to the number of infections from
@@ -466,18 +520,21 @@ inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double
 inline static bool std_stats_new_event(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
-  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[2]));
+  ((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts+=sv->curii->ntracednicts+sv->curii->ntracedicts;
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts);
 #endif
 
   if(sv->curii->ninfections) {
-    ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
-    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
+    ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
 
     if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
       return true;
     }
+#ifdef OBSREFF_OUTPUT
+    std_stats_calc_obs_child_inf_after_time_cut(sv);
+#endif
   }
   return false;
 }
@@ -500,13 +557,13 @@ inline static bool std_stats_new_event(sim_vars* sv)
 inline static bool std_stats_new_event_nimax(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
-  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[2]));
+  ((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts+=sv->curii->ntracednicts+sv->curii->ntracedicts;
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts);
 #endif
 
   if(sv->curii->ninfections) {
-    ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
-    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
+    ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
 
     if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
       const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
@@ -528,11 +585,16 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 
 	  if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
 	  DEBUG_PRINTF("nimax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->newinf_timeline[eti],((std_summary_stats*)sv->dataptr)->nimax);
-	  return false;
+	  goto nimax_event_false;
 	}
 	return true;
       }
     }
+nimax_event_false:
+    ;
+#ifdef OBSREFF_OUTPUT
+    std_stats_calc_obs_child_inf_after_time_cut(sv);
+#endif
   }
   return false;
 }
@@ -555,13 +617,13 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 {
 #ifdef CT_OUTPUT
-  ((uint32_t*)sv->curii->dataptr)[2]+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",(((uint32_t*)sv->curii->dataptr)[2]));
+  ((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts+=sv->curii->ntracednicts+sv->curii->ntracedicts;
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts);
 #endif
 
   if(sv->curii->ninfections) {
-    ((uint32_t*)sv->curii->dataptr)[0]+=sv->curii->ninfections;
-    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((uint32_t*)sv->curii->dataptr)[0]);
+    ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
 
     if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
       const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
@@ -579,16 +641,21 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 	    ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
 	  }
 	  DEBUG_PRINTF("npostestmax exceeded for time index %i (%u vs %u)\n",eti,((std_summary_stats*)sv->dataptr)->postest_timeline[eti],((std_summary_stats*)sv->dataptr)->npostestmax);
-	  return false;
+	  goto npostestmax_event_false;
 	}
 	return true;
       }
     }
+npostestmax_event_false:
+    ;
+#ifdef OBSREFF_OUTPUT
+    std_stats_calc_obs_child_inf_after_time_cut(sv);
+#endif
   }
   return false;
 }
 
-inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii)
+inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
   if(ii->commpertype&ro_commper_true_positive_test) {
     const int trt=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*(ii->end_comm_period+sv->pars.tdeltat));
@@ -598,9 +665,13 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii)
     if(trt<((std_summary_stats*)sv->dataptr)->abs_maxnpers) ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
 
 #ifdef CT_OUTPUT
-    ((int32_t*)ii->dataptr)[1]=++(((std_summary_stats*)sv->dataptr)->curctid);
-    DEBUG_PRINTF("True positive test with ID %u\n",((int32_t*)ii->dataptr)[1]);
-    ((uint32_t*)ii->dataptr)[2]=0;
+    ((std_stats_inf_data*)ii->dataptr)->id=++(((std_summary_stats*)sv->dataptr)->curctid);
+    DEBUG_PRINTF("True positive test with ID %u\n",((std_stats_inf_data*)ii->dataptr)->id);
+    ((std_stats_inf_data*)ii->dataptr)->ntracedcts=0;
+#endif
+#ifdef OBSREFF_OUTPUT
+    ++(((std_stats_inf_data*)parent->dataptr)->nobsinf);
+    DEBUG_PRINTF("Number of observed infections for the parent increased by 1, for a total of %u\n",,((std_stats_inf_data*)parent->dataptr)->nobsinf);
 #endif
     int32_t i;
     const int32_t end_npostestmax_per_i=trt+((std_summary_stats*)sv->dataptr)->nbinsperunit*((std_summary_stats*)sv->dataptr)->npostestmaxnunits-1;
@@ -623,13 +694,17 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii)
  **/
 inline static void std_stats_new_inf(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
-  ((uint32_t*)ii->dataptr)[0]=0;
+  ((std_stats_inf_data*)ii->dataptr)->ninf=0;
   DEBUG_PRINTF("%s: Number of infections initialized to 0.\n",__func__);
+#ifdef OBSREFF_OUTPUT
+  ((std_stats_inf_data*)ii->dataptr)->nobsinf=0;
+  DEBUG_PRINTF("%s: Number of observed infections initialized to 0.\n",__func__);
+#endif
 
   //++(*(uint32_t*)(ii-1)->dataptr);
   //DEBUG_PRINTF("Number of parent infections incremented to %u\n",*(uint32_t*)(ii-1)->dataptr);
   DEBUG_PRINTF("%s\n",__func__);
-  std_stats_fill_newpostest(sv, ii);
+  std_stats_fill_newpostest(sv, ii, parent);
 }
 
 /**
@@ -725,8 +800,14 @@ inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
 
   if(start_comm_per < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
     const int32_t start_comm_per_i=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*start_comm_per);
-    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((uint32_t*)ii->dataptr)[0];
-    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n+=1;
+    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((std_stats_inf_data*)ii->dataptr)->ninf;
+    ++(((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n);
+#ifdef OBSREFF_OUTPUT
+    if(ii->commpertype&ro_commper_true_positive_test) {
+      ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].robssum+=((std_stats_inf_data*)ii->dataptr)->nobsinf;
+      ++(((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].nobs);
+    }
+#endif
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].commpersum+=ii->comm_period;
 #ifdef NUMEVENTSSTATS
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].neventssum+=ii->nevents;
@@ -759,10 +840,10 @@ inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
  **/
 inline static void std_stats_end_inf(sim_vars* sv, infindividual* ii, infindividual* parent)
 {
-  DEBUG_PRINTF("Number of infections was %u\n",((uint32_t*)ii->dataptr)[0]);
+  DEBUG_PRINTF("Number of infections was %u\n",((std_stats_inf_data*)ii->dataptr)->ninf);
 
 #ifdef CT_OUTPUT
-  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((int32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((int32_t*)parent->dataptr)[1]:-((int32_t*)parent->dataptr)[1]), ((uint32_t*)ii->dataptr)[2]);
+  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY),  ((std_stats_inf_data*)ii->dataptr)->id, ((ii->commpertype&ro_commper_int)? ((std_stats_inf_data*)parent->dataptr)->id:-((std_stats_inf_data*)parent->dataptr)->id), ((std_stats_inf_data*)ii->dataptr)->ntracedcts);
 #endif
 
   //If truncated by abs_tmax
@@ -796,8 +877,8 @@ inline static void std_stats_end_inf_rec_ninfs(sim_vars* sv, infindividual* ii, 
   if(start_comm_per < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
     std_summary_stats* const stats=(std_summary_stats*)sv->dataptr;
 
-    if(((uint32_t*)ii->dataptr)[0] >= stats->ninfbins) {
-      stats->ninfbins=((uint32_t*)ii->dataptr)[0]+1;
+    if(((std_stats_inf_data*)ii->dataptr)->ninf >= stats->ninfbins) {
+      stats->ninfbins=((std_stats_inf_data*)ii->dataptr)->ninf+1;
 
       if(stats->ninfbins>stats->nainfbins) {
 	ext_timeline_info* const set=stats->ext_timeline-stats->tlshifta;
@@ -813,7 +894,7 @@ inline static void std_stats_end_inf_rec_ninfs(sim_vars* sv, infindividual* ii, 
       }
     }
     const int32_t start_comm_per_i=floor(stats->nbinsperunit*start_comm_per);
-    ++(stats->ext_timeline[start_comm_per_i].ngeninfs[((uint32_t*)ii->dataptr)[0]]);
+    ++(stats->ext_timeline[start_comm_per_i].ngeninfs[((std_stats_inf_data*)ii->dataptr)->ninf]);
   }
 
   std_stats_end_inf(sv, ii, parent);
@@ -840,12 +921,15 @@ inline static void std_stats_noevent_new_inf(sim_vars* sv, infindividual* ii, in
   DEBUG_PRINTF("%s\n",__func__);
   DEBUG_PRINTF("Number of infections was 0\n");
 
-  ((uint32_t*)ii->dataptr)[0]=0;
+  ((std_stats_inf_data*)ii->dataptr)->ninf=0;
+#ifdef OBSREFF_OUTPUT
+  ((std_stats_inf_data*)ii->dataptr)->nobsinf=0;
+#endif
 
-  std_stats_fill_newpostest(sv, ii);
+  std_stats_fill_newpostest(sv, ii, parent);
 
 #ifdef CT_OUTPUT
-  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((int32_t*)ii->dataptr)[1], ((ii->commpertype&ro_commper_int)?((int32_t*)parent->dataptr)[1]:-((int32_t*)parent->dataptr)[1]), ((uint32_t*)ii->dataptr)[2]);
+  if(ii->commpertype&ro_commper_true_positive_test) std_stats_add_ct_entry((std_summary_stats*)sv->dataptr, ii->end_comm_period+sv->pars.tdeltat, ((ii->commpertype&ro_commper_alt)?ii->end_comm_period-ii->comm_period+ii->presym_comm_period:INFINITY), ((std_stats_inf_data*)ii->dataptr)->id, ((ii->commpertype&ro_commper_int)?((std_stats_inf_data*)parent->dataptr)->id:-((std_stats_inf_data*)parent->dataptr)->id), ((std_stats_inf_data*)ii->dataptr)->ntracedcts);
 #endif
 
   //If truncated by tmax

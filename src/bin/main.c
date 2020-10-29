@@ -102,6 +102,10 @@ int main(const int nargs, const char* args[])
       gsl_rng_free(tdata[t].r);
       tdata[0].n_inf+=tdata[t].n_inf;
       tdata[0].r_mean+=tdata[t].r_mean;
+#ifdef OBSREFF_OUTPUT
+      tdata[0].nobs_inf+=tdata[t].nobs_inf;
+      tdata[0].robs_mean+=tdata[t].robs_mean;
+#endif
       tdata[0].commper_mean+=tdata[t].commper_mean;
 #ifdef NUMEVENTSSTATS
       tdata[0].nevents_mean+=tdata[t].nevents_means;
@@ -207,6 +211,10 @@ int main(const int nargs, const char* args[])
   const double nnoe=cp.npaths-tdata[0].pe;
   printf("r_mean %22.15e %22.15e\n",tdata[0].r_mean,tdata[0].n_inf);
   tdata[0].r_mean/=tdata[0].n_inf;
+#ifdef OBSREFF_OUTPUT
+  printf("robs_mean %22.15e %22.15e\n",tdata[0].robs_mean,tdata[0].nobs_inf);
+  tdata[0].robs_mean/=tdata[0].nobs_inf;
+#endif
   tdata[0].commper_mean/=tdata[0].n_inf;
 #ifdef NUMEVENTSSTATS
   tdata[0].nevents_mean/=tdata[0].n_inf;
@@ -255,6 +263,9 @@ int main(const int nargs, const char* args[])
 
   printf("\nComputed simulation results:\n");
   printf("Mean R is %22.15e\n",tdata[0].r_mean);
+#ifdef OBSREFF_OUTPUT
+  printf("Mean observed R is %22.15e\n",tdata[0].robs_mean);
+#endif
   printf("Communicable period is %22.15e\n",tdata[0].commper_mean);
 #ifdef NUMEVENTSSTATS
   printf("Number of events per infectious individual is %22.15e\n",tdata[0].nevents_mean);
@@ -336,6 +347,10 @@ void* simthread(void* arg)
 #endif
   data->n_inf=0;
   data->r_mean=0;
+#ifdef OBSREFF_OUTPUT
+  data->nobs_inf=0;
+  data->robs_mean=0;
+#endif
   data->pe=0;
   data->pm=0;
   data->te_mean=0;
@@ -498,6 +513,10 @@ void* simthread(void* arg)
       eti=stats.ext_timeline-stats.tlshift;
       data->n_inf+=eti->n;
       data->r_mean+=eti->rsum;
+#ifdef OBSREFF_OUTPUT
+      data->nobs_inf+=eti->nobs;
+      data->robs_mean+=eti->robssum;
+#endif
       data->commper_mean+=eti->commpersum;
 #ifdef NUMEVENTSSTATS
       data->nevents_mean+=stats.ext_timeline->neventssum;

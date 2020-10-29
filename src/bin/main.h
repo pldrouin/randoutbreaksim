@@ -47,6 +47,10 @@ typedef struct {
 #endif
   double n_inf;
   double r_mean;
+#ifdef OBSREFF_OUTPUT
+  double nobs_inf;
+  double robs_mean;
+#endif
   double pe;
   double pm;
   double te_mean;

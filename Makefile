@@ -6,4 +6,8 @@ ifdef CT_OUTPUT
   CFLAGS += -DCT_OUTPUT
 endif
 
+ifdef OBSREFF_OUTPUT
+  CFLAGS += -DOBSREFF_OUTPUT
+endif
+
 include src/lib/Makefile.in src/bin/Makefile.in src/doc/Makefile.in
