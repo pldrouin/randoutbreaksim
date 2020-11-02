@@ -70,6 +70,7 @@ typedef struct
   uint32_t* pp_inf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval. First index is -tlshift.
   uint32_t* pp_newinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval, First index is -tlshift.
   uint32_t* pp_newpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval. First index is -tlshift.
+  ext_timeline_info* pp_ext_timeline;//!< Post-processing extended timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the extended information. First index is -tlshift.
   ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used. First index is -tlshift.
   uint32_t nainfbins;		//!< Number of allocated infectious individual bins.
   uint32_t ninfbins;		//!< Number of used infectious individual bins.
@@ -234,6 +235,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
     stats->pp_inf_timeline=stats->inf_timeline+tlppt0idx;
     stats->pp_newinf_timeline=stats->newinf_timeline+tlppt0idx;
     stats->pp_newpostest_timeline=stats->newpostest_timeline+tlppt0idx;
+    stats->pp_ext_timeline=stats->ext_timeline+tlppt0idx;
     //Check if the last index is even. If it is, there is a single fine bin in
     //the last merged bin
     j=(tnvpers-stats->tlshift-tlppt0idx)/2;
@@ -245,6 +247,13 @@ inline static bool std_stats_path_end(sim_vars* sv)
       stats->pp_inf_timeline[k]=(stats->pp_inf_timeline[i]>stats->pp_inf_timeline[i+1]?stats->pp_inf_timeline[i]:stats->pp_inf_timeline[i+1]);
       stats->pp_newinf_timeline[k]=stats->pp_newinf_timeline[i]+stats->pp_newinf_timeline[i+1];
       stats->pp_newpostest_timeline[k]=stats->pp_newpostest_timeline[i]+stats->pp_newpostest_timeline[i+1];
+
+      stats->pp_ext_timeline[k].n=stats->pp_ext_timeline[i].n+stats->pp_ext_timeline[i+1].n;
+      stats->pp_ext_timeline[k].rsum=stats->pp_ext_timeline[i].rsum+stats->pp_ext_timeline[i+1].rsum;
+      #ifdef OBSREFF_OUTPUT
+      stats->pp_ext_timeline[k].nobs=stats->pp_ext_timeline[i].nobs+stats->pp_ext_timeline[i+1].nobs;
+      stats->pp_ext_timeline[k].robssum=stats->pp_ext_timeline[i].robssum+stats->pp_ext_timeline[i+1].robssum;
+      #endif
     }
 
     if(single) {
@@ -253,6 +262,13 @@ inline static bool std_stats_path_end(sim_vars* sv)
       stats->pp_inf_timeline[j]=stats->inf_timeline[i];
       stats->pp_newinf_timeline[j]=stats->newinf_timeline[i];
       stats->pp_newpostest_timeline[j]=stats->newpostest_timeline[i];
+
+      stats->pp_ext_timeline[j].n=stats->ext_timeline[i].n;
+      stats->pp_ext_timeline[j].rsum=stats->ext_timeline[i].rsum;
+      #ifdef OBSREFF_OUTPUT
+      stats->pp_ext_timeline[j].nobs=stats->ext_timeline[i].nobs;
+      stats->pp_ext_timeline[j].robssum=stats->ext_timeline[i].robssum;
+      #endif
     } 
 
     //Check if the first (negative) index is odd. If it is, there is a single fine bin in
@@ -265,6 +281,13 @@ inline static bool std_stats_path_end(sim_vars* sv)
       DEBUG_PRINTF("[%i] = [%i] (%u) + [%i] (%u)\n",k,i+tlppt0idx,stats->pp_inf_timeline[i],i+1+tlppt0idx,stats->pp_inf_timeline[i+1]);
       stats->pp_inf_timeline[k]=(stats->pp_inf_timeline[i]>stats->pp_inf_timeline[i+1]?stats->pp_inf_timeline[i]:stats->pp_inf_timeline[i+1]);
       stats->pp_newinf_timeline[k]=stats->pp_newinf_timeline[i]+stats->pp_newinf_timeline[i+1];
+
+      stats->pp_ext_timeline[k].n=stats->pp_ext_timeline[i].n+stats->pp_ext_timeline[i+1].n;
+      stats->pp_ext_timeline[k].rsum=stats->pp_ext_timeline[i].rsum+stats->pp_ext_timeline[i+1].rsum;
+      #ifdef OBSREFF_OUTPUT
+      stats->pp_ext_timeline[k].nobs=stats->pp_ext_timeline[i].nobs+stats->pp_ext_timeline[i+1].nobs;
+      stats->pp_ext_timeline[k].robssum=stats->pp_ext_timeline[i].robssum+stats->pp_ext_timeline[i+1].robssum;
+      #endif
     }
 
     if(single) {
@@ -272,6 +295,13 @@ inline static bool std_stats_path_end(sim_vars* sv)
       DEBUG_PRINTF("[%i] = [%i] (%u)\n",j-1,i,stats->inf_timeline[i]);
       stats->pp_inf_timeline[j-1]=stats->inf_timeline[i];
       stats->pp_newinf_timeline[j-1]=stats->newinf_timeline[i];
+
+      stats->pp_ext_timeline[j-1].n=stats->ext_timeline[i].n;
+      stats->pp_ext_timeline[j-1].rsum=stats->ext_timeline[i].rsum;
+      #ifdef OBSREFF_OUTPUT
+      stats->pp_ext_timeline[j-1].nobs=stats->ext_timeline[i].nobs;
+      stats->pp_ext_timeline[j-1].robssum=stats->ext_timeline[i].robssum;
+      #endif
     } 
 
     memset(stats->pp_newpostest_timeline-stats->tlppnnpers,0,stats->tlppnnpers*sizeof(uint32_t));
@@ -282,6 +312,7 @@ inline static bool std_stats_path_end(sim_vars* sv)
     stats->pp_inf_timeline=stats->inf_timeline;
     stats->pp_newinf_timeline=stats->newinf_timeline;
     stats->pp_newpostest_timeline=stats->newpostest_timeline;
+    stats->pp_ext_timeline=stats->ext_timeline;
 
     if(sv->pars.pathtype==ro_all_paths) includepath=true;
 
@@ -310,15 +341,15 @@ inline static bool std_stats_path_end(sim_vars* sv)
 
     for(i=tnvpers-2; i>=0; --i) {
       //printf("et[%i].n (%u) += %u\n",i,et[i].n,et[i+1].n);
-      et[i].n+=et[i+1].n;
-      et[i].rsum+=et[i+1].rsum;
+      //et[i].n+=et[i+1].n;
+      //et[i].rsum+=et[i+1].rsum;
       et[i].commpersum+=et[i+1].commpersum;
 #ifdef NUMEVENTSSTATS
       et[i].neventssum+=et[i+1].neventssum;
 #endif
 #ifdef OBSREFF_OUTPUT
-      et[i].nobs+=et[i+1].nobs;
-      et[i].robssum+=et[i+1].robssum;
+      //et[i].nobs+=et[i+1].nobs;
+      //et[i].robssum+=et[i+1].robssum;
 #endif
       //printf("Address et[%i].ngeninfs=%p\n",i-stats->tlshift,et[i].ngeninfs);
 
@@ -333,15 +364,15 @@ inline static bool std_stats_path_end(sim_vars* sv)
 
     for(i=tnvpers-2; i>=0; --i) {
       //printf("et[%i].n (%u) += %u\n",i,et[i].n,et[i+1].n);
-      et[i].n+=et[i+1].n;
-      et[i].rsum+=et[i+1].rsum;
+      //et[i].n+=et[i+1].n;
+      //et[i].rsum+=et[i+1].rsum;
       et[i].commpersum+=et[i+1].commpersum;
 #ifdef NUMEVENTSSTATS
       et[i].neventssum+=et[i+1].neventssum;
 #endif
 #ifdef OBSREFF_OUTPUT
-      et[i].nobs+=et[i+1].nobs;
-      et[i].robssum+=et[i+1].robssum;
+      //et[i].nobs+=et[i+1].nobs;
+      //et[i].robssum+=et[i+1].robssum;
 #endif
     }
   }
