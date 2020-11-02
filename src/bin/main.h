@@ -63,17 +63,17 @@ typedef struct {
   double* newpostest_timeline_std_noext;
   double* reff_timeline_mean_ext;
   double* reff_timeline_std_ext;
-  uint32_t* reff_timeline_n_ext;
+  uint64_t* reff_timeline_n_ext;
   double* reff_timeline_mean_noext;
   double* reff_timeline_std_noext;
-  uint32_t* reff_timeline_n_noext;
+  uint64_t* reff_timeline_n_noext;
   #ifdef OBSREFF_OUTPUT
   double* reffobs_timeline_mean_ext;
   double* reffobs_timeline_std_ext;
-  uint32_t* reffobs_timeline_n_ext;
+  uint64_t* reffobs_timeline_n_ext;
   double* reffobs_timeline_mean_noext;
   double* reffobs_timeline_std_noext;
-  uint32_t* reffobs_timeline_n_noext;
+  uint64_t* reffobs_timeline_n_noext;
   #endif
   uint64_t* ngeninfs;
   uint32_t ninfbins;
@@ -89,7 +89,7 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
 {
   if(pdiff > 0 || ndiff > 0) {
     double* newarray;
-    uint32_t* newuarray;
+    uint64_t* newuarray;
     const ssize_t newsize=data->tlpptnvpers+pdiff+ndiff;
 
     newarray=(double*)malloc(newsize*sizeof(double));
@@ -132,8 +132,8 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
     free(data->reff_timeline_std_ext);
     data->reff_timeline_std_ext=newarray;
 
-    newuarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memcpy(newuarray+ndiff,data->reff_timeline_n_ext,data->tlpptnvpers*sizeof(uint32_t));
+    newuarray=(uint64_t*)malloc(newsize*sizeof(uint64_t));
+    memcpy(newuarray+ndiff,data->reff_timeline_n_ext,data->tlpptnvpers*sizeof(uint64_t));
     free(data->reff_timeline_n_ext);
     data->reff_timeline_n_ext=newuarray;
 
@@ -148,8 +148,8 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
     free(data->reffobs_timeline_std_ext);
     data->reffobs_timeline_std_ext=newarray;
 
-    newuarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memcpy(newuarray+ndiff,data->reffobs_timeline_n_ext,data->tlpptnvpers*sizeof(uint32_t));
+    newuarray=(uint64_t*)malloc(newsize*sizeof(uint64_t));
+    memcpy(newuarray+ndiff,data->reffobs_timeline_n_ext,data->tlpptnvpers*sizeof(uint64_t));
     free(data->reffobs_timeline_n_ext);
     data->reffobs_timeline_n_ext=newuarray;
     #endif
@@ -194,8 +194,8 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
     free(data->reff_timeline_std_noext);
     data->reff_timeline_std_noext=newarray;
 
-    newuarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memcpy(newuarray+ndiff,data->reff_timeline_n_noext,data->tlpptnvpers*sizeof(uint32_t));
+    newuarray=(uint64_t*)malloc(newsize*sizeof(uint64_t));
+    memcpy(newuarray+ndiff,data->reff_timeline_n_noext,data->tlpptnvpers*sizeof(uint64_t));
     free(data->reff_timeline_n_noext);
     data->reff_timeline_n_noext=newuarray;
 
@@ -210,8 +210,8 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
     free(data->reffobs_timeline_std_noext);
     data->reffobs_timeline_std_noext=newarray;
 
-    newuarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
-    memcpy(newuarray+ndiff,data->reffobs_timeline_n_noext,data->tlpptnvpers*sizeof(uint32_t));
+    newuarray=(uint64_t*)malloc(newsize*sizeof(uint64_t));
+    memcpy(newuarray+ndiff,data->reffobs_timeline_n_noext,data->tlpptnvpers*sizeof(uint64_t));
     free(data->reffobs_timeline_n_noext);
     data->reffobs_timeline_n_noext=newuarray;
     #endif
@@ -228,12 +228,12 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
 
       memset(data->reff_timeline_mean_ext,0,ndiff*sizeof(double));
       memset(data->reff_timeline_std_ext,0,ndiff*sizeof(double));
-      memset(data->reff_timeline_n_ext,0,ndiff*sizeof(uint32_t));
+      memset(data->reff_timeline_n_ext,0,ndiff*sizeof(uint64_t));
 
       #ifdef OBSREFF_OUTPUT
       memset(data->reffobs_timeline_mean_ext,0,ndiff*sizeof(double));
       memset(data->reffobs_timeline_std_ext,0,ndiff*sizeof(double));
-      memset(data->reffobs_timeline_n_ext,0,ndiff*sizeof(uint32_t));
+      memset(data->reffobs_timeline_n_ext,0,ndiff*sizeof(uint64_t));
       #endif
 
       memset(data->inf_timeline_mean_noext,0,ndiff*sizeof(double));
@@ -247,12 +247,12 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
 
       memset(data->reff_timeline_mean_noext,0,ndiff*sizeof(double));
       memset(data->reff_timeline_std_noext,0,ndiff*sizeof(double));
-      memset(data->reff_timeline_n_noext,0,ndiff*sizeof(uint32_t));
+      memset(data->reff_timeline_n_noext,0,ndiff*sizeof(uint64_t));
 
       #ifdef OBSREFF_OUTPUT
       memset(data->reffobs_timeline_mean_noext,0,ndiff*sizeof(double));
       memset(data->reffobs_timeline_std_noext,0,ndiff*sizeof(double));
-      memset(data->reffobs_timeline_n_noext,0,ndiff*sizeof(uint32_t));
+      memset(data->reffobs_timeline_n_noext,0,ndiff*sizeof(uint64_t));
       #endif
     }
 
@@ -268,12 +268,12 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
 
       memset(data->reff_timeline_mean_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->reff_timeline_std_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
-      memset(data->reff_timeline_n_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint32_t));
+      memset(data->reff_timeline_n_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint64_t));
 
       #ifdef OBSREFF_OUTPUT
       memset(data->reffobs_timeline_mean_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->reffobs_timeline_std_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
-      memset(data->reffobs_timeline_n_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint32_t));
+      memset(data->reffobs_timeline_n_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint64_t));
       #endif
 
       memset(data->inf_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
@@ -287,12 +287,12 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
 
       memset(data->reff_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->reff_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
-      memset(data->reff_timeline_n_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint32_t));
+      memset(data->reff_timeline_n_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint64_t));
 
       #ifdef OBSREFF_OUTPUT
       memset(data->reffobs_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->reffobs_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
-      memset(data->reffobs_timeline_n_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint32_t));
+      memset(data->reffobs_timeline_n_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint64_t));
       #endif
     }
     data->tlppnnpers+=ndiff;

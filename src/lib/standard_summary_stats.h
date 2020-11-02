@@ -41,6 +41,7 @@ typedef struct
 {
   uint32_t   n;	               //!< Number of infectious creating infections in the timeline bin.
   uint32_t rsum;	       //!< Sum of the number of individuals that get infected in the timeline bin.
+  uint64_t r2sum;	       //!< Sum of the square of the number of individuals that get infected in the timeline bin.
   double commpersum;   	       //!< Sum of communicable periods for all infectious individuals whose communicable period start before tmax in the timeline bin.
 #ifdef NUMEVENTSSTATS
   uint32_t neventssum;	       //!< Sum of the number of transmission events for all infectious individuals whose communicable period occurs before tmax in the timeline bin.
@@ -48,6 +49,7 @@ typedef struct
 #ifdef OBSREFF_OUTPUT
   uint32_t nobs;               //!< Number of observable (who test positive) infectious creating infections in the timeline bin
   uint32_t robssum;            //!< Sum of the number of observable (who test positive) individuals that get infected in the timeline bin.
+  uint64_t robs2sum;           //!< Sum of the square of the number of observable (who test positive) individuals that get infected in the timeline bin.
 #endif
   uint64_t* ngeninfs;	       //!< Number of generated infections from each infectious individual in the timeline bin.
 } ext_timeline_info;
@@ -145,12 +147,12 @@ inline static void std_stats_path_init(sim_vars* sv)
     stats->ninfbins=1;
 
     for(i=nerase-1; i>=0; --i) {
-      set[i].n=set[i].rsum=set[i].commpersum=0;
+      set[i].n=set[i].rsum=set[i].r2sum=set[i].commpersum=0;
 #ifdef NUMEVENTSSTATS
       set[i].neventssum=0;
 #endif
 #ifdef OBSREFF_OUTPUT
-      set[i].nobs=set[i].robssum=0;
+      set[i].nobs=set[i].robssum=set[i].robs2sum=0;
 #endif
       memset(set[i].ngeninfs,0,stats->nainfbins*sizeof(uint64_t));
     }
@@ -250,9 +252,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
 
       stats->pp_ext_timeline[k].n=stats->pp_ext_timeline[i].n+stats->pp_ext_timeline[i+1].n;
       stats->pp_ext_timeline[k].rsum=stats->pp_ext_timeline[i].rsum+stats->pp_ext_timeline[i+1].rsum;
+      stats->pp_ext_timeline[k].r2sum=stats->pp_ext_timeline[i].r2sum+stats->pp_ext_timeline[i+1].r2sum;
       #ifdef OBSREFF_OUTPUT
       stats->pp_ext_timeline[k].nobs=stats->pp_ext_timeline[i].nobs+stats->pp_ext_timeline[i+1].nobs;
       stats->pp_ext_timeline[k].robssum=stats->pp_ext_timeline[i].robssum+stats->pp_ext_timeline[i+1].robssum;
+      stats->pp_ext_timeline[k].robs2sum=stats->pp_ext_timeline[i].robs2sum+stats->pp_ext_timeline[i+1].robs2sum;
       #endif
     }
 
@@ -265,9 +269,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
 
       stats->pp_ext_timeline[j].n=stats->ext_timeline[i].n;
       stats->pp_ext_timeline[j].rsum=stats->ext_timeline[i].rsum;
+      stats->pp_ext_timeline[j].r2sum=stats->ext_timeline[i].r2sum;
       #ifdef OBSREFF_OUTPUT
       stats->pp_ext_timeline[j].nobs=stats->ext_timeline[i].nobs;
       stats->pp_ext_timeline[j].robssum=stats->ext_timeline[i].robssum;
+      stats->pp_ext_timeline[j].robs2sum=stats->ext_timeline[i].robs2sum;
       #endif
     } 
 
@@ -284,9 +290,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
 
       stats->pp_ext_timeline[k].n=stats->pp_ext_timeline[i].n+stats->pp_ext_timeline[i+1].n;
       stats->pp_ext_timeline[k].rsum=stats->pp_ext_timeline[i].rsum+stats->pp_ext_timeline[i+1].rsum;
+      stats->pp_ext_timeline[k].r2sum=stats->pp_ext_timeline[i].rsum+stats->pp_ext_timeline[i+1].r2sum;
       #ifdef OBSREFF_OUTPUT
       stats->pp_ext_timeline[k].nobs=stats->pp_ext_timeline[i].nobs+stats->pp_ext_timeline[i+1].nobs;
       stats->pp_ext_timeline[k].robssum=stats->pp_ext_timeline[i].robssum+stats->pp_ext_timeline[i+1].robssum;
+      stats->pp_ext_timeline[k].robs2sum=stats->pp_ext_timeline[i].robs2sum+stats->pp_ext_timeline[i+1].robs2sum;
       #endif
     }
 
@@ -298,9 +306,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
 
       stats->pp_ext_timeline[j-1].n=stats->ext_timeline[i].n;
       stats->pp_ext_timeline[j-1].rsum=stats->ext_timeline[i].rsum;
+      stats->pp_ext_timeline[j-1].r2sum=stats->ext_timeline[i].r2sum;
       #ifdef OBSREFF_OUTPUT
       stats->pp_ext_timeline[j-1].nobs=stats->ext_timeline[i].nobs;
       stats->pp_ext_timeline[j-1].robssum=stats->ext_timeline[i].robssum;
+      stats->pp_ext_timeline[j-1].robs2sum=stats->ext_timeline[i].robs2sum;
       #endif
     } 
 
@@ -832,10 +842,12 @@ inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
   if(start_comm_per < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
     const int32_t start_comm_per_i=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*start_comm_per);
     ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].rsum+=((std_stats_inf_data*)ii->dataptr)->ninf;
+    ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].r2sum+=((std_stats_inf_data*)ii->dataptr)->ninf*((std_stats_inf_data*)ii->dataptr)->ninf;
     ++(((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].n);
 #ifdef OBSREFF_OUTPUT
     if(ii->commpertype&ro_commper_true_positive_test) {
       ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].robssum+=((std_stats_inf_data*)ii->dataptr)->nobsinf;
+      ((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].robs2sum+=((std_stats_inf_data*)ii->dataptr)->nobsinf*=((std_stats_inf_data*)ii->dataptr)->nobsinf;
       ++(((std_summary_stats*)sv->dataptr)->ext_timeline[start_comm_per_i].nobs);
     }
 #endif
