@@ -1,0 +1,20 @@
+\babel@toc {english}{}
+\babel@toc {english}{}
+\babel@toc {english}{}
+\contentsline {section}{Abstract}{i}{section*.1}%
+\contentsline {section}{Significance for defence and security}{i}{section*.2}%
+\babel@toc {french}{}
+\contentsline {section}{R\'esum\'e}{ii}{section*.3}%
+\babel@toc {english}{}
+\babel@toc {french}{}
+\contentsline {section}{Importance pour la d\'efense et la s\'ecurit\'e}{ii}{section*.4}%
+\babel@toc {english}{}
+\contentsline {section}{Table of contents}{iii}{section*.5}%
+\contentsline {section}{List of figures}{iv}{section*.6}%
+\contentsline {section}{List of tables}{iv}{section*.7}%
+\contentsline {section}{\numberline {1}Introduction}{1}{section.8}%
+\contentsline {section}{\numberline {2}First section}{1}{section.9}%
+\contentsline {subsection}{\numberline {2.1}One subsection}{1}{subsection.10}%
+\contentsline {section}{\numberline {3}Second section}{1}{section.11}%
+\contentsline {section}{\numberline {4}Conclusions}{2}{section.14}%
+\contentsline {section}{References}{3}{section*.15}%
