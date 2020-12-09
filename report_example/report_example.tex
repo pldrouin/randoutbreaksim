@@ -17,6 +17,7 @@
 % \usepackage{auto-pst-pdf}
  \usepackage{afterpage}
  \usepackage[toc,page]{appendix}
+ \usepackage{subfig}
 % \usepackage[lite,subscriptcorrection,nofontinfo]{mtpro2}
  \makeatletter
  \newcommand\tm{\ensuremath{{}^\text{TM}}}
@@ -36,6 +37,14 @@
 \def\f#1{\ensuremath{f\left(#1\right)}}
 \def\fc#1#2{{\newbox\fvars\setbox\fvars=\hbox{\ensuremath{#1}}\newdimen\fvarsh\fvarsh=\ht\fvars\ensuremath{f\left(\box\fvars\left|\vrule height\fvarsh width0pt{#2}\right.\right)}}}
 \def\Lc#1#2{{\newbox\fvars\setbox\fvars=\hbox{\ensuremath{#1}}\newdimen\fvarsh\fvarsh=\ht\fvars\ensuremath{L\left(\box\fvars\left|\vrule height\fvarsh width0pt{#2}\right.\right)}}}
+
+\def\Rz{\ensuremath{R_0}}
+\def\Reff{\ensuremath{R_\mathrm{eff}}}
+\def\Robs{\ensuremath{R_\mathrm{obs}}}
+\def\Pinf{\ensuremath{P_\mathrm{inf}}}
+\def\Pt{\ensuremath{P_\mathrm{t}}}
+
+\def\nfpc{\ensuremath{95^\mathrm{th}}}
 % These definitions are used by drdc-report.cls
 \title{Title}
 % \subtitle{A subtitle}
@@ -97,90 +106,80 @@ Ceci est la signification.
 %\clearpage
 
 \section{Introduction}
-Quick brackground on COVID.
+Quick background on COVID.
 
 Background on branching model.
 
 Limitations of branching model.
 
-Motivation: This work presents an epi model inspired by branching model [REF]. The presented model addresses some of the limitations listed above; it not only predicts the number of infected, but it also predicts the number of positive tests, and the number of contacts. It also enables impact assessment of different mitigation strategies such as self-isolation, testing, contact tracing, non-pharmaceutical-intervention (NPI), and lockdown.
+[Motivation:] This work presents an epidemiological model inspired by a branching model\cite{bm}. The presented model addresses some of the limitations listed above; it not only predicts the number of infected, but it also predicts the number of positive tests, and the number of contacts. It also enables impact assessment of different mitigation strategies such as self-isolation, testing, contact tracing, non-pharmaceutical interventions (NPI), and lockdown.
 
 The goal of this work is to evaluate the use of the proposed model for the CAF. The following objectives are to be met:
-1)	Show different applications of the model;
-2)	Determine how the model could be useful to the CAF; and,
-3)	Evaluate the model and its limitations.
+\begin{enumerate}
+\item Show different applications of the model;
+\item Determine how the model could be useful to the CAF; and,
+\item Evaluate the model and its limitations.
+\end{enumerate}
 
-Overview: the first part of this work presents some terminology used throught this work, the second part presents the model, the third part of this work describes the assumptions and model parameters of the diseased used in the scenarios described in part 5. This section illustrates vairous applications of the model. The fifth section discusses some of the models limitations, and the final section, prior to concluding, discusses the model's usefulness to the CAF. Finaly, the conclusion lists future work and recommendation for the model.
+[Overview:] Section \ref{Definitions_section_label} presents some terminology used throughout this work, Section \ref{Model_section_label} presents the model, Section \ref{Assumptions_section_label} describes the assumptions and model parameters of the disease used in the scenarios that are presented in Sections \ref{Scenario_I_section_label} to \ref{Scenario_II_section_label}. These sections illustrate various applications of the model. Section \ref{Limitations_section_label} discusses some of the models limitations, and the final section, prior to concluding, discusses the model's usefulness to the CAF. Finally, the conclusion lists future work and recommendation for the model.
 
-\section{Definitions}\label{first_section_label}
+\section{Definitions}\label{Definitions_section_label}
 The terminology and definitions used in this work are listed in Table \ref{table_defs}.
 
-Self-isolating infectious individual:.
+%Self-isolating infectious individual:.
 
-Non-self-isolating infectious individual:.
+%Non-self-isolating infectious individual:.
 
-Reproductive number:.
+%Reproductive number:.
 
-Outbreak:.
+%Outbreak:.
 
-Infected individual:.
+%Infected individual:.
 
-Infectious individual:.
+%Infectious individual:.
 
-Infectious phase:.
+%Infectious phase:.
 
-Latent phase:.
+%Latent phase:.
 
 \begin{table}
+\newcommand\defleftcol[1]{\textbf{{\raggedright #1}}}
 \centering
-\caption{Terminology and definition used in this work.}\label{table0}
-\begin{tabular}{|p{5cm}|p{10cm}|}
-\textbf{\underline{Terminology}} & \textbf{\underline{Definition}}\\
+\caption{Terminology and definition used in this work.}\label{table_defs}
+\begin{tabular}{p{5cm}p{10cm}}
+\textbf{Terminology} & \textbf{Definition}\\
 \hline
-\textbf{Basic reproduction number (R0)} & The average number of secondary infections (known or unknown) caused by a single infectious individual (known or unknown) in a population where all, but one individual, are susceptible, and where no mitigation measures, including self-isolation, are in place.\\
-&\\
-\textbf{Effective reproduction number (Reff)} & The average number of secondary infections (known or unknown) caused by a single infectious individual (known or unknown) in a population where some individuals are susceptible and others are non-susceptible due to mitigation measures that may be in place.\\
-&\\
-\textbf{Latent phase} & Begins when an individual is exposed, and ends when the individual is infectious.\\
-&\\
-\textbf{Infected individual} & Someone that has contracted the COVID-19 virus.\\
-&\\
-\textbf{Infectious individual} & Someone that has contracted the COVID-19 virus and that can infect others.\\
-&\\
-\textbf{Infectious phase} & Begins when an individual is exposed, and ends when the individual is infectious.\\
-&\\
-\textbf{Non-self-isolating individuals} & Infected individuals that do not self-isolate either because they are asymptomatic, mildly symptomatic, or ignore symptoms.\\
-&\\
-\textbf{Observable reproduction number (Robb)} & The average number of secondary infections that reported positive caused by a single infectious individual that reported positive in a population where some individuals are susceptible and others are non-susceptible due to mitigation measures that may be in place.\\
-&\\
-\textbf{Outbreak} & Begins as soon as a single individual is infected. The outbreak path can become extinct, if the number of infectious individuals reaches zero, otherwise it is defined as a growing outbreak because the number of individuals infected increase perpetually.\\
-&\\
-\textbf{Pre-symptomatic phase} & Begins when a symptomatic individual is exposed, and ends when a symptomatic individual becomes symptomatic.\\
-&\\
-\textbf{Probability of extinction} & The probability that an outbreak will reach extinction.\\
-&\\
-\textbf{Probability of infection} & The probability that a susceptible individual, present at an infectious event, gets infected.\\
-&\\
-\textbf{Self-isolating individual} & Infected individuals that self-isolate when symptoms occur.\\
-&\\
-\textbf{Symptomatic individual} & An infected invidual that shows symptoms.\\
-&\\
+\hline
+\defleftcol{Basic reproduction\\number (\Rz)} & The average number of secondary infections (known or unknown) caused by a single infectious individual (known or unknown) in a population where all, but one individual, are susceptible, and where no mitigation measures, including self-isolation, are in place.\\
+\defleftcol{Effective reproduction\\number (\Reff)} & The average number of secondary infections (known or unknown) caused by a single infectious individual (known or unknown) in a population where some individuals are susceptible and others are non-susceptible due to mitigation measures that may be in place.\\
+\defleftcol{Latent phase} & Begins when an individual is exposed, and ends when the individual is infectious.\\
+\defleftcol{Infected individual} & Someone that has contracted the COVID-19 virus.\\
+\defleftcol{Infectious individual} & Someone that has contracted the COVID-19 virus and that can infect others.\\
+\defleftcol{Infectious phase} & Begins when an individual is exposed, and ends when the individual is infectious.\\
+\defleftcol{Non-self-isolating\\individuals} & Infected individuals that do not self-isolate either because they are asymptomatic, mildly symptomatic, or ignore symptoms.\\
+\defleftcol{Observable reproduction\\number (\Robs)} & The average number of secondary infections that reported positive caused by a single infectious individual that reported positive in a population where some individuals are susceptible and others are non-susceptible due to mitigation measures that may be in place.\\
+\defleftcol{Outbreak} & Begins as soon as a single individual is infected. The outbreak path can become extinct, if the number of infectious individuals reaches zero, otherwise it is defined as a growing outbreak because the number of individuals infected increase perpetually.\\
+\defleftcol{Pre-symptomatic phase} & Begins when a symptomatic individual is exposed, and ends when a symptomatic individual becomes symptomatic.\\
+\defleftcol{Probability of extinction} & The probability that an outbreak will reach extinction.\\
+\defleftcol{Probability of infection} & The probability that a susceptible individual, present at an infectious event, gets infected.\\
+\defleftcol{Self-isolating individual} & Infected individuals that self-isolate when symptoms occur.\\
+\defleftcol{Symptomatic individual} & An infected invidual that shows symptoms.\\
 \hline
 \end{tabular}
 \end{table}
 
-\section{Towards the proposed interrupted branching model}\label{Definition_section_label}
+\section{Towards the proposed interrupted branching model}\label{Model_section_label}
 
 Overview of section here... 
 
 \subsection{General branching model}
 This is a subsection.
 
-we need to put R0, Reff, branching Reff somewhere in this section... 
+we need to put \Rz, \Reff, branching \Reff\ somewhere in this section... 
 
 blabla...
 
-In this work, the main period designate non-self-isolating individuals, whereas the alternate period designate the self-isolating individuals. 
+In this work, the main period designates non-self-isolating individuals, whereas the alternate period designates the self-isolating individuals. 
 
 \begin{figure}
   \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/BranchingModel}
@@ -191,7 +190,7 @@ In this work, the main period designate non-self-isolating individuals, whereas 
 \subsection{Modified branching model}
 We added latent phase, the probability of infection, contacts, and testing. 
 
-we need to put modified R0, Reff, branching Reff somewhere in this section... 
+we need to put modified \Rz, \Reff, branching \Reff\ somewhere in this section... 
 
 The default parameters for the contacts and testing are listed in in Table \ref{table_defaultParams}. Although these must always be set, they are not relevant when only interested in the number of infected. 
 
@@ -226,35 +225,36 @@ The model is different, but the implementation is also completely independent fr
 
 \begin{table}
 \centering
-\caption{Lists of parameters and their default values (when applicable).}\label{table_defaultParams}
-\begin{tabular}{p{10cm}p{2cm}p{1cm}}
-\textbf{\underline{Parameter}} & \textbf{\underline{Designation}} & \textbf{\underline{Default value}}\\
+\caption{List of parameters and their default values (when applicable).}\label{table_defaultParams}
+\begin{tabular}{p{6cm}ll}
+Parameter & Designation & Default value\\
 \hline
-\multicolumn{3}{c}{ \underline{Branching parameters}} \\
-\textbf{Probability of infection} & pinf & 1\%\\
-\textbf{Probability of self-isolating} & q & 0\%\\
 \hline
-\multicolumn{3}{c}{ \underline{Testing parameters}} \\
-\textbf{Probability of testing positive for non-self-isolating individuals} & ttpr & 70\%\\
-\textbf{Probability of testing positive for self-isolating individuals} & mtpr & 70\%\\
-\textbf{Testing delay} & tdeltat & 2 days\\
+\multicolumn{3}{c}{Branching parameters} \\
+Probability of infection & \Pinf & 1\%\\
+Probability of self-isolating & $q$ & 0\%\\
 \hline
-\multicolumn{3}{c}{ \underline{Contact tracing parameters}} \\
-\textbf{Probability of being contacted} & pt & 80\%\\
-\textbf{Historical contact window} & ctwindow & 2 days\\
+\multicolumn{3}{c}{Testing parameters} \\
+{\raggedright Probability of testing positive\\for non-self-isolating individuals} & \texttt{ttpr} & 70\%\\
+{\raggedright Probability of testing positive\\for self-isolating individuals} & \texttt{mtpr} & 70\%\\
+Testing delay & \texttt{tdeltat} & 2 days\\
+\hline
+\multicolumn{3}{c}{Contact tracing parameters} \\
+Probability of being contacted & \Pt & 80\%\\
+Historical contact window & \texttt{ctwindow} & 2 days\\
 \hline
 \end{tabular}
 \end{table}
 
 
-\section{Assumptions and parameters about the infectious disease}
+\section{Assumptions and parameters about the infectious disease}\label{Assumptions_section_label}
 
 The following assumptions about the infectious disease, summarized in Table \ref{table_diseasePhase}, were considered:
 
 \begin{itemize}
-\item The incubation period of self isolating infectious individuals is drawn from a gamma distribution with a mean of 5.5 days and a 95th percentiled of 9.72 days [Lauer et al...find ref].  
-\item The infectious phase of self-isolating infectious individuals is drawn from a gamma distribution with mean of 2.2 days and a 95th percentile of 6.8 days [Zhao... find ref].
-\item The latent phase was set by difference between the self isolating individuals incubation phase (5.5 days) and infectious phase (2.2 days); therefore, the mean was 3.3 days. To match the 95th percentile of the combined latent and pre-symptomatic infectious phases with the 95th percentile of the non-self-isolating incubation phase as closely as possible, the 95th percentile of the latent phase was also set to 3.3 days. Thus, the duration of the latent phase is assumed fixed.  
+\item The incubation period of self isolating infectious individuals is drawn from a gamma distribution with a mean of 5.5 days and a \nfpc\ percentile of 9.72 days [Lauer et al...find ref].  
+\item The infectious phase of self-isolating infectious individuals is drawn from a gamma distribution with mean of 2.2 days and a \nfpc\ percentile of 6.8 days [Zhao... find ref].
+\item The latent phase was set by difference between the self isolating individuals incubation phase (5.5 days) and infectious phase (2.2 days); therefore, the mean was 3.3 days. To match the \nfpc\ percentile of the combined latent and pre-symptomatic infectious phases with the \nfpc\ percentile of the non-self-isolating incubation phase as closely as possible, the \nfpc\ percentile of the latent phase was also set to 3.3 days. Thus, the duration of the latent phase is assumed fixed.  
 \item The infectious phase for non-self-isolating infectious individuals was based on assumptions in [REF to Steve and Ramzi’s calculator] and combines the self-isolating infectious phase above with estimates on the infectious phase for mild symptomatic cases.
 \end{itemize}
 
@@ -262,7 +262,7 @@ The following assumptions about the infectious disease, summarized in Table \ref
 \centering
 \caption{Disease time period for self-isolating and non-self-isolating infected individuals used in this work.}\label{table_diseasePhase}
 \begin{tabular}{lrrl}
-& Gamma distribution {   } - &Estimate (95th percentile)\\
+& Gamma distribution {   } - &Estimate (\nfpc\ percentile)\\
 \hline
 \textbf{\underline{Infected type}} & \textbf{\underline{Latent phase}} & \textbf{\underline{infectious phase}}\\
 \textbf{Self-isolating} & 3.3 (3.3) & 2.2 (6.8)\\
@@ -275,23 +275,23 @@ The parameters listed in this section were used throughout this work.
 
 %\section{Performance metrics --- maybe section...}
 
-\section{Simulations I - Modified branching model: General evaluation of the impact of self-isolating, of group size, of frequency of event, and of probability of infection on the spread of the virus}\label{section_ExpParams}
+\section{Simulations I - Modified branching model: General evaluation of the impact of self-isolating, of group size, of frequency of event, and of probability of infection on the spread of the virus}\label{Scenario_I_section_label}
 
-It is common for epidemiologist to use the basic or effective reproduction number (R0 and Reff, respectively) to measure the spread of a virus [REF]. It is well known that if the R0 of a virus is bellow 1, outbreaks will go extinct. If R0 > 1, measures to contain the spread of a virus need to be put in place. Reff measures the spread of the virus once measures are in place, and if Reff < 1 than the control measures are effective at preventing the spread of the outbreak. 
+It is common for epidemiologist to use the basic or effective reproduction number (\Rz\ and \Reff, respectively) to measure the spread of a virus [REF]. It is well known that if the \Rz\ of a virus is bellow 1, outbreaks will go extinct. If $\Rz > 1$, measures to contain the spread of a virus need to be put in place. \Reff\ measures the spread of the virus once measures are in place, and if $\Reff < 1$ than the control measures are effective at preventing the spread of the outbreak. 
 
-But what happens to outbreaks if R0 and Reff are greater than 1? Although the exact value of the COVID-19 R0 is debatable [REF,REF...], it is consensus that this value is well above 1; therefore, measures need to be put in place to prevent the spread of the virus. 
+But what happens to outbreaks if \Rz\ and \Reff\ are greater than 1? Although the exact value of the COVID-19 \Rz\ is debatable [REF,REF...], it is consensus that this value is well above 1; therefore, measures need to be put in place to prevent the spread of the virus. 
 
-According to branching theory, the average Reff can be computed as in Equation (add link here). It is well known that self-isolating when infected with the COVID-19 virus limits the infectious phase, which helps control the spread of the virus [REF]. It is also known that the group size (represented by the average of the distribution mu, in Equation (addl link)), frequency of infectious events (lambda), and probability of infections (pinf) all impact the spread of the virus [REF]. Figure \ref{fig_plt_brReffvsq} shows the value of Reff for different values of probability of self-isolating (q) and of mu*lambda*pinf. From this figure, it is noticeable that as the probability of self-isolating (q) increases, mu*lambda*pinf can be relaxed (i.e., increased) for a given Reff value. 
+According to branching theory, the average \Reff\ can be computed as in Equation (add link here). It is well known that self-isolating when infected with the COVID-19 virus limits the infectious phase, which helps control the spread of the virus [REF]. It is also known that the group size (represented by the average of the distribution mu, in Equation (addl link)), frequency of infectious events (lambda), and probability of infections (\Pinf) all impact the spread of the virus [REF]. Figure \ref{fig_plt_brReffvsq} shows the value of \Reff\ for different values of probability of self-isolating ($q$) and of $\mu\lambda\Pinf$. From this figure, it is noticeable that as the probability of self-isolating ($q$) increases, $\mu\lambda\Pinf$ can be relaxed (i.e., increased) for a given \Reff\ value. 
 
-As mentioned, for all outbreaks to become extinct the Reff must be smaller than 1, but for larger values of Reff, some outbreaks may also become extinct. The probability of extinction, defined as the number of outbreaks that are extinct overall outbreaks, captures the chances that outbreaks go extinct for Reff > 1. As Reff increases, the probability of extinction may, or may not decrease, as it is dependent on the various factors mentioned. To help make decisions, it is important for health officials to understand the impact that various factors have on the probability of extinction when Reff > 1. 
+As mentioned, for all outbreaks to become extinct the \Reff\ must be smaller than 1, but for larger values of \Reff, some outbreaks may also become extinct. The probability of extinction, defined as the number of outbreaks that are extinct overall outbreaks, captures the chances that outbreaks go extinct for $\Reff > 1$. As \Reff\ increases, the probability of extinction may, or may not decrease, as it is dependent on the various factors mentioned. To help make decisions, it is important for health officials to understand the impact that various factors have on the probability of extinction when $\Reff > 1$. 
 
-Using the branching model, this section shows the impact of varying mu, lambda, and pinf on the probability for extinction for specific values of Reff, q, and mu*lambda*pinf. These specific values are illustrated by a star marker in Figure \ref{fig_plt_brReffvsq}, where Reff = 2.018 and Reff = 1.009. These were selected as the literature reports that 60\% of individuals self-isolate when symptomatic [REF], and several have reported that, on average, one individual infected with COVID-19 will infect 2 others [REF]. The Reff = 1.009 was evaluated as a comparison.
+Using the branching model, this section shows the impact of varying mu, lambda, and \Pinf\ on the probability for extinction for specific values of \Reff, $q$, and  $\mu\lambda\Pinf$. These specific values are illustrated by a star marker in Figure \ref{fig_plt_brReffvsq}, where $\Reff = 2.018$ and $\Reff = 1.009$. These were selected as the literature reports that 60\% of individuals self-isolate when symptomatic [REF], and several have reported that, on average, one individual infected with COVID-19 will infect 2 others [REF]. The $\Reff = 1.009$ was evaluated as a comparison.
  
 \subsection{Methodology, assumptions, and parameters} 
 
 The simulations in this section had disease parameters listed in Table \ref{table_diseasePhase}, and had a q = 0.6.  
 
-Two categories of simulations, with different mu*lambda*pinf value, were performed. The values of mu*lambda*pinf evaluated were 0.25, and 0.5, each of which having an Reff of 1.009, and 2.018, as illustrated in Figure \ref{fig_plt_brReffvsq}. For each of the values evaluated, the pinf was either 0.125 or 1, and the mu value was 1, 2, 4, 8, 16, or 32. The lambda value was selected to satisfy the mu*lambda*pinf as illustrated in \ref{fig_plt_muvslambda}. This resulted in a total of 24 different simulations listed in \label{table_simIparams}. For all, the group was assumed to be drawn for a log plus 1 distribution with mu. 
+Two categories of simulations, with different $\mu\lambda\Pinf$ value, were performed. The values of $\mu\lambda\Pinf$ evaluated were 0.25, and 0.5, each of which having an \Reff\ of 1.009, and 2.018, as illustrated in Figure \ref{fig_plt_brReffvsq}. For each of the values evaluated, the \Pinf\ was either 0.125 or 1, and the mu value was 1, 2, 4, 8, 16, or 32. The lambda value was selected to satisfy the $\mu\lambda\Pinf$ as illustrated in \ref{fig_plt_muvslambda}. This resulted in a total of 24 different simulations listed in \label{table_simIparams}. For all, the group was assumed to be drawn for a log plus 1 distribution with mu. 
 
 Each simulation were ran for 60 days on 10,000 outbreaks. The following performance metrics were evaluated:
 
@@ -312,7 +312,7 @@ Since the the beginning of an outbreak in real-time is unknown, the concept of t
 \centering
 \caption{Disease time period for self-isolating and non-self-isolating infected individuals used in this work.}\label{table_diseasePhase}
 \begin{tabular}{lrrl}
-& Gamma distribution {   } - &Estimate (95th percentile)\\
+& Gamma distribution {   } - &Estimate (\nfpc\ percentile)\\
 \hline
 \textbf{\underline{Infected type}} & \textbf{\underline{Latent phase}} & \textbf{\underline{infectious phase}}\\
 \textbf{Self-isolating} & 3.3 (3.3) & 2.2 (6.8)\\
@@ -325,7 +325,7 @@ Since the the beginning of an outbreak in real-time is unknown, the concept of t
 \centering
 \caption{Parameter values used in simulations.}\label{table_simIparams}
 \begin{tabular}{lrrrrrr}
-Sim Num. &	Reff	&pinf&	mu&	lambda& mu*lambda*pinf	 & P-ext\\
+Sim Num. &	\Reff	& \Pinf &	$\mu$ &	$\lambda$ & $\mu\lambda\Pinf$	 & P-ext\\
 \hline
 1&	2.018&	0.1250&	1&	4	&0.50&0.3854\\
 2	&2.018&	0.1250&	2&	2	&0.50&0.4088\\
@@ -361,29 +361,29 @@ Sim Num. &	Reff	&pinf&	mu&	lambda& mu*lambda*pinf	 & P-ext\\
 Results for the probability of extinction, time of extinction, and total number of infected as mu and lambda increase for the simulations listed in \ref{table_simIparams} as illustrated in Figure \ref{fig_plt_pextExp1}, Figure \ref{fig_plt_textExp1}, and Figure \ref{fig_plt_NinfExp1} respectively.
 
 
-Figure \ref{fig_plt_pextExp1} shows that simulations with Reff = 1.009 (the orange and blue markers) obtained highest probability of extinction on 10,000 observable outbreaks. The figure also shows that for increasing mu and decreasing lambda, the probability of extinction increases. The simulations with highest pinf also obtained better p-ext. 
+Figure \ref{fig_plt_pextExp1} shows that simulations with $\Reff = 1.009$ (the orange and blue markers) obtained highest probability of extinction on 10,000 observable outbreaks. The figure also shows that for increasing mu and decreasing lambda, the probability of extinction increases. The simulations with highest \Pinf\ also obtained better p-ext. 
 
 
-Figure \ref{fig_plt_textExp1} shows that simulations with smaller Reff = 1.009 (the orange and blue marker) take, on average of 10,000 observable outbreaks, more time to reach extinction, this is especially true for increasing lambda and smaller mu. With the exception of Reff = 2.018 and pinf = 0.125 (green markers), increasing mu while reducing lambda reduced the time to extinction. Some simulations obtained negative extinction time, meaning that the extinct outbreaks occurred, on average, before the first positive test was received.  
+Figure \ref{fig_plt_textExp1} shows that simulations with smaller $\Reff = 1.009$ (the orange and blue marker) take, on average of 10,000 observable outbreaks, more time to reach extinction, this is especially true for increasing lambda and smaller mu. With the exception of $\Reff = 2.018$ and $\Pinf = 0.125$ (green markers), increasing mu while reducing lambda reduced the time to extinction. Some simulations obtained negative extinction time, meaning that the extinct outbreaks occurred, on average, before the first positive test was received.  
 
 
-Figure \ref{fig_plt_NinfExp1} shows that simulations with Reff = 1.009 had fewer infected individuals averaged overall 10,000 observable outbreaks after 60 days. Simulations with larger mu and pinf also had a higher number of infected individuals average across 10,000 observable outbreaks. 
+Figure \ref{fig_plt_NinfExp1} shows that simulations with $\Reff = 1.009$ had fewer infected individuals averaged overall 10,000 observable outbreaks after 60 days. Simulations with larger mu and \Pinf\ also had a higher number of infected individuals average across 10,000 observable outbreaks. 
 
 
 \subsection{Discussion of results}
-The results from Figure \ref{fig_plt_pextExp1} show that reducing Reff improves the probability of extinction, this is due to the fact that each infectious individual infect fewer people. For a given Reff, the probability of extinction can be improved by reducing the frequency of infectious events. Reducing the frequency of events allows for larger group gatherings (for constant Reff values) without negatively impacting the p-ext, however this could results in a larger number of infected individuals, as illustrated in Figure \ref{fig_plt_NinfExp1}. The average number of infected individual overall 10,000 observable outbreaks is high due to the the number of infected individual from non-extinct paths. This is illustrated in \ref{fig_plt_NinfExtExp1} and \ref{fig_plt_NinfOutExp1} where the average number of infected individual after 60 days averaged across extinct, and non-extinct outbreaks is illustrated, respectively.  
+The results from Figure \ref{fig_plt_pextExp1} show that reducing \Reff\ improves the probability of extinction, this is due to the fact that each infectious individual infect fewer people. For a given \Reff, the probability of extinction can be improved by reducing the frequency of infectious events. Reducing the frequency of events allows for larger group gatherings (for constant \Reff\ values) without negatively impacting the p-ext, however this could results in a larger number of infected individuals, as illustrated in Figure \ref{fig_plt_NinfExp1}. The average number of infected individual overall 10,000 observable outbreaks is high due to the the number of infected individual from non-extinct paths. This is illustrated in \ref{fig_plt_NinfExtExp1} and \ref{fig_plt_NinfOutExp1} where the average number of infected individual after 60 days averaged across extinct, and non-extinct outbreaks is illustrated, respectively.  
 
-Figure \ref{fig_plt_pextExp1} also shows that, reducing the frequency of infectious events allows for larger pinf, explaining why the curves with highest pinf obtained better p-ext. In fact, for a given average group size and Reff, reducing the frequency of events while increasing pinf improved p-ext. This was especially true for Reff = 2.018. But, larger pinf could also have disastrous consequences: a population with a larger proportion of infected individuals as illustrated in Figure \ref{fig_plt_NinfExp1}.
+Figure \ref{fig_plt_pextExp1} also shows that, reducing the frequency of infectious events allows for larger \Pinf, explaining why the curves with highest \Pinf\ obtained better p-ext. In fact, for a given average group size and \Reff, reducing the frequency of events while increasing \Pinf\ improved p-ext. This was especially true for $\Reff = 2.018$. But, larger \Pinf\ could also have disastrous consequences: a population with a larger proportion of infected individuals as illustrated in Figure \ref{fig_plt_NinfExp1}.
 
-Reducing the frequency of events increase the time to reach extinction as illustrated in  \ref{fig_plt_textExp1}. This is explained by the fact that infectious events are spread out in time, meaning that the last event will occur later in time. Events with large mu reduce the time of extinction as infections are likely to occur at the same moment; and, hence also end at the same moment. In some cases, outbreaks will go extinct before the first positive test case is received. Unless Reff < 1, this is undesirable as it does not allow health authorities enough time to react to the outbreak; by the time a test results is received, the outcome of the outbreak has already past, and the outbreak may have already gone out of control. High values of mu and pinf drive the extinction time down. This can be explained by the fact that a larger number of people are getting infected in any single infectious event, rather than infections occurring more spread out in time.  
+Reducing the frequency of events increase the time to reach extinction as illustrated in  \ref{fig_plt_textExp1}. This is explained by the fact that infectious events are spread out in time, meaning that the last event will occur later in time. Events with large mu reduce the time of extinction as infections are likely to occur at the same moment; and, hence also end at the same moment. In some cases, outbreaks will go extinct before the first positive test case is received. Unless $\Reff < 1$, this is undesirable as it does not allow health authorities enough time to react to the outbreak; by the time a test results is received, the outcome of the outbreak has already past, and the outbreak may have already gone out of control. High values of mu and \Pinf\ drive the extinction time down. This can be explained by the fact that a larger number of people are getting infected in any single infectious event, rather than infections occurring more spread out in time.  
 
 \subsection{Conclusions}
 
-The probability of extinction (for Reff > 1) is not linearly proportional to Reff as it depends on mu, lambda and pinf. Therefore, Reff alone (if above 1) is an insufficient metric to describe the spread of a virus. Several factors not only impact Reff and p-ext, but also the time of extinction, and the total number of infected individuals, all important measures to help describes the spread of the virus. 
+The probability of extinction (for $\Reff > 1$) is not linearly proportional to \Reff\ as it depends on mu, lambda and \Pinf. Therefore, \Reff\ alone (if above 1) is an insufficient metric to describe the spread of a virus. Several factors not only impact \Reff\ and p-ext, but also the time of extinction, and the total number of infected individuals, all important measures to help describes the spread of the virus. 
 
 The results suggest that having a low frequency of infectious events prevents the spread of the disease and, in the context of the disease parameters selected, is the most effective course of action to control an outbreak. Although it may increase the time for outbreaks to reach extinction, it also allows official more time to react and control the outbreak. If the reduction in the rate of infectious events is compensated by large groups, or by relaxing on social distancing measures or NPIs (which increase the probability of infection), the probability of extinction may not be impacted, but the high number of infected individuals in non-extinct outbreaks could have disastrous consequences. Reducing the group size and the probability of extinction not only reduces the total number of infected individuals, but it also allows authorities more time to observe outbreaks (via positive test reports of COVID-19) before it is too late.  
 
-The best way to improve the probability of extinction is by reducing Reff. This can be achieved various ways, and most importantly by increasing the percentage of infected people that self-isolate, as illustrated in \ref{fig_plt_brReffvsq}. When people self-isolate, they reduce their chances of infected others by reducing their infectious time window. Unfortunately, as reported in the literature [REF], not all infectious individuals that contract the COVID-19 virus have symptoms indicating to them that they should self-isolate. It is anticipated that other measures, such as contact tracing and isolating individuals that are contacted could help control the spread of the virus. 
+The best way to improve the probability of extinction is by reducing \Reff. This can be achieved various ways, and most importantly by increasing the percentage of infected people that self-isolate, as illustrated in \ref{fig_plt_brReffvsq}. When people self-isolate, they reduce their chances of infected others by reducing their infectious time window. Unfortunately, as reported in the literature [REF], not all infectious individuals that contract the COVID-19 virus have symptoms indicating to them that they should self-isolate. It is anticipated that other measures, such as contact tracing and isolating individuals that are contacted could help control the spread of the virus. 
 
 
 \begin{figure}
@@ -420,7 +420,7 @@ The best way to improve the probability of extinction is by reducing Reff. This 
 
 \newpage
 
-\section{Simulations II - Interrupted branching model: Scenario specific evaluation of the impact of different mitigation strategies }
+\section{Simulations II - Interrupted branching model: Scenario specific evaluation of the impact of different mitigation strategies}\label{Scenario_II_section_label}
 This is a section.
 
 \subsection{The Diamond Princess outbreak}
@@ -455,7 +455,7 @@ Although mitigation strategies were applied to the Diamond Princess, the outbrea
 
 The average number of passengers per cabin was reported to be 1.98, whereas the average number of crew member was reported to be 1.73 \cite{10..15585/mmwr..mm6912e3}.  Therefore, it was assumed that people traveled as couples (i.e., in pairs of 2). However, the average group size at infectious events was 5 (therefore mu = 4), as it was assumed that couples congregated, and that at meal times congregated couples were served by at least one crew member. It was assumed that there were 4 infectious events per day (breakfast, lunch, diner, and one other event that could either be when an infected individual goes to bed, attends the gym, or attends a social event). Since there is a possibility to attend various events on the Diamond Princess, and that there are several dining rooms, and exercise rooms, the group distribution was assumed log to allow for large group gatherings. 
 
-The probability of infection at each infectious event was set to be 7\% (i.e., pinf = 0.07). This value was selected, because on February 4th, 10 days from when the primary individual left the diamond princess, 10 people were confirmed positive. These ten cases were assumed to have resulted from the same outbreak, therefore it can be assumed that during 9 days prior, an average of 1.11 individuals were infected per day. At 4 events per day, this results in 0.27 infected individuals per event (i.e., 10 infected / 9 days / 4 events per day = 0.27 infected per event). Since the distribution mu = 4, it was assumed that at each infectious event, 0.07 of the population was infected (i.e., 0.27 infected / 4  = 0.0675).
+The probability of infection at each infectious event was set to be 7\% (i.e., $\Pinf = 0.07$). This value was selected, because on February 4th, 10 days from when the primary individual left the diamond princess, 10 people were confirmed positive. These ten cases were assumed to have resulted from the same outbreak, therefore it can be assumed that during 9 days prior, an average of 1.11 individuals were infected per day. At 4 events per day, this results in 0.27 infected individuals per event (i.e., 10 infected / 9 days / 4 events per day = 0.27 infected per event). Since the distribution mu = 4, it was assumed that at each infectious event, 0.07 of the population was infected (i.e., 0.27 infected / 4  = 0.0675).
 
 Since testing was performed in a controlled environment, it was assumed 0 days in testing delay, and 1.0 true positive test rate for all those who tested (symptomatic and their contacts tested, symptoms or not). Since health authorities began isolating individuals after they received the first confirmed test, but that the primary individual had already left the ship, the time was set relative to the end of the primary individuals communicable period, which in this case is analogous to when the primary individual got off the ship (since some report that the primary individual had symptoms while on the ship). 
 
@@ -466,7 +466,7 @@ The parameters of the Diamond Princess outbreak are summarized in Table \ref{tab
 From this baseline simulation, referred to as Sim0, some parameters were modified to simulate the following 5 scenarios and/or mitigation strategies:
 \begin{enumerate}
 \item Isolating all individuals (not just passengers) that were in direct contact with a confirmed cases. That is the probability that non-self-isolating individual get contact traced and isolate was set to 100\% (i.e., pit = 1.0). This simulation is referred to as Sim1;
-\item Minimizing the probability of infection. Although it is unclear how masks, decontamination, or social distancing impacts the probability of infection, it was assumed that having a red-zone with proper decontamination would reduce the probability of infection by half, that is pinf = 0.035. This simulation is referred to as Sim2;
+\item Minimizing the probability of infection. Although it is unclear how masks, decontamination, or social distancing impacts the probability of infection, it was assumed that having a red-zone with proper decontamination would reduce the probability of infection by half, that is $\Pinf = 0.035$. This simulation is referred to as Sim2;
 \item Self-isolation of the primary individual as soon as he/she had symptoms.This simulation is referred to as Sim3;
 \item No contact tracing at the beginning of, and throughout the outbreak.This simulation is referred to as Sim4;
 \item No contact tracing at the beginning of, and throughout the outbreak, but the primary individual self-isolated as soon as he/she had symptoms. This simulation is referred to as Sim5. 
@@ -481,7 +481,7 @@ Since the statistics in the branching model cannot be changed over time, the mod
 \subsubsection{Results}
 The probability of extinction as well as the time of extinction for each simulation are listed in Table \ref{table_DPextResults}. These results show that Sim3 obtained highest probability of extinction followed by Sim5 and then Sim2. Sim4 obtained lowest probability of extinction. Extinct outbreaks reached extinctions within 0.456 and 5.389 days on average from the end of the primary's individual infectious phase. 
 
-The total number of confirmed cases overtime is illustrated in Figure \ref{fig_DP_posTest}. These results show that the baseline simulation follows the real number of confirmed cases obtained from the WHO. It is also worth mentioning that the Reff for the baseline simulation is 3.57, which closely matches R0 values estimated at the beginning of the outbreak in China [REF]. Sim2 has the slowest rate of reported cases, however Sim3 have fewer reported cases up to 18 days where the number of reported cases start growing exponentially. Sim0, Sim1, and Sim4 have a comparable number of reported case, however Sim4 has fewer reported cases in the first 15 days. 
+The total number of confirmed cases overtime is illustrated in Figure \ref{fig_DP_posTest}. These results show that the baseline simulation follows the real number of confirmed cases obtained from the WHO. It is also worth mentioning that the \Reff\ for the baseline simulation is 3.57, which closely matches \Rz\ values estimated at the beginning of the outbreak in China [REF]. Sim2 has the slowest rate of reported cases, however Sim3 have fewer reported cases up to 18 days where the number of reported cases start growing exponentially. Sim0, Sim1, and Sim4 have a comparable number of reported case, however Sim4 has fewer reported cases in the first 15 days. 
 
 The total number of infected overtime is illustrate in Figure \ref{fig_DP_numInf}. The results show that Sim4 obtained the highest numbers of infected individuals and the fastest rate of infected. Sim5 is shifted from Sim4 in time. Sim3 and Sim0 are also shifted in time. The results also show that Sim2 obtained the slowest rate of infected, but Sim3 had the least number of infected in the first 15 days. 
 
@@ -509,15 +509,15 @@ Reducing the probability of infection, as in Sim2, noticeably reduces the number
 
 \begin{table}
 \centering
-\caption{Lists of parameters for the Diamond princess simulations listed in Table \ref{table_DPsimsNames}.}\label{table_DPparams}
+\caption{List of parameters for the Diamond princess simulations listed in Table \ref{table_DPsimsNames}.}\label{table_DPparams}
 \begin{tabular}{p{3.8cm}p{1.5cm}|p{1.5cm}p{1.5cm}p{1.5cm}p{1.5cm}p{1.5cm}}
 \hline
 \textbf{Parameter} & \textbf{Baseline} & \textbf{Sim1} & \textbf{Sim2} & \textbf{Sim3} & \textbf{Sim4} & \textbf{Sim5} \\
 \hline
 
-mu        		&	4		&	4		&	4			&4		&4				&4\\
-lambda		&	4		&	4		&	4			&4		&4				&4\\
-pinf			&0.07		&	0.07	&\textbf{0.035}	&0.07	&0.07			&0.07\\			
+$\mu$        		&	4		&	4		&	4			&4		&4				&4\\
+$\lambda$		&	4		&	4		&	4			&4		&4				&4\\
+\Pinf			&0.07		&	0.07	&\textbf{0.035}	&0.07	&0.07			&0.07\\			
 tdeltat		&	0		&	0		&	0			&0		&0				&0\\
 ttpr			&	1		&	1		&	1			&1		&1				&1\\
 mtpr		&	1		&	1		&	1			&1		&1				&1\\					
@@ -562,7 +562,7 @@ pri-no-main-period &   &  &  &  \textbf{\checkmark} & &  \textbf{\checkmark} \\
 \hline
 \textbf{Metric} & \textbf{Sim0} & \textbf{Sim1} & \textbf{Sim2} & \textbf{Sim3} & \textbf{Sim4} & \textbf{Sim5} \\
 \hline
-Simulated Reff & 3.575 & 3.101 & 2.000 & 3.567 & 5.527 & 5.525\\
+Simulated \Reff & 3.575 & 3.101 & 2.000 & 3.567 & 5.527 & 5.525\\
 Probability of extinction & 0.032 & 0.0664 & 0.1822 & 0.7278 & 0.0079 & 0.3695\\
 Average days to extinction (+/-)* & 3.048 (3.407) & 4.653 (4.177) & 5.389 (5.996) & 0.573 (1.280)  & 1.400 (2.254) & 0.456 (1.456)\\
 \hline
@@ -617,16 +617,16 @@ See BranchingForCT-20200929
 
 \subsection{Conclusions and discussion}
 
-\section{Simulations III - Comparison to other models: CAF Ship Scenario}\label{section_ExpParams}
+\section{Simulations III - Comparison to other models: CAF Ship Scenario}\label{Scenario_III_section_label}
 \subsubsection{Assumptions and parameters}
 \subsubsection{Methodology}
 \subsubsection{Results}
 \subsubsection{Discussion of results}
 
-\section{Limitations of the interrupted branching model}
+\section{Limitations of the interrupted branching model}\label{Limitations_section_label}
 This is a section
 
-\section{This model's application to the CAF}
+\section{This model's application to the CAF}\label{CAF_Application_section_label}
 This is a section.
 
 As shown in Section \ref{first_section_label} on Page \pageref{first_section_label}.
@@ -655,7 +655,7 @@ Name2 & 8 \\
 \end{table}
 
 
-\section{Conclusions}
+\section{Conclusions}\label{Conclusions_section_label}
 Given the average social dynamics of the CAF scenario, what would be the chances of an outbreak not going extinct?
 
 %\cleardoublepage
