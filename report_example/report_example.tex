@@ -43,6 +43,21 @@
 \def\Robs{\ensuremath{R_\mathrm{obs}}}
 \def\Pinf{\ensuremath{P_\mathrm{inf}}}
 \def\Pt{\ensuremath{P_\mathrm{t}}}
+\def\ttpr{\ensuremath{t_\mathrm{t.p.r.}}}
+\def\mtpr{\ensuremath{m_\mathrm{t.p.r.}}}
+\def\tdeltat{\ensuremath{T_{\Delta t}}}
+\def\ctwindow{\ensuremath{\texttt{ctwindow}}}
+\def\Pit{\ensuremath{P_{{\hspace{0.25em}}^\mathrm{i}t}}}
+\def\Pim{\ensuremath{P_{{\hspace{0.25em}}^\mathrm{i}m}}}
+\def\imbar{\ensuremath{{}^\textrm{i}\bar{m}}}
+\def\itbar{\ensuremath{{}^\textrm{i}\bar{t}}}
+\def\npaths{\ensuremath{n_\textrm{paths}}}
+\def\tmax{\ensuremath{t_\textrm{max}}}
+\def\grouplog{\texttt{group\_log}}
+\def\timerelpriendcomm{\texttt{time\_rel\_pri\_end\_comm}}
+\def\observablepathsonly{\texttt{observable\_paths\_only}}
+\def\prinoaltperiod{\texttt{pri\_no\_alt\_period}}
+\def\prinomainperiod{\texttt{pri\_no\_main\_period}}
 
 \def\nfpc{\ensuremath{95^\mathrm{th}}}
 % These definitions are used by drdc-report.cls
@@ -235,13 +250,13 @@ Probability of infection & \Pinf & 1\%\\
 Probability of self-isolating & $q$ & 0\%\\
 \hline
 \multicolumn{3}{c}{Testing parameters} \\
-{\raggedright Probability of testing positive\\for non-self-isolating individuals} & \texttt{ttpr} & 70\%\\
-{\raggedright Probability of testing positive\\for self-isolating individuals} & \texttt{mtpr} & 70\%\\
-Testing delay & \texttt{tdeltat} & 2 days\\
+{\raggedright Test true positive rate\\for non-self-isolating individuals} & \ttpr & 70\%\\
+{\raggedright Test true positive rate\\for self-isolating individuals} & \mtpr & 70\%\\
+Testing delay & \tdeltat & 2 days\\
 \hline
 \multicolumn{3}{c}{Contact tracing parameters} \\
 Probability of being contacted & \Pt & 80\%\\
-Historical contact window & \texttt{ctwindow} & 2 days\\
+Historical contact window & \ctwindow & 2 days\\
 \hline
 \end{tabular}
 \end{table}
@@ -459,13 +474,13 @@ The probability of infection at each infectious event was set to be 7\% (i.e., $
 
 Since testing was performed in a controlled environment, it was assumed 0 days in testing delay, and 1.0 true positive test rate for all those who tested (symptomatic and their contacts tested, symptoms or not). Since health authorities began isolating individuals after they received the first confirmed test, but that the primary individual had already left the ship, the time was set relative to the end of the primary individuals communicable period, which in this case is analogous to when the primary individual got off the ship (since some report that the primary individual had symptoms while on the ship). 
 
-It was also assumed that on a ship, the probability of successful contact tracing was 1.0, and that the contact tracing window was short (0.5 days). The historic window of contacts was set to 5 days, meaning that on such a controlled setting, it was anticipated that those who tested positive were able to recall who they had been in contact with over the last 5 days. Asymptomatic crew members were not self-isolating even if they had been in contact with a positive case; therefore, the probability that non-self-isolating individual get contact traced and isolates was set to the ratio of passengers to total number of people on board (i.e., pit = 2666/3711 = 0.72).  All individuals that were symptomatic and that were in contact with a positive case self-isolated, either once contacted, or once symptoms appears (which ever occurred first). Since there is no mention of the primary individual self-isolating while on the Diamond Princess, if was assumed that the primary individual was non-self isolating. 
+It was also assumed that on a ship, the probability of successful contact tracing was 1.0, and that the contact tracing window was short (0.5 days). The historic window of contacts was set to 5 days, meaning that on such a controlled setting, it was anticipated that those who tested positive were able to recall who they had been in contact with over the last 5 days. Asymptomatic crew members were not self-isolating even if they had been in contact with a positive case; therefore, the probability that non-self-isolating individual get contact traced and isolates was set to the ratio of passengers to total number of people on board (i.e., $\Pit = 2666/3711 = 0.72$).  All individuals that were symptomatic and that were in contact with a positive case self-isolated, either once contacted, or once symptoms appears (which ever occurred first). Since there is no mention of the primary individual self-isolating while on the Diamond Princess, if was assumed that the primary individual was non-self isolating. 
 
 The parameters of the Diamond Princess outbreak are summarized in Table \ref{table_DPparams}, and are referred to as the baseline simulation. 
 
 From this baseline simulation, referred to as Sim0, some parameters were modified to simulate the following 5 scenarios and/or mitigation strategies:
 \begin{enumerate}
-\item Isolating all individuals (not just passengers) that were in direct contact with a confirmed cases. That is the probability that non-self-isolating individual get contact traced and isolate was set to 100\% (i.e., pit = 1.0). This simulation is referred to as Sim1;
+\item Isolating all individuals (not just passengers) that were in direct contact with a confirmed cases. That is the probability that non-self-isolating individual get contact traced and isolate was set to 100\% (i.e., $\Pit = 1.0$). This simulation is referred to as Sim1;
 \item Minimizing the probability of infection. Although it is unclear how masks, decontamination, or social distancing impacts the probability of infection, it was assumed that having a red-zone with proper decontamination would reduce the probability of infection by half, that is $\Pinf = 0.035$. This simulation is referred to as Sim2;
 \item Self-isolation of the primary individual as soon as he/she had symptoms.This simulation is referred to as Sim3;
 \item No contact tracing at the beginning of, and throughout the outbreak.This simulation is referred to as Sim4;
@@ -518,22 +533,22 @@ Reducing the probability of infection, as in Sim2, noticeably reduces the number
 $\mu$        		&	4		&	4		&	4			&4		&4				&4\\
 $\lambda$		&	4		&	4		&	4			&4		&4				&4\\
 \Pinf			&0.07		&	0.07	&\textbf{0.035}	&0.07	&0.07			&0.07\\			
-tdeltat		&	0		&	0		&	0			&0		&0				&0\\
-ttpr			&	1		&	1		&	1			&1		&1				&1\\
-mtpr		&	1		&	1		&	1			&1		&1				&1\\					
-pt			&	1		&	1		&	1			&1		&1				&1\\
-ctwindow	&	5		&	5		&	5			&5		&5				&5\\
-pit			&	0.72	&\textbf{1}	&	0.72		&0.72	&\textbf{0}		&\textbf{0}\\
-pim			&	1		&	1		&	1			&1		&\textbf{0}		&\textbf{0}\\
-imbar, itbar	&	0.5		&	0.5		&	0.5			&0.5	&\textbf{n-a}      &\textbf{n-a}\\		
-npaths		&	10000	&	10000	&	10000		&10000	&10000			&10000\\
-tmax		&	30		&	30		&	30			&30		&30				&30\\
+\tdeltat		&	0		&	0		&	0			&0		&0				&0\\
+\ttpr			&	1		&	1		&	1			&1		&1				&1\\
+\mtpr		&	1		&	1		&	1			&1		&1				&1\\					
+\Pt			&	1		&	1		&	1			&1		&1				&1\\
+\ctwindow	&	5		&	5		&	5			&5		&5				&5\\
+\Pit			&	0.72	&\textbf{1}	&	0.72		&0.72	&\textbf{0}		&\textbf{0}\\
+\Pim			&	1		&	1		&	1			&1		&\textbf{0}		&\textbf{0}\\
+\imbar, \itbar	&	0.5		&	0.5		&	0.5			&0.5	&\textbf{n-a}      &\textbf{n-a}\\		
+\npaths		&	10000	&	10000	&	10000		&10000	&10000			&10000\\
+\tmax		&	30		&	30		&	30			&30		&30				&30\\
 \hline
-group-log&  \checkmark   & \checkmark & \checkmark  & \checkmark & \checkmark  & \checkmark \\ 
-time-rel-pri-end-comm &  \checkmark   & \checkmark & \checkmark  & \checkmark & \checkmark  & \checkmark \\ 
-observable-paths-only &  \checkmark   & \checkmark & \checkmark  & \checkmark & \checkmark  & \checkmark \\ 
-pri-no-alt-period &  \checkmark   & \checkmark & \checkmark  &  & \checkmark  &  \\ 
-pri-no-main-period &   &  &  &  \textbf{\checkmark} & &  \textbf{\checkmark} \\ 
+\grouplog &  \checkmark   & \checkmark & \checkmark  & \checkmark & \checkmark  & \checkmark \\ 
+\timerelpriendcomm &  \checkmark   & \checkmark & \checkmark  & \checkmark & \checkmark  & \checkmark \\ 
+\observablepathsonly &  \checkmark   & \checkmark & \checkmark  & \checkmark & \checkmark  & \checkmark \\ 
+\prinoaltperiod &  \checkmark   & \checkmark & \checkmark  &  & \checkmark  &  \\ 
+\prinomainperiod &   &  &  &  \textbf{\checkmark} & &  \textbf{\checkmark} \\ 
 \hline
 \end{tabular}
 \end{table}
