@@ -168,10 +168,13 @@ The terminology and definitions used in this work are listed in Table \ref{table
 \defleftcol{Basic reproduction\\number (\Rz)} & The average number of secondary infections (known or unknown) caused by a single infectious individual (known or unknown) in a population where all, but one individual, are susceptible, and where no mitigation measures, including self-isolation, are in place.\\
 \defleftcol{Effective reproduction\\number (\Reff)} & The average number of secondary infections (known or unknown) caused by a single infectious individual (known or unknown) in a population where some individuals are susceptible and others are non-susceptible due to mitigation measures that may be in place.\\
 \defleftcol{Latent phase} & Begins when an individual is exposed, and ends when the individual is infectious.\\
+\defleftcol{Incubation period} & Begins when an individual is exposed and ends when the individual self-isolates or are is no longer infectious.\\
 \defleftcol{Infected individual} & Someone that has contracted the COVID-19 virus.\\
 \defleftcol{Infectious individual} & Someone that has contracted the COVID-19 virus and that can infect others.\\
-\defleftcol{Infectious phase} & Begins when an individual is exposed, and ends when the individual is infectious.\\
+\defleftcol{Infectious non-spreading\\ individual} & Someone that has contracted the COVID-19 virus, but does not infect anyone.\\
+\defleftcol{Infectious phase} & Begins at the end of the latent phase, and ends when the individual is no longer infectious or self-isolates.\\
 \defleftcol{Non-self-isolating\\individuals} & Infected individuals that do not self-isolate either because they are asymptomatic, mildly symptomatic, or ignore symptoms.\\
+\defleftcol{Observable path} & An outbreak is observable if an individual tests positive to COVID-19, and the outbreak is non-extinct or not yet extinct.\\
 \defleftcol{Observable reproduction\\number (\Robs)} & The average number of secondary infections that reported positive caused by a single infectious individual that reported positive in a population where some individuals are susceptible and others are non-susceptible due to mitigation measures that may be in place.\\
 \defleftcol{Outbreak} & Begins as soon as a single individual is infected. The outbreak path can become extinct, if the number of infectious individuals reaches zero, otherwise it is defined as a growing outbreak because the number of individuals infected increase perpetually.\\
 \defleftcol{Pre-symptomatic phase} & Begins when a symptomatic individual is exposed, and ends when a symptomatic individual becomes symptomatic.\\
@@ -269,8 +272,8 @@ The following assumptions about the infectious disease, summarized in Table \ref
 \begin{itemize}
 \item The incubation period of self isolating infectious individuals is drawn from a gamma distribution with a mean of 5.5 days and a \nfpc\ percentile of 9.72 days [Lauer et al...find ref].  
 \item The infectious phase of self-isolating infectious individuals is drawn from a gamma distribution with mean of 2.2 days and a \nfpc\ percentile of 6.8 days [Zhao... find ref].
-\item The latent phase was set by difference between the self isolating individuals incubation phase (5.5 days) and infectious phase (2.2 days); therefore, the mean was 3.3 days. To match the \nfpc\ percentile of the combined latent and pre-symptomatic infectious phases with the \nfpc\ percentile of the non-self-isolating incubation phase as closely as possible, the \nfpc\ percentile of the latent phase was also set to 3.3 days. Thus, the duration of the latent phase is assumed fixed.  
-\item The infectious phase for non-self-isolating infectious individuals was based on assumptions in [REF to Steve and Ramzi’s calculator] and combines the self-isolating infectious phase above with estimates on the infectious phase for mild symptomatic cases.
+\item The latent phase was set as the difference between the self isolating individuals' incubation phase (5.5 days) and infectious phase (2.2 days); therefore, the mean was 3.3 days. To match the \nfpc\ percentile of the combined latent and infectious phases of self-isolating individuals with the \nfpc\ percentile of the non-self-isolating individuals' incubation phase as closely as possible, the \nfpc\ percentile of the latent phase was also set to 3.3 days. Thus, the duration of the latent phase is assumed fixed.  
+\item The infectious phase for non-self-isolating infectious individuals was based on assumptions in [REF to Steve and Ramzi’s calculator].
 \end{itemize}
 
 \begin{table}
@@ -286,7 +289,7 @@ The following assumptions about the infectious disease, summarized in Table \ref
 \end{tabular}
 \end{table}
 
-The parameters listed in this section were used throughout this work. 
+The parameters listed in this section were used throughout this work, unless specified otherwise. 
 
 %\section{Performance metrics --- maybe section...}
 
@@ -294,19 +297,19 @@ The parameters listed in this section were used throughout this work.
 
 It is common for epidemiologist to use the basic or effective reproduction number (\Rz\ and \Reff, respectively) to measure the spread of a virus [REF]. It is well known that if the \Rz\ of a virus is bellow 1, outbreaks will go extinct. If $\Rz > 1$, measures to contain the spread of a virus need to be put in place. \Reff\ measures the spread of the virus once measures are in place, and if $\Reff < 1$ than the control measures are effective at preventing the spread of the outbreak. 
 
-But what happens to outbreaks if \Rz\ and \Reff\ are greater than 1? Although the exact value of the COVID-19 \Rz\ is debatable [REF,REF...], it is consensus that this value is well above 1; therefore, measures need to be put in place to prevent the spread of the virus. 
+But what happens to outbreaks if \Rz\ and \Reff\ are greater than 1? Although the exact value of the COVID-19 \Rz\ is debatable [REF,REF...], it is consensus that its value is well above 1; therefore, measures need to be put in place to prevent the spread of the virus. 
 
-According to branching theory, the average \Reff\ can be computed as in Equation (add link here). It is well known that self-isolating when infected with the COVID-19 virus limits the infectious phase, which helps control the spread of the virus [REF]. It is also known that the group size (represented by the average of the distribution mu, in Equation (addl link)), frequency of infectious events (lambda), and probability of infections (\Pinf) all impact the spread of the virus [REF]. Figure \ref{fig_plt_brReffvsq} shows the value of \Reff\ for different values of probability of self-isolating ($q$) and of $\mu\lambda\Pinf$. From this figure, it is noticeable that as the probability of self-isolating ($q$) increases, $\mu\lambda\Pinf$ can be relaxed (i.e., increased) for a given \Reff\ value. 
+According to branching theory, the average \Reff\ can be computed as in Equation (add link here). It is well known that self-isolating when infected with the COVID-19 virus limits the infectious phase, which helps control the spread of the virus [REF]. It is also known that the group size (represented by the average of the distribution $\mu$, in Equation (addl link)), frequency of infectious events ($\lambda$), and probability of infections (\Pinf) all impact the spread of the virus [REF]. Figure \ref{fig_plt_brReffvsq} shows the value of \Reff\ for different values of probability of self-isolating ($q$) and of $\mu\lambda\Pinf$. From this figure, it is noticeable that as the probability of self-isolating ($q$) increases, $\mu\lambda\Pinf$ can be relaxed (i.e., increased) for a given \Reff\ value. 
 
-As mentioned, for all outbreaks to become extinct the \Reff\ must be smaller than 1, but for larger values of \Reff, some outbreaks may also become extinct. The probability of extinction, defined as the number of outbreaks that are extinct overall outbreaks, captures the chances that outbreaks go extinct for $\Reff > 1$. As \Reff\ increases, the probability of extinction may, or may not decrease, as it is dependent on the various factors mentioned. To help make decisions, it is important for health officials to understand the impact that various factors have on the probability of extinction when $\Reff > 1$. 
+As mentioned, for all outbreaks to become extinct the \Reff\ must be smaller than 1, but for larger values of \Reff, some outbreaks may also become extinct. The probability of extinction, defined as the number of outbreaks that are extinct overall outbreaks, captures the chances that outbreaks go extinct for $\Reff > 1$. As \Reff\ increases, the probability of extinction may, or may not decrease, as it is dependent on the various factors previously mentioned ($\mu$, $\lambda$, \Pinf\, etc.). To help make decisions, it is important for health officials to understand the impact that these various factors have on the probability of extinction when $\Reff > 1$. 
 
-Using the branching model, this section shows the impact of varying mu, lambda, and \Pinf\ on the probability for extinction for specific values of \Reff, $q$, and  $\mu\lambda\Pinf$. These specific values are illustrated by a star marker in Figure \ref{fig_plt_brReffvsq}, where $\Reff = 2.018$ and $\Reff = 1.009$. These were selected as the literature reports that 60\% of individuals self-isolate when symptomatic [REF], and several have reported that, on average, one individual infected with COVID-19 will infect 2 others [REF]. The $\Reff = 1.009$ was evaluated as a comparison.
+Using the branching model, this section shows the impact of varying $\mu$, $\lambda$, and \Pinf\ on the probability for extinction for specific values of \Reff, $q$, and  $\mu\lambda\Pinf$. These specific values are illustrated by a star marker in Figure \ref{fig_plt_brReffvsq}, where $\Reff = 2.018$ and $\Reff = 1.009$. These were selected as the literature reports that 60\% of individuals self-isolate when symptomatic [REF], and several have reported that, on average, one individual infected with COVID-19 will infect 2 others [REF]. The $\Reff = 1.009$ was evaluated for comparison purposes.
  
 \subsection{Methodology, assumptions, and parameters} 
 
 The simulations in this section had disease parameters listed in Table \ref{table_diseasePhase}, and had a q = 0.6.  
 
-Two categories of simulations, with different $\mu\lambda\Pinf$ value, were performed. The values of $\mu\lambda\Pinf$ evaluated were 0.25, and 0.5, each of which having an \Reff\ of 1.009, and 2.018, as illustrated in Figure \ref{fig_plt_brReffvsq}. For each of the values evaluated, the \Pinf\ was either 0.125 or 1, and the mu value was 1, 2, 4, 8, 16, or 32. The lambda value was selected to satisfy the $\mu\lambda\Pinf$ as illustrated in \ref{fig_plt_muvslambda}. This resulted in a total of 24 different simulations listed in \label{table_simIparams}. For all, the group was assumed to be drawn for a log plus 1 distribution with mu. 
+Two categories of simulations, with different $\mu\lambda\Pinf$ value, were performed. The values of $\mu\lambda\Pinf$ evaluated were 0.25 and 0.5, each of which having an \Reff\ of 1.009 and 2.018, as illustrated in Figure \ref{fig_plt_brReffvsq}. For each of the values evaluated, the \Pinf\ was either 0.125 or 1, and the $\mu$ value was 1, 2, 4, 8, 16, or 32. The $\lambda$ value was selected to satisfy the $\mu\lambda\Pinf$ as illustrated in Figure \ref{fig_plt_muvslambda}. This resulted in a total of 24 different simulations listed in Table \label{table_simIparams}. For all, the group was assumed to be drawn for a log plus 1 distribution with $\mu$. 
 
 Each simulation were ran for 60 days on 10,000 outbreaks. The following performance metrics were evaluated:
 
@@ -316,12 +319,7 @@ Each simulation were ran for 60 days on 10,000 outbreaks. The following performa
 \item The average time of extinction, across all paths that went extinct. 
 \end{enumerate}
 
-Since the the beginning of an outbreak in real-time is unknown, the concept of time relative to the beginning of the outbreak is abstract; therefore, the time of extinction was computed relative to the first positive test reported. Testing parameters were set to the default values listed in \ref{table_defaultParams}. The simulations were also performed on observable paths only as those that are unobserved go extinct without any positive test reported. 
-
-\begin{figure}
-  \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/plt_muvslambda}
-  \caption{Figure Title.}\label{fig_plt_muvslambda}
-\end{figure}
+Since the the beginning of an outbreak in real-time is unknown, the concept of time relative to the beginning of the outbreak is abstract; therefore, the time of extinction was computed relative to the first positive test reported. Testing parameters were set to the default values listed in Table \ref{table_defaultParams}. The simulations were also performed on observable paths only as those that are unobserved go extinct without any positive test reported. 
 
 \begin{table}
 \centering
@@ -338,7 +336,7 @@ Since the the beginning of an outbreak in real-time is unknown, the concept of t
 
 \begin{table}
 \centering
-\caption{Parameter values used in simulations.}\label{table_simIparams}
+\caption{Parameter values used in simulations I.}\label{table_simIparams}
 \begin{tabular}{lrrrrrr}
 Sim Num. &	\Reff	& \Pinf &	$\mu$ &	$\lambda$ & $\mu\lambda\Pinf$	 & P-ext\\
 \hline
@@ -373,37 +371,49 @@ Sim Num. &	\Reff	& \Pinf &	$\mu$ &	$\lambda$ & $\mu\lambda\Pinf$	 & P-ext\\
 
 
 \subsection{Results}
-Results for the probability of extinction, time of extinction, and total number of infected as mu and lambda increase for the simulations listed in \ref{table_simIparams} as illustrated in Figure \ref{fig_plt_pextExp1}, Figure \ref{fig_plt_textExp1}, and Figure \ref{fig_plt_NinfExp1} respectively.
+Results for the probability of extinction, time of extinction, and total number of infected as $\mu$ and $\lambda$ increase for the simulations listed in Table \ref{table_simIparams} are illustrated in Figure \ref{fig_plt_pextExp1}, Figure \ref{fig_plt_textExp1}, and Figure \ref{fig_plt_NinfExp1} respectively.
 
 
-Figure \ref{fig_plt_pextExp1} shows that simulations with $\Reff = 1.009$ (the orange and blue markers) obtained highest probability of extinction on 10,000 observable outbreaks. The figure also shows that for increasing mu and decreasing lambda, the probability of extinction increases. The simulations with highest \Pinf\ also obtained better p-ext. 
+Figure \ref{fig_plt_pextExp1} shows that simulations with $\Reff = 1.009$ (the orange and blue markers) obtained highest probability of extinction on 10,000 observable outbreaks. The figure also shows that for increasing $\mu$ and decreasing $\lambda$, the probability of extinction increases. For a given \Reff, the simulations with highest \Pinf\ also obtained better p-ext. 
 
 
-Figure \ref{fig_plt_textExp1} shows that simulations with smaller $\Reff = 1.009$ (the orange and blue marker) take, on average of 10,000 observable outbreaks, more time to reach extinction, this is especially true for increasing lambda and smaller mu. With the exception of $\Reff = 2.018$ and $\Pinf = 0.125$ (green markers), increasing mu while reducing lambda reduced the time to extinction. Some simulations obtained negative extinction time, meaning that the extinct outbreaks occurred, on average, before the first positive test was received.  
+Figure \ref{fig_plt_textExp1} shows that simulations with smaller $\Reff = 1.009$ (the orange and blue marker) take, extinct outbreaks took more time to reach extinction, this is especially true for increasing $\lambda$ and smaller $\mu$. With the exception of $\Reff = 2.018$ and $\Pinf = 0.125$ (green markers), increasing $\mu$ while reducing $\lambda$ reduced the time to extinction. Some simulations obtained negative extinction time, meaning that the extinct outbreaks occurred, on average, before the first positive test was received.  
 
 
-Figure \ref{fig_plt_NinfExp1} shows that simulations with $\Reff = 1.009$ had fewer infected individuals averaged overall 10,000 observable outbreaks after 60 days. Simulations with larger mu and \Pinf\ also had a higher number of infected individuals average across 10,000 observable outbreaks. 
+Figure \ref{fig_plt_NinfExp1} shows that simulations with $\Reff = 1.009$ had fewer infected individuals averaged overall 10,000 observable outbreaks after 60 days. Simulations with larger $\mu$ and \Pinf\ also had a higher number of infected individuals average across 10,000 observable outbreaks. 
 
 
 \subsection{Discussion of results}
-The results from Figure \ref{fig_plt_pextExp1} show that reducing \Reff\ improves the probability of extinction, this is due to the fact that each infectious individual infect fewer people. For a given \Reff, the probability of extinction can be improved by reducing the frequency of infectious events. Reducing the frequency of events allows for larger group gatherings (for constant \Reff\ values) without negatively impacting the p-ext, however this could results in a larger number of infected individuals, as illustrated in Figure \ref{fig_plt_NinfExp1}. The average number of infected individual overall 10,000 observable outbreaks is high due to the the number of infected individual from non-extinct paths. This is illustrated in \ref{fig_plt_NinfExtExp1} and \ref{fig_plt_NinfOutExp1} where the average number of infected individual after 60 days averaged across extinct, and non-extinct outbreaks is illustrated, respectively.  
+The results from Figure \ref{fig_plt_pextExp1} show that reducing \Reff\ improves the probability of extinction, this is due to the fact that each infectious individual infect fewer people. For a given \Reff, the probability of extinction can be improved by reducing the frequency of infectious events. Reducing the frequency of events allows for larger group gatherings (for constant \Reff\ values) without negatively impacting the p-ext, however this could results in a larger number of infected individuals, as illustrated in Figure \ref{fig_plt_NinfExp1}. The average number of infected individual overall 10,000 observable outbreaks is high due to the the number of infected individual from non-extinct paths. This is illustrated in Figure \ref{fig_plt_NinfExtExp1} and Figure \ref{fig_plt_NinfOutExp1} where the average number of infected individual after 60 days are averaged across extinct, and non-extinct outbreaks, respectively.  
 
 Figure \ref{fig_plt_pextExp1} also shows that, reducing the frequency of infectious events allows for larger \Pinf, explaining why the curves with highest \Pinf\ obtained better p-ext. In fact, for a given average group size and \Reff, reducing the frequency of events while increasing \Pinf\ improved p-ext. This was especially true for $\Reff = 2.018$. But, larger \Pinf\ could also have disastrous consequences: a population with a larger proportion of infected individuals as illustrated in Figure \ref{fig_plt_NinfExp1}.
 
-Reducing the frequency of events increase the time to reach extinction as illustrated in  \ref{fig_plt_textExp1}. This is explained by the fact that infectious events are spread out in time, meaning that the last event will occur later in time. Events with large mu reduce the time of extinction as infections are likely to occur at the same moment; and, hence also end at the same moment. In some cases, outbreaks will go extinct before the first positive test case is received. Unless $\Reff < 1$, this is undesirable as it does not allow health authorities enough time to react to the outbreak; by the time a test results is received, the outcome of the outbreak has already past, and the outbreak may have already gone out of control. High values of mu and \Pinf\ drive the extinction time down. This can be explained by the fact that a larger number of people are getting infected in any single infectious event, rather than infections occurring more spread out in time.  
+Reducing the frequency of events increase the time to reach extinction as illustrated in Figure \ref{fig_plt_textExp1}. This is explained by the fact that infectious events are spread out in time, meaning that the last event will occur later in time. Events with large $\mu$ reduce the time of extinction as infections are likely to occur at the same moment; and, hence also end at the same moment. In some cases, outbreaks will go extinct before the first positive test case is received. Unless $\Reff < 1$, this is undesirable as it does not allow health authorities enough time to react to the outbreak; by the time a test results is received, the outcome of the outbreak has already past, and if the outbreak is not extinct, it has already gone out of control. High values of $\mu$ and \Pinf\ drive the extinction time down. This can be explained by the fact that a larger number of people are getting infected in any single infectious event, rather than infections occurring more spread out in time. This can be undesirable as it does not allow health official enough time to react to non-extinct paths. 
 
 \subsection{Conclusions}
 
-The probability of extinction (for $\Reff > 1$) is not linearly proportional to \Reff\ as it depends on mu, lambda and \Pinf. Therefore, \Reff\ alone (if above 1) is an insufficient metric to describe the spread of a virus. Several factors not only impact \Reff\ and p-ext, but also the time of extinction, and the total number of infected individuals, all important measures to help describes the spread of the virus. 
+The probability of extinction (for $\Reff > 1$) is not linearly proportional to \Reff\ as it depends on $\mu$, $\lambda$ and \Pinf. Therefore, \Reff\ alone (if above 1) is an insufficient metric to describe the spread of a virus. Several factors not only impact \Reff\ and p-ext, but also the time of extinction, and the total number of infected individuals. There are all important measures to help describe the spread of the virus. 
 
-The results suggest that having a low frequency of infectious events prevents the spread of the disease and, in the context of the disease parameters selected, is the most effective course of action to control an outbreak. Although it may increase the time for outbreaks to reach extinction, it also allows official more time to react and control the outbreak. If the reduction in the rate of infectious events is compensated by large groups, or by relaxing on social distancing measures or NPIs (which increase the probability of infection), the probability of extinction may not be impacted, but the high number of infected individuals in non-extinct outbreaks could have disastrous consequences. Reducing the group size and the probability of extinction not only reduces the total number of infected individuals, but it also allows authorities more time to observe outbreaks (via positive test reports of COVID-19) before it is too late.  
+The results suggest that having a low frequency of infectious events prevents the spread of the disease and, in the context of the disease parameters selected (Table \ref{table_diseasePhase}), is the most effective course of action to control an outbreak. Although it may increase the time for outbreaks to reach extinction, it also allows official more time to react and control the outbreak. If the reduction in the rate of infectious events is compensated by large groups, or by an increase in \Pinf (relaxing social distancing measure or not using NPIs, for example), the probability of extinction may not be impacted, but the high number of infected individuals in non-extinct outbreaks could have disastrous consequences. Reducing the group size and the probability of extinction not only reduces the total number of infected individuals, but it also allows authorities more time to observe outbreaks (via positive test reports of COVID-19) before it is too late.  
 
-The best way to improve the probability of extinction is by reducing \Reff. This can be achieved various ways, and most importantly by increasing the percentage of infected people that self-isolate, as illustrated in \ref{fig_plt_brReffvsq}. When people self-isolate, they reduce their chances of infected others by reducing their infectious time window. Unfortunately, as reported in the literature [REF], not all infectious individuals that contract the COVID-19 virus have symptoms indicating to them that they should self-isolate. It is anticipated that other measures, such as contact tracing and isolating individuals that are contacted could help control the spread of the virus. 
+The best way to improve the probability of extinction is by reducing \Reff. This can be achieved various ways, and most importantly by increasing the percentage of infected people that self-isolate, as illustrated in Figure \ref{fig_plt_brReffvsq}. When people self-isolate, they reduce their chances of infected others by reducing their infectious time window. Unfortunately, as reported in the literature [REF], not all infectious individuals that contract the COVID-19 virus have symptoms indicating to them that they should self-isolate. It is anticipated that other measures, such as contact tracing and isolating individuals that are contacted could help control the spread of the virus. 
 
+The next Section evaluates the impact of different mitigation strategies in the context of the Diamond Princess outbreak. 
 
 \begin{figure}
   \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/plt_brReffvsq}
   \caption{Figure Title.}\label{fig_plt_brReffvsq}
+\end{figure}
+
+
+\begin{figure}
+  \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/pext_exp1}
+  \caption{Probability of extinction as a function of mu (left plot) and lambda (right plot). Increasing marker size indicates larger lambda (left plot).}\label{fig_plt_pextExp1}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/text_exp1}
+  \caption{Figure Title.}\label{fig_plt_textExp1}
 \end{figure}
 
 \begin{figure}
@@ -413,15 +423,12 @@ The best way to improve the probability of extinction is by reducing \Reff. This
 
 
 \begin{figure}
-  \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/text_exp1}
-  \caption{Figure Title.}\label{fig_plt_textExp1}
+  \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/plt_muvslambda}
+  \caption{Corresponding $\lambda$ values satisfying $\mu\lambda\Pinf$ for given $\mu$, \Pinf, and \Reff.}\label{fig_plt_muvslambda}
 \end{figure}
 
 
-\begin{figure}
-  \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/pext_exp1}
-  \caption{Probability of extinction as a function of mu (left plot) and lambda (right plot). Increasing marker size indicates larger lambda (left plot).}\label{fig_plt_pextExp1}
-\end{figure}
+
 
 \begin{figure}
   \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/NinfExt_exp1}
