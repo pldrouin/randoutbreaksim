@@ -60,6 +60,49 @@
 \def\prinomainperiod{\texttt{pri\_no\_main\_period}}
 
 \def\nfpc{\ensuremath{95^\mathrm{th}}}
+
+\newcommand{\Tau}{\mathcal{T}}
+
+\newcommand{\Nt}{\ensuremath{{\mathcal{N}_\mathrm{t}(\tau_i)}}}
+\newcommand{\Ntfixed}{\ensuremath{{\mathcal{N}_\mathrm{t}}}}
+\newcommand{\Nti}{\ensuremath{{\mathcal{N}_\mathrm{i}(\tau_i)}}}
+\newcommand{\Ntifixed}{\ensuremath{{\mathcal{N}_\mathrm{i}}}}
+\newcommand{\Nts}{\ensuremath{{\mathcal{N}_\mathrm{s}(\tau_i)}}}
+\newcommand{\Ntsfixed}{\ensuremath{{\mathcal{N}_\mathrm{s}}}}
+\newcommand{\Ntvar}{\ensuremath{{\mathcal{N}_\mathrm{t}(\tau)}}}
+\newcommand{\Ntivar}{\ensuremath{{\mathcal{N}_\mathrm{i}(\tau)}}}
+\newcommand{\Ntsvar}{\ensuremath{{\mathcal{N}_\mathrm{s}(\tau)}}}
+\newcommand{\pinf}{\ensuremath{{p_\mathrm{i}(\tau_i)}}}
+\newcommand{\Yi}{\ensuremath{{Y(\tau_i)}}}
+\newcommand{\Ni}{\ensuremath{{N_\mathrm{i}}}}
+\newcommand{\Ns}{\ensuremath{{N_\mathrm{s}}}}
+\renewcommand{\ni}{\ensuremath{{n_\mathrm{i}}}}
+\newcommand{\ns}{\ensuremath{{n_\mathrm{s}}}}
+\newcommand{\Da}{\ensuremath{{\prescript{\alpha}{}{\!D}}}}
+\newcommand{\Db}{\ensuremath{{\prescript{\beta}{}{\!D}}}}
+\newcommand{\Fa}{\ensuremath{{\prescript{\alpha}{}{\!\mathcal{F}}}}}
+\newcommand{\Fb}{\ensuremath{{\prescript{\beta}{}{\!\mathcal{F}}}}}
+\newcommand{\Yia}{\ensuremath{{\prescript{\alpha}{}{\!\Yi}}}}
+\newcommand{\Yib}{\ensuremath{{\prescript{\beta}{}{\!\Yi}}}}
+\newcommand{\Nisi}{\ensuremath{{\prescript{\mathrm{s.i.}}{}{\!\Ni}}}}
+\newcommand{\Csi}{\ensuremath{{\prescript{\mathrm{s.i.}}{}{\!C}}}}
+\newcommand{\Yiasi}{\ensuremath{{\prescript{\mathrm{\alpha,s.i.}}{}{\!\Yi}}}}
+\newcommand{\Yt}{\ensuremath{{\prescript{\mathrm{t}}{}{Y}}}}
+\newcommand{\Zt}{\ensuremath{{\prescript{\mathrm{t}}{}{\!Z}}}}
+\newcommand{\lambdat}{\ensuremath{{\prescript{\mathrm{t}}{}{\!\lambda}}}}
+\newcommand{\rzt}{\ensuremath{{\prescript{\mathrm{t}}{}{\!R_0}}}}
+\newcommand{\Yd}{\ensuremath{{\prescript{\mathrm{d}}{}{Y}}}}
+\newcommand{\Zd}{\ensuremath{{\prescript{\mathrm{d}}{}{\!Z}}}}
+\newcommand{\lambdad}{\ensuremath{{\prescript{\mathrm{d}}{}{\!\lambda}}}}
+\newcommand{\rzd}{\ensuremath{{\prescript{\mathrm{d}}{}{\!R_0}}}}
+
+\newcommand{\floortau}{\floor*\tau}
+\newcommand{\floorTau}{\floor*\Tau}
+\newcommand{\floorTaui}{\floor*{\Tau_i}}
+\newcommand{\Pois}{\ensuremath{\mathrm{Pois}}}
+\newcommand{\ex}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\var}[1]{\mathrm{Var}\left[#1\right]}
+
 % These definitions are used by drdc-report.cls
 \title{Title}
 % \subtitle{A subtitle}
@@ -205,17 +248,70 @@ In this work, the main period designates non-self-isolating individuals, whereas
 \end{figure}
 
 
-\subsection{Modified branching model}
-We added latent phase, the probability of infection, contacts, and testing. 
+\subsection{Modified outbreak model}
+[We added latent phase, the probability of infection, contacts, and testing.
 
 we need to put modified \Rz, \Reff, branching \Reff\ somewhere in this section... 
 
-The default parameters for the contacts and testing are listed in in Table \ref{table_defaultParams}. Although these must always be set, they are not relevant when only interested in the number of infected. 
+The default parameters for the contacts and testing are listed in in Table \ref{table_defaultParams}. Although these must always be set, they are not relevant when only interested in the number of infected. ]
 
 \begin{figure}
   \includegraphics[width=0.99\textwidth, keepaspectratio=true]{figures/ModifiedBranchingModel}
   \caption{Figure Title.}\label{fig_branchingModel}
 \end{figure}
+
+\subsubsection{Effective reproduction number for a modified branching process}
+As in the transmission branching model \cite{branchsim}, a compound Poisson process with arrival rate $\lambda$ and of duration $t$ is defined, with $Q(\lambda t)$ expressed as
+\begin{equation}
+Q(\lambda t)=\sum_{i=1}^{N(\lambda t)}Y_i,
+\end{equation}
+where $N(\lambda t)\sim\Pois(\lambda t)$ is the number of events from the Poisson process.
+The PMF for $Q(\lambda t)$, is written as $P_{Q(\lambda t)}(q)$.
+The compound Poisson process is then subordinated with a gamma process which has the PDF
+\begin{equation}
+f_{T(a,b)}(t)=\frac{b^a}{\Gamma(a)}t^{a-1}e^{-bt}\label{gammaPDF}
+\end{equation}
+and a mean of $\bar{t}=a/b$.
+If $Z(\lambda,a,b)\equiv Q(\lambda T(a,b))$ is defined as the number of new infections from the subordinated Poisson process, where the duration $t$ from the Poisson process has been smeared by the gamma process with parameters $a$ and $b$, the PMF for $Z$ is given by
+\begin{align}
+P_{Z(\lambda,a,b)}(z) & = \int_0^\infty P_{Z(\lambda,a,b),T(a,b)}(z,t')dt'\nonumber\\
+& = \int_0^\infty P_{Z(\lambda,a,b)|T(a,b)=t'}(z)f_{T(a,b)}(t')dt'\nonumber\\
+& = \int_0^\infty P_{Q(\lambda t')}(z)f_{T(a,b)}(t')dt'.
+\end{align}
+The characteristic function for $Z(\lambda,a,b)$ can thus be expressed as
+\begin{align}
+\ex{e^{iuZ(\lambda,a,b)}} & = \sum_z e^{iuz}P_{Z(\lambda,a,b)}(z)\nonumber\\
+& = \int_0^\infty \sum_z e^{iuz}P_{Q(\lambda t')}(z)f_{T(a,b)}(t')dt\nonumber\\
+& = \int_0^\infty \ex{e^{iuQ(\lambda t')}}f_{T(a,b)}(t')dt'.\label{ZCF}
+\end{align}
+
+The PMF for $Q(\lambda t)$ can be written as
+\begin{equation}
+P_{Q(\lambda t)}(q) = \sum_n P_{Q(\lambda t)|N(\lambda t)=n}(q)P_{N(\lambda t)}(n),
+\end{equation}
+such that its characteristic function, assuming independent and identically-dis\-tri\-bu\-ted $Y_1,Y_2,\ldots Y_n$ variables, is given by
+\begin{align}
+\ex{e^{iuQ(\lambda t)}} & = \sum_q e^{iuq}P_{Q(\lambda t)}(q)\nonumber\\
+& = \sum_n \sum_q e^{iuq}P_{Q(\lambda t)|N(\lambda t)=n}(q)P_{N(\lambda t)}(n)\nonumber\\
+& = \sum_n \sum_{Y_1}\ldots\sum_{Y_n} e^{iu\sum_{i=1}^nY_i}P_{Y_1,\ldots,Y_n}(y_1,\ldots,y_n)P_{N(\lambda t)}(n)\nonumber\\
+& = \sum_n \ex{e^{iuY}}^nP_{N(\lambda t)}(n)\nonumber\\
+& = \sum_n \ex{e^{iuY}}^n\frac{e^{-\lambda t}(\lambda t)^n}{n!}\nonumber\\
+& = e^{\lambda t\left(\ex{e^{iuY}}-1\right)}.\label{QCF}
+\end{align}
+Using Equations \eqref{gammaPDF}, \eqref{ZCF} and \eqref{QCF},
+\begin{equation}
+\ex{e^{iuZ(\lambda,a,b)}} = \left[1+\frac{\lambda}{b}\left(1-\ex{e^{iuY}}\right)\right]^{-a}.
+\end{equation}
+The characteristic function of $Z(\lambda,a,b)$ is then used to compute the expected value and the variance of the resulting subordinated compound Poisson process:
+\begin{align}
+\ex{Z(\lambda,a,b)} & = \frac{\lambda a}{b}\ex{Y}\label{exz}\\
+\var{Z(\lambda,a,b)} & = \left(\ex{Z(\lambda,a,b)}\right)^2\left\{\frac{1}{a} + \frac{1}{\ex{Z(\lambda,a,b)}}\frac{\ex{Y^2}}{\ex{Y}}\right\}.\label{exz2}
+\end{align}
+
+\subsubsection{Latent phase and time parameterisation}
+
+\subsubsection{Model modifications beyond a branching process}
+Infection interruption due to CT, constraints on the primary individual, \texttt{nimax}, \texttt{npostestmax}.
 
 \subsection{Interrupted branching model}
 This is a subsection.
