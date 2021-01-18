@@ -58,6 +58,10 @@ typedef struct
   double lambda_uncut;  //!< Rate of events for a given individual, including events of one invitee.
   double lambdap;	//!< Total rate of events for a finite population. Events are defined to include at least two invitees
   double pinf;		//!< Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event.
+#ifdef DUAL_PINF
+  double ppip;          //!< Probability that a given susceptible individual be in the second infection probability category.
+  double rpinfp;        //!< Relative probability that a given susceptible individual of a second category get infected when exposed to one infectious individual during one event (value relative to pinf).
+#endif
   double R0;		//!< Basic reproduction number
   double kappa;		//!< branchim's kappa parameter for the gamma distribution used to generate the main communicable period
   double lbar;		//!< Mean latent period
@@ -337,10 +341,11 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
 
   } else {
     mean=0;
-    lastrangeint=gsl_cdf_ugaussian_P((nbins-psmu)/sigma);;
+    lastrangeint=gsl_cdf_ugaussian_P((nbins-psmu)/sigma);
     fint=lastrangeint-lastint;
     lasti=nbins;
     nbins*=2;
+    printf("lasti: %i, nbins: %i\n",lasti,nbins);
   }
 
   for(;;) {
@@ -349,17 +354,17 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
     newrangeint=lastint=gsl_cdf_ugaussian_P((lasti+nbins-psmu)/sigma);
 
     for(i=lasti+nbins; i>lasti+1; --i) {
-      //printf("i: %i, lastint: %22.15e, fintbuf: %22.15e, meanbuf: %22.15e\n", i, lastint, fintbuf, meanbuf);
+      printf("i: %i, lastint: %22.15e, fintbuf: %22.15e, meanbuf: %22.15e\n", i, lastint, fintbuf, meanbuf);
       newint=gsl_cdf_ugaussian_P((i-nsmu)/sigma);
       dint=lastint-newint;
-      //printf("dint: %22.15e\n",dint);
+      printf("dint: %22.15e\n",dint);
       fintbuf+=dint;
       meanbuf+=dint*i;
       lastint=newint;
     }
-    //printf("i: %i, lastint: %22.15e, fintbuf: %22.15e, meanbuf: %22.15e\n", lasti+1, lastint, fintbuf, meanbuf);
+    printf("i: %i, lastint: %22.15e, fintbuf: %22.15e, meanbuf: %22.15e\n", lasti+1, lastint, fintbuf, meanbuf);
     dint=lastint-lastrangeint;
-    //printf("dint: %22.15e\n",dint);
+    printf("dint: %22.15e\n",dint);
     fintbuf+=dint;
     meanbuf+=dint*(lasti+1);
 
@@ -369,9 +374,9 @@ inline static double gauss_trunc_g_ave(const double mu, const double sigma)
     lastrangeint=newrangeint;
     lasti+=nbins;
     nbins*=2;
-    //printf("nbins to %i\n",nbins);
+    printf("nbins to %i\n",nbins);
   }
-  //printf("mean=%22.15e, fint=%22.15e, mui=%i\n",mean,fint,mui);
+  printf("mean=%22.15e, fint=%22.15e, mui=%i\n",mean,fint,mui);
 
   return mean/fint+mui;
 }

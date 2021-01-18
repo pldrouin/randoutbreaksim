@@ -117,6 +117,16 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.pinf);
 
+#ifdef DUAL_PINF
+      } else if(!argsdiffer(pbuf, "ppip")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.ppip);
+
+      } else if(!argsdiffer(pbuf, "rpinfp")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.rpinfp);
+#endif
+
       } else if(!argsdiffer(pbuf, "popsize")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%"PRIu32,&cp->pars.popsize);
@@ -357,8 +367,13 @@ void printusage(const char* name)
 
   printf("\n\nBRANCHING PROCESS EFFECTIVE REPRODUCTION NUMBER:\n\n");
   printf("\tIf an alternate communicable period of average duration mbar is defined, and if there is a probability q that an individual's communicable period be the alternate communicable instead of the main communicable period, then an effective reproduction number can be expressed as\n");
+#ifdef DUAL_PINF
+  printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [1 + ppip * (rpinfp - 1)] * [(1 - q) * tbar + q * mbar]\n");
+  printf("\t\t       =  R0 * [1 + ppip * (rpinfp - 1)] * [1 + q * ( mbar / tbar - 1)].\n\n");
+#else
   printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [(1 - q) * tbar + q * mbar]\n");
-  printf("\t\t     =  R0 * [1 + q * ( mbar / tbar - 1)].\n\n");
+  printf("\t\t       =  R0 * [1 + q * ( mbar / tbar - 1)].\n\n");
+#endif
   printf("\tThe expected effective reproduction number of the simulation will be given by the above expression if it consists of a branching process characterised by the model described above. For such a process, all generations of infections occur using the same static distributions. As identified below, some of the available options can make the simulation deviate from a branching process, in which case the effective reproduction number will deviate accordingly.\n");
 
   printf("\n\nOPTIONS\n\n");
@@ -382,6 +397,10 @@ void printusage(const char* name)
   printf("\t--sigma VALUE\t\t\tParameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--rsigma VALUE\t\t\tParameter for the relative standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--pinf VALUE\t\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event.\n");
+#ifdef DUAL_PINF
+  printf("\t--ppip VALUE\t\t\tProbability that a given susceptible individual be in the second infection probability category (0 <= ppip <= 1, default value of 0).\n");
+  printf("\t--rpinfp VALUE\t\t\tRelative probability that a given susceptible individual of a second category get infected when exposed to one infectious individual during one event (value relative to pinf, 0 < rpinfp * pinf <= 1, default value of 1)).\n");
+#endif
   //printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
   printf("\t--R0 VALUE\t\t\tBasic reproduction number.\n");
   printf("\t--lbar VALUE\t\t\tMean latent period (default value of 0).\n");

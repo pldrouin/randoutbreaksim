@@ -24,6 +24,12 @@ int model_solve_pars(model_pars* pars)
   printf("pinf:\t\t%22.15e\n",pars->pinf);
   printf("R0:\t\t%22.15e\n",pars->R0);
 
+#ifdef DUAL_PINF
+  printf("\nParameters for the second category of probability of infection:\n");
+  printf("ppip:\t\t%22.15e\n",pars->ppip);
+  printf("rpinfp:\t\t%22.15e\n",pars->rpinfp);
+#endif
+
   if((isnan(pars->kappa)==0) + (isnan(pars->t95)==0) != 1) {
     fprintf(stderr,"%s: Error: Either the kappa parameter or the t95 parameter must be provided.\n",__func__);
     return -3;
@@ -189,7 +195,11 @@ int model_solve_pars(model_pars* pars)
   }
 
   printf("\nBranching process effective reproduction number:\n");
+#ifdef DUAL_PINF
+  printf("brReff:\t%22.15e\n",pars->R0*(1+pars->ppip*(pars->rpinfp-1))*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))));
+#else
   printf("brReff:\t%22.15e\n",pars->R0*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))));
+#endif
 
   return 0;
 }
@@ -296,11 +306,14 @@ int model_solve_R0_group(model_pars* pars)
     if(ret) return ret;
 
 
-    if(isnan(pars->R0)) pars->R0=pars->lambda*pars->tbar*(pars->g_ave-1)*pars->pinf;
+    if(isnan(pars->R0))
+      pars->R0=pars->lambda*pars->tbar*(pars->g_ave-1)*pars->pinf;
 
-    else if(isnan(pars->tbar)) pars->tbar=pars->R0/(pars->lambda*(pars->g_ave-1)*pars->pinf);
+    else if(isnan(pars->tbar))
+      pars->tbar=pars->R0/(pars->lambda*(pars->g_ave-1)*pars->pinf);
 
-    else if(isnan(pars->pinf)) pars->pinf=pars->R0/(pars->lambda*pars->tbar*(pars->g_ave-1));
+    else if(isnan(pars->pinf))
+    pars->pinf=pars->R0/(pars->lambda*pars->tbar*(pars->g_ave-1));
 
   //Else if g_ave, p and mu are unknown
   } else {
@@ -654,6 +667,18 @@ int model_solve_gamma_group(double* ave, double* kappa, double* x95)
 int model_pars_check(model_pars const* pars)
 {
   int ret=0;
+
+#ifdef DUAL_PINF
+  if(!(pars->ppip>=0) || !(pars->ppip<=1)) {
+    fprintf(stderr,"%s: Error: The ppip parameter must have a value in the interval [0,1]\n",__func__);
+    ret-=1;
+  }
+
+  if(!(pars->rpinfp>0) && !(pars->pinf*pars->rpinfp<=1)) {
+    fprintf(stderr,"%s: Error: pinf*rpinfp must have a value in the interval (0,1]\n",__func__);
+    ret-=2;
+  }
+#endif
 
   if(pars->lambdap<=0) {
     fprintf(stderr,"%s: Error: If defined, lambdap must be greater than 0\n",__func__);

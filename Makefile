@@ -10,4 +10,8 @@ ifdef OBSREFF_OUTPUT
   CFLAGS += -DOBSREFF_OUTPUT
 endif
 
+ifdef DUAL_PINF
+  CFLAGS += -DDUAL_PINF
+endif
+
 include src/lib/Makefile.in src/bin/Makefile.in src/doc/Makefile.in

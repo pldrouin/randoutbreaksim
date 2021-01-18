@@ -21,7 +21,11 @@ void branchsim_init(sim_vars* sv)
   sv->brsim.nlayers=INIT_N_LAYERS;
   ran_log_init(&sv->rl, (rng_stream*)sv->r->state, sv->pars.p);
 
-  BR_GENINF_COND;
+#ifdef DUAL_PINF
+  BR_GENINF_COND(&& (sv->pars.ppip==0 || sv->pars.rpinfp==1));
+#else
+  BR_GENINF_COND();
+#endif
 }
 
 int branchsim(sim_vars* sv)

@@ -25,6 +25,10 @@ void sim_pars_init(model_pars* pars)
   pars->lambda_uncut=NAN;
   pars->lambdap=NAN;
   pars->pinf=NAN;
+#ifdef DUAL_PINF
+  pars->ppip=0;
+  pars->rpinfp=1;
+#endif
   pars->R0=NAN;
   pars->kappa=NAN;
   pars->lbar=NAN;
