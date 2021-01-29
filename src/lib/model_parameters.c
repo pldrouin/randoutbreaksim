@@ -28,6 +28,8 @@ int model_solve_pars(model_pars* pars)
   printf("\nParameters for the second category of probability of infection:\n");
   printf("ppip:\t\t%22.15e\n",pars->ppip);
   printf("rpinfp:\t\t%22.15e\n",pars->rpinfp);
+  printf("rpshedp:\t%22.15e\n",pars->rpshedp);
+  printf("qp:\t\t%22.15e\n",pars->qp);
 #endif
 
   if((isnan(pars->kappa)==0) + (isnan(pars->t95)==0) != 1) {
@@ -196,7 +198,7 @@ int model_solve_pars(model_pars* pars)
 
   printf("\nBranching process effective reproduction number:\n");
 #ifdef DUAL_PINF
-  printf("brReff:\t%22.15e\n",pars->R0*(1+pars->ppip*(pars->rpinfp-1))*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))));
+  printf("brReff:\t%22.15e\n",pars->R0*(pars->ppip>0?(1+pars->ppip*(pars->rpinfp-1))*((1-pars->ppip)*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))) + pars->rpshedp*pars->ppip*(1+(isnan(pars->qp)?0:pars->qp*(pars->mbar/pars->tbar-1)))):(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1)))));
 #else
   printf("brReff:\t%22.15e\n",pars->R0*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))));
 #endif
@@ -672,11 +674,23 @@ int model_pars_check(model_pars const* pars)
   if(!(pars->ppip>=0) || !(pars->ppip<=1)) {
     fprintf(stderr,"%s: Error: The ppip parameter must have a value in the interval [0,1]\n",__func__);
     ret-=1;
-  }
 
-  if(!(pars->rpinfp>0) && !(pars->pinf*pars->rpinfp<=1)) {
-    fprintf(stderr,"%s: Error: pinf*rpinfp must have a value in the interval (0,1]\n",__func__);
-    ret-=2;
+  } else if(pars->ppip>0) {
+
+    if(!(pars->rpinfp>0) && !(pars->pinf*pars->rpinfp<=1)) {
+      fprintf(stderr,"%s: Error: pinf*rpinfp must have a value in the interval (0,1]\n",__func__);
+      ret-=2;
+    }
+
+    if(!(pars->rpshedp>0) && !(pars->pinf*pars->rpshedp<=1)) {
+      fprintf(stderr,"%s: Error: pinf*rpshedp must have a value in the interval (0,1]\n",__func__);
+      ret-=2;
+    }
+
+    if(pars->qp<0 || pars->qp>1) {
+      fprintf(stderr,"%s: Error: qp must be in the [0,1] interval\n",__func__);
+      ret-=8;
+    }
   }
 #endif
 

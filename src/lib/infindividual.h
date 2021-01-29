@@ -35,6 +35,10 @@ typedef struct infindividual_
 #endif
     double end_comm_period;   //!< End of communicable period
     double event_time;	      //!< Start time for the current iteration event
+#ifdef DUAL_PINF
+    double q;                 //!< Probability of alternate communicable period for the infectious individual. Depends on the infection category
+    double pinf;              //!< Probability of infection from the infectious individual. Depends on the infection category
+#endif
     uint32_t nevents;	      //!< Number of events
     uint32_t nattendees;      //!< Number of attendees for the current iteration event
 #ifdef CT_OUTPUT
@@ -42,9 +46,16 @@ typedef struct infindividual_
     uint32_t ntracedicts;      //!< Number of successfully traced infected contacts for the current iteration event
 #endif
     uint32_t ninfections;     //!< Number of infections for the current iteration event
+#ifdef DUAL_PINF
+    uint32_t ninfectionsf;    //<! Number of remaining infections in the first category for the current iteration event
+    uint32_t ninfectionsp;    //<! Number of remaining infections in the second category for the current iteration event
+#endif
     uint32_t cureventi;	      //!< Index of the current iteration event
     uint32_t curinfectioni;    //!< Index of the current iteration infection
     uint8_t commpertype;      //!< Flags for the type of communicable period (filled using ro_commper_type flags)
+#ifdef DUAL_PINF
+    bool inftypep;            //!> Flag that indicates if the infectious individual is in the second category
+#endif
 } infindividual;
 
 #endif

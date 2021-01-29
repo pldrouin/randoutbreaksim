@@ -27,7 +27,9 @@ void sim_pars_init(model_pars* pars)
   pars->pinf=NAN;
 #ifdef DUAL_PINF
   pars->ppip=0;
-  pars->rpinfp=1;
+  pars->rpinfp=NAN;
+  pars->rpshedp=NAN;
+  pars->qp=NAN;
 #endif
   pars->R0=NAN;
   pars->kappa=NAN;

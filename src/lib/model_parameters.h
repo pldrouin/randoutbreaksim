@@ -60,7 +60,9 @@ typedef struct
   double pinf;		//!< Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event.
 #ifdef DUAL_PINF
   double ppip;          //!< Probability that a given susceptible individual be in the second infection probability category.
-  double rpinfp;        //!< Relative probability that a given susceptible individual of a second category get infected when exposed to one infectious individual during one event (value relative to pinf).
+  double rpinfp;        //!< Relative probability that a given susceptible individual of the second category gets infected when exposed to one infectious individual during one event (value relative to pinf, 0 < rpinfp * pinf <= 1, default value of 1).
+  double rpshedp;       //!> Relative strength of infectiousness from an infectious individual of the second category vs the fist category (value relative to pinf, 0 < rpshedp * pinf <=1, default value of 1).
+  double qp;            //!> Probability of alternate communicable period for an infectious individual in the second category.
 #endif
   double R0;		//!< Basic reproduction number
   double kappa;		//!< branchim's kappa parameter for the gamma distribution used to generate the main communicable period

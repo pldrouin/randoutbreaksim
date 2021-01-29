@@ -45,6 +45,19 @@ int branchsim(sim_vars* sv)
 
     for(i=sim->nstart-1; i>=0; --i) {
       DEBUG_PRINTF("initial individual %i\n",i);
+
+      #ifdef DUAL_PINF
+      if(gsl_rng_uniform(sv->r) < sv->pars.ppip) {
+	sv->brsim.iis[1].inftypep=true;
+	sv->brsim.iis[1].q=sv->pars.qp;
+	sv->brsim.iis[1].pinf=sv->pars.pinf*sv->pars.rpshedp;
+
+      } else {
+	sv->brsim.iis[1].inftypep=false;
+	sv->brsim.iis[1].q=sv->pars.q;
+	sv->brsim.iis[1].pinf=sv->pars.pinf;
+      }
+      #endif
       //Generate the communicable period appropriately
       sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
 
@@ -164,6 +177,24 @@ int branchsim(sim_vars* sv)
 	  for(uint32_t i=sv->brsim.nlayers-1; i>=layer; --i) sv->ii_alloc_proc_func(sv->brsim.iis+i);
 	  sv->curii=sv->brsim.iis+layer;
 	}
+
+      #ifdef DUAL_PINF
+	//The number of infections is known, so the infection category must be
+	//randomly assigned based on the counts of remaining individuals for
+	//each category.
+	if(gsl_rng_uniform(sv->r) < ((double)(sv->curii-1)->ninfectionsp) / ((sv->curii-1)->ninfectionsf + (sv->curii-1)->ninfectionsp)) {
+	  --((sv->curii-1)->ninfectionsp);
+	  sv->curii->inftypep=true;
+	  sv->curii->q=sv->pars.qp;
+	  sv->curii->pinf=sv->pars.pinf*sv->pars.rpshedp;
+
+	} else {
+	  --((sv->curii-1)->ninfectionsf);
+	  sv->curii->inftypep=false;
+	  sv->curii->q=sv->pars.q;
+	  sv->curii->pinf=sv->pars.pinf;
+	}
+        #endif
 	//Generate the communicable period appropriately
 #ifdef CT_OUTPUT
 	(sv->curii-1)->gen_ct_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);

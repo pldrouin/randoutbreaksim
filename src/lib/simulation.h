@@ -296,7 +296,11 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
 #define GEN_PER_ALTERNATE_ONLY_2_PRE ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb);
 #define GEN_PER_ALTERNATE_ONLY_POST(IM,TESTING) ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM;
 
+#ifdef DUAL_PINF
+#define GEN_PER_ALTERNATE_PRE if(gsl_rng_uniform(sv->r) < ii->q) {
+#else
 #define GEN_PER_ALTERNATE_PRE if(gsl_rng_uniform(sv->r) < sv->pars.q) {
+#endif
 #define GEN_PER_ALTERNATE_1_POST(MAIN,IT,IM,TESTING) ii->comm_period=sv->pars.mbar; ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else {GEN_PER_MAIN_ ## MAIN(IT);}
 #define GEN_PER_ALTERNATE_2_POST(MAIN,IT,IM,TESTING) ii->comm_period=gsl_ran_gamma(sv->r, sv->pars.ma, sv->pars.mb); ii->end_comm_period=inf_start+ii->latent_period+ii->comm_period; GEN_TESTED_ALT_ ## TESTING GEN_PER_INTERRUPTED_ALT_ ## IM} else {GEN_PER_MAIN_ ## MAIN(IT);}
 

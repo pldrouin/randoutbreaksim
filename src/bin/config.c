@@ -125,6 +125,14 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "rpinfp")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.rpinfp);
+
+      } else if(!argsdiffer(pbuf, "rpshedp")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.rpshedp);
+
+      } else if(!argsdiffer(pbuf, "qp")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.qp);
 #endif
 
       } else if(!argsdiffer(pbuf, "popsize")) {
@@ -355,7 +363,7 @@ void printusage(const char* name)
   printf("\tThe basic reproduction number R0 is defined by the expression\n");
   printf("\t\tR0 = lambda * tbar * (g_ave - 1) * pinf.\n");
   printf("\n\tA sufficient number of input parameters must be provided to determine, without overdetermining, the above expression.\n");
-  printf("\tThe mu and p parameters are alternate parameters that can be provided instead of g_ave.\n");
+  printf("\tmu and p parameters are alternate parameters that can be provided instead of g_ave.\n");
   printf("\tmu is the mean of an unbounded logarithmic distribution with parameter p (mu = -p / ((1 - p) * log(1 - p))).\n");
   printf("\tThe expression of g_ave as a function of p depends on the type of group distribution that is selected for the events.\n");
   printf("\tAn event is defined to include at least two invitees.\n");
@@ -368,8 +376,8 @@ void printusage(const char* name)
   printf("\n\nBRANCHING PROCESS EFFECTIVE REPRODUCTION NUMBER:\n\n");
   printf("\tIf an alternate communicable period of average duration mbar is defined, and if there is a probability q that an individual's communicable period be the alternate communicable instead of the main communicable period, then an effective reproduction number can be expressed as\n");
 #ifdef DUAL_PINF
-  printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [1 + ppip * (rpinfp - 1)] * [(1 - q) * tbar + q * mbar]\n");
-  printf("\t\t       =  R0 * [1 + ppip * (rpinfp - 1)] * [1 + q * ( mbar / tbar - 1)].\n\n");
+  printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [1 + ppip * (rpinfp - 1)] * {(1 - ppip) * [(1 - q) * tbar + q * mbar] + rpshedp * ppip *  [(1 - qp) * tbar + qp * mbar]}\n");
+  printf("\t\t       =  R0 * [1 + ppip * (rpinfp - 1)] * {(1 - ppip) * [1 + q * ( mbar / tbar - 1)] + rpshedp * ppip *  [1 + qp * ( mbar / tbar - 1)]}.\n\n");
 #else
   printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [(1 - q) * tbar + q * mbar]\n");
   printf("\t\t       =  R0 * [1 + q * ( mbar / tbar - 1)].\n\n");
@@ -399,7 +407,9 @@ void printusage(const char* name)
   printf("\t--pinf VALUE\t\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event.\n");
 #ifdef DUAL_PINF
   printf("\t--ppip VALUE\t\t\tProbability that a given susceptible individual be in the second infection probability category (0 <= ppip <= 1, default value of 0).\n");
-  printf("\t--rpinfp VALUE\t\t\tRelative probability that a given susceptible individual of a second category get infected when exposed to one infectious individual during one event (value relative to pinf, 0 < rpinfp * pinf <= 1, default value of 1)).\n");
+  printf("\t--rpinfp VALUE\t\t\tRelative probability that a given susceptible individual of the second category gets infected when exposed to one infectious individual during one event (value relative to pinf, 0 < rpinfp * pinf <= 1, default value of 1).\n");
+  printf("\t--rpshedp VALUE\t\t\tRelative strength of infectiousness from an infectious individual of the second category vs the fist category (value relative to pinf, 0 < rpshedp * pinf <=1, default value of 1).\n");
+  printf("\t--qp VALUE\t\t\tProbability of alternate communicable period for an infectious individual in the second category.\n");
 #endif
   //printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
   printf("\t--R0 VALUE\t\t\tBasic reproduction number.\n");
