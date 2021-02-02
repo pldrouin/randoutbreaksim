@@ -25,8 +25,8 @@ $(EDEPS): %.d: %.c %.h $(ALLINCS)
 
 include $(EDEPS)
 
-$(EXEC): $(EOBJS) $(ESLIBS)
-	$(CC) $(ECFLAGS) -o $@ $^ $(ELDFLAGS)
+$(EXEC): $(EOBJS) $(ESLIBS) $(LIB)
+	$(CC) $(ECFLAGS) -o $@ $(EOBJS) $(ESLIBS) $(ELDFLAGS)
 
 $(EOBJS): %.o: %.c
 	$(CC) -c -o $@ $(ECFLAGS) $<

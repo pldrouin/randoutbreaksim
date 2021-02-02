@@ -376,8 +376,8 @@ void printusage(const char* name)
   printf("\n\nBRANCHING PROCESS EFFECTIVE REPRODUCTION NUMBER:\n\n");
   printf("\tIf an alternate communicable period of average duration mbar is defined, and if there is a probability q that an individual's communicable period be the alternate communicable instead of the main communicable period, then an effective reproduction number can be expressed as\n");
 #ifdef DUAL_PINF
-  printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [1 + ppip * (rpinfp - 1)] * {(1 - ppip) * [(1 - q) * tbar + q * mbar] + rpshedp * ppip *  [(1 - qp) * tbar + qp * mbar]} / [1 + ppip * (rpinfp - 1)]\n");
-  printf("\t\t       =  R0 * [1 + ppip * (rpinfp - 1)] * {(1 - ppip) * [1 + q * ( mbar / tbar - 1)] + rpshedp * ppip *  [1 + qp * ( mbar / tbar - 1)]} / [1 + ppip * (rpinfp - 1)].\n\n");
+  printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [1 + ppip * (rpinfp - 1)] * {(1 - ppip) * [(1 - q) * tbar + q * mbar] + rpshedp * ppip * rpinfp * [(1 - qp) * tbar + qp * mbar]} / [1 + ppip * (rpinfp - 1)]\n");
+  printf("\t\t       =  R0 * [1 + ppip * (rpinfp - 1)] * {(1 - ppip) * [1 + q * ( mbar / tbar - 1)] + rpshedp * ppip * rpinfp * [1 + qp * ( mbar / tbar - 1)]} / [1 + ppip * (rpinfp - 1)].\n\n");
 #else
   printf("\t\tbrReff =  lambda * (g_ave - 1) * pinf * [(1 - q) * tbar + q * mbar]\n");
   printf("\t\t       =  R0 * [1 + q * ( mbar / tbar - 1)].\n\n");
