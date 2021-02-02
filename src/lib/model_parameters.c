@@ -198,7 +198,7 @@ int model_solve_pars(model_pars* pars)
 
   printf("\nBranching process effective reproduction number:\n");
 #ifdef DUAL_PINF
-  printf("brReff:\t%22.15e\n",pars->R0*(pars->ppip>0?(1+pars->ppip*(pars->rpinfp-1))*((1-pars->ppip)*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))) + pars->rpshedp*pars->ppip*(1+(isnan(pars->qp)?0:pars->qp*(pars->mbar/pars->tbar-1)))):(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1)))));
+  printf("brReff:\t%22.15e\n",pars->R0*(pars->ppip>0?(1+pars->ppip*(pars->rpinfp-1))*((1-pars->ppip)*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))) + pars->rpshedp*pars->ppip*(1+(isnan(pars->qp)?0:pars->qp*(pars->mbar/pars->tbar-1))))/(1+pars->ppip*(pars->rpinfp-1)):(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1)))));
 #else
   printf("brReff:\t%22.15e\n",pars->R0*(1+(isnan(pars->q)?0:pars->q*(pars->mbar/pars->tbar-1))));
 #endif

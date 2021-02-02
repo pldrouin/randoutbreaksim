@@ -39,6 +39,10 @@ int branchsim(sim_vars* sv)
 #endif
   model_pars const* sim=&(sv->pars);
 
+#ifdef DUAL_PINF
+  const double pinfpinf=sv->pars.ppip*sv->pars.rpinfp/(1+sv->pars.ppip*(sv->pars.rpinfp-1));
+#endif
+
   do {
     sv->path_init_proc_func(sv);
     sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=0;
@@ -47,7 +51,7 @@ int branchsim(sim_vars* sv)
       DEBUG_PRINTF("initial individual %i\n",i);
 
       #ifdef DUAL_PINF
-      if(gsl_rng_uniform(sv->r) < sv->pars.ppip) {
+      if(gsl_rng_uniform(sv->r) < pinfpinf) {
 	sv->brsim.iis[1].inftypep=true;
 	sv->brsim.iis[1].q=sv->pars.qp;
 	sv->brsim.iis[1].pinf=sv->pars.pinf*sv->pars.rpshedp;
