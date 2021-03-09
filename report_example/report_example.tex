@@ -49,6 +49,8 @@
 \def\ctwindow{\ensuremath{\texttt{ctwindow}}}
 \def\Pit{\ensuremath{P_{{\hspace{0.25em}}^\mathrm{i}t}}}
 \def\Pim{\ensuremath{P_{{\hspace{0.25em}}^\mathrm{i}m}}}
+\def\mbar{\ensuremath{{}\bar{m}}}
+\def\tbar{\ensuremath{{}\bar{t}}}
 \def\imbar{\ensuremath{{}^\textrm{i}\bar{m}}}
 \def\itbar{\ensuremath{{}^\textrm{i}\bar{t}}}
 \def\npaths{\ensuremath{n_\textrm{paths}}}
@@ -72,7 +74,7 @@
 \newcommand{\Ntvar}{\ensuremath{{\mathcal{N}_\mathrm{t}(\tau)}}}
 \newcommand{\Ntivar}{\ensuremath{{\mathcal{N}_\mathrm{i}(\tau)}}}
 \newcommand{\Ntsvar}{\ensuremath{{\mathcal{N}_\mathrm{s}(\tau)}}}
-\newcommand{\pinf}{\ensuremath{{p_\mathrm{i}(\tau_i)}}}
+\newcommand{\pinf}{\ensuremath{{p_\mathrm{i}}}}
 \newcommand{\Yi}{\ensuremath{{Y(\tau_i)}}}
 \newcommand{\Ni}{\ensuremath{{N_\mathrm{i}}}}
 \newcommand{\Ns}{\ensuremath{{N_\mathrm{s}}}}
@@ -101,7 +103,9 @@
 \newcommand{\floorTaui}{\floor*{\Tau_i}}
 \newcommand{\Pois}{\ensuremath{\mathrm{Pois}}}
 \newcommand{\ex}[1]{\mathbb{E}\left[#1\right]}
+\newcommand{\exon}[2]{\mathbb{E}_{#1}\left[#2\right]}
 \newcommand{\var}[1]{\mathrm{Var}\left[#1\right]}
+\newcommand{\varon}[2]{\mathrm{Var}_{#1}\left[#2\right]}
 
 % These definitions are used by drdc-report.cls
 \title{Title}
@@ -319,7 +323,7 @@ The compound Poisson process is then subordinated with a gamma process which has
 \begin{equation}
 f_{T(a,b)}(t)=\frac{b^a}{\Gamma(a)}t^{a-1}e^{-bt}\label{gammaPDF}
 \end{equation}
-and a mean of $\bar{t}=a/b$.
+and a mean of $\tbar=a/b$.
 If $Z(\lambda,a,b)\equiv Q(\lambda T(a,b))$ is defined as the number of new infections from the subordinated Poisson process, where the duration $t$ from the Poisson process has been smeared by the gamma process with parameters $a$ and $b$, the PMF for $Z$ is given by
 \begin{align}
 P_{Z(\lambda,a,b)}(z) & = \int_0^\infty P_{Z(\lambda,a,b),T(a,b)}(z,t')dt'\nonumber\\
@@ -337,7 +341,7 @@ The PMF for $Q(\lambda t)$ can be written as
 \begin{equation}
 P_{Q(\lambda t)}(q) = \sum_n P_{Q(\lambda t)|N(\lambda t)=n}(q)P_{N(\lambda t)}(n),
 \end{equation}
-such that its characteristic function, assuming independent and identically-dis\-tri\-bu\-ted $Y_1,Y_2,\ldots Y_n$ variables, is given by
+such that its characteristic function, assuming independent and identically-dis\-tri\-bu\-ted $Y_1$, $Y_2$, $\ldots$, $Y_n$ variables, is given by
 \begin{align}
 \ex{e^{iuQ(\lambda t)}} & = \sum_q e^{iuq}P_{Q(\lambda t)}(q)\nonumber\\
 & = \sum_n \sum_q e^{iuq}P_{Q(\lambda t)|N(\lambda t)=n}(q)P_{N(\lambda t)}(n)\nonumber\\
@@ -350,11 +354,122 @@ Using Equations \eqref{gammaPDF}, \eqref{ZCF} and \eqref{QCF},
 \begin{equation}
 \ex{e^{iuZ(\lambda,a,b)}} = \left[1+\frac{\lambda}{b}\left(1-\ex{e^{iuY}}\right)\right]^{-a}.
 \end{equation}
-The characteristic function of $Z(\lambda,a,b)$ is then used to compute the expected value and the variance of the resulting subordinated compound Poisson process:
+The characteristic function of $Z(\lambda,a,b)$ is then used to compute the expected value and the relative variance of the resulting subordinated compound Poisson process:
 \begin{align}
-\ex{Z(\lambda,a,b)} & = \frac{\lambda a}{b}\ex{Y}\label{exz}\\
-\var{Z(\lambda,a,b)} & = \left(\ex{Z(\lambda,a,b)}\right)^2\left\{\frac{1}{a} + \frac{1}{\ex{Z(\lambda,a,b)}}\frac{\ex{Y^2}}{\ex{Y}}\right\}.\label{exz2}
+\ex{Z(\lambda,a,b)} & = \lambda\frac{a}{b}\ex{Y} = \lambda\tbar\hspace{1pt}\ex{Y}\label{exz}\\
+\frac{\var{Z(\lambda,a,b)}}{\ex{Z(\lambda,a,b)}^2} & = \frac{1}{a} + \frac{1}{\lambda\tbar}\left[1+\frac{\var{Y}}{\ex{Y}^2}\right]\label{varz}\\
+ & = \frac{\var{T}}{\ex{T}^2} + \frac{\var{N(\lambda\ex{T}\hspace{1pt})}}{\ex{N(\lambda\ex{T}\hspace{1pt})}^2} + \frac{1}{\ex{N(\lambda\ex{T}\hspace{1pt})}}\frac{\var{Y}}{\ex{Y}^2}.\label{varzg}
 \end{align}
+
+The two above expressions thus provide a reproduction number and its relative variance for one infectious individual, as a function of the mean and variance for $Y$, the number of infections occurring during an event.
+These expressions are equivalent to the ones derived in the transmission branching model, but here the expression for the variance has been rearranged to show the contribution from the variance of each component, that is the contributions from the relative variances on the communicable period, on the number of events for the average period, and on the number of new infections per event.
+
+Expression \eqref{varzg} provides insight into the probability of extinction for an outbreak, given the model that has been described so far.
+For an outbreak to go extinct, infectious individuals need to eventually cease to generate any new infection.
+The probability of extinction must thus depend on the probability of an infectious individual to generate zero new infection.
+Extinction is more probable when the standard deviation on $Z(\lambda,a,b)$ is significant compared to its expected value (the reproduction number).
+Considering one infectious individual, this will occur when either the reproduction number is sufficiently small (primary factor), or when the relative variance on $Z(\lambda,a,b)$ is significant (close to one). 
+Expression \eqref{varzg} indicates that this can occur when either the relative variance on the communicable period is significant (the duration of the communicable period is likely to be negligible compared to its mean), the relative variance on the number of events is significant (the possibility of zero transmission event is likely), or when the variance on the average number of new infections per event across all events is significant.
+These cases are represented by the three terms in \eqref{varzg}, respectively.
+
+If one wants to define two classes of infectious individuals, for example, individuals that self-isolate following an infection and others that do not self-isolate, the $(a,b)$ parameters of the time gamma process can be promoted to random variables $(A,B)$, that themselves depend on a random variable $S$.
+Assuming a probability $q$ of self-isolation,
+\begin{equation}
+P_{S(q)}(s)=q^s(1-q)^s,\quad s\in\{0,1\}.
+\end{equation}
+$(A,B)$ are then expressed as
+\begin{align}
+(A(a, a', S),B(b, b', S)) & \equiv \begin{cases}
+(a,b)&,\ S=0\\
+(a',b')&,\ S=1\\
+\end{cases},
+\end{align}
+where $(a',b')$ are the parameters for a second gamma process with a mean $\mbar=a'/b'$.
+$Z(\lambda,a,b)$ is then replaced by $W$ defined as
+\begin{equation}
+W(\lambda,q,a,b,a',b')\equiv Z(\lambda,A(a,a',S(q)),B(b,b',S(q))).
+\end{equation}
+Given the above equations, $P_{W(\lambda,q,a,b,a',b')}(w)$ can be writen as
+\begin{equation}
+P_{W(\lambda,q,a,b,a',b')}(w)=(1-q)P_{Z(\lambda,a,b)}(w)+qP_{Z(\lambda,a',b')}(w),
+\end{equation}
+and its characteristic function can be expressed as
+\begin{equation}
+\ex{e^{iuW(\lambda,q,a,b,a',b')}} = (1-q)\ex{e^{iuZ(\lambda,a,b)}} + q\ex{e^{iuZ(\lambda,a',b')}}.
+\end{equation}
+Using this function to calculate the expected value and the relative variance of the resulting process leads to
+\begin{align}
+\ex{W(\lambda,q,a,b,a',b')} & = \lambda\left[(1-q)\tbar+q\mbar\right]\ex{Y} = \lambda\ex{\Tau}\ex{Y}\label{exw}\\
+\frac{\var{W(\lambda,q,a,b,a',b')}}{\ex{W(\lambda,q,a,b,a',b')}^2} & = \frac{1}{\ex{\Tau}^2}\left[(1-q)\frac{{\tbar\hspace{1pt}}^2}{a} + q\frac{{\mbar}^2}{a'}+q(1-q)(\tbar-\mbar)^2\right]+\nonumber\\
+& \qquad\frac{1}{\lambda\ex{\Tau}}\left[1+\frac{\var{Y}}{\ex{Y}^2}\right]\label{varw}\\
+& = \frac{\var{\Tau}}{\ex{\Tau}^2} + \frac{\var{N(\lambda\ex{\Tau}\hspace{1pt})}}{\ex{N(\lambda\ex{\Tau}\hspace{1pt})}^2} + \frac{1}{\ex{N(\lambda\ex{\Tau}\hspace{1pt})}}\frac{\var{Y}}{\ex{Y}^2},\label{varwg}
+\end{align}
+where $\Tau(q,a,b,a',b')$ is defined as the random variable representing the duration of an individual's infectious period:
+\begin{align}
+P_{\Tau(q,a,b,a',b')}(\tau) & =(1-q)P_{T(a,b)}(\tau)+qP_{T(a',b')}(\tau)\\
+\ex{\Tau(q,a,b,a',b')} & = (1-q)\ex{T(a,b)}+q\ex{T(a',b')}\\
+\var{\Tau(q,a,b,a',b')} & = (1-q)\var{T(a,b)}+q\var{T(a',b')}+\nonumber\\
+& \qquad q(1-q)\left\{\ex{T(a,b)}-\ex{T(a',b')}\right\}^2.
+\end{align}
+In the above expressions, $T(a,b)$ and $T(a',b')$ are gamma-distributed durations for the two classes of infectious individuals.
+The variance on $\Tau(q,a,b,a',b')$ is expressed as a sum of contributions from the separate variances on $T(a,b)$ and $T(a',b')$, and from the discrepancy of their means.
+
+Expressions \eqref{exw} to \eqref{varwg} thus correspond to \eqref{exz} to \eqref{varzg}, respectively, when a given infectious individual is randomly drawn from two classes with different durations.
+Note that the latter expressions reduce to the former ones when $q=0$, $q=1$ or $(a',b')=(a,b)$, as expected.
+As it was shown previously for \eqref{varz}, \eqref{varw} was written as a sum of contributions from the relative variances on the communicable period, on the number of events for the average communicable period and on the number of new infections for each event.
+The expression \eqref{varwg} is the same as \eqref{varzg}, except for the random communicable $\Tau(q,a,b,a',b')$ replacing $T(a,b)$.
+
+If $T(a,b)$ and $T(a',b')$ provide the communicable periods for individuals that do not and that do self-isolate, respectively, as a mitigation measure, then \eqref{exw} can provide the expression for an effective reproduction number.
+This expression is simply the product of the Poisson rate $\lambda$ with the average duration $\ex{\Tau}$ and the average number of new infections per event $\ex{Y}$, as $\Tau$ and $Y$ are independent.
+
+In the transmission branching model, the number of new infections $Y$ occurring during one event is provided directly by a logarithmic distribution.
+This choice of distribution generates a subordinated negative binomial process.
+Although this parameterisation results in a minimal set of parameters that can be inferred from minimal information, it does not allow for the direct modelling of contacts between individuals, or for a probability of infection parameter between an infectious individual and a susceptible individual.
+Such parameters can be required when simulating outbreaks for a scenario where group dynamic is known, when the simulation of contact tracing is required or when simulating the effects of a mitigation measure affecting directly the probability of infection.
+In the modified branching model, the distribution for $Y$ is thus modified to decouple infections from interactions, allowing for the representation of contacts and the introduction of a probability of infection.
+
+For the modified branching model, $\Ns$ is defined as the random number of susceptible individuals attending an event where one and only one infectious individual is also attending.
+Given a probability of infection $\pinf$ of each attending susceptible individual by the infectious individual, the probability of $Y$ new infections during this event is given by
+\begin{equation}
+P_{Y(\pinf)|\Ns=\ns}(y)={\ns\choose y}\pinf^y(1-\pinf)^{\ns-y},
+\end{equation}
+which has characteristic function of
+\begin{equation}
+\exon{Y(\pinf)|\Ns=\ns}{e^{iuY}}=\left[1+\pinf(e^{iu}-1)\right]^\ns.
+\end{equation}
+
+$P_{Y(\pinf)}$ can be expressed as
+\begin{equation}
+P_{Y(\pinf)}(y)=\sum_{\ns}P_{Y(\pinf)|\Ns=\ns}(y)P_\Ns(\ns).
+\end{equation}
+
+The characteristic function for $Y$ is thus
+\begin{equation}
+\exon{Y(\pinf)}{e^{iuY}}=\sum_\ns P_\Ns(\ns)\left[1+\pinf(e^{iu}-1)\right]^\ns,
+\end{equation}
+which gives
+\begin{align}
+\ex{Y(\pinf)} &= \pinf\ex{\Ns}\\
+\ex{Y(\pinf)^2} &= \pinf^2\ex{\Ns^2}+\pinf(1-\pinf)\ex{\Ns}\\
+\var{Y(\pinf)} &= \pinf^2\var{\Ns}+\pinf(1-\pinf)\ex{\Ns},
+\end{align}
+and
+\begin{align}
+\frac{\var{Y(\pinf)}}{\ex{Y(\pinf)}^2} & = \frac{\var{\Ns}}{\ex{\Ns}^2}+\frac{1}{\ex{\Ns}}\frac{1-\pinf}{\pinf}\\
+& = \frac{\var{\Ns}}{\ex{\Ns}^2}+\frac{\varon{Y(\pinf)|\Ns=\ex{\Ns}}{Y(\pinf)}}{\exon{Y(\pinf)|\Ns=\ex{\Ns}}{Y(\pinf)}^2}.
+\end{align}
+
+The relative variance on the number of new infections was thus expressed as a function of the relative contributions from the relative variances on the number of attendees and on the number of new infections for the average number of attendees.
+
+If $V(\lambda,q,a,b,a',b',\pinf)$ is defined as the number of new infections generated from an infectious individual when the number of new infections per event $Y$ has been expressed as a variable depending on a number of attendees $\Ns$ and a probability of infection $\pinf$, the expected value and the relative variance on $V$ is thus given by
+\begin{align}
+\ex{V(\lambda,q,a,b,a',b',\pinf)} & = \lambda\left[(1-q)\tbar+q\mbar\right]\pinf\ex{\Ns} = \lambda\ex{\Tau}\pinf\ex{\Ns}\label{exv}\\
+\frac{\var{V(\lambda,q,a,b,a',b',\pinf)}}{\ex{V(\lambda,q,a,b,a',b',\pinf)}^2} & = \frac{1}{\ex{\Tau}^2}\left[(1-q)\frac{{\tbar\hspace{1pt}}^2}{a} + q\frac{{\mbar}^2}{a'}+q(1-q)(\tbar-\mbar)^2\right]+\nonumber\\
+& \qquad\frac{1}{\lambda\ex{\Tau}}\left[1+\frac{\var{\Ns}}{\ex{\Ns}^2}+\frac{1}{\ex{\Ns}}\frac{1-\pinf}{\pinf}\right]\label{varv}\\
+& = \frac{\var{\Tau}}{\ex{\Tau}^2} + \frac{\var{N(\lambda\ex{\Tau}\hspace{1pt})}}{\ex{N(\lambda\ex{\Tau}\hspace{1pt})}^2} + \frac{1}{\ex{N(\lambda\ex{\Tau}\hspace{1pt})}}\Bigg[\frac{\var{\Ns}}{\ex{\Ns}^2}+\nonumber\\
+& \qquad\frac{\varon{Y(\pinf)|\Ns=\ex{\Ns}}{Y(\pinf)}}{\exon{Y(\pinf)|\Ns=\ex{\Ns}}{Y(\pinf)}^2}\Bigg].\label{varwv}
+\end{align}
+
 
 \subsubsection{Latent phase and time parameterisation}
 
