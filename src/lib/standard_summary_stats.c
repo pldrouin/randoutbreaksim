@@ -28,6 +28,12 @@ void std_stats_init(sim_vars* sv, const uint32_t nbinsperunit, bool ngeninfs)
   stats->newinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->postest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
   stats->newpostest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  #ifdef SEC_INF_TIMELINES
+  stats->secinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  stats->newsecinf_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  stats->secpostest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  stats->newsecpostest_timeline=(uint32_t*)malloc(stats->tnpersa*sizeof(uint32_t));
+  #endif
   stats->ext_timeline=(ext_timeline_info*)malloc(stats->tnpersa*sizeof(ext_timeline_info));
 
   int32_t i;
@@ -60,6 +66,12 @@ void std_stats_free(std_summary_stats* stats)
   free(stats->newinf_timeline-stats->tlshifta);
   free(stats->postest_timeline-stats->tlshifta);
   free(stats->newpostest_timeline-stats->tlshifta);
+#ifdef SEC_INF_TIMELINES
+  free(stats->secinf_timeline-stats->tlshifta);
+  free(stats->newsecinf_timeline-stats->tlshifta);
+  free(stats->secpostest_timeline-stats->tlshifta);
+  free(stats->newsecpostest_timeline-stats->tlshifta);
+#endif
 
   ext_timeline_info* const set=stats->ext_timeline-stats->tlshifta;
   int32_t i;

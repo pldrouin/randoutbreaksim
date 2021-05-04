@@ -72,6 +72,15 @@ typedef struct
   uint32_t* pp_inf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval. First index is -tlshift.
   uint32_t* pp_newinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval, First index is -tlshift.
   uint32_t* pp_newpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval. First index is -tlshift.
+#ifdef SEC_INF_TIMELINES
+  uint32_t* secinf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval. First index is -tlshift.
+  uint32_t* newsecinf_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. First index is -tlshift.
+  uint32_t* secpostest_timeline;	//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that have a recent positive test result at the end of this interval. First index is -tlshift.
+  uint32_t* newsecpostest_timeline;//!< For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval. First index is -tlshift.
+  uint32_t* pp_secinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that are infected, but not isolated, at some point in this interval. First index is -tlshift.
+  uint32_t* pp_newsecinf_timeline;	//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that get infected at some point in this interval. For the last interval, First index is -tlshift.
+  uint32_t* pp_newsecpostest_timeline;//!< Post-processing timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the number of individuals that receive a positive test result at some point in this interval. First index is -tlshift.
+#endif
   ext_timeline_info* pp_ext_timeline;//!< Post-processing extended timeline. For each integer interval between 0 and nbinsperunit*abs_tmax-1, the extended information. First index is -tlshift.
   ext_timeline_info* ext_timeline;     //!< Extended timeline for parameters that cannot correctly be calculated when a dynamic time cur is used. First index is -tlshift.
   uint32_t nainfbins;		//!< Number of allocated infectious individual bins.
@@ -140,6 +149,12 @@ inline static void std_stats_path_init(sim_vars* sv)
   memset(stats->newinf_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
   memset(stats->postest_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
   memset(stats->newpostest_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+#ifdef SEC_INF_TIMELINES
+  memset(stats->secinf_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+  memset(stats->newsecinf_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+  memset(stats->secpostest_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+  memset(stats->newsecpostest_timeline-stats->tlshift,0,nerase*sizeof(uint32_t));
+#endif
   int32_t i;
   ext_timeline_info* const set=stats->ext_timeline-stats->tlshift;
 
@@ -237,6 +252,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
     stats->pp_inf_timeline=stats->inf_timeline+tlppt0idx;
     stats->pp_newinf_timeline=stats->newinf_timeline+tlppt0idx;
     stats->pp_newpostest_timeline=stats->newpostest_timeline+tlppt0idx;
+#ifdef SEC_INF_TIMELINES
+    stats->pp_secinf_timeline=stats->secinf_timeline+tlppt0idx;
+    stats->pp_newsecinf_timeline=stats->newsecinf_timeline+tlppt0idx;
+    stats->pp_newsecpostest_timeline=stats->newsecpostest_timeline+tlppt0idx;
+#endif
     stats->pp_ext_timeline=stats->ext_timeline+tlppt0idx;
     //Check if the last index is even. If it is, there is a single fine bin in
     //the last merged bin
@@ -249,6 +269,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
       stats->pp_inf_timeline[k]=(stats->pp_inf_timeline[i]>stats->pp_inf_timeline[i+1]?stats->pp_inf_timeline[i]:stats->pp_inf_timeline[i+1]);
       stats->pp_newinf_timeline[k]=stats->pp_newinf_timeline[i]+stats->pp_newinf_timeline[i+1];
       stats->pp_newpostest_timeline[k]=stats->pp_newpostest_timeline[i]+stats->pp_newpostest_timeline[i+1];
+#ifdef SEC_INF_TIMELINES
+      stats->pp_secinf_timeline[k]=(stats->pp_secinf_timeline[i]>stats->pp_secinf_timeline[i+1]?stats->pp_secinf_timeline[i]:stats->pp_secinf_timeline[i+1]);
+      stats->pp_newsecinf_timeline[k]=stats->pp_newsecinf_timeline[i]+stats->pp_newsecinf_timeline[i+1];
+      stats->pp_newsecpostest_timeline[k]=stats->pp_newsecpostest_timeline[i]+stats->pp_newsecpostest_timeline[i+1];
+#endif
 
       stats->pp_ext_timeline[k].n=stats->pp_ext_timeline[i].n+stats->pp_ext_timeline[i+1].n;
       stats->pp_ext_timeline[k].rsum=stats->pp_ext_timeline[i].rsum+stats->pp_ext_timeline[i+1].rsum;
@@ -266,6 +291,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
       stats->pp_inf_timeline[j]=stats->inf_timeline[i];
       stats->pp_newinf_timeline[j]=stats->newinf_timeline[i];
       stats->pp_newpostest_timeline[j]=stats->newpostest_timeline[i];
+#ifdef SEC_INF_TIMELINES
+      stats->pp_secinf_timeline[j]=stats->secinf_timeline[i];
+      stats->pp_newsecinf_timeline[j]=stats->newsecinf_timeline[i];
+      stats->pp_newsecpostest_timeline[j]=stats->newsecpostest_timeline[i];
+#endif
 
       stats->pp_ext_timeline[j].n=stats->ext_timeline[i].n;
       stats->pp_ext_timeline[j].rsum=stats->ext_timeline[i].rsum;
@@ -287,6 +317,10 @@ inline static bool std_stats_path_end(sim_vars* sv)
       DEBUG_PRINTF("[%i] = [%i] (%u) + [%i] (%u)\n",k,i+tlppt0idx,stats->pp_inf_timeline[i],i+1+tlppt0idx,stats->pp_inf_timeline[i+1]);
       stats->pp_inf_timeline[k]=(stats->pp_inf_timeline[i]>stats->pp_inf_timeline[i+1]?stats->pp_inf_timeline[i]:stats->pp_inf_timeline[i+1]);
       stats->pp_newinf_timeline[k]=stats->pp_newinf_timeline[i]+stats->pp_newinf_timeline[i+1];
+      #ifdef SEC_INF_TIMELINES
+      stats->pp_secinf_timeline[k]=(stats->pp_secinf_timeline[i]>stats->pp_secinf_timeline[i+1]?stats->pp_secinf_timeline[i]:stats->pp_secinf_timeline[i+1]);
+      stats->pp_newsecinf_timeline[k]=stats->pp_newsecinf_timeline[i]+stats->pp_newsecinf_timeline[i+1];
+      #endif
 
       stats->pp_ext_timeline[k].n=stats->pp_ext_timeline[i].n+stats->pp_ext_timeline[i+1].n;
       stats->pp_ext_timeline[k].rsum=stats->pp_ext_timeline[i].rsum+stats->pp_ext_timeline[i+1].rsum;
@@ -303,6 +337,10 @@ inline static bool std_stats_path_end(sim_vars* sv)
       DEBUG_PRINTF("[%i] = [%i] (%u)\n",j-1,i,stats->inf_timeline[i]);
       stats->pp_inf_timeline[j-1]=stats->inf_timeline[i];
       stats->pp_newinf_timeline[j-1]=stats->newinf_timeline[i];
+      #ifdef SEC_INF_TIMELINES
+      stats->pp_secinf_timeline[j-1]=stats->secinf_timeline[i];
+      stats->pp_newsecinf_timeline[j-1]=stats->newsecinf_timeline[i];
+      #endif
 
       stats->pp_ext_timeline[j-1].n=stats->ext_timeline[i].n;
       stats->pp_ext_timeline[j-1].rsum=stats->ext_timeline[i].rsum;
@@ -315,6 +353,9 @@ inline static bool std_stats_path_end(sim_vars* sv)
     } 
 
     memset(stats->pp_newpostest_timeline-stats->tlppnnpers,0,stats->tlppnnpers*sizeof(uint32_t));
+    #ifdef SEC_INF_TIMELINES
+    memset(stats->pp_newsecpostest_timeline-stats->tlppnnpers,0,stats->tlppnnpers*sizeof(uint32_t));
+    #endif
 
   } else {
     stats->tlppnnpers=stats->tlshift;
@@ -322,6 +363,11 @@ inline static bool std_stats_path_end(sim_vars* sv)
     stats->pp_inf_timeline=stats->inf_timeline;
     stats->pp_newinf_timeline=stats->newinf_timeline;
     stats->pp_newpostest_timeline=stats->newpostest_timeline;
+    #ifdef SEC_INF_TIMELINES
+    stats->pp_secinf_timeline=stats->secinf_timeline;
+    stats->pp_newsecinf_timeline=stats->newsecinf_timeline;
+    stats->pp_newsecpostest_timeline=stats->newsecpostest_timeline;
+    #endif
     stats->pp_ext_timeline=stats->ext_timeline;
 
     if(sv->pars.pathtype==ro_all_paths) includepath=true;
@@ -404,6 +450,9 @@ inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii) {
   if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
     DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
     ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+#ifdef SEC_INF_TIMELINES
+    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+#endif
   }
 }
 
@@ -452,6 +501,31 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
       free(stats->newpostest_timeline-stats->tlshifta);
       stats->newpostest_timeline=newarray+newshift;
 
+      #ifdef SEC_INF_TIMELINES
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->secinf_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->secinf_timeline-stats->tlshifta);
+      stats->secinf_timeline=newarray+newshift;
+
+      newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->newsecinf_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->newsecinf_timeline-stats->tlshifta);
+      stats->newsecinf_timeline=newarray+newshift;
+
+      newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->secpostest_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->secpostest_timeline-stats->tlshifta);
+      stats->secpostest_timeline=newarray+newshift;
+
+      newarray=(uint32_t*)malloc(newsize*sizeof(uint32_t));
+      memset(newarray,0,dshift*sizeof(uint32_t));
+      memcpy(newarray+dshift,stats->newsecpostest_timeline-stats->tlshifta,stats->tnpersa*sizeof(uint32_t));
+      free(stats->newsecpostest_timeline-stats->tlshifta);
+      stats->newsecpostest_timeline=newarray+newshift;
+      #endif
+
       ext_timeline_info* newarray_ext=malloc(newsize*sizeof(ext_timeline_info));
       memset(newarray_ext,0,dshift*sizeof(ext_timeline_info));
       memcpy(newarray_ext+dshift,stats->ext_timeline-stats->tlshifta,stats->tnpersa*sizeof(ext_timeline_info));
@@ -480,6 +554,9 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
   if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
     DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
     ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+#ifdef SEC_INF_TIMELINES
+    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+#endif
   }
 }
 
@@ -571,6 +648,9 @@ inline static bool std_stats_new_event(sim_vars* sv)
 
     if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
       ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+#ifdef SEC_INF_TIMELINES
+      ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+#endif
       return true;
     }
 #ifdef OBSREFF_OUTPUT
@@ -613,9 +693,15 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 
 	if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+sv->curii->ninfections < ((std_summary_stats*)sv->dataptr)->nimax) {
 	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+#ifdef SEC_INF_TIMELINES
+	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=sv->curii->ninfectionsp;
+#endif
 
 	} else if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax) {
 	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+#ifdef SEC_INF_TIMELINES
+	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=sv->curii->ninfectionsp;
+#endif
 	  ((std_summary_stats*)sv->dataptr)->extinction=false;
 
 	  if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex=eti;
@@ -671,10 +757,13 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 
       if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
 
-	if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->npostestmax)
+	if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->npostestmax) {
 	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+#ifdef SEC_INF_TIMELINES
+	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=sv->curii->ninfectionsp;
+#endif
 
-	else {
+	} else {
 	  ((std_summary_stats*)sv->dataptr)->extinction=false;
 
 	  if(eti < ((std_summary_stats*)sv->dataptr)->maxedoutmintimeindex)  {
@@ -703,7 +792,13 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
 
     DEBUG_PRINTF("New pos test at %i\n",trt);
 
-    if(trt<((std_summary_stats*)sv->dataptr)->abs_maxnpers) ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
+    if(trt<((std_summary_stats*)sv->dataptr)->abs_maxnpers) {
+      ++(((std_summary_stats*)sv->dataptr)->newpostest_timeline[trt]);
+
+      #ifdef SEC_INF_TIMELINES
+      if(ii->inftypep) ++(((std_summary_stats*)sv->dataptr)->newsecpostest_timeline[trt]);
+      #endif
+    }
 
 #ifdef CT_OUTPUT
     ((std_stats_inf_data*)ii->dataptr)->id=++(((std_summary_stats*)sv->dataptr)->curctid);
@@ -717,7 +812,16 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
     int32_t i;
     const int32_t end_npostestmax_per_i=trt+((std_summary_stats*)sv->dataptr)->nbinsperunit*((std_summary_stats*)sv->dataptr)->npostestmaxnunits-1;
 
+    #ifdef SEC_INF_TIMELINES
+    if(ii->inftypep) for(i=(end_npostestmax_per_i>=((std_summary_stats*)sv->dataptr)->abs_maxnpers?((std_summary_stats*)sv->dataptr)->abs_maxnpers-1:end_npostestmax_per_i); i>=trt; --i) {
+      ++(((std_summary_stats*)sv->dataptr)->postest_timeline[i]);
+      ++(((std_summary_stats*)sv->dataptr)->secpostest_timeline[i]);
+    }
+
+    else for(i=(end_npostestmax_per_i>=((std_summary_stats*)sv->dataptr)->abs_maxnpers?((std_summary_stats*)sv->dataptr)->abs_maxnpers-1:end_npostestmax_per_i); i>=trt; --i) ++(((std_summary_stats*)sv->dataptr)->postest_timeline[i]);
+    #else
     for(i=(end_npostestmax_per_i>=((std_summary_stats*)sv->dataptr)->abs_maxnpers?((std_summary_stats*)sv->dataptr)->abs_maxnpers-1:end_npostestmax_per_i); i>=trt; --i) ++(((std_summary_stats*)sv->dataptr)->postest_timeline[i]);
+    #endif
   }
 }
 
@@ -795,6 +899,20 @@ inline static void first_pos_test_results_update(sim_vars* sv, infindividual* ii
     stats->newpostest_timeline=(uint32_t*)realloc(stats->newpostest_timeline,newsize*sizeof(uint32_t));
     memset(stats->newpostest_timeline+stats->tnpersa,0,dsize*sizeof(uint32_t));
 
+    #ifdef SEC_INF_TIMELINES
+    stats->secinf_timeline=(uint32_t*)realloc(stats->secinf_timeline,newsize*sizeof(uint32_t));
+    memset(stats->secinf_timeline+stats->tnpersa,0,dsize*sizeof(uint32_t));
+
+    stats->newsecinf_timeline=(uint32_t*)realloc(stats->newsecinf_timeline,newsize*sizeof(uint32_t));
+    memset(stats->newsecinf_timeline+stats->tnpersa,0,dsize*sizeof(uint32_t));
+
+    stats->secpostest_timeline=(uint32_t*)realloc(stats->secpostest_timeline,newsize*sizeof(uint32_t));
+    memset(stats->secpostest_timeline+stats->tnpersa,0,dsize*sizeof(uint32_t));
+
+    stats->newsecpostest_timeline=(uint32_t*)realloc(stats->newsecpostest_timeline,newsize*sizeof(uint32_t));
+    memset(stats->newsecpostest_timeline+stats->tnpersa,0,dsize*sizeof(uint32_t));
+    #endif
+
     stats->ext_timeline=(ext_timeline_info*)realloc(stats->ext_timeline,newsize*sizeof(ext_timeline_info));
     memset(stats->ext_timeline+stats->tnpersa,0,dsize*sizeof(ext_timeline_info));
 
@@ -857,9 +975,16 @@ inline static void std_stats_fill_inf_ext_n(sim_vars* sv, infindividual* ii)
 #endif
   }
 
-  for(i=start_latent_per_i; i<=end_comm_per_i; ++i) {
+  #ifdef SEC_INF_TIMELINES
+  if(ii->inftypep) for(i=start_latent_per_i; i<=end_comm_per_i; ++i) {
     ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+    ++(((std_summary_stats*)sv->dataptr)->secinf_timeline[i]);
   }
+
+  else for(i=start_latent_per_i; i<=end_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+  #else
+  for(i=start_latent_per_i; i<=end_comm_per_i; ++i) ++(((std_summary_stats*)sv->dataptr)->inf_timeline[i]);
+  #endif
 }
 
 /**

@@ -476,6 +476,9 @@ void printusage(const char* name)
   printf("\t\t-8 bit field:\n");
   printf("\t\t\tBits 0 to 2: A value from the three lower significant bits is used to indicate the model of the time origin. A value of 1 for primary individual creation time, 2 for time primary individual becomes infectious (time_rel_pri_infectious), 3 for end of communicable period for primary individual (time_rel_pri_end_comm), 4 for test results for primary individual (time_rel_pri_test_results).\n");
   printf("\t\t\tBit 3: Indicates if a timeline is included for positive test results.\n");
+#ifdef SEC_INF_TIMELINES
+  printf("\t\t\tBit 4: Indicates that second series of timelines is included for the second category of infection.\n");
+#endif
 
   printf("\n\tSimulation path records:\n");
   printf("\t\t-Unsigned 32 bit value: The number of written successive time bins.\n");
@@ -485,4 +488,9 @@ void printusage(const char* name)
   printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of active infections.\n");
   printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of new infections.\n");
   printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written (written only if indicated in the file header): Number of new positive test results.\n");
+#ifdef SEC_INF_TIMELINES
+  printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of active infections for the second category of infection.\n");
+  printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of new infections for the second category of infection.\n");
+  printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written (written only if indicated in the file header): Number of new positive test results for the second category of infection.\n");
+#endif
 }

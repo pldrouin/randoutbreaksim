@@ -52,11 +52,19 @@ int branchsim(sim_vars* sv)
 
       #ifdef DUAL_PINF
       if(gsl_rng_uniform(sv->r) < pinfpinf) {
+        #ifdef SEC_INF_TIMELINES
+        sv->brsim.iis[0].ninfectionsf=0;
+        sv->brsim.iis[0].ninfectionsp=1;
+        #endif
 	sv->brsim.iis[1].inftypep=true;
 	sv->brsim.iis[1].q=sv->pars.qp;
 	sv->brsim.iis[1].pinf=sv->pars.pinf*sv->pars.rpshedp;
 
       } else {
+        #ifdef SEC_INF_TIMELINES
+        sv->brsim.iis[0].ninfectionsf=1;
+        sv->brsim.iis[0].ninfectionsp=0;
+        #endif
 	sv->brsim.iis[1].inftypep=false;
 	sv->brsim.iis[1].q=sv->pars.q;
 	sv->brsim.iis[1].pinf=sv->pars.pinf;

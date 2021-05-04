@@ -47,7 +47,11 @@ int main(const int nargs, const char* args[])
       perror("tlout");
       return 1;
     }
+#ifdef SEC_INF_TIMELINES
+    ubuf=cp.pars.timetype|((!isnan(cp.pars.tdeltat))<<3)|16;
+#else
     ubuf=cp.pars.timetype|((!isnan(cp.pars.tdeltat))<<3);
+#endif
 
     if(write(cp.tlout,&ubuf,1)!=1) {
       perror("tlout");
@@ -141,6 +145,14 @@ int main(const int nargs, const char* args[])
         tdata[tmaxnpers].newinf_timeline_std_ext[j]+=tdata[tp].newinf_timeline_std_ext[j+ndiff];
         tdata[tmaxnpers].newpostest_timeline_mean_ext[j]+=tdata[tp].newpostest_timeline_mean_ext[j+ndiff];
         tdata[tmaxnpers].newpostest_timeline_std_ext[j]+=tdata[tp].newpostest_timeline_std_ext[j+ndiff];
+        #ifdef SEC_INF_TIMELINES
+        tdata[tmaxnpers].secinf_timeline_mean_ext[j]+=tdata[tp].secinf_timeline_mean_ext[j+ndiff];
+        tdata[tmaxnpers].secinf_timeline_std_ext[j]+=tdata[tp].secinf_timeline_std_ext[j+ndiff];
+        tdata[tmaxnpers].newsecinf_timeline_mean_ext[j]+=tdata[tp].newsecinf_timeline_mean_ext[j+ndiff];
+        tdata[tmaxnpers].newsecinf_timeline_std_ext[j]+=tdata[tp].newsecinf_timeline_std_ext[j+ndiff];
+        tdata[tmaxnpers].newsecpostest_timeline_mean_ext[j]+=tdata[tp].newsecpostest_timeline_mean_ext[j+ndiff];
+        tdata[tmaxnpers].newsecpostest_timeline_std_ext[j]+=tdata[tp].newsecpostest_timeline_std_ext[j+ndiff];
+        #endif
         tdata[tmaxnpers].reff_timeline_mean_ext[j]+=tdata[tp].reff_timeline_mean_ext[j+ndiff];
         tdata[tmaxnpers].reff_timeline_std_ext[j]+=tdata[tp].reff_timeline_std_ext[j+ndiff];
         tdata[tmaxnpers].reff_timeline_n_ext[j]+=tdata[tp].reff_timeline_n_ext[j+ndiff];
@@ -156,6 +168,14 @@ int main(const int nargs, const char* args[])
         tdata[tmaxnpers].newinf_timeline_std_noext[j]+=tdata[tp].newinf_timeline_std_noext[j+ndiff];
         tdata[tmaxnpers].newpostest_timeline_mean_noext[j]+=tdata[tp].newpostest_timeline_mean_noext[j+ndiff];
         tdata[tmaxnpers].newpostest_timeline_std_noext[j]+=tdata[tp].newpostest_timeline_std_noext[j+ndiff];
+        #ifdef SEC_INF_TIMELINES
+        tdata[tmaxnpers].secinf_timeline_mean_noext[j]+=tdata[tp].secinf_timeline_mean_noext[j+ndiff];
+        tdata[tmaxnpers].secinf_timeline_std_noext[j]+=tdata[tp].secinf_timeline_std_noext[j+ndiff];
+        tdata[tmaxnpers].newsecinf_timeline_mean_noext[j]+=tdata[tp].newsecinf_timeline_mean_noext[j+ndiff];
+        tdata[tmaxnpers].newsecinf_timeline_std_noext[j]+=tdata[tp].newsecinf_timeline_std_noext[j+ndiff];
+        tdata[tmaxnpers].newsecpostest_timeline_mean_noext[j]+=tdata[tp].newsecpostest_timeline_mean_noext[j+ndiff];
+        tdata[tmaxnpers].newsecpostest_timeline_std_noext[j]+=tdata[tp].newsecpostest_timeline_std_noext[j+ndiff];
+        #endif
         tdata[tmaxnpers].reff_timeline_mean_noext[j]+=tdata[tp].reff_timeline_mean_noext[j+ndiff];
         tdata[tmaxnpers].reff_timeline_std_noext[j]+=tdata[tp].reff_timeline_std_noext[j+ndiff];
         tdata[tmaxnpers].reff_timeline_n_noext[j]+=tdata[tp].reff_timeline_n_noext[j+ndiff];
@@ -177,6 +197,20 @@ int main(const int nargs, const char* args[])
       free(tdata[tp].newpostest_timeline_std_ext);
       free(tdata[tp].newpostest_timeline_mean_noext);
       free(tdata[tp].newpostest_timeline_std_noext);
+      #ifdef SEC_INF_TIMELINES
+      free(tdata[tp].secinf_timeline_mean_ext);
+      free(tdata[tp].secinf_timeline_std_ext);
+      free(tdata[tp].secinf_timeline_mean_noext);
+      free(tdata[tp].secinf_timeline_std_noext);
+      free(tdata[tp].newsecinf_timeline_mean_ext);
+      free(tdata[tp].newsecinf_timeline_std_ext);
+      free(tdata[tp].newsecinf_timeline_mean_noext);
+      free(tdata[tp].newsecinf_timeline_std_noext);
+      free(tdata[tp].newsecpostest_timeline_mean_ext);
+      free(tdata[tp].newsecpostest_timeline_std_ext);
+      free(tdata[tp].newsecpostest_timeline_mean_noext);
+      free(tdata[tp].newsecpostest_timeline_std_noext);
+      #endif
       free(tdata[tp].reff_timeline_mean_ext);
       free(tdata[tp].reff_timeline_std_ext);
       free(tdata[tp].reff_timeline_n_ext);
@@ -240,6 +274,14 @@ int main(const int nargs, const char* args[])
   double newinf_timeline_std[tdata[tmaxnpers].tlpptnvpers];
   double newpostest_timeline_mean[tdata[tmaxnpers].tlpptnvpers];
   double newpostest_timeline_std[tdata[tmaxnpers].tlpptnvpers];
+  #ifdef SEC_INF_TIMELINES
+  double secinf_timeline_mean[tdata[tmaxnpers].tlpptnvpers];
+  double secinf_timeline_std[tdata[tmaxnpers].tlpptnvpers];
+  double newsecinf_timeline_mean[tdata[tmaxnpers].tlpptnvpers];
+  double newsecinf_timeline_std[tdata[tmaxnpers].tlpptnvpers];
+  double newsecpostest_timeline_mean[tdata[tmaxnpers].tlpptnvpers];
+  double newsecpostest_timeline_std[tdata[tmaxnpers].tlpptnvpers];
+  #endif
   double reff_timeline_mean[tdata[tmaxnpers].tlpptnvpers];
   double reff_timeline_std[tdata[tmaxnpers].tlpptnvpers];
   uint64_t reff_timeline_n[tdata[tmaxnpers].tlpptnvpers];
@@ -262,6 +304,14 @@ int main(const int nargs, const char* args[])
     newinf_timeline_std[j]=tdata[tmaxnpers].newinf_timeline_std_ext[j]+tdata[tmaxnpers].newinf_timeline_std_noext[j];
     newpostest_timeline_mean[j]=tdata[tmaxnpers].newpostest_timeline_mean_ext[j]+tdata[tmaxnpers].newpostest_timeline_mean_noext[j];
     newpostest_timeline_std[j]=tdata[tmaxnpers].newpostest_timeline_std_ext[j]+tdata[tmaxnpers].newpostest_timeline_std_noext[j];
+    #ifdef SEC_INF_TIMELINES
+    secinf_timeline_mean[j]=tdata[tmaxnpers].secinf_timeline_mean_ext[j]+tdata[tmaxnpers].secinf_timeline_mean_noext[j];
+    secinf_timeline_std[j]=tdata[tmaxnpers].secinf_timeline_std_ext[j]+tdata[tmaxnpers].secinf_timeline_std_noext[j];
+    newsecinf_timeline_mean[j]=tdata[tmaxnpers].newsecinf_timeline_mean_ext[j]+tdata[tmaxnpers].newsecinf_timeline_mean_noext[j];
+    newsecinf_timeline_std[j]=tdata[tmaxnpers].newsecinf_timeline_std_ext[j]+tdata[tmaxnpers].newsecinf_timeline_std_noext[j];
+    newsecpostest_timeline_mean[j]=tdata[tmaxnpers].newsecpostest_timeline_mean_ext[j]+tdata[tmaxnpers].newsecpostest_timeline_mean_noext[j];
+    newsecpostest_timeline_std[j]=tdata[tmaxnpers].newsecpostest_timeline_std_ext[j]+tdata[tmaxnpers].newsecpostest_timeline_std_noext[j];
+    #endif
     reff_timeline_mean[j]=tdata[tmaxnpers].reff_timeline_mean_ext[j]+tdata[tmaxnpers].reff_timeline_mean_noext[j];
     reff_timeline_std[j]=tdata[tmaxnpers].reff_timeline_std_ext[j]+tdata[tmaxnpers].reff_timeline_std_noext[j];
     reff_timeline_n[j]=tdata[tmaxnpers].reff_timeline_n_ext[j]+tdata[tmaxnpers].reff_timeline_n_noext[j];
@@ -289,6 +339,14 @@ int main(const int nargs, const char* args[])
     newinf_timeline_std[j]=sqrt(cp.npaths/(cp.npaths-1.)*(newinf_timeline_std[j]/cp.npaths-newinf_timeline_mean[j]*newinf_timeline_mean[j]));
     newpostest_timeline_mean[j]/=cp.npaths;
     newpostest_timeline_std[j]=sqrt(cp.npaths/(cp.npaths-1.)*(newpostest_timeline_std[j]/cp.npaths-newpostest_timeline_mean[j]*newpostest_timeline_mean[j]));
+    #ifdef SEC_INF_TIMELINES
+    secinf_timeline_mean[j]/=cp.npaths;
+    secinf_timeline_std[j]=sqrt(cp.npaths/(cp.npaths-1.)*(secinf_timeline_std[j]/cp.npaths-secinf_timeline_mean[j]*secinf_timeline_mean[j]));
+    newsecinf_timeline_mean[j]/=cp.npaths;
+    newsecinf_timeline_std[j]=sqrt(cp.npaths/(cp.npaths-1.)*(newsecinf_timeline_std[j]/cp.npaths-newsecinf_timeline_mean[j]*newsecinf_timeline_mean[j]));
+    newsecpostest_timeline_mean[j]/=cp.npaths;
+    newsecpostest_timeline_std[j]=sqrt(cp.npaths/(cp.npaths-1.)*(newsecpostest_timeline_std[j]/cp.npaths-newsecpostest_timeline_mean[j]*newsecpostest_timeline_mean[j]));
+    #endif
     reff_timeline_mean[j]=(reff_timeline_n[j]?reff_timeline_mean[j]/reff_timeline_n[j]:NAN);
     reff_timeline_std[j]=(reff_timeline_n[j]>1?sqrt(reff_timeline_n[j]/(reff_timeline_n[j]-1.)*(reff_timeline_std[j]/reff_timeline_n[j]-reff_timeline_mean[j]*reff_timeline_mean[j])):(reff_timeline_n[j]?INFINITY:NAN));
     #ifdef OBSREFF_OUTPUT
@@ -302,6 +360,14 @@ int main(const int nargs, const char* args[])
     tdata[tmaxnpers].newinf_timeline_std_ext[j]=sqrt(tdata[0].pe/(tdata[0].pe-1.)*(tdata[tmaxnpers].newinf_timeline_std_ext[j]/tdata[0].pe-tdata[tmaxnpers].newinf_timeline_mean_ext[j]*tdata[tmaxnpers].newinf_timeline_mean_ext[j]));
     tdata[tmaxnpers].newpostest_timeline_mean_ext[j]/=tdata[0].pe;
     tdata[tmaxnpers].newpostest_timeline_std_ext[j]=sqrt(tdata[0].pe/(tdata[0].pe-1.)*(tdata[tmaxnpers].newpostest_timeline_std_ext[j]/tdata[0].pe-tdata[tmaxnpers].newpostest_timeline_mean_ext[j]*tdata[tmaxnpers].newpostest_timeline_mean_ext[j]));
+    #ifdef SEC_INF_TIMELINES
+    tdata[tmaxnpers].secinf_timeline_mean_ext[j]/=tdata[0].pe;
+    tdata[tmaxnpers].secinf_timeline_std_ext[j]=sqrt(tdata[0].pe/(tdata[0].pe-1.)*(tdata[tmaxnpers].secinf_timeline_std_ext[j]/tdata[0].pe-tdata[tmaxnpers].secinf_timeline_mean_ext[j]*tdata[tmaxnpers].secinf_timeline_mean_ext[j]));
+    tdata[tmaxnpers].newsecinf_timeline_mean_ext[j]/=tdata[0].pe;
+    tdata[tmaxnpers].newsecinf_timeline_std_ext[j]=sqrt(tdata[0].pe/(tdata[0].pe-1.)*(tdata[tmaxnpers].newsecinf_timeline_std_ext[j]/tdata[0].pe-tdata[tmaxnpers].newsecinf_timeline_mean_ext[j]*tdata[tmaxnpers].newsecinf_timeline_mean_ext[j]));
+    tdata[tmaxnpers].newsecpostest_timeline_mean_ext[j]/=tdata[0].pe;
+    tdata[tmaxnpers].newsecpostest_timeline_std_ext[j]=sqrt(tdata[0].pe/(tdata[0].pe-1.)*(tdata[tmaxnpers].newsecpostest_timeline_std_ext[j]/tdata[0].pe-tdata[tmaxnpers].newsecpostest_timeline_mean_ext[j]*tdata[tmaxnpers].newsecpostest_timeline_mean_ext[j]));
+    #endif
     tdata[tmaxnpers].reff_timeline_mean_ext[j]=(tdata[tmaxnpers].reff_timeline_n_ext[j]?tdata[tmaxnpers].reff_timeline_mean_ext[j]/tdata[tmaxnpers].reff_timeline_n_ext[j]:NAN);
     tdata[tmaxnpers].reff_timeline_std_ext[j]=(tdata[tmaxnpers].reff_timeline_n_ext[j]>1?sqrt(tdata[tmaxnpers].reff_timeline_n_ext[j]/(tdata[tmaxnpers].reff_timeline_n_ext[j]-1.)*(tdata[tmaxnpers].reff_timeline_std_ext[j]/tdata[tmaxnpers].reff_timeline_n_ext[j]-tdata[tmaxnpers].reff_timeline_mean_ext[j]*tdata[tmaxnpers].reff_timeline_mean_ext[j])):(tdata[tmaxnpers].reff_timeline_n_ext[j]?INFINITY:NAN));
     #ifdef OBSREFF_OUTPUT
@@ -315,6 +381,14 @@ int main(const int nargs, const char* args[])
     tdata[tmaxnpers].newinf_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].newinf_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].newinf_timeline_mean_noext[j]*tdata[tmaxnpers].newinf_timeline_mean_noext[j]));
     tdata[tmaxnpers].newpostest_timeline_mean_noext[j]/=nnoe;
     tdata[tmaxnpers].newpostest_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].newpostest_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].newpostest_timeline_mean_noext[j]*tdata[tmaxnpers].newpostest_timeline_mean_noext[j]));
+    #ifdef OBSREFF_OUTPUT
+    tdata[tmaxnpers].secinf_timeline_mean_noext[j]/=nnoe;
+    tdata[tmaxnpers].secinf_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].secinf_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].secinf_timeline_mean_noext[j]*tdata[tmaxnpers].secinf_timeline_mean_noext[j]));
+    tdata[tmaxnpers].newsecinf_timeline_mean_noext[j]/=nnoe;
+    tdata[tmaxnpers].newsecinf_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].newsecinf_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].newsecinf_timeline_mean_noext[j]*tdata[tmaxnpers].newsecinf_timeline_mean_noext[j]));
+    tdata[tmaxnpers].newsecpostest_timeline_mean_noext[j]/=nnoe;
+    tdata[tmaxnpers].newsecpostest_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].newsecpostest_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].newsecpostest_timeline_mean_noext[j]*tdata[tmaxnpers].newsecpostest_timeline_mean_noext[j]));
+    #endif
     tdata[tmaxnpers].reff_timeline_mean_noext[j]=(tdata[tmaxnpers].reff_timeline_n_noext[j]?tdata[tmaxnpers].reff_timeline_mean_noext[j]/tdata[tmaxnpers].reff_timeline_n_noext[j]:NAN);
     tdata[tmaxnpers].reff_timeline_std_noext[j]=(tdata[tmaxnpers].reff_timeline_n_noext[j]>1?sqrt(tdata[tmaxnpers].reff_timeline_n_noext[j]/(tdata[tmaxnpers].reff_timeline_n_noext[j]-1.)*(tdata[tmaxnpers].reff_timeline_std_noext[j]/tdata[tmaxnpers].reff_timeline_n_noext[j]-tdata[tmaxnpers].reff_timeline_mean_noext[j]*tdata[tmaxnpers].reff_timeline_mean_noext[j])):(tdata[tmaxnpers].reff_timeline_n_noext[j]?INFINITY:NAN));
     #ifdef OBSREFF_OUTPUT
@@ -387,6 +461,19 @@ int main(const int nargs, const char* args[])
     for(j=0; j<tdata[tmaxnpers].tlpptnvpers; ++j) printf("%6.2f: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",(j-shift)/(double)cp.nbinsperunit,tdata[tmaxnpers].newpostest_timeline_mean_ext[j],tdata[tmaxnpers].newpostest_timeline_std_ext[j],tdata[tmaxnpers].newpostest_timeline_mean_noext[j],tdata[tmaxnpers].newpostest_timeline_std_noext[j],newpostest_timeline_mean[j],newpostest_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased if simulation cut)"));
   }
 
+#ifdef SEC_INF_TIMELINES
+  printf("\nCurrent infection (non-isolated infected individuals) timeline for the second infection category, for paths with extinction vs no extinction vs overall is:\n");
+  for(j=0; j<tdata[tmaxnpers].tlpptnvpers; ++j) printf("%6.2f: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",(j-shift)/(double)cp.nbinsperunit,tdata[tmaxnpers].secinf_timeline_mean_ext[j],tdata[tmaxnpers].secinf_timeline_std_ext[j],tdata[tmaxnpers].secinf_timeline_mean_noext[j],tdata[tmaxnpers].secinf_timeline_std_noext[j],secinf_timeline_mean[j],secinf_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased if simulation cut)"));
+
+  printf("\nNew infections (new infected individuals) timeline for the second infection category, for paths with extinction vs no extinction vs overall is:\n");
+  for(j=0; j<tdata[tmaxnpers].tlpptnvpers; ++j) printf("%6.2f: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",(j-shift)/(double)cp.nbinsperunit,tdata[tmaxnpers].newsecinf_timeline_mean_ext[j],tdata[tmaxnpers].newsecinf_timeline_std_ext[j],tdata[tmaxnpers].newsecinf_timeline_mean_noext[j],tdata[tmaxnpers].newsecinf_timeline_std_noext[j],newsecinf_timeline_mean[j],newsecinf_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased if simulation cut)"));
+
+  if(!isnan(cp.pars.tdeltat)) {
+    printf("\nNew positive test timeline for the second infection category, for paths with extinction vs no extinction vs overall is:\n");
+    for(j=0; j<tdata[tmaxnpers].tlpptnvpers; ++j) printf("%6.2f: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",(j-shift)/(double)cp.nbinsperunit,tdata[tmaxnpers].newsecpostest_timeline_mean_ext[j],tdata[tmaxnpers].newsecpostest_timeline_std_ext[j],tdata[tmaxnpers].newsecpostest_timeline_mean_noext[j],tdata[tmaxnpers].newsecpostest_timeline_std_noext[j],newsecpostest_timeline_mean[j],newsecpostest_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased if simulation cut)"));
+  }
+#endif
+
   printf("\nReff timeline, for paths with extinction vs no extinction vs overall is:\n");
   for(j=0; j<tdata[tmaxnpers].tlpptnvpers; ++j) printf("%6.2f: %22.15e +/- %22.15e\t%22.15e +/- %22.15e\t%22.15e +/- %22.15e%s\n",(j-shift)/(double)cp.nbinsperunit,tdata[tmaxnpers].reff_timeline_mean_ext[j],tdata[tmaxnpers].reff_timeline_std_ext[j],tdata[tmaxnpers].reff_timeline_mean_noext[j],tdata[tmaxnpers].reff_timeline_std_noext[j],reff_timeline_mean[j],reff_timeline_std[j],(j-shift<tdata[0].maxedoutmintimeindex?"":" (max reached, biased if simulation cut)"));
 
@@ -435,6 +522,20 @@ int main(const int nargs, const char* args[])
   free(tdata[tmaxnpers].newpostest_timeline_std_ext);
   free(tdata[tmaxnpers].newpostest_timeline_mean_noext);
   free(tdata[tmaxnpers].newpostest_timeline_std_noext);
+  #ifdef SEC_INF_TIMELINES
+  free(tdata[tmaxnpers].secinf_timeline_mean_ext);
+  free(tdata[tmaxnpers].secinf_timeline_std_ext);
+  free(tdata[tmaxnpers].secinf_timeline_mean_noext);
+  free(tdata[tmaxnpers].secinf_timeline_std_noext);
+  free(tdata[tmaxnpers].newsecinf_timeline_mean_ext);
+  free(tdata[tmaxnpers].newsecinf_timeline_std_ext);
+  free(tdata[tmaxnpers].newsecinf_timeline_mean_noext);
+  free(tdata[tmaxnpers].newsecinf_timeline_std_noext);
+  free(tdata[tmaxnpers].newsecpostest_timeline_mean_ext);
+  free(tdata[tmaxnpers].newsecpostest_timeline_std_ext);
+  free(tdata[tmaxnpers].newsecpostest_timeline_mean_noext);
+  free(tdata[tmaxnpers].newsecpostest_timeline_std_noext);
+  #endif
   free(tdata[tmaxnpers].reff_timeline_mean_ext);
   free(tdata[tmaxnpers].reff_timeline_std_ext);
   free(tdata[tmaxnpers].reff_timeline_n_ext);
@@ -487,6 +588,20 @@ void* simthread(void* arg)
   data->newpostest_timeline_std_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
   data->newpostest_timeline_mean_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
   data->newpostest_timeline_std_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  #ifdef SEC_INF_TIMELINES
+  data->secinf_timeline_mean_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->secinf_timeline_std_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->secinf_timeline_mean_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->secinf_timeline_std_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecinf_timeline_mean_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecinf_timeline_std_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecinf_timeline_mean_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecinf_timeline_std_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecpostest_timeline_mean_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecpostest_timeline_std_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecpostest_timeline_mean_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  data->newsecpostest_timeline_std_noext=(double*)malloc(data->tlpptnvpers*sizeof(double));
+  #endif
   data->reff_timeline_mean_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
   data->reff_timeline_std_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
   data->reff_timeline_n_ext=(uint64_t*)malloc(data->tlpptnvpers*sizeof(uint64_t));
@@ -514,6 +629,20 @@ void* simthread(void* arg)
   memset(data->newpostest_timeline_std_ext, 0, data->tlpptnvpers*sizeof(double));
   memset(data->newpostest_timeline_mean_noext, 0, data->tlpptnvpers*sizeof(double));
   memset(data->newpostest_timeline_std_noext, 0, data->tlpptnvpers*sizeof(double));
+  #ifdef SEC_INF_TIMELINES
+  memset(data->secinf_timeline_mean_ext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->secinf_timeline_std_ext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->secinf_timeline_mean_noext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->secinf_timeline_std_noext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecinf_timeline_mean_ext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecinf_timeline_std_ext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecinf_timeline_mean_noext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecinf_timeline_std_noext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecpostest_timeline_mean_ext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecpostest_timeline_std_ext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecpostest_timeline_mean_noext, 0, data->tlpptnvpers*sizeof(double));
+  memset(data->newsecpostest_timeline_std_noext, 0, data->tlpptnvpers*sizeof(double));
+  #endif
   memset(data->reff_timeline_mean_ext, 0, data->tlpptnvpers*sizeof(double));
   memset(data->reff_timeline_std_ext, 0, data->tlpptnvpers*sizeof(double));
   memset(data->reff_timeline_n_ext, 0, data->tlpptnvpers*sizeof(uint64_t));
@@ -641,10 +770,19 @@ void* simthread(void* arg)
   uint32_t* abs_inf_timeline;
   uint32_t* abs_newinf_timeline;
   uint32_t* abs_newpostest_timeline;
+  #ifdef SEC_INF_TIMELINES
+  uint32_t* abs_secinf_timeline;
+  uint32_t* abs_newsecinf_timeline;
+  uint32_t* abs_newsecpostest_timeline;
+  #endif
   ext_timeline_info* abs_ext_timeline;
   int32_t dshift;
   ssize_t maxwrite;
-  const ssize_t binsize=(2+1*(!isnan(cp->pars.tdeltat)))*sizeof(uint32_t);
+#ifdef SEC_INF_TIMELINES
+  const ssize_t binsize=2*(2+(!isnan(cp->pars.tdeltat)))*sizeof(uint32_t);
+#else
+  const ssize_t binsize=(2+(!isnan(cp->pars.tdeltat)))*sizeof(uint32_t);
+#endif
   ext_timeline_info* eti;
 
   do {
@@ -666,6 +804,11 @@ void* simthread(void* arg)
       abs_inf_timeline=stats.pp_inf_timeline-stats.tlppnnpers;
       abs_newinf_timeline=stats.pp_newinf_timeline-stats.tlppnnpers;
       abs_newpostest_timeline=stats.pp_newpostest_timeline-stats.tlppnnpers;
+      #ifdef SEC_INF_TIMELINES
+      abs_secinf_timeline=stats.pp_secinf_timeline-stats.tlppnnpers;
+      abs_newsecinf_timeline=stats.pp_newsecinf_timeline-stats.tlppnnpers;
+      abs_newsecpostest_timeline=stats.pp_newsecpostest_timeline-stats.tlppnnpers;
+      #endif
       abs_ext_timeline=stats.pp_ext_timeline-stats.tlppnnpers;
       dshift=stats.tlshifta-stats.tlshift;
 
@@ -749,6 +892,14 @@ void* simthread(void* arg)
 	  data->newinf_timeline_std_ext[k]+=(double)abs_newinf_timeline[j]*abs_newinf_timeline[j];
 	  data->newpostest_timeline_mean_ext[k]+=abs_newpostest_timeline[j];
 	  data->newpostest_timeline_std_ext[k]+=(double)abs_newpostest_timeline[j]*abs_newpostest_timeline[j];
+          #ifdef SEC_INF_TIMELINES
+       	  data->secinf_timeline_mean_ext[k]+=abs_secinf_timeline[j];
+	  data->secinf_timeline_std_ext[k]+=(double)abs_secinf_timeline[j]*abs_secinf_timeline[j];
+	  data->newsecinf_timeline_mean_ext[k]+=abs_newsecinf_timeline[j];
+	  data->newsecinf_timeline_std_ext[k]+=(double)abs_newsecinf_timeline[j]*abs_newsecinf_timeline[j];
+	  data->newsecpostest_timeline_mean_ext[k]+=abs_newsecpostest_timeline[j];
+	  data->newsecpostest_timeline_std_ext[k]+=(double)abs_newsecpostest_timeline[j]*abs_newsecpostest_timeline[j];
+          #endif
 
 	  if(abs_ext_timeline[j].n) {
 	    data->reff_timeline_mean_ext[k]+=abs_ext_timeline[j].rsum;
@@ -778,6 +929,14 @@ void* simthread(void* arg)
 	  data->newinf_timeline_std_noext[k]+=(double)abs_newinf_timeline[j]*abs_newinf_timeline[j];
 	  data->newpostest_timeline_mean_noext[k]+=abs_newpostest_timeline[j];
 	  data->newpostest_timeline_std_noext[k]+=(double)abs_newpostest_timeline[j]*abs_newpostest_timeline[j];
+          #ifdef SEC_INF_TIMELINES
+	  data->secinf_timeline_mean_noext[k]+=abs_secinf_timeline[j];
+	  data->secinf_timeline_std_noext[k]+=(double)abs_secinf_timeline[j]*abs_secinf_timeline[j];
+	  data->newsecinf_timeline_mean_noext[k]+=abs_newsecinf_timeline[j];
+	  data->newsecinf_timeline_std_noext[k]+=(double)abs_newsecinf_timeline[j]*abs_newsecinf_timeline[j];
+	  data->newsecpostest_timeline_mean_noext[k]+=abs_newsecpostest_timeline[j];
+	  data->newsecpostest_timeline_std_noext[k]+=(double)abs_newsecpostest_timeline[j]*abs_newsecpostest_timeline[j];
+          #endif
 
 	  if(abs_ext_timeline[j].n) {
 	    data->reff_timeline_mean_noext[k]+=abs_ext_timeline[j].rsum;

@@ -12,6 +12,10 @@ endif
 
 ifdef DUAL_PINF
   CFLAGS += -DDUAL_PINF
+
+  ifdef SEC_INF_TIMELINES
+    CFLAGS += -DSEC_INF_TIMELINES
+  endif
 endif
 
 include src/lib/Makefile.in src/bin/Makefile.in src/doc/Makefile.in

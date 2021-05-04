@@ -61,6 +61,20 @@ typedef struct {
   double* newpostest_timeline_std_ext;
   double* newpostest_timeline_mean_noext;
   double* newpostest_timeline_std_noext;
+  #ifdef SEC_INF_TIMELINES
+  double* secinf_timeline_mean_ext;
+  double* secinf_timeline_std_ext;
+  double* secinf_timeline_mean_noext;
+  double* secinf_timeline_std_noext;
+  double* newsecinf_timeline_mean_ext;
+  double* newsecinf_timeline_std_ext;
+  double* newsecinf_timeline_mean_noext;
+  double* newsecinf_timeline_std_noext;
+  double* newsecpostest_timeline_mean_ext;
+  double* newsecpostest_timeline_std_ext;
+  double* newsecpostest_timeline_mean_noext;
+  double* newsecpostest_timeline_std_noext;
+  #endif
   double* reff_timeline_mean_ext;
   double* reff_timeline_std_ext;
   uint64_t* reff_timeline_n_ext;
@@ -121,6 +135,33 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
     memcpy(newarray+ndiff,data->newpostest_timeline_std_ext,data->tlpptnvpers*sizeof(double));
     free(data->newpostest_timeline_std_ext);
     data->newpostest_timeline_std_ext=newarray;
+
+    #ifdef SEC_INF_TIMELINES
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->secinf_timeline_std_ext,data->tlpptnvpers*sizeof(double));
+    free(data->secinf_timeline_std_ext);
+    data->secinf_timeline_std_ext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecinf_timeline_mean_ext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecinf_timeline_mean_ext);
+    data->newsecinf_timeline_mean_ext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecinf_timeline_std_ext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecinf_timeline_std_ext);
+    data->newsecinf_timeline_std_ext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecpostest_timeline_mean_ext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecpostest_timeline_mean_ext);
+    data->newsecpostest_timeline_mean_ext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecpostest_timeline_std_ext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecpostest_timeline_std_ext);
+    data->newsecpostest_timeline_std_ext=newarray;
+    #endif
 
     newarray=(double*)malloc(newsize*sizeof(double));
     memcpy(newarray+ndiff,data->reff_timeline_mean_ext,data->tlpptnvpers*sizeof(double));
@@ -184,6 +225,38 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
     free(data->newpostest_timeline_std_noext);
     data->newpostest_timeline_std_noext=newarray;
 
+    #ifdef SEC_INF_TIMELINES
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->secinf_timeline_mean_noext,data->tlpptnvpers*sizeof(double));
+    free(data->secinf_timeline_mean_noext);
+    data->secinf_timeline_mean_noext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->secinf_timeline_std_noext,data->tlpptnvpers*sizeof(double));
+    free(data->secinf_timeline_std_noext);
+    data->secinf_timeline_std_noext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecinf_timeline_mean_noext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecinf_timeline_mean_noext);
+    data->newsecinf_timeline_mean_noext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecinf_timeline_std_noext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecinf_timeline_std_noext);
+    data->newsecinf_timeline_std_noext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecpostest_timeline_mean_noext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecpostest_timeline_mean_noext);
+    data->newsecpostest_timeline_mean_noext=newarray;
+
+    newarray=(double*)malloc(newsize*sizeof(double));
+    memcpy(newarray+ndiff,data->newsecpostest_timeline_std_noext,data->tlpptnvpers*sizeof(double));
+    free(data->newsecpostest_timeline_std_noext);
+    data->newsecpostest_timeline_std_noext=newarray;
+    #endif
+
     newarray=(double*)malloc(newsize*sizeof(double));
     memcpy(newarray+ndiff,data->reff_timeline_mean_noext,data->tlpptnvpers*sizeof(double));
     free(data->reff_timeline_mean_noext);
@@ -226,6 +299,17 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
       memset(data->newpostest_timeline_mean_ext,0,ndiff*sizeof(double));
       memset(data->newpostest_timeline_std_ext,0,ndiff*sizeof(double));
 
+      #ifdef SEC_INF_TIMELINES
+      memset(data->secinf_timeline_mean_ext,0,ndiff*sizeof(double));
+      memset(data->secinf_timeline_std_ext,0,ndiff*sizeof(double));
+
+      memset(data->newsecinf_timeline_mean_ext,0,ndiff*sizeof(double));
+      memset(data->newsecinf_timeline_std_ext,0,ndiff*sizeof(double));
+
+      memset(data->newsecpostest_timeline_mean_ext,0,ndiff*sizeof(double));
+      memset(data->newsecpostest_timeline_std_ext,0,ndiff*sizeof(double));
+      #endif
+
       memset(data->reff_timeline_mean_ext,0,ndiff*sizeof(double));
       memset(data->reff_timeline_std_ext,0,ndiff*sizeof(double));
       memset(data->reff_timeline_n_ext,0,ndiff*sizeof(uint64_t));
@@ -244,6 +328,17 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
 
       memset(data->newpostest_timeline_mean_noext,0,ndiff*sizeof(double));
       memset(data->newpostest_timeline_std_noext,0,ndiff*sizeof(double));
+
+      #ifdef SEC_INF_TIMELINES
+      memset(data->secinf_timeline_mean_noext,0,ndiff*sizeof(double));
+      memset(data->secinf_timeline_std_noext,0,ndiff*sizeof(double));
+
+      memset(data->newsecinf_timeline_mean_noext,0,ndiff*sizeof(double));
+      memset(data->newsecinf_timeline_std_noext,0,ndiff*sizeof(double));
+
+      memset(data->newsecpostest_timeline_mean_noext,0,ndiff*sizeof(double));
+      memset(data->newsecpostest_timeline_std_noext,0,ndiff*sizeof(double));
+      #endif
 
       memset(data->reff_timeline_mean_noext,0,ndiff*sizeof(double));
       memset(data->reff_timeline_std_noext,0,ndiff*sizeof(double));
@@ -266,6 +361,17 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
       memset(data->newpostest_timeline_mean_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->newpostest_timeline_std_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
 
+      #ifdef SEC_INF_TIMELINES
+      memset(data->secinf_timeline_mean_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      memset(data->secinf_timeline_std_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+
+      memset(data->newsecinf_timeline_mean_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      memset(data->newsecinf_timeline_std_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+
+      memset(data->newsecpostest_timeline_mean_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      memset(data->newsecpostest_timeline_std_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      #endif
+
       memset(data->reff_timeline_mean_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->reff_timeline_std_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->reff_timeline_n_ext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(uint64_t));
@@ -284,6 +390,17 @@ inline static void realloc_thread_timelines(thread_data* data, const int32_t ndi
 
       memset(data->newpostest_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->newpostest_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+
+      #ifdef SEC_INF_TIMELINES
+      memset(data->secinf_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      memset(data->secinf_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+
+      memset(data->newsecinf_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      memset(data->newsecinf_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+
+      memset(data->newsecpostest_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      memset(data->newsecpostest_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
+      #endif
 
       memset(data->reff_timeline_mean_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
       memset(data->reff_timeline_std_noext+ndiff+data->tlpptnvpers,0,pdiff*sizeof(double));
@@ -327,14 +444,26 @@ inline static ssize_t tlo_write_reg_path(std_summary_stats const* stats, char* b
   *(uint32_t*)(buf+4)=htole32(stats->maxedoutmintimeindex);
   *(uint32_t*)(buf+8)=htole64((int32_t)(stats->extinction?floor(stats->extinction_time):-INT32_MAX));
   buf+=12;
+#ifdef SEC_INF_TIMELINES
+  const uint32_t tnbins=2*nbins;
+  const uint32_t thnbins=3*nbins;
+#endif
 
   for(b=0; b<nbins; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->pp_inf_timeline[b],b,stats->pp_newinf_timeline[b]);
     ((uint32_t*)buf)[b]=htole32(stats->pp_inf_timeline[b]);
     ((uint32_t*)buf)[b+nbins]=htole32(stats->pp_newinf_timeline[b]);
+#ifdef SEC_INF_TIMELINES
+    ((uint32_t*)buf)[b+tnbins]=htole32(stats->pp_secinf_timeline[b]);
+    ((uint32_t*)buf)[b+thnbins]=htole32(stats->pp_newsecinf_timeline[b]);
+#endif
   }
 
+#ifdef SEC_INF_TIMELINES
+  return 12+nbins*16;
+#else
   return 12+nbins*8;
+#endif
 }
 
 inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats, char* buf)
@@ -366,15 +495,29 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
   *(uint32_t*)(buf+8)=htole64((int32_t)(stats->extinction?floor(stats->extinction_time):-INT32_MAX));
   buf+=12;
   const uint32_t tnbins=2*nbins;
+#ifdef SEC_INF_TIMELINES
+  const uint32_t thnbins=3*nbins;
+  const uint32_t fnbins=4*nbins;
+  const uint32_t finbins=5*nbins;
+#endif
 
   for(b=0; b<nbins; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->pp_inf_timeline[b],b,stats->pp_newinf_timeline[b]);
     ((uint32_t*)buf)[b]=htole32(stats->pp_inf_timeline[b]);
     ((uint32_t*)buf)[b+nbins]=htole32(stats->pp_newinf_timeline[b]);
     ((uint32_t*)buf)[b+tnbins]=htole32(stats->pp_newpostest_timeline[b]);
+#ifdef SEC_INF_TIMELINES
+    ((uint32_t*)buf)[b+thnbins]=htole32(stats->pp_newinf_timeline[b]);
+    ((uint32_t*)buf)[b+fnbins]=htole32(stats->pp_newsecinf_timeline[b]);
+    ((uint32_t*)buf)[b+finbins]=htole32(stats->pp_newsecpostest_timeline[b]);
+#endif
   }
 
+#ifdef SEC_INF_TIMELINES
+  return 12+nbins*24;
+#else
   return 12+nbins*12;
+#endif
 }
 
 inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, char* buf)
@@ -418,14 +561,26 @@ inline static ssize_t tlo_write_reltime_path(std_summary_stats const* stats, cha
 
   int32_t b;
   const int32_t nbmbm=-bmin+nbins;
+#ifdef SEC_INF_TIMELINES
+  const int32_t tnbmbm=-bmin+2*nbins;
+  const int32_t thnbmbm=-bmin+3*nbins;
+#endif
 
   for(b=bmin; b<=bmax; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->pp_inf_timeline[b],b,stats->pp_newinf_timeline[b]);
     ((uint32_t*)buf)[b-bmin]=htole32(stats->pp_inf_timeline[b]);
     ((uint32_t*)buf)[b+nbmbm]=htole32(stats->pp_newinf_timeline[b]);
+#ifdef SEC_INF_TIMELINES
+    ((uint32_t*)buf)[b+tnbmbm]=htole32(stats->pp_secinf_timeline[b]);
+    ((uint32_t*)buf)[b+thnbmbm]=htole32(stats->pp_newsecinf_timeline[b]);
+#endif
   }
 
+#ifdef SEC_INF_TIMELINES
+  return 16+nbins*16;
+#else
   return 16+nbins*8;
+#endif
 }
 
 inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* stats, char* buf)
@@ -473,15 +628,29 @@ inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* st
   int32_t b;
   const int32_t nbmbm=-bmin+nbins;
   const int32_t tnbmbm=-bmin+2*nbins;
+#ifdef SEC_INF_TIMELINES
+  const int32_t thnbmbm=-bmin+3*nbins;
+  const int32_t fnbmbm=-bmin+4*nbins;
+  const int32_t finbmbm=-bmin+5*nbins;
+#endif
 
   for(b=bmin; b<=bmax; ++b) {
     //printf("Inf[%" PRIi32 "]=%" PRIu32 ",\tTotInf[%" PRIi32 "]=%" PRIu32 "\n",b,stats->pp_inf_timeline[b],b,stats->pp_newinf_timeline[b]);
     ((uint32_t*)buf)[b-bmin]=htole32(stats->pp_inf_timeline[b]);
     ((uint32_t*)buf)[b+nbmbm]=htole32(stats->pp_newinf_timeline[b]);
     ((uint32_t*)buf)[b+tnbmbm]=htole32(stats->pp_newpostest_timeline[b]);
+#ifdef SEC_INF_TIMELINES
+    ((uint32_t*)buf)[b+thnbmbm]=htole32(stats->pp_secinf_timeline[b]);
+    ((uint32_t*)buf)[b+fnbmbm]=htole32(stats->pp_newsecinf_timeline[b]);
+    ((uint32_t*)buf)[b+finbmbm]=htole32(stats->pp_newsecpostest_timeline[b]);
+#endif
   }
 
+#ifdef SEC_INF_TIMELINES
+  return 16+nbins*24;
+#else
   return 16+nbins*12;
+#endif
 }
 
 #ifdef CT_OUTPUT
