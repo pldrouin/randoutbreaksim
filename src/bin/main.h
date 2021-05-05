@@ -507,7 +507,7 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
     ((uint32_t*)buf)[b+nbins]=htole32(stats->pp_newinf_timeline[b]);
     ((uint32_t*)buf)[b+tnbins]=htole32(stats->pp_newpostest_timeline[b]);
 #ifdef SEC_INF_TIMELINES
-    ((uint32_t*)buf)[b+thnbins]=htole32(stats->pp_newinf_timeline[b]);
+    ((uint32_t*)buf)[b+thnbins]=htole32(stats->pp_secinf_timeline[b]);
     ((uint32_t*)buf)[b+fnbins]=htole32(stats->pp_newsecinf_timeline[b]);
     ((uint32_t*)buf)[b+finbins]=htole32(stats->pp_newsecpostest_timeline[b]);
 #endif
