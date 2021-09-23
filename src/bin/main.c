@@ -674,7 +674,7 @@ void* simthread(void* arg)
       exit(1);
     }
 
-    if(cp->pars.timetype!=ro_time_pri_created) {
+    if(cp->pars.timetype!=ro_time_pri_created && cp->pars.timetype!=ro_time_pri_flat_comm) {
 
       if(isnan(cp->pars.tdeltat)) buf_write_func=tlo_write_reltime_path;
       else buf_write_func=tlo_write_reltime_postest_path;
@@ -716,7 +716,7 @@ void* simthread(void* arg)
   sim_set_path_init_proc_func(&sv, std_stats_path_init);
   sim_set_path_end_proc_func(&sv, std_stats_path_end);
 
-  if(cp->pars.timetype==ro_time_pri_created || cp->pars.timetype==ro_time_first_pos_test_results) sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
+  if(cp->pars.timetype==ro_time_pri_created || cp->pars.timetype==ro_time_pri_flat_comm || cp->pars.timetype==ro_time_first_pos_test_results) sim_set_pri_init_proc_func(&sv, std_stats_pri_init);
   else sim_set_pri_init_proc_func(&sv, std_stats_pri_init_rel);
 
   if( cp->pars.timetype==ro_time_first_pos_test_results) {
