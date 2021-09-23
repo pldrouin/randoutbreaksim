@@ -249,6 +249,9 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "time_rel_first_pos_test_results")) {
 	cp->pars.timetype=ro_time_first_pos_test_results;
 
+      } else if(!argsdiffer(pbuf, "time_rel_pri_flat_comm")) {
+	cp->pars.timetype=ro_time_pri_flat_comm;
+
       } else if(!argsdiffer(pbuf, "include_all_paths")) {
 	cp->pars.pathtype=ro_all_paths;
 
@@ -442,6 +445,7 @@ void printusage(const char* name)
   printf("\t--time_rel_pri_created\t\tRecorded event time is relative to the time the primary individuals are generated.\n");
   printf("\t--time_rel_pri_infectious\tRecorded event time is relative to the time the generated primary individuals become infectious.\n");
   printf("\t--time_rel_pri_end_comm\t\tRecorded event time is relative to the end of the communicable period for the generated primary individuals.\n");
+  printf("\t--time_rel_pri_flat_comm\tThe primary individuals are assumed to enter the simulation at a random time within their communicable period. There is thus no latent period for the these individuals and the duration of their communicable period within the simulation is truncated with a uniform probability. This option makes a model diverge from a branching process.\n");
   printf("\t--time_rel_pri_test_results\tRecorded event time is relative to the time the generated primary individuals receive test results.\n");
   printf("\t--time_rel_first_pos_test_results\tRecorded event time is relative to the time of the first positive test result. This operation is performed in post-processing.\n");
   printf("\t--include_all_paths\t\tIndicate that observable and non-observable paths should be included in the simulation results (default).\n");

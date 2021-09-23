@@ -207,6 +207,21 @@ inline static void gen_time_origin_pri_end_comm(sim_vars* sv){sv->brsim.iis[0].e
  */
 inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period-sv->pars.tdeltat; sv->brsim.iis[1].end_comm_period=-sv->pars.tdeltat;}
 
+/**
+ * @brief Function that modifies the simulation such that t=0 is uniformly
+ * distributed within the communicable period and the primary individual is
+ * assumed to enter the simulation at t=0, so no infection occurs prior to that.
+ *
+ * @param sv: Pointer to the simulation variables.
+ */
+inline static void gen_time_origin_pri_flat_comm(sim_vars* sv){
+  sv->brsim.iis[1].latent_period=0;
+  sv->brsim.iis[1].end_comm_period=sv->brsim.iis[1].comm_period*=gsl_rng_uniform(sv->r);
+#ifdef CT_OUTPUT
+  if(sv->brsim.iis[1].commpertype&&ro_commper_alt) sv->brsim.iis[1].presym_comm_period=sv->brsim.iis[1].comm_period;
+#endif
+}
+
 //! @cond Doxygen_Suppress
 /**
  * The preprocessing macros below are used by the main GEN_PER macro.

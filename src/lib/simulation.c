@@ -87,6 +87,10 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
     case ro_time_pri_test_results:
       sv->gen_time_origin_func=gen_time_origin_pri_test_results;
       break;
+
+    case ro_time_pri_flat_comm:
+      sv->gen_time_origin_func=gen_time_origin_pri_flat_comm;
+      break;
   }
 
   PER_COND;
