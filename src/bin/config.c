@@ -478,7 +478,7 @@ void printusage(const char* name)
   printf("\n\tFile header:\n");
   printf("\t\t-Unsigned 32 bit value: tmax, the number of time bins starting from t=0.\n");
   printf("\t\t-8 bit field:\n");
-  printf("\t\t\tBits 0 to 2: A value from the three lower significant bits is used to indicate the model of the time origin. A value of 1 for primary individual creation time, 2 for time primary individual becomes infectious (time_rel_pri_infectious), 3 for end of communicable period for primary individual (time_rel_pri_end_comm), 4 for test results for primary individual (time_rel_pri_test_results).\n");
+  printf("\t\t\tBits 0 to 2: A value from the three lower significant bits is used to indicate the model of the time origin. A value of 1 for primary individual creation time (time_rel_pri_created), 2 for primary individual entering the simulation at a random time during his communicable period (time_rel_pri_flat_comm), 3 for time primary individual becomes infectious (time_rel_pri_infectious), 4 for end of communicable period for primary individual (time_rel_pri_end_comm), 5 for test results for primary individual (time_rel_pri_test_results).\n");
   printf("\t\t\tBit 3: Indicates if a timeline is included for positive test results.\n");
 #ifdef SEC_INF_TIMELINES
   printf("\t\t\tBit 4: Indicates that second series of timelines is included for the second category of infection.\n");

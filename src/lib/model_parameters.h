@@ -29,7 +29,7 @@ enum ro_pricommper_model_flags {ro_pricommper_main=1, ro_pricommper_alt=2, ro_pr
 /**
  * Time model type.
  **/
-enum ro_time_model{ro_time_pri_created=1, ro_time_pri_infectious=2, ro_time_pri_end_comm=3, ro_time_pri_test_results=4, ro_time_first_pos_test_results=5, ro_time_pri_flat_comm=6};
+enum ro_time_model{ro_time_pri_created=1, ro_time_pri_flat_comm=2, ro_time_pri_infectious=3, ro_time_pri_end_comm=4, ro_time_pri_test_results=5, ro_time_first_pos_test_results=6};
 
 /**
  * Group model type. Flags used to specify the model. ro_log_group_attendees_plus_1,
