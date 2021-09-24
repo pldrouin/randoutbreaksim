@@ -487,7 +487,7 @@ inline static ssize_t tlo_write_reg_postest_path(std_summary_stats const* stats,
     return 5;
   }
   */
-  assert(b>0 || (stats->pp_inf_timeline[b] && stats->pp_newinf_timeline[b] && stats->pp_newpostest_timeline[b]));
+  assert(b>0 || (stats->pp_inf_timeline[b] && stats->pp_newinf_timeline[b]));
 
   const uint32_t nbins=b+1;
   *(uint32_t*)buf=htole32(nbins);
@@ -606,7 +606,7 @@ inline static ssize_t tlo_write_reltime_postest_path(std_summary_stats const* st
     return 9;
   }
   */
-  assert(bmax>bmin || (stats->pp_inf_timeline[bmax] && stats->pp_newinf_timeline[bmax] && stats->pp_newpostest_timeline[bmax]));
+  assert(bmax>bmin || (stats->pp_inf_timeline[bmax] && stats->pp_newinf_timeline[bmax]));
 
   for(;; ++bmin) {
     //printf("TotInf[%" PRIi32 "]=%" PRIu32 ",\tInf[%" PRIi32 "]=%" PRIu32 "\n",bmin,stats->pp_newinf_timeline[bmin],bmin,stats->pp_inf_timeline[bmin]);
