@@ -15,7 +15,9 @@
 #include <gsl/gsl_randist.h>
 
 #include "infindividual.h"
+#include "individual.h"
 #include "model_parameters.h"
+#include "simple_array.h"
 
 #include "ran_log.h"
 
@@ -30,6 +32,8 @@ typedef struct {
 } brsim_vars;
 
 typedef struct {
+  individual rooti;     //!< Root individual for the simulation
+  individual* is;       //!< All the individuals in the simulation
 } fpsim_vars;
 
 /**
@@ -40,13 +44,14 @@ typedef struct sim_vars_
   model_pars pars;		//!< Simulation input parameters
   gsl_rng const* r;		//!< Pointer to GSL random number generator
   infindividual* curii;		//!< Pointer to current iteration infectious individual
+  double event_time;	        //!< Start time for the current iteration event
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
-  void (*gen_time_origin_func)(struct sim_vars_*);	//!<Pointer to the function used to apply a time shift
+  void (*gen_time_origin_func)(struct sim_vars_*, infindividual* ii);	//!<Pointer to the function used to apply a time shift
   void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
   void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*gen_time_periods_func_no_int)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods without interruption for a given infectious individual
   uint32_t (*gen_att_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees during one event
-  void (*gen_att_inf_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees and new infections during one event
+  void (*gen_att_inf_func)(struct sim_vars_*);              	        //!< Pointer to the function used to generate attendees and new infections during one event
   void (*path_init_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path initialisation function.
   bool (*path_end_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path termination function. The returned value from this function determines if the simulated path is to be included in the simulation.
   void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
@@ -189,7 +194,7 @@ inline static void gen_time_origin_pri_created(sim_vars* sv){}
  *
  * @param sv: Pointer to the simulation variables.
  */
-inline static void gen_time_origin_pri_infectious(sim_vars* sv){sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period+sv->brsim.iis[1].comm_period; sv->brsim.iis[1].end_comm_period=sv->brsim.iis[1].comm_period;}
+inline static void gen_time_origin_pri_infectious(sim_vars* sv, infindividual* ii){sv->event_time=-ii->end_comm_period+ii->comm_period; ii->end_comm_period=ii->comm_period;}
 
 /**
  * @brief Function that modifies the simulation time to use the end of the
@@ -197,7 +202,7 @@ inline static void gen_time_origin_pri_infectious(sim_vars* sv){sv->brsim.iis[0]
  *
  * @param sv: Pointer to the simulation variables.
  */
-inline static void gen_time_origin_pri_end_comm(sim_vars* sv){sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period; sv->brsim.iis[1].end_comm_period=0;}
+inline static void gen_time_origin_pri_end_comm(sim_vars* sv, infindividual* ii){sv->event_time=-ii->end_comm_period; ii->end_comm_period=0;}
 
 /**
  * @brief Function that modifies the simulation time to time of test results for a
@@ -205,7 +210,7 @@ inline static void gen_time_origin_pri_end_comm(sim_vars* sv){sv->brsim.iis[0].e
  *
  * @param sv: Pointer to the simulation variables.
  */
-inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=-sv->brsim.iis[1].end_comm_period-sv->pars.tdeltat; sv->brsim.iis[1].end_comm_period=-sv->pars.tdeltat;}
+inline static void gen_time_origin_pri_test_results(sim_vars* sv, infindividual* ii){sv->event_time=-ii->end_comm_period-sv->pars.tdeltat; ii->end_comm_period=-sv->pars.tdeltat;}
 
 /**
  * @brief Function that modifies the simulation such that t=0 is uniformly
@@ -214,11 +219,11 @@ inline static void gen_time_origin_pri_test_results(sim_vars* sv){sv->brsim.iis[
  *
  * @param sv: Pointer to the simulation variables.
  */
-inline static void gen_time_origin_pri_flat_comm(sim_vars* sv){
-  sv->brsim.iis[1].latent_period=0;
-  sv->brsim.iis[1].end_comm_period=sv->brsim.iis[1].comm_period*=gsl_rng_uniform(sv->r);
+inline static void gen_time_origin_pri_flat_comm(sim_vars* sv, infindividual* ii){
+  ii->latent_period=0;
+  ii->end_comm_period=ii->comm_period*=gsl_rng_uniform(sv->r);
 #ifdef CT_OUTPUT
-  if(sv->brsim.iis[1].commpertype&&ro_commper_alt) sv->brsim.iis[1].presym_comm_period=sv->brsim.iis[1].comm_period;
+  if(ii->commpertype&&ro_commper_alt) ii->presym_comm_period=ii->comm_period;
 #endif
 }
 
@@ -233,8 +238,7 @@ inline static void gen_time_origin_pri_flat_comm(sim_vars* sv){
 #define GEN_PER_INTERRUPTED_MAIN_0
 
 #ifdef CT_OUTPUT
-//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
-  #define GEN_PER_INTERRUPTED_MAIN_1_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pitnet) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
+  #define GEN_PER_INTERRUPTED_MAIN_1_PRE if(ii->traced && gsl_rng_uniform(sv->r) < sv->pars.pitnet) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
 #else
   #define GEN_PER_INTERRUPTED_MAIN_1_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.itbar;
 #endif
@@ -256,8 +260,7 @@ inline static void gen_time_origin_pri_flat_comm(sim_vars* sv){
 #define GEN_PER_INTERRUPTED_MAIN_1 GEN_PER_INTERRUPTED_MAIN_1_PRE GEN_PER_INTERRUPTED_MAIN_POST
 
 #ifdef CT_OUTPUT
-//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
-#define GEN_PER_INTERRUPTED_MAIN_2_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pitnet) { \
+#define GEN_PER_INTERRUPTED_MAIN_2_PRE if(ii->traced && gsl_rng_uniform(sv->r) < sv->pars.pitnet) { \
   const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ita, sv->pars.itb);
 #else
 #define GEN_PER_INTERRUPTED_MAIN_2_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pit) { \
@@ -275,8 +278,7 @@ inline static void gen_time_origin_pri_flat_comm(sim_vars* sv){
 #define GEN_PER_INTERRUPTED_ALT_0
 
 #ifdef CT_OUTPUT
-//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
-#define GEN_PER_INTERRUPTED_ALT_1_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pimnet) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
+#define GEN_PER_INTERRUPTED_ALT_1_PRE if(ii->traced && gsl_rng_uniform(sv->r) < sv->pars.pimnet) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
 #else
 #define GEN_PER_INTERRUPTED_ALT_1_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + sv->pars.imbar;
 #endif
@@ -298,8 +300,7 @@ inline static void gen_time_origin_pri_flat_comm(sim_vars* sv){
 #define GEN_PER_INTERRUPTED_ALT_1 GEN_PER_INTERRUPTED_ALT_1_PRE GEN_PER_INTERRUPTED_ALT_POST
 
 #ifdef CT_OUTPUT
-//We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
-#define GEN_PER_INTERRUPTED_ALT_2_PRE if(iiparent->curinfectioni<iiparent->ntracedicts && gsl_rng_uniform(sv->r) < sv->pars.pimnet) { \
+#define GEN_PER_INTERRUPTED_ALT_2_PRE if(ii->traced && gsl_rng_uniform(sv->r) < sv->pars.pimnet) { \
   const double ecp=iiparent->end_comm_period + sv->pars.tdeltat + gsl_ran_gamma(sv->r, sv->pars.ima, sv->pars.imb);
 #else
 #define GEN_PER_INTERRUPTED_ALT_2_PRE if(iiparent->commpertype&ro_commper_true_positive_test && gsl_rng_uniform(sv->r) < sv->pars.pim) { \
@@ -431,7 +432,7 @@ GEN_PERS_MAIN(2,2)
  * @param sv: Pointer to the simulation variables.
  * @return true if the event does not occur after tmax, false otherwise.
  */
-inline static bool default_event_proc_func(sim_vars* sv){return (sv->curii->event_time <= sv->pars.tmax);}
+inline static bool default_event_proc_func(sim_vars* sv){return (sv->event_time <= sv->pars.tmax);}
 
 /**
  * @brief Default processing function that is called memory for a new infectious

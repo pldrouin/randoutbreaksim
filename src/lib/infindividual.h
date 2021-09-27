@@ -2,8 +2,6 @@
  * @file infindividual.h
  * @brief Data structure containing infected individual information.
  * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
- * Model from <jerome.levesque@tpsgc-pwgsc.gc.ca> and
- * <david.maybury@tpsgc-pwgsc.gc.ca>
 */
 
 #ifndef _INFINDIVIDUAL_
@@ -34,25 +32,28 @@ typedef struct infindividual_
     void (*gen_ct_time_periods_func)(struct sim_vars_*, struct infindividual_* ii, struct infindividual_* iiparent, const double inf_start);	//!< Effective time period function used for the current event
 #endif
     double end_comm_period;   //!< End of communicable period
-    double event_time;	      //!< Start time for the current iteration event
 #ifdef DUAL_PINF
     double q;                 //!< Probability of alternate communicable period for the infectious individual. Depends on the infection category
     double pinf;              //!< Probability of infection from the infectious individual. Depends on the infection category
 #endif
-    uint32_t nevents;	      //!< Number of events
-    uint32_t nattendees;      //!< Number of attendees for the current iteration event
+    uint32_t nevents;	      //*!< Number of events
+    uint32_t nattendees;      //*!< Number of attendees for the current iteration event
 #ifdef CT_OUTPUT
-    uint32_t ntracednicts;    //!< Number of successfully traced non-infected contacts for the current iteration event
-    uint32_t ntracedicts;      //!< Number of successfully traced infected contacts for the current iteration event
+    uint32_t ntracednicts;    //*!< Number of successfully traced non-infected contacts for the current iteration event
+    uint32_t ntracedicts;     //*!< Number of successfully traced infected contacts for the current iteration event
 #endif
-    uint32_t ninfections;     //!< Number of infections for the current iteration event
+    uint32_t ninfections;     //*!< Number of infections for the current iteration event
 #ifdef DUAL_PINF
-    uint32_t ninfectionsf;    //<! Number of remaining infections in the first category for the current iteration event
-    uint32_t ninfectionsp;    //<! Number of remaining infections in the second category for the current iteration event
+    uint32_t ninfectionsf;    //*<! Number of remaining infections in the first category for the current iteration event. 
+    uint32_t ninfectionsp;    //*<! Number of remaining infections in the second category for the current iteration event. 
 #endif
-    uint32_t cureventi;	      //!< Index of the current iteration event
-    uint32_t curinfectioni;    //!< Index of the current iteration infection
+    uint32_t cureventi;	      //*!< Index of the current iteration event
+    uint32_t curinfectioni;   //*!< Index of the current iteration infection
+    uint32_t generation;      //!< Infection generation
     uint8_t commpertype;      //!< Flags for the type of communicable period (filled using ro_commper_type flags)
+#ifdef CT_OUTPUT
+    bool traced;	      //!> Flag that indicates if this individual has been successfully traced (traced!=interrupted)
+#endif
 #ifdef DUAL_PINF
     bool inftypep;            //!> Flag that indicates if the infectious individual is in the second category
 #endif

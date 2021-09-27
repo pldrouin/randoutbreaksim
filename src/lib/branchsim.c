@@ -17,7 +17,10 @@ void branchsim_init(sim_vars* sv)
   sv->brsim.iis[0].nattendees=1;
   sv->brsim.iis[0].ninfections=1;
 
-  for(uint32_t i=0; i<INIT_N_LAYERS; ++i) sv->ii_alloc_proc_func(sv->brsim.iis+i);
+  for(uint32_t i=0; i<INIT_N_LAYERS; ++i) {
+    sv->brsim.iis[i].generation=i;
+    sv->ii_alloc_proc_func(sv->brsim.iis+i);
+  }
   sv->brsim.nlayers=INIT_N_LAYERS;
   ran_log_init(&sv->rl, (rng_stream*)sv->r->state, sv->pars.p);
 
@@ -45,7 +48,7 @@ int branchsim(sim_vars* sv)
 
   do {
     sv->path_init_proc_func(sv);
-    sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=0;
+    sv->event_time=0;
 
     for(i=sim->nstart-1; i>=0; --i) {
       DEBUG_PRINTF("initial individual %i\n",i);
@@ -73,7 +76,7 @@ int branchsim(sim_vars* sv)
       //Generate the communicable period appropriately
       sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
 
-      sv->gen_time_origin_func(sv);
+      sv->gen_time_origin_func(sv, sv->brsim.iis+1);
       DEBUG_PRINTF("Latent period is %f, comm period is %f, type is %u, end comm is %f\n",sv->brsim.iis[1].latent_period,sv->brsim.iis[1].comm_period,sv->brsim.iis[1].commpertype,sv->brsim.iis[1].end_comm_period);
 
       sv->curii=sv->brsim.iis;
@@ -98,7 +101,7 @@ int branchsim(sim_vars* sv)
 	  end_latent_per=sv->curii->end_comm_period-sv->curii->comm_period; \
 	  \
 	  for(e=npevents-1; e>=0; --e) { \
-	    sv->curii->event_time=end_latent_per-ct_latent_overlap*gsl_rng_uniform(sv->r); \
+	    sv->event_time=end_latent_per-ct_latent_overlap*gsl_rng_uniform(sv->r); \
 	    sv->curii->nattendees=sv->gen_att_func(sv); \
 	    sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1); \
 	    DEBUG_PRINTF("%u attendees, %u successfully traced contacts were generated\n",sv->curii->nattendees,sv->curii->ntracednicts); \
@@ -131,15 +134,15 @@ int branchsim(sim_vars* sv)
       sv->curii->cureventi=0;
 
       for(;;) {
-	sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
-	//sv->curii->event_time=sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
-	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->curii->event_time);
+	sv->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
+	//sv->event_time=sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
+	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->event_time);
 
 	//sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
 	sv->gen_att_inf_func(sv);
 #ifdef CT_OUTPUT
 #define GEN_CONTACTS_AND_TRACE \
-	if((sv->curii->commpertype&ro_commper_true_positive_test) && sv->curii->event_time>=sv->curii->end_comm_period-sim->ctwindow) { \
+	if((sv->curii->commpertype&ro_commper_true_positive_test) && sv->event_time>=sv->curii->end_comm_period-sim->ctwindow) { \
 	  sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1-sv->curii->ninfections); \
 	  \
 	  if(sv->curii->ninfections) sv->curii->ntracedicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->ninfections); \
@@ -151,7 +154,7 @@ int branchsim(sim_vars* sv)
 	  sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func_no_int; \
 	}
 	GEN_CONTACTS_AND_TRACE;
-	DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
+	DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->event_time-(sv->curii->end_comm_period-sim->ctwindow));
 #else
 	DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 #endif
@@ -186,7 +189,10 @@ int branchsim(sim_vars* sv)
 	  uint32_t layer=sv->curii-sv->brsim.iis;
 	  sv->brsim.iis=(infindividual*)realloc(sv->brsim.iis,sv->brsim.nlayers*sizeof(infindividual));
 
-	  for(uint32_t i=sv->brsim.nlayers-1; i>=layer; --i) sv->ii_alloc_proc_func(sv->brsim.iis+i);
+	  for(uint32_t i=sv->brsim.nlayers-1; i>=layer; --i) {
+	    sv->brsim.iis[i].generation=i;
+	    sv->ii_alloc_proc_func(sv->brsim.iis+i);
+	  }
 	  sv->curii=sv->brsim.iis+layer;
 	}
 
@@ -209,11 +215,16 @@ int branchsim(sim_vars* sv)
         #endif
 	//Generate the communicable period appropriately
 #ifdef CT_OUTPUT
-	(sv->curii-1)->gen_ct_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
+        //We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+	if((sv->curii-1)->curinfectioni < (sv->curii-1)->ntracedicts) sv->curii->traced=true;
+
+	else sv->curii->traced=false;
+
+	(sv->curii-1)->gen_ct_time_periods_func(sv, sv->curii, sv->curii-1, sv->event_time);
 #else
-	sv->gen_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
+	sv->gen_time_periods_func(sv, sv->curii, sv->curii-1, sv->event_time);
 #endif
-	DEBUG_PRINTF("Event time: %f, latent period is %f, comm period is %f, type is %u, end comm is %f\n",(sv->curii-1)->event_time,sv->curii->latent_period,sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period);
+	DEBUG_PRINTF("Event time: %f, latent period is %f, comm period is %f, type is %u, end comm is %f\n",sv->event_time,sv->curii->latent_period,sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period);
 
 #ifdef CT_OUTPUT
 	GEN_LATENT_CONTACTS;
@@ -234,9 +245,8 @@ int branchsim(sim_vars* sv)
 #endif
 	  //Generate the event time
 gen_event:
-	  sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
-	  //sv->curii->event_time=(sv->curii-1)->event_time+sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
-	  DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->curii->event_time);
+	  sv->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
+	  DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->event_time);
 
 	  //Generate the number of infections and the associated index for
 	  //the current event
@@ -245,7 +255,7 @@ gen_event:
 	  sv->gen_att_inf_func(sv);
 #ifdef CT_OUTPUT
 	  GEN_CONTACTS_AND_TRACE;
-	  DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
+	  DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->event_time-(sv->curii->end_comm_period-sim->ctwindow));
 #else
 	  DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
 #endif

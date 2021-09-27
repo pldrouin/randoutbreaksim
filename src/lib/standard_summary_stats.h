@@ -447,11 +447,11 @@ void std_stats_free(std_summary_stats* stats);
 
 inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii) {
   //We have to use curii here!
-  if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
-    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+  if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=sv->curii->ninfections;
 #ifdef SEC_INF_TIMELINES
-    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=sv->curii->ninfectionsp;
 #endif
   }
 }
@@ -551,11 +551,11 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
   }
 
   //We have to use curii here!
-  if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
-    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+  if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=sv->curii->ninfections;
 #ifdef SEC_INF_TIMELINES
-    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=sv->curii->ninfectionsp;
 #endif
   }
 }
@@ -612,9 +612,9 @@ inline static void std_stats_calc_obs_child_inf_after_time_cut(sim_vars* sv)
 
       for(ii->curinfectioni=0; ii->curinfectioni<ii->ninfections; ++(ii->curinfectioni)) {
 #ifdef CT_OUTPUT
-	ii->gen_ct_time_periods_func(sv, &stats->iibuf, ii, ii->event_time);
+	ii->gen_ct_time_periods_func(sv, &stats->iibuf, ii, sv->event_time);
 #else
-	sv->gen_time_periods_func(sv, &stats->iibuf, ii, ii->event_time);
+	sv->gen_time_periods_func(sv, &stats->iibuf, ii, sv->event_time);
 #endif
 	((std_stats_inf_data*)sv->curii->dataptr)->nobsinf+=((stats->iibuf.commpertype&ro_commper_int_true_positive_test)==ro_commper_int_true_positive_test);
 	DEBUG_PRINTF("Adding %u to the number of observed infections, for a total of %u\n",((stats->iibuf.commpertype&ro_commper_true_positive_test)!=0),((std_stats_inf_data*)sv->curii->dataptr)->nobsinf);
@@ -646,10 +646,10 @@ inline static bool std_stats_new_event(sim_vars* sv)
     ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
 
-    if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-      ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+    if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
+      ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=sv->curii->ninfections;
 #ifdef SEC_INF_TIMELINES
-      ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+      ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=sv->curii->ninfectionsp;
 #endif
       return true;
     }
@@ -686,10 +686,10 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
     ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
 
-    if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
-      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
+    if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
+      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time);
 
-      if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+      if(sv->curii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
 
 	if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+sv->curii->ninfections < ((std_summary_stats*)sv->dataptr)->nimax) {
 	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
@@ -752,10 +752,10 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
     ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
     DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
 
-    if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
-      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
+    if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
+      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time);
 
-      if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+      if(sv->curii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
 
 	if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->npostestmax) {
 	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
