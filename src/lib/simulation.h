@@ -25,10 +25,13 @@ extern int __ro_debug;
 #define DEBUG_PRINTF(...) //!< Debug print function
 //#define DEBUG_PRINTF(...) {if(__ro_debug) printf(__VA_ARGS__);} //!< Debug print function
 
+struct inflayer_;
+
 typedef struct {
-  infindividual* iis;	//!< Array of current infectious individuals across all layers
+  struct inflayer_* layers;	//!< Array of current infectious individuals across all layers
   uint32_t nlayers;	//!< Current maximum number of layers that has been used so far 
   uint32_t naevents;    //!< Number of allocated events for each layer
+  void (*gen_att_inf_func)(struct sim_vars_*, infindividual* ii);              	        //!< Pointer to the function used to generate attendees and new infections during one event
 } brsim_vars;
 
 typedef struct {
@@ -44,14 +47,13 @@ typedef struct sim_vars_
   model_pars pars;		//!< Simulation input parameters
   gsl_rng const* r;		//!< Pointer to GSL random number generator
   infindividual* curii;		//!< Pointer to current iteration infectious individual
-  double event_time;	        //!< Start time for the current iteration event
+  double event_time;            //!< Start time for the current iteration event
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
   void (*gen_time_origin_func)(struct sim_vars_*, infindividual* ii);	//!<Pointer to the function used to apply a time shift
   void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
   void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
   void (*gen_time_periods_func_no_int)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods without interruption for a given infectious individual
-  uint32_t (*gen_att_func)(struct sim_vars_*);				        //!< Pointer to the function used to generate attendees during one event
-  void (*gen_att_inf_func)(struct sim_vars_*);              	        //!< Pointer to the function used to generate attendees and new infections during one event
+  uint32_t (*gen_att_func)(struct sim_vars_*);          	        //!< Pointer to the function used to generate attendees during one event
   void (*path_init_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path initialisation function.
   bool (*path_end_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path termination function. The returned value from this function determines if the simulated path is to be included in the simulation.
   void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
@@ -186,7 +188,7 @@ inline static void sim_set_new_inf_proc_noevent_func(sim_vars* sv, void (*new_in
  *
  * @param sv: Pointer to the simulation variables.
  */
-inline static void gen_time_origin_pri_created(sim_vars* sv){}
+inline static void gen_time_origin_pri_created(sim_vars* sv, infindividual* ii){}
 
 /**
  * @brief Function that modifies the simulation time to use the time of

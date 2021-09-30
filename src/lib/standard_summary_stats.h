@@ -606,12 +606,19 @@ inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double
 #ifdef OBSREFF_OUTPUT
 inline static void std_stats_calc_obs_child_inf_after_time_cut(sim_vars* sv)
 {
+  //This will not work for the finite population algorithm 
     if(sv->curii->commpertype&ro_commper_true_positive_test) {
       infindividual* ii=sv->curii;
       std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
+      uint32_t ci;
 
-      for(ii->curinfectioni=0; ii->curinfectioni<ii->ninfections; ++(ii->curinfectioni)) {
+      for(ci=0; ci<ii->ninfections; ++ci) {
 #ifdef CT_OUTPUT
+        //We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+	if(ci < ii->ntracedicts) stats->iibuf.traced=true;
+
+	else stats->iibuf.traced=false;
+
 	ii->gen_ct_time_periods_func(sv, &stats->iibuf, ii, sv->event_time);
 #else
 	sv->gen_time_periods_func(sv, &stats->iibuf, ii, sv->event_time);
