@@ -46,7 +46,6 @@ typedef struct sim_vars_
 {
   model_pars pars;		//!< Simulation input parameters
   gsl_rng const* r;		//!< Pointer to GSL random number generator
-  infindividual* curii;		//!< Pointer to current iteration infectious individual
   double event_time;            //!< Start time for the current iteration event
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
   void (*gen_time_origin_func)(struct sim_vars_*, infindividual* ii);	//!<Pointer to the function used to apply a time shift
@@ -56,9 +55,9 @@ typedef struct sim_vars_
   uint32_t (*gen_att_func)(struct sim_vars_*);          	        //!< Pointer to the function used to generate attendees during one event
   void (*path_init_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path initialisation function.
   bool (*path_end_proc_func)(struct sim_vars_*);	                //!< Pointer to the user-defined path termination function. The returned value from this function determines if the simulated path is to be included in the simulation.
-  void (*pri_init_proc_func)(struct sim_vars_*, infindividual* ii);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
+  void (*pri_init_proc_func)(struct sim_vars_*, infindividual* parent, infindividual* child);	//!< Pointer to the user-defined initialisation function for a given primary infectious individual
   void (*ii_alloc_proc_func)(infindividual* ii);	//!< Pointer to the user-defined processing function that is called when memory for a new infectious individual is allocated.
-  bool (*new_event_proc_func)(struct sim_vars_* sv);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The returned value from this function determines if new infectious individuals are instantiated for this event. The function can also be called in CT_OUTPUT mode for contact events during the latent phase of the individual.
+  bool (*new_event_proc_func)(struct sim_vars_* sv, infindividual* ii);				//!< Pointer to the user-defined processing function that is called when a new transmission event is created, after an event time and the number of new infections have been assigned. The returned value from this function determines if new infectious individuals are instantiated for this event. The function can also be called in CT_OUTPUT mode for contact events during the latent phase of the individual.
   void (*new_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);			//!< Pointer to the user-defined processing function that is called when a new infected individual is created, after the communicable period and the number of transmission events have been assigned. The function is only called if the number of transmission events is non-zero. 
   void (*new_inf_proc_func_noevent)(struct sim_vars_* sv, infindividual* ii, infindividual* parent);	//!< Pointer to the user-defined processing function that is called for a new infected individual that does not generate any transmission event.
   void (*end_inf_proc_func)(struct sim_vars_* sv, infindividual* ii, infindividual* parent); 		//!< Pointer to the user-defined processing function that is called once all transmission events for a given infectious individual have been generated.
@@ -112,7 +111,7 @@ inline static void sim_set_proc_data(sim_vars* sv, void* dataptr){sv->dataptr=da
  * @return true if new infectious individuals are to be instantiated from this
  * event, false otherwise.
  */
-inline static void sim_set_new_event_proc_func(sim_vars* sv, bool (*new_event_proc_func)(sim_vars* sv)){sv->new_event_proc_func=new_event_proc_func;}
+inline static void sim_set_new_event_proc_func(sim_vars* sv, bool (*new_event_proc_func)(sim_vars* sv, infindividual* ii)){sv->new_event_proc_func=new_event_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called when a new infected individual is created.
@@ -148,7 +147,7 @@ inline static void sim_set_path_end_proc_func(sim_vars* sv, bool (*path_end_proc
  *
  * @param sv: Pointer to the simulation variables.
  */
-inline static void sim_set_pri_init_proc_func(sim_vars* sv, void (*pri_init_proc_func)(sim_vars* sv, infindividual* ii)){sv->pri_init_proc_func=pri_init_proc_func;}
+inline static void sim_set_pri_init_proc_func(sim_vars* sv, void (*pri_init_proc_func)(sim_vars* sv, infindividual* parent, infindividual* child)){sv->pri_init_proc_func=pri_init_proc_func;}
 
 /**
  * @brief Sets the user-defined processing function that is called when memory
@@ -434,7 +433,7 @@ GEN_PERS_MAIN(2,2)
  * @param sv: Pointer to the simulation variables.
  * @return true if the event does not occur after tmax, false otherwise.
  */
-inline static bool default_event_proc_func(sim_vars* sv){return (sv->event_time <= sv->pars.tmax);}
+inline static bool default_event_proc_func(sim_vars* sv, infindividual* ii){return (sv->event_time <= sv->pars.tmax);}
 
 /**
  * @brief Default processing function that is called memory for a new infectious

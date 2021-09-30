@@ -81,10 +81,8 @@ int branchsim(sim_vars* sv)
       sv->gen_time_origin_func(sv, &brsim->layers[1].ii);
       DEBUG_PRINTF("Latent period is %f, comm period is %f, type is %u, end comm is %f\n",brsim->layers[1].ii.latent_period,brsim->layers[1].ii.comm_period,brsim->layers[1].ii.commpertype,brsim->layers[1].ii.end_comm_period);
 
-      sv->curii=&brsim->layers[0].ii;
-      sv->pri_init_proc_func(sv, &brsim->layers[1].ii);
+      sv->pri_init_proc_func(sv, &brsim->layers[0].ii, &brsim->layers[1].ii);
       curlayer=brsim->layers+1;
-      sv->curii=&curlayer->ii;
       DEBUG_PRINTF("Move to primary layer (%li)\n",curlayer->ii.generation);
 
 #ifdef CT_OUTPUT
@@ -108,7 +106,7 @@ int branchsim(sim_vars* sv)
 	    curlayer->ii.nattendees=sv->gen_att_func(sv); \
 	    curlayer->ii.ntracednicts=gsl_ran_binomial(sv->r, sim->pt, curlayer->ii.nattendees-1); \
 	    DEBUG_PRINTF("%u attendees, %u successfully traced contacts were generated\n",curlayer->ii.nattendees,curlayer->ntracednicts); \
-	    sv->new_event_proc_func(sv); \
+	    sv->new_event_proc_func(sv, &curlayer->ii); \
 	  } \
 	} \
       }
@@ -162,7 +160,7 @@ int branchsim(sim_vars* sv)
 	DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curevent.nattendees,curlayer->ninfections);
 #endif
 
-	if(!sv->new_event_proc_func(sv)) {
+	if(!sv->new_event_proc_func(sv, &curlayer->ii)) {
 	  DEBUG_PRINTF("New event returned false\n");
 
 	  //If the events have been exhausted, go down another layer
@@ -183,7 +181,6 @@ int branchsim(sim_vars* sv)
       //Create a new infected individual
       for(;;) {
 	++(curlayer);
-	sv->curii=&curlayer->ii;
 	DEBUG_PRINTF("Move to next layer (%li)\n",curlayer->ii.layer);
 
 	//If reaching the end of the allocated array, increase its size
@@ -198,7 +195,6 @@ int branchsim(sim_vars* sv)
 	    sv->ii_alloc_proc_func(&brsim->layers[i].ii);
 	  }
 	  curlayer=brsim->layers+layer;
-	  sv->curii=&curlayer->ii;
 	}
 
       #ifdef DUAL_PINF
@@ -265,7 +261,7 @@ gen_event:
 	  DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curevent.nattendees,curlayer->ninfections);
 #endif
 
-	  if(sv->new_event_proc_func(sv)) {
+	  if(sv->new_event_proc_func(sv, &curlayer->ii)) {
 	    curlayer->curinfectioni=0;
 	    DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ninfections);
 	    continue;
@@ -296,7 +292,6 @@ gen_event:
 	  if(curlayer->ii.generation == 1) goto done_parsing;
 	  //Move down one layer
 	  --(curlayer);
-	  sv->curii=&curlayer->ii;
 	  DEBUG_PRINTF("Move to previous layer (%li)\n",curlayer->ii.generation);
 
 	  //If the infections have been exhausted
