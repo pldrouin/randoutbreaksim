@@ -807,7 +807,7 @@ inline static void std_stats_fill_newpostest(sim_vars* sv, infindividual* ii, in
 #endif
 #ifdef OBSREFF_OUTPUT
     if(ii->commpertype&ro_commper_int) ++(((std_stats_inf_data*)parent->dataptr)->nobsinf);
-    DEBUG_PRINTF("Number of observed infections for the parent increased by 1, for a total of %u\n",,((std_stats_inf_data*)parent->dataptr)->nobsinf);
+    DEBUG_PRINTF("Number of observed infections for the parent increased by 1, for a total of %u\n",((std_stats_inf_data*)parent->dataptr)->nobsinf);
 #endif
     int32_t i;
     const int32_t end_npostestmax_per_i=trt+((std_summary_stats*)sv->dataptr)->nbinsperunit*((std_summary_stats*)sv->dataptr)->npostestmaxnunits-1;
