@@ -155,7 +155,7 @@ int branchsim(sim_vars* sv)
 	  curlayer->ii.gen_ct_time_periods_func=sv->gen_time_periods_func_no_int; \
 	}
 	GEN_CONTACTS_AND_TRACE;
-	DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",curlayer->ii.nattendees,curlayer->i.ninfections,curlayer->i.ntracednicts,curlayer->i.ntracedicts,sv->event_time-(curlayer->ii.end_comm_period-sim->ctwindow));
+	DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",curlayer->ii.nattendees,curlayer->ii.ninfections,curlayer->ii.ntracednicts,curlayer->ii.ntracedicts,sv->event_time-(curlayer->ii.end_comm_period-sim->ctwindow));
 #else
 	DEBUG_PRINTF("%u attendees and %u infections were generated\n",curlayer->ii.nattendees,curlayer->ii.ninfections);
 #endif
@@ -180,6 +180,8 @@ int branchsim(sim_vars* sv)
 
       //Create a new infected individual
       for(;;) {
+	curlayer->last_event_time=sv->event_time;
+	//printf("Last event recorded time set to %f\n",sv->event_time);
 	++(curlayer);
 	DEBUG_PRINTF("Move to next layer (%" PRIu32 ")\n",curlayer->ii.generation);
 
@@ -293,6 +295,8 @@ gen_event:
 	  //Move down one layer
 	  --(curlayer);
 	  DEBUG_PRINTF("Move to previous layer (%" PRIu32 ")\n",curlayer->ii.generation);
+	  sv->event_time=curlayer->last_event_time;
+	  //printf("Last event recorded time %f is read\n",sv->event_time);
 
 	  //If the infections have been exhausted
 	  if(curlayer->curinfectioni == curlayer->ii.ninfections-1) {
