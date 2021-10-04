@@ -83,7 +83,7 @@ int branchsim(sim_vars* sv)
 
       sv->pri_init_proc_func(sv, &brsim->layers[0].ii, &brsim->layers[1].ii);
       curlayer=brsim->layers+1;
-      DEBUG_PRINTF("Move to primary layer (%li)\n",curlayer->ii.generation);
+      DEBUG_PRINTF("Move to primary layer (%" PRIu32 ")\n",curlayer->ii.generation);
 
 #ifdef CT_OUTPUT
 #define GEN_LATENT_CONTACTS \
@@ -105,7 +105,7 @@ int branchsim(sim_vars* sv)
 	    sv->event_time=end_latent_per-ct_latent_overlap*gsl_rng_uniform(sv->r); \
 	    curlayer->ii.nattendees=sv->gen_att_func(sv); \
 	    curlayer->ii.ntracednicts=gsl_ran_binomial(sv->r, sim->pt, curlayer->ii.nattendees-1); \
-	    DEBUG_PRINTF("%u attendees, %u successfully traced contacts were generated\n",curlayer->ii.nattendees,curlayer->ntracednicts); \
+	    DEBUG_PRINTF("%u attendees, %u successfully traced contacts were generated\n",curlayer->ii.nattendees,curlayer->ii.ntracednicts); \
 	    sv->new_event_proc_func(sv, &curlayer->ii); \
 	  } \
 	} \
@@ -157,7 +157,7 @@ int branchsim(sim_vars* sv)
 	GEN_CONTACTS_AND_TRACE;
 	DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",curlayer->ii.nattendees,curlayer->i.ninfections,curlayer->i.ntracednicts,curlayer->i.ntracedicts,sv->event_time-(curlayer->ii.end_comm_period-sim->ctwindow));
 #else
-	DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curevent.nattendees,curlayer->ninfections);
+	DEBUG_PRINTF("%u attendees and %u infections were generated\n",curlayer->ii.nattendees,curlayer->ii.ninfections);
 #endif
 
 	if(!sv->new_event_proc_func(sv, &curlayer->ii)) {
@@ -176,12 +176,12 @@ int branchsim(sim_vars* sv)
 	} else break;
       }
       curlayer->curinfectioni=0;
-      DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ninfections);
+      DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ii.ninfections);
 
       //Create a new infected individual
       for(;;) {
 	++(curlayer);
-	DEBUG_PRINTF("Move to next layer (%li)\n",curlayer->ii.layer);
+	DEBUG_PRINTF("Move to next layer (%" PRIu32 ")\n",curlayer->ii.generation);
 
 	//If reaching the end of the allocated array, increase its size
 	if(curlayer->ii.generation==brsim->nlayers-1) {
@@ -256,14 +256,14 @@ gen_event:
 	  brsim->gen_att_inf_func(sv, &curlayer->ii);
 #ifdef CT_OUTPUT
 	  GEN_CONTACTS_AND_TRACE;
-	  DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curevent.nattendees,curlayer->ninfections,curlayer->ntracednicts,curlayer->ntracedicts,sv->event_time-(curlayer->ii.end_comm_period-sim->ctwindow));
+	  DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",curlayer->ii.nattendees,curlayer->ii.ninfections,curlayer->ii.ntracednicts,curlayer->ii.ntracedicts,sv->event_time-(curlayer->ii.end_comm_period-sim->ctwindow));
 #else
-	  DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curevent.nattendees,curlayer->ninfections);
+	  DEBUG_PRINTF("%u attendees and %u infections were generated\n",curlayer->ii.nattendees,curlayer->ii.ninfections);
 #endif
 
 	  if(sv->new_event_proc_func(sv, &curlayer->ii)) {
 	    curlayer->curinfectioni=0;
-	    DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ninfections);
+	    DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ii.ninfections);
 	    continue;
 
 	  } else {
@@ -292,7 +292,7 @@ gen_event:
 	  if(curlayer->ii.generation == 1) goto done_parsing;
 	  //Move down one layer
 	  --(curlayer);
-	  DEBUG_PRINTF("Move to previous layer (%li)\n",curlayer->ii.generation);
+	  DEBUG_PRINTF("Move to previous layer (%" PRIu32 ")\n",curlayer->ii.generation);
 
 	  //If the infections have been exhausted
 	  if(curlayer->curinfectioni == curlayer->ii.ninfections-1) {
@@ -311,7 +311,7 @@ gen_event:
 
 	  //Look at the next infected individual in the current event
 	  ++(curlayer->curinfectioni);
-	  DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ninfections);
+	  DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ii.ninfections);
 	  break;
 	}
       }
