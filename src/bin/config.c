@@ -396,7 +396,7 @@ void printusage(const char* name)
   printf("\t--t95 VALUE\t\t\t95th percentile of the main communicable period.\n");
   printf("\t--lambda VALUE\t\t\tRate of events for a given individual. Events are defined to include at least two invitees.\n");
   printf("\t--lambda_uncut VALUE\t\tRate of events for a given individual, including events of one invitee.\n");
-  //printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
+  printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
   printf("\t--group_attendees\t\tThe group distributions are applicable to the number of attendees (default).\n");
   printf("\t--group_invitees\t\tThe group distributions are applicable to the number of invitees.\n");
   printf("\t--group_log_plus_1\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
@@ -414,7 +414,7 @@ void printusage(const char* name)
   printf("\t--rpshedp VALUE\t\t\tRelative strength of infectiousness from an infectious individual of the second category vs the fist category (value relative to pinf, 0 < rpshedp * pinf <=1, default value of 1).\n");
   printf("\t--qp VALUE\t\t\tProbability of alternate communicable period for an infectious individual in the second category.\n");
 #endif
-  //printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
+  printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
   printf("\t--R0 VALUE\t\t\tBasic reproduction number.\n");
   printf("\t--lbar VALUE\t\t\tMean latent period (default value of 0).\n");
   printf("\t--kappal VALUE\t\t\tkappa parameter for the gamma distribution used to generate the latent period.\n");

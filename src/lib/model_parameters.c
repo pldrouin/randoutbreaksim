@@ -8,10 +8,32 @@
 
 int model_solve_pars(model_pars* pars)
 {
+  if(pars->popsize==0) {
 
-  if(model_solve_R0_group(pars)) {
-    fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
-    return -2;
+    if(model_solve_R0_group(pars)) {
+      fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
+      return -2;
+    }
+
+  } else if(isnan(pars->lambdap)) {
+
+    if(model_solve_R0_group(pars)) {
+      fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
+      return -3;
+    }
+    pars->lambdap=pars->lambda*pars->popsize/pars->g_ave;
+
+  } else if(!isnan(pars->g_ave)) {
+    pars->lambda=pars->g_ave*pars->lambdap/pars->popsize;
+
+    if(model_solve_R0_group(pars)) {
+      fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
+      return -4;
+    }
+
+  } else {
+    fprintf(stderr,"%s: Error: Solving parameters with lambdap known and g_ave unknown is currently not supported\n",__func__);
+    return -5;
   }
   
   printf("\nBasic reproduction parameters are:\n");
@@ -703,6 +725,14 @@ int model_pars_check(model_pars const* pars)
     ret-=2;
   }
 
+  if(pars->popsize>0) {
+
+    if(!(!isnan(pars->lambdap) ^ !isnan(pars->lambda))) {
+      fprintf(stderr,"%s: Error: With a finite population lambdap or lambda must be provided, exclusively\n",__func__);
+      ret-=4;
+    }
+  }
+
   if(pars->pit<0 || pars->pit>1) {
     fprintf(stderr,"%s: Error: pit must be in the interval [0.1]\n",__func__);
     ret-=4;
@@ -824,6 +854,11 @@ int model_pars_check(model_pars const* pars)
   if(pars->popsize==0 && (pars->grouptype&ro_group_invitees)) {
     fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated based on a number of invitees\n",__func__);
     ret-=65536;
+  }
+
+  if(pars->popsize>0 && !(pars->grouptype&ro_group_invitees)) {
+    fprintf(stderr,"%s: Error: If modeling a finite population, only groups of individuals based on a number of invitees are currently supported\n",__func__);
+    ret-=131072;
   }
 
   return ret;
