@@ -24,6 +24,7 @@
 #include "model_parameters.h"
 #include "infindividual.h"
 #include "branchsim.h"
+#include "finitepopsim.h"
 #include "standard_summary_stats.h"
 
 /**

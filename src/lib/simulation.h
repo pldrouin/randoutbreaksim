@@ -37,6 +37,12 @@ typedef struct {
 typedef struct {
   individual rooti;     //!< Root individual for the simulation
   individual* is;       //!< All the individuals in the simulation
+  individual** activated;     //!< Array of activated individuals (state with a finite duration)
+  size_t       nactivated;    //!< Length of the activated array
+  sarray_ctx* ctx_activated;  //!< Context pointer for the activated array
+  individual** einfectious;     //!< Array of infectious individuals for the current event
+  size_t       neinfectious;    //!< Length of the einfectious array
+  sarray_ctx* ctx_einfectious;  //!< Context pointer for the einfectious array
 } fpsim_vars;
 
 /**

@@ -22,6 +22,8 @@ typedef struct sarray_ctx_
 inline static sarray_ctx* sarray_init(void** array, size_t *length, const size_t element_size, const float growing_factor)
 {
   sarray_ctx* ctx=(sarray_ctx*)malloc(sizeof(sarray_ctx));
+  *array=NULL;
+  *length=0;
   ctx->array=array;
   ctx->length=length;
   ctx->alength=0;
@@ -43,6 +45,34 @@ inline static void sarray_free( sarray_ctx* ctx)
   free(ctx);
 }
 
+inline static void sarray_clean_alloc(sarray_ctx* ctx)
+{
+  if(ctx->alength > *ctx->length) {
+    ctx->alength=*ctx->length;
+    *ctx->array=realloc(*ctx->array,ctx->alength*ctx->esize);
+  }
+}
+
+inline static void sarray_empty(sarray_ctx* ctx)
+{
+  *ctx->length=0;
+}
+
+inline static int sarray_alloc(sarray_ctx* ctx, const size_t n)
+{
+  const size_t needed=*ctx->length+n;
+
+  if(needed > ctx->alength) {
+    ctx->alength=ctx->alength*ctx->gfact+1;
+
+    if(needed > ctx->alength) ctx->alength=needed;
+    *ctx->array=realloc(*ctx->array,ctx->alength*ctx->esize);
+
+    if(!*ctx->array) return -1;
+  }
+  return 0;
+}
+
 inline static int sarray_grow(sarray_ctx* ctx, const size_t n)
 {
   const size_t needed=*ctx->length+n;
@@ -51,7 +81,7 @@ inline static int sarray_grow(sarray_ctx* ctx, const size_t n)
     ctx->alength=ctx->alength*ctx->gfact+1;
 
     if(needed > ctx->alength) ctx->alength=needed;
-    *ctx->array=realloc(*ctx->array,(ctx->alength)*ctx->esize);
+    *ctx->array=realloc(*ctx->array,ctx->alength*ctx->esize);
 
     if(!*ctx->array) return -1;
   }
@@ -63,7 +93,7 @@ inline static int sarray_grow_one(sarray_ctx* ctx)
 {
   if(*ctx->length == ctx->alength) {
     ctx->alength=ctx->alength*ctx->gfact+1;
-    *ctx->array=realloc(*ctx->array,(ctx->alength)*ctx->esize);
+    *ctx->array=realloc(*ctx->array,ctx->alength*ctx->esize);
 
     if(!*ctx->array) return -1;
   }
@@ -84,7 +114,7 @@ inline static int sarray_add_many_at(sarray_ctx* ctx, const size_t n, const size
     ctx->alength=ctx->alength*ctx->gfact+1;
 
     if(needed > ctx->alength) ctx->alength=needed;
-    *ctx->array=realloc(*ctx->array,(ctx->alength)*ctx->esize);
+    *ctx->array=realloc(*ctx->array,ctx->alength*ctx->esize);
 
     if(!*ctx->array) return -1;
   }
@@ -98,7 +128,7 @@ inline static int sarray_add_space_at(sarray_ctx* ctx, const size_t index)
 {
   if(*ctx->length == ctx->alength) {
     ctx->alength=ctx->alength*ctx->gfact+1;
-    *ctx->array=realloc(*ctx->array,(ctx->alength)*ctx->esize);
+    *ctx->array=realloc(*ctx->array,ctx->alength*ctx->esize);
 
     if(!*ctx->array) return -1;
   }
@@ -117,14 +147,6 @@ inline static void sarray_remove_at(sarray_ctx* ctx, const size_t index)
 {
   --*ctx->length;
   memmove(*ctx->array+index, *ctx->array+index+1, (*ctx->length-index)*ctx->esize);
-}
-
-inline static void sarray_clean_alloc(sarray_ctx* ctx)
-{
-  if(ctx->alength > *ctx->length) {
-    ctx->alength=*ctx->length;
-    *ctx->array=realloc(*ctx->array,(ctx->alength)*ctx->esize);
-  }
 }
 
 #endif

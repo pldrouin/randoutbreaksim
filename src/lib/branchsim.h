@@ -28,7 +28,6 @@ typedef struct inflayer_ {
   double last_event_time;     //!< Last event time used for this layer, as recorded before moving to the next layer, and as retrieved when going back to the previous layer
   uint32_t cureventi;	      //!< Index of the current iteration event
   uint32_t curinfectioni;     //!< Index of the current iteration infection
-  uint32_t nevents;	      //!< Number of events
 } inflayer;
 
 /**

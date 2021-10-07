@@ -100,7 +100,7 @@ typedef struct
   uint32_t tnpersa;             //!< *Total number of allocated integer intervals (negative+positive)
   int32_t tlppnnpers;		//!< Timeline post-processing number of negative periods
   uint32_t tlpptnvpers;		//!< Timeline post-processing total number of valid periods
-  uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
+  uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals. Warning: Not applicable for the simulation of a finite population!!
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and nbinsperunit*abs_tmax-1. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnunits for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmaxnunits;    //!< Interval duration for the maximum number of positive test results

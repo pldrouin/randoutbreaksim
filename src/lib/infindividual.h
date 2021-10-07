@@ -24,7 +24,7 @@ enum ro_commper_type {ro_commper_main=1, ro_commper_alt=2, ro_commper_int=4, ro_
  */
 typedef struct infindividual_
 {
-    void* dataptr;	      //!< Data pointer for user-defined functions
+    void* dataptr;	      //!< Data pointer for user-defined functions.
     double latent_period;     //!< Latent period
     double comm_period;       //!< Communicable period
 #ifdef CT_OUTPUT
@@ -44,7 +44,8 @@ typedef struct infindividual_
 #ifdef DUAL_PINF
     bool inftypep;            //!> Flag that indicates if the infectious individual is in the second category
 #endif
-  uint32_t nattendees;      //!< Number of attendees for the current iteration event
+  uint32_t nevents;	      //!< Number of events
+  uint32_t nattendees;        //!< Number of attendees for the current iteration event
 #ifdef CT_OUTPUT
   uint32_t ntracednicts;    //!< Number of successfully traced non-infected contacts for the current iteration event
   uint32_t ntracedicts;     //!< Number of successfully traced infected contacts for the current iteration event

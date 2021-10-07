@@ -9,6 +9,7 @@
 int model_solve_pars(model_pars* pars)
 {
   if(pars->popsize==0) {
+    printf("Model type:\nBranching process\n");
 
     if(model_solve_R0_group(pars)) {
       fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
@@ -16,6 +17,7 @@ int model_solve_pars(model_pars* pars)
     }
 
   } else if(isnan(pars->lambdap)) {
+    printf("Model type:\nFinite population\nPopulation:\t%" PRIu32 "\n",pars->popsize);
 
     if(model_solve_R0_group(pars)) {
       fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
@@ -39,6 +41,7 @@ int model_solve_pars(model_pars* pars)
   printf("\nBasic reproduction parameters are:\n");
   printf("lambda:\t\t%22.15e\n",pars->lambda);
   printf("lambda_uncut:\t%22.15e\n",pars->lambda_uncut);
+  if(pars->popsize>0) printf("lambdap:\t%22.15e\n",pars->lambdap);
   printf("tbar:\t\t%22.15e\n",pars->tbar);
   printf("g_ave:\t\t%22.15e\n",pars->g_ave);
   //printf("mu:\t\t%22.15e\n",pars->mu);
@@ -727,9 +730,14 @@ int model_pars_check(model_pars const* pars)
 
   if(pars->popsize>0) {
 
-    if(!(!isnan(pars->lambdap) ^ !isnan(pars->lambda))) {
-      fprintf(stderr,"%s: Error: With a finite population lambdap or lambda must be provided, exclusively\n",__func__);
+    if(isnan(pars->lambdap) || isnan(pars->lambda)) {
+      fprintf(stderr,"%s: Error: With a finite population, lambdap and lambda parameters cannot be both provided\n",__func__);
       ret-=4;
+    }
+
+    if(pars->nstart>pars->popsize) {
+      fprintf(stderr,"%s: Error: With a finite population the number of initial infections cannot exceed the size of the population\n",__func__);
+      ret-=8;
     }
   }
 

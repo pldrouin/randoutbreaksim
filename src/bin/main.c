@@ -753,7 +753,16 @@ void* simthread(void* arg)
 
   } else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
 
-  branchsim_init(&sv);
+  int (*simfunc)(sim_vars*);
+
+  if(cp->pars.popsize>0) {
+    finitepopsim_init(&sv);
+    simfunc=finitepopsim;
+
+  } else {
+    branchsim_init(&sv);
+    simfunc=branchsim;
+  }
 
   if(cp->ninfhist) std_stats_init(&sv, cp->nbinsperunit, true);
 
@@ -793,7 +802,7 @@ void* simthread(void* arg)
     //printf("npaths %u\n",npaths);
 
     for(i=npaths-1; i>=0; --i) {
-      branchsim(&sv);
+      simfunc(&sv);
 
       eti=stats.ext_timeline-stats.tlshift;
       data->commper_mean+=eti->commpersum;
@@ -989,7 +998,8 @@ void* simthread(void* arg)
 #endif
 
   std_stats_free(&stats);
-  branchsim_free(&sv);
+  if(cp->pars.popsize>0) finitepopsim_free(&sv);
+  else branchsim_free(&sv);
 
   return NULL;
 }

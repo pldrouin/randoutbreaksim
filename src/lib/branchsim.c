@@ -12,7 +12,7 @@ void branchsim_init(sim_vars* sv)
 {
   sv->brsim.layers=(inflayer*)malloc(INIT_N_LAYERS*sizeof(inflayer));
   sv->brsim.layers[0].ii.commpertype=0;
-  sv->brsim.layers[0].nevents=1;
+  sv->brsim.layers[0].ii.nevents=1;
   sv->brsim.layers[0].cureventi=0;
   sv->brsim.layers[0].ii.nattendees=1;
   sv->brsim.layers[0].ii.ninfections=1;
@@ -45,7 +45,7 @@ int branchsim(sim_vars* sv)
   inflayer* curlayer;
 
 #ifdef DUAL_PINF
-  const double pinfpinf=sv->pars.ppip*sv->pars.rpinfp/(1+sv->pars.ppip*(sv->pars.rpinfp-1));
+  const double pinfpinf=sim->ppip*sim->rpinfp/(1+sim->ppip*(sim->rpinfp-1));
 #endif
 
   do {
@@ -62,8 +62,8 @@ int branchsim(sim_vars* sv)
         brsim->layers[0].ii.ninfectionsp=1;
         #endif
 	brsim->layers[1].ii.inftypep=true;
-	brsim->layers[1].ii.q=sv->pars.qp;
-	brsim->layers[1].ii.pinf=sv->pars.pinf*sv->pars.rpshedp;
+	brsim->layers[1].ii.q=sim->qp;
+	brsim->layers[1].ii.pinf=sim->pinf*sim->rpshedp;
 
       } else {
         #ifdef SEC_INF_TIMELINES
@@ -71,8 +71,8 @@ int branchsim(sim_vars* sv)
         brsim->layers[0].ii.ninfectionsp=0;
         #endif
 	brsim->layers[1].ii.inftypep=false;
-	brsim->layers[1].ii.q=sv->pars.q;
-	brsim->layers[1].ii.pinf=sv->pars.pinf;
+	brsim->layers[1].ii.q=sim->q;
+	brsim->layers[1].ii.pinf=sim->pinf;
       }
       #endif
       //Generate the communicable period appropriately
@@ -113,11 +113,11 @@ int branchsim(sim_vars* sv)
       GEN_LATENT_CONTACTS;
 #endif
 
-      curlayer->nevents=gsl_ran_poisson(sv->r, sim->lambda*curlayer->ii.comm_period);
-      DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, curlayer->ii.comm_period, curlayer->nevents);
+      curlayer->ii.nevents=gsl_ran_poisson(sv->r, sim->lambda*curlayer->ii.comm_period);
+      DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, curlayer->ii.comm_period, curlayer->ii.nevents);
 
       //If no event for the current individual in the primary layer
-      if(!curlayer->nevents) {
+      if(!curlayer->ii.nevents) {
 #ifdef CT_OUTPUT
 	if(!npevents) sv->new_inf_proc_func_noevent(sv, &curlayer->ii, &brsim->layers[0].ii);
 	else sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
@@ -137,7 +137,7 @@ int branchsim(sim_vars* sv)
       for(;;) {
 	sv->event_time=curlayer->ii.end_comm_period-curlayer->ii.comm_period*gsl_rng_uniform(sv->r);
 	//sv->event_time=curlayer->ii.latent_period+curlayer->ii.comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
-	DEBUG_PRINTF("Event %i/%i at time %f\n",curlayer->cureventi,curlayer->nevents,sv->event_time);
+	DEBUG_PRINTF("Event %i/%i at time %f\n",curlayer->cureventi,curlayer->ii.nevents,sv->event_time);
 
 	//curlayer->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
 	brsim->gen_att_inf_func(sv, &curlayer->ii);
@@ -164,7 +164,7 @@ int branchsim(sim_vars* sv)
 	  DEBUG_PRINTF("New event returned false\n");
 
 	  //If the events have been exhausted, go down another layer
-	  if(curlayer->cureventi == curlayer->nevents-1) {
+	  if(curlayer->cureventi == curlayer->ii.nevents-1) {
 	    sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 	    goto done_parsing;
 	  }
@@ -206,14 +206,14 @@ int branchsim(sim_vars* sv)
 	if(gsl_rng_uniform(sv->r) < ((double)(curlayer-1)->ii.ninfectionsp) / ((curlayer-1)->ii.ninfectionsf + (curlayer-1)->ii.ninfectionsp)) {
 	  --((curlayer-1)->ii.ninfectionsp);
 	  curlayer->ii.inftypep=true;
-	  curlayer->ii.q=sv->pars.qp;
-	  curlayer->ii.pinf=sv->pars.pinf*sv->pars.rpshedp;
+	  curlayer->ii.q=sim->qp;
+	  curlayer->ii.pinf=sim->pinf*sim->rpshedp;
 
 	} else {
 	  --((curlayer-1)->ii.ninfectionsf);
 	  curlayer->ii.inftypep=false;
-	  curlayer->ii.q=sv->pars.q;
-	  curlayer->ii.pinf=sv->pars.pinf;
+	  curlayer->ii.q=sim->q;
+	  curlayer->ii.pinf=sim->pinf;
 	}
         #endif
 	//Generate the communicable period appropriately
@@ -234,11 +234,11 @@ int branchsim(sim_vars* sv)
 #endif
 
 	//Generate the number of events
-	curlayer->nevents=gsl_ran_poisson(sv->r, sim->lambda*curlayer->ii.comm_period);
-	DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, curlayer->ii.comm_period, curlayer->nevents);
+	curlayer->ii.nevents=gsl_ran_poisson(sv->r, sim->lambda*curlayer->ii.comm_period);
+	DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, curlayer->ii.comm_period, curlayer->ii.nevents);
 
 	//If the number of events is non-zero
-	if(curlayer->nevents) {
+	if(curlayer->ii.nevents) {
 	  curlayer->cureventi=0;
 
 #ifdef CT_OUTPUT
@@ -249,7 +249,7 @@ int branchsim(sim_vars* sv)
 	  //Generate the event time
 gen_event:
 	  sv->event_time=curlayer->ii.end_comm_period-curlayer->ii.comm_period*gsl_rng_uniform(sv->r);
-	  DEBUG_PRINTF("Event %i/%i at time %f\n",curlayer->cureventi,curlayer->nevents,sv->event_time);
+	  DEBUG_PRINTF("Event %i/%i at time %f\n",curlayer->cureventi,curlayer->ii.nevents,sv->event_time);
 
 	  //Generate the number of infections and the associated index for
 	  //the current event
@@ -271,7 +271,7 @@ gen_event:
 	  } else {
 
 	    //If the events have not been exhausted
-	    if(curlayer->cureventi < curlayer->nevents-1) {
+	    if(curlayer->cureventi < curlayer->ii.nevents-1) {
 	      //Move to the next event for the individual
 	      ++(curlayer->cureventi);
 	      goto gen_event;
@@ -302,7 +302,7 @@ gen_event:
 	  if(curlayer->curinfectioni == curlayer->ii.ninfections-1) {
 
 	    //If the events have been exhausted, go down another layer
-	    if(curlayer->cureventi == curlayer->nevents-1) {
+	    if(curlayer->cureventi == curlayer->ii.nevents-1) {
 	      sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 	      continue;
 	    }
