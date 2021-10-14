@@ -100,7 +100,7 @@ typedef struct
   uint32_t tnpersa;             //!< *Total number of allocated integer intervals (negative+positive)
   int32_t tlppnnpers;		//!< Timeline post-processing number of negative periods
   uint32_t tlpptnvpers;		//!< Timeline post-processing total number of valid periods
-  uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals.
+  uint32_t lmax;                //!< Maximum number of layers for the simulation. lmax=1 means only primary infectious individuals. Warning: Not applicable for the simulation of a finite population!!
   uint32_t nimax;               //!< Maximum number of infectious individuals for a given integer interval between 0 and nbinsperunit*abs_tmax-1. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmax;         //!< Maximum number of positive test results during an interval of duration npostestmaxnunits for each individual that starts when the test results are received. Extinction is set to false and the simulation does not proceed further if this maximum is exceeded.
   uint32_t npostestmaxnunits;    //!< Interval duration for the maximum number of positive test results
@@ -445,13 +445,13 @@ inline static bool std_stats_path_end(sim_vars* sv)
  **/
 void std_stats_free(std_summary_stats* stats);
 
-inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii) {
-  //We have to use curii here!
-  if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
-    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+inline static void std_stats_pri_init(sim_vars* sv, infindividual* parent, infindividual* child) {
+  //We have to use parent here!
+  if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && parent->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=parent->ninfections;
 #ifdef SEC_INF_TIMELINES
-    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=parent->ninfectionsp;
 #endif
   }
 }
@@ -465,9 +465,9 @@ inline static void std_stats_pri_init(sim_vars* sv, infindividual* ii) {
  * @param sv: Pointer to the simulation variables.
  * @param ii: Infectious individuals.
  **/
-inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
+inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* parent, infindividual* child)
 {
-  const int32_t newshift=ceil(((std_summary_stats*)sv->dataptr)->nbinsperunit*(-ii->end_comm_period+(ii->comm_period+ii->latent_period)));
+  const int32_t newshift=ceil(((std_summary_stats*)sv->dataptr)->nbinsperunit*(-child->end_comm_period+(child->comm_period+child->latent_period)));
 
   if(newshift > ((std_summary_stats*)sv->dataptr)->tlshift) {
     std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
@@ -550,12 +550,12 @@ inline static void std_stats_pri_init_rel(sim_vars* sv, infindividual* ii)
     }
   }
 
-  //We have to use curii here!
-  if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time));
-    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+  //We have to use parent here!
+  if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && parent->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
+    DEBUG_PRINTF("Pri inf at %i\n",(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time));
+    ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=parent->ninfections;
 #ifdef SEC_INF_TIMELINES
-    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+    ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=parent->ninfectionsp;
 #endif
   }
 }
@@ -604,20 +604,26 @@ inline static void std_stats_add_ct_entry(std_summary_stats* stats, const double
  * @param sv: Pointer to the simulation variables.
  */
 #ifdef OBSREFF_OUTPUT
-inline static void std_stats_calc_obs_child_inf_after_time_cut(sim_vars* sv)
+inline static void std_stats_calc_obs_child_inf_after_time_cut(sim_vars* sv, infindividual* ii)
 {
-    if(sv->curii->commpertype&ro_commper_true_positive_test) {
-      infindividual* ii=sv->curii;
+  //This will not work for the finite population algorithm 
+    if(ii->commpertype&ro_commper_true_positive_test) {
       std_summary_stats* stats=(std_summary_stats*)sv->dataptr;
+      uint32_t ci;
 
-      for(ii->curinfectioni=0; ii->curinfectioni<ii->ninfections; ++(ii->curinfectioni)) {
+      for(ci=0; ci<ii->ninfections; ++ci) {
 #ifdef CT_OUTPUT
-	ii->gen_ct_time_periods_func(sv, &stats->iibuf, ii, ii->event_time);
+        //We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+	if(ci < ii->ntracedicts) stats->iibuf.traced=true;
+
+	else stats->iibuf.traced=false;
+
+	ii->gen_ct_time_periods_func(sv, &stats->iibuf, ii, sv->event_time);
 #else
-	sv->gen_time_periods_func(sv, &stats->iibuf, ii, ii->event_time);
+	sv->gen_time_periods_func(sv, &stats->iibuf, ii, sv->event_time);
 #endif
-	((std_stats_inf_data*)sv->curii->dataptr)->nobsinf+=((stats->iibuf.commpertype&ro_commper_int_true_positive_test)==ro_commper_int_true_positive_test);
-	DEBUG_PRINTF("Adding %u to the number of observed infections, for a total of %u\n",((stats->iibuf.commpertype&ro_commper_true_positive_test)!=0),((std_stats_inf_data*)sv->curii->dataptr)->nobsinf);
+	((std_stats_inf_data*)ii->dataptr)->nobsinf+=((stats->iibuf.commpertype&ro_commper_int_true_positive_test)==ro_commper_int_true_positive_test);
+	DEBUG_PRINTF("Adding %u to the number of observed infections, for a total of %u\n",((stats->iibuf.commpertype&ro_commper_true_positive_test)!=0),((std_stats_inf_data*)ii->dataptr)->nobsinf);
       }
     }
 }
@@ -635,26 +641,26 @@ inline static void std_stats_calc_obs_child_inf_after_time_cut(sim_vars* sv)
  * @return true if the event time is before abs_tmax and new infections were
  * generated, and false otherwise.
  **/
-inline static bool std_stats_new_event(sim_vars* sv)
+inline static bool std_stats_new_event(sim_vars* sv, infindividual* ii)
 {
 #ifdef CT_OUTPUT
-  ((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts);
+  ((std_stats_inf_data*)ii->dataptr)->ntracedcts+=ii->ntracednicts+ii->ntracedicts;
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)ii->dataptr)->ntracedcts);
 #endif
 
-  if(sv->curii->ninfections) {
-    ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
-    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
+  if(ii->ninfections) {
+    ((std_stats_inf_data*)ii->dataptr)->ninf+=ii->ninfections;
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)ii->dataptr)->ninf);
 
-    if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
-      ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfections;
+    if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax && ii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
+      ((std_summary_stats*)sv->dataptr)->newinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=ii->ninfections;
 #ifdef SEC_INF_TIMELINES
-      ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time)]+=sv->curii->ninfectionsp;
+      ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[(int)floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time)]+=ii->ninfectionsp;
 #endif
       return true;
     }
 #ifdef OBSREFF_OUTPUT
-    std_stats_calc_obs_child_inf_after_time_cut(sv);
+    std_stats_calc_obs_child_inf_after_time_cut(sv, ii);
 #endif
   }
   return false;
@@ -675,32 +681,32 @@ inline static bool std_stats_new_event(sim_vars* sv)
  * @return true if the event time is before abs_tmax and new infections were
  * generated, and false otherwise.
  **/
-inline static bool std_stats_new_event_nimax(sim_vars* sv)
+inline static bool std_stats_new_event_nimax(sim_vars* sv, infindividual* ii)
 {
 #ifdef CT_OUTPUT
-  ((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts);
+  ((std_stats_inf_data*)ii->dataptr)->ntracedcts+=ii->ntracednicts+ii->ntracedicts;
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)ii->dataptr)->ntracedcts);
 #endif
 
-  if(sv->curii->ninfections) {
-    ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
-    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
+  if(ii->ninfections) {
+    ((std_stats_inf_data*)ii->dataptr)->ninf+=ii->ninfections;
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)ii->dataptr)->ninf);
 
-    if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
-      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
+    if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
+      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time);
 
-      if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+      if(ii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
 
-	if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+sv->curii->ninfections < ((std_summary_stats*)sv->dataptr)->nimax) {
-	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+	if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+ii->ninfections < ((std_summary_stats*)sv->dataptr)->nimax) {
+	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=ii->ninfections;
 #ifdef SEC_INF_TIMELINES
-	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=sv->curii->ninfectionsp;
+	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=ii->ninfectionsp;
 #endif
 
 	} else if(((std_summary_stats*)sv->dataptr)->newinf_timeline[eti] < ((std_summary_stats*)sv->dataptr)->nimax) {
-	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=ii->ninfections;
 #ifdef SEC_INF_TIMELINES
-	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=sv->curii->ninfectionsp;
+	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=ii->ninfectionsp;
 #endif
 	  ((std_summary_stats*)sv->dataptr)->extinction=false;
 
@@ -720,7 +726,7 @@ inline static bool std_stats_new_event_nimax(sim_vars* sv)
 nimax_event_false:
     ;
 #ifdef OBSREFF_OUTPUT
-    std_stats_calc_obs_child_inf_after_time_cut(sv);
+    std_stats_calc_obs_child_inf_after_time_cut(sv, ii);
 #endif
   }
   return false;
@@ -741,26 +747,26 @@ nimax_event_false:
  * @return true if the event time is before abs_tmax and new infections were
  * generated, and false otherwise.
  **/
-inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
+inline static bool std_stats_new_event_npostestmax(sim_vars* sv, infindividual* ii)
 {
 #ifdef CT_OUTPUT
-  ((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts+=sv->curii->ntracednicts+sv->curii->ntracedicts;
-  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)sv->curii->dataptr)->ntracedcts);
+  ((std_stats_inf_data*)ii->dataptr)->ntracedcts+=ii->ntracednicts+ii->ntracedicts;
+  DEBUG_PRINTF("Successfully traced contacts incremented to %u\n",((std_stats_inf_data*)ii->dataptr)->ntracedcts);
 #endif
 
-  if(sv->curii->ninfections) {
-    ((std_stats_inf_data*)sv->curii->dataptr)->ninf+=sv->curii->ninfections;
-    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)sv->curii->dataptr)->ninf);
+  if(ii->ninfections) {
+    ((std_stats_inf_data*)ii->dataptr)->ninf+=ii->ninfections;
+    DEBUG_PRINTF("%s: Number of infections incremented to %u\n",__func__,((std_stats_inf_data*)ii->dataptr)->ninf);
 
-    if(sv->curii->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
-      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->curii->event_time);
+    if(sv->event_time < ((std_summary_stats*)sv->dataptr)->abs_tmax) {
+      const int eti=floor(((std_summary_stats*)sv->dataptr)->nbinsperunit*sv->event_time);
 
-      if(sv->curii <= sv->brsim.iis+((std_summary_stats*)sv->dataptr)->lmax) {
+      if(ii->generation <= ((std_summary_stats*)sv->dataptr)->lmax) {
 
 	if(((std_summary_stats*)sv->dataptr)->postest_timeline[eti] < ((std_summary_stats*)sv->dataptr)->npostestmax) {
-	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=sv->curii->ninfections;
+	  ((std_summary_stats*)sv->dataptr)->newinf_timeline[eti]+=ii->ninfections;
 #ifdef SEC_INF_TIMELINES
-	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=sv->curii->ninfectionsp;
+	  ((std_summary_stats*)sv->dataptr)->newsecinf_timeline[eti]+=ii->ninfectionsp;
 #endif
 
 	} else {
@@ -779,7 +785,7 @@ inline static bool std_stats_new_event_npostestmax(sim_vars* sv)
 npostestmax_event_false:
     ;
 #ifdef OBSREFF_OUTPUT
-    std_stats_calc_obs_child_inf_after_time_cut(sv);
+    std_stats_calc_obs_child_inf_after_time_cut(sv,ii);
 #endif
   }
   return false;

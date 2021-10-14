@@ -15,12 +15,14 @@ int __ro_debug=1;
 
 void sim_pars_init(model_pars* pars)
 {
+  pars->pinfpri=1;
   pars->tbar=NAN;
   pars->p=NAN;
   pars->mu=NAN;
   pars->sigma=NAN;
   pars->rsigma=NAN;
   pars->g_ave=NAN;
+  pars->g_ave_transm=NAN;
   pars->lambda=NAN;
   pars->lambda_uncut=NAN;
   pars->lambdap=NAN;
@@ -63,12 +65,16 @@ void sim_pars_init(model_pars* pars)
   pars->grouptype=ro_group_log_plus_1;
   pars->timetype=ro_time_pri_created;
   pars->pathtype=ro_all_paths;
+  pars->groupinteractions=false;
 }
 
 void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
 {
   sv->pars=*pars;
   sv->r=r;
+
+  if(pars->pinfpri==1) sv->gen_n_pri_inf=gen_n_pri_inf_nstart;
+  else sv->gen_n_pri_inf=gen_n_pri_inf_binom_pinfpri_nstart;
 
   switch(pars->timetype) {
     case ro_time_pri_created:
@@ -98,7 +104,7 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
   sv->dataptr=NULL;
   sv->path_init_proc_func=dummy_proc_func_sv;
   sv->path_end_proc_func=dummy_proc_bool_func_sv;
-  sv->pri_init_proc_func=dummy_proc_func_sv_ii;
+  sv->pri_init_proc_func=dummy_proc_func_sv_ii2;
   sv->ii_alloc_proc_func=default_ii_alloc_proc_func;
   sv->new_event_proc_func=default_event_proc_func;
   sv->new_inf_proc_func=dummy_proc_func_sv_ii2;

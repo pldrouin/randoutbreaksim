@@ -54,6 +54,10 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	}
 	dup2(cp->eout,STDERR_FILENO);
 
+      } else if(!argsdiffer(pbuf, "pinfpri")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.pinfpri);
+
       } else if(!argsdiffer(pbuf, "tbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.tbar);
@@ -83,6 +87,12 @@ int config(config_pars* cp, const int nargs, const char* args[])
 
       } else if(!argsdiffer(pbuf, "group_invitees")) {
 	cp->pars.grouptype=(cp->pars.grouptype&ro_group_dist_mask)|ro_group_invitees;
+
+      } else if(!argsdiffer(pbuf, "group_interactions")) {
+	cp->pars.groupinteractions=true;
+
+      } else if(!argsdiffer(pbuf, "group_transmissions")) {
+	cp->pars.groupinteractions=false;
 
       } else if(!argsdiffer(pbuf, "group_log_plus_1")) {
 	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_log_plus_1;
@@ -364,7 +374,10 @@ void printusage(const char* name)
   printf("Stochastic simulation of outbreaks, using gamma distributions for the different time periods and a Poisson distribution for the number of interaction events where transmission can occur.\n");
   printf("\n\nBASIC REPRODUCTION PARAMETERS:\n\n");
   printf("\tThe basic reproduction number R0 is defined by the expression\n");
-  printf("\t\tR0 = lambda * tbar * (g_ave - 1) * pinf.\n");
+  printf("\t\tR0 = lambda * tbar * (g_ave - 1) * pinf,\n");
+  printf("\tif group_transmissions is used, and\n");
+  printf("\t\tR0 = lambda * tbar * (g_ave - 1 + g_sigma^2/g_ave) * pinf\n");
+  printf("\tif group_interaction is used instead. R0 assumes an infinite population of susceptible individuals with a single infectious individual.\n");
   printf("\n\tA sufficient number of input parameters must be provided to determine, without overdetermining, the above expression.\n");
   printf("\tmu and p parameters are alternate parameters that can be provided instead of g_ave.\n");
   printf("\tmu is the mean of an unbounded logarithmic distribution with parameter p (mu = -p / ((1 - p) * log(1 - p))).\n");
@@ -396,13 +409,15 @@ void printusage(const char* name)
   printf("\t--t95 VALUE\t\t\t95th percentile of the main communicable period.\n");
   printf("\t--lambda VALUE\t\t\tRate of events for a given individual. Events are defined to include at least two invitees.\n");
   printf("\t--lambda_uncut VALUE\t\tRate of events for a given individual, including events of one invitee.\n");
-  //printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
+  printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
   printf("\t--group_attendees\t\tThe group distributions are applicable to the number of attendees (default).\n");
   printf("\t--group_invitees\t\tThe group distributions are applicable to the number of invitees.\n");
+  printf("\t--group_interactions\t\tThe group distribution is applicable to any interactions (no infectious individual required). This option is required for a finite population.\n");
+  printf("\t--group_transmissions\t\tThe group distribution is applicable to interactions involving one infectious individual (default).\n");
   printf("\t--group_log_plus_1\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
   printf("\t--group_log\t\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
   printf("\t--group_gauss\t\t\tNumber of invitees/attendees in an event to be distributed as a Gaussian-distributed variable truncated below 2.\n");
-  printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees (g_ave>=2).\n");
+  printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. The average group size for transmission events will be higher if group_interactions is used. Events are defined to include at least two invitees (g_ave>=2).\n");
   printf("\t--p VALUE\t\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).\n");
   printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution (mu >= 1) or of an unbounded Gaussian distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--sigma VALUE\t\t\tParameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
@@ -414,7 +429,7 @@ void printusage(const char* name)
   printf("\t--rpshedp VALUE\t\t\tRelative strength of infectiousness from an infectious individual of the second category vs the fist category (value relative to pinf, 0 < rpshedp * pinf <=1, default value of 1).\n");
   printf("\t--qp VALUE\t\t\tProbability of alternate communicable period for an infectious individual in the second category.\n");
 #endif
-  //printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
+  printf("\t--popsize VALUE\t\t\tPopulation size (default value of 0, for an infinite population).\n");
   printf("\t--R0 VALUE\t\t\tBasic reproduction number.\n");
   printf("\t--lbar VALUE\t\t\tMean latent period (default value of 0).\n");
   printf("\t--kappal VALUE\t\t\tkappa parameter for the gamma distribution used to generate the latent period.\n");
@@ -452,7 +467,8 @@ void printusage(const char* name)
   printf("\t--observable_paths_only\t\tIndicate that only observable paths should be included in the simulation results.\n");
   printf("\t--non-observable_paths_only\tIndicate that only non-observable paths should be included in the simulation results.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation time used to instantiate new infectious individuals (default value of INFINITY).\n");
-  printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
+  printf("\t--nstart VALUE\t\t\tInitial number of individuals (default value of 1).\n");
+  printf("\t--pinfpri VALUE\t\t\tProbability that an initial individual be infectious (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nbinsperunit VALUE\t\tNumber of timeline bins per unit of time.\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");
@@ -488,7 +504,7 @@ void printusage(const char* name)
   printf("\t\t-Unsigned 32 bit value: The number of written successive time bins.\n");
   printf("\t\t-Unsigned 32 bit value: Field is written only if the time mode is not the primary individual creation time. Value is the number of time bins before t=0.\n");
   printf("\t\t-Signed 32 bit value: Period (defined as floor(t)) where the path maxes out an nimax or npostestmax limit, if any. Otherwise, a value of INT32_MAX.\n");
-  printf("\t\t-Signed 32 bit value: Period (defined as floor(t)) where the path goes extinct, if it does. Otherwise, a value of -INT32_MAX.\n");
+  printf("\t\t-Signed 32 bit value: Period (defined as floor(t)) where the path goes extinct, if it does. Otherwise, a value of INT32_MAX. For paths without any initial infection, it is set to -INT32_MAX\n");
   printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of active infections.\n");
   printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written: Number of new infections.\n");
   printf("\t\t-Unsigned 32 bit value, for each time bin, chronologically written (written only if indicated in the file header): Number of new positive test results.\n");

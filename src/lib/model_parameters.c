@@ -8,15 +8,40 @@
 
 int model_solve_pars(model_pars* pars)
 {
+  if(pars->popsize==0) {
+    printf("Model type:\nBranching process\n");
 
-  if(model_solve_R0_group(pars)) {
-    fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
-    return -2;
+    if(model_solve_R0_group(pars)) {
+      fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
+      return -2;
+    }
+
+  } else if(isnan(pars->lambdap)) {
+    printf("Model type:\nFinite population\nPopulation:\t%" PRIu32 "\n",pars->popsize);
+
+    if(model_solve_R0_group(pars)) {
+      fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
+      return -3;
+    }
+    pars->lambdap=pars->lambda*pars->popsize/pars->g_ave;
+
+  } else if(!isnan(pars->g_ave)) {
+    pars->lambda=pars->g_ave*pars->lambdap/pars->popsize;
+
+    if(model_solve_R0_group(pars)) {
+      fprintf(stderr,"%s: Error: Cannot solve parameters for the basic reproduction number\n",__func__);
+      return -4;
+    }
+
+  } else {
+    fprintf(stderr,"%s: Error: Solving parameters with lambdap known and g_ave unknown is currently not supported\n",__func__);
+    return -5;
   }
   
   printf("\nBasic reproduction parameters are:\n");
   printf("lambda:\t\t%22.15e\n",pars->lambda);
   printf("lambda_uncut:\t%22.15e\n",pars->lambda_uncut);
+  if(pars->popsize>0) printf("lambdap:\t%22.15e\n",pars->lambdap);
   printf("tbar:\t\t%22.15e\n",pars->tbar);
   printf("g_ave:\t\t%22.15e\n",pars->g_ave);
   //printf("mu:\t\t%22.15e\n",pars->mu);
@@ -282,7 +307,7 @@ int model_solve_R0_group(model_pars* pars)
     if(isnan(pars->lambda)) {
 
       if(isnan(pars->lambda_uncut)) {
-	pars->lambda=pars->R0/(pars->tbar*(pars->g_ave-1)*pars->pinf);
+	pars->lambda=pars->R0/(pars->tbar*(pars->g_ave_transm-1)*pars->pinf);
 
 	if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
 
@@ -309,17 +334,22 @@ int model_solve_R0_group(model_pars* pars)
 
 
     if(isnan(pars->R0))
-      pars->R0=pars->lambda*pars->tbar*(pars->g_ave-1)*pars->pinf;
+      pars->R0=pars->lambda*pars->tbar*(pars->g_ave_transm-1)*pars->pinf;
 
     else if(isnan(pars->tbar))
-      pars->tbar=pars->R0/(pars->lambda*(pars->g_ave-1)*pars->pinf);
+      pars->tbar=pars->R0/(pars->lambda*(pars->g_ave_transm-1)*pars->pinf);
 
     else if(isnan(pars->pinf))
-    pars->pinf=pars->R0/(pars->lambda*pars->tbar*(pars->g_ave-1));
+    pars->pinf=pars->R0/(pars->lambda*pars->tbar*(pars->g_ave_transm-1));
 
   //Else if g_ave, p and mu are unknown
   } else {
-    pars->g_ave=pars->R0/(pars->lambda*pars->tbar*pars->pinf)+1;
+
+    if(pars->groupinteractions) {
+      pars->g_ave_transm=pars->R0/(pars->lambda*pars->tbar*pars->pinf)+1;
+      pars->g_ave=NAN;
+
+    } else pars->g_ave_transm=pars->g_ave=pars->R0/(pars->lambda*pars->tbar*pars->pinf)+1;
 
     if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_group(pars);
 
@@ -346,6 +376,11 @@ int model_solve_log_plus_1_group(model_pars* pars)
   //If g_ave is provided
   if(!isnan(pars->g_ave)) {
 
+    if(pars->popsize!=0) {
+      fprintf(stderr,"%s: Error: Solving for p while providing g_ave an in input with a finite population is not currently supported\n",__func__);
+      return -1;
+    }
+
     if(!(pars->g_ave>=2)) {
       fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
       return -1;
@@ -357,7 +392,11 @@ int model_solve_log_plus_1_group(model_pars* pars)
 
     if(ret) return ret;
 
+    if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-(1+log(1-pars->p)/pars->p)*pow(pars->g_ave-1,2)/pars->g_ave;
+
   } else {
+    const double l1mp=log(1-pars->p);
+
     //Else if p is provided
     if(!isnan(pars->p)) {
 
@@ -365,7 +404,7 @@ int model_solve_log_plus_1_group(model_pars* pars)
 	fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
 	return -1;
       }
-      pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
+      pars->mu=(pars->p>0?-pars->p/((1-pars->p)*l1mp):1);
 
       //Else if it is mu that is provided
     } else {
@@ -380,10 +419,48 @@ int model_solve_log_plus_1_group(model_pars* pars)
       if(ret) return ret;
     }
 
-    pars->g_ave=pars->mu+1;
+
+    if(pars->p == 0) {
+      pars->g_ave_transm=pars->g_ave=2;
+
+    } else {
+
+      if(pars->popsize==0) {
+        pars->g_ave=pars->mu+1;
+
+	if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-(1+l1mp/pars->p)*pars->mu*pars->mu/pars->g_ave;
+
+	else pars->g_ave_transm=pars->g_ave;
+
+      } else {
+	double probsum=0;
+	double prob;
+	int k;
+	int km1;
+	double mean=0;
+	double var=0;
+
+	for(k=pars->popsize; k>1; --k) {
+	  km1=k-1;
+	  prob=pow(pars->p,km1)/km1;
+	  probsum+=prob;
+	  mean+=k*prob;
+	  var+=k*k*prob;
+	}
+	mean/=probsum;
+	var/=probsum;
+	var-=mean*mean;
+	pars->g_ave=mean;
+
+	if(pars->groupinteractions) pars->g_ave_transm=mean+var/mean;
+
+	else pars->g_ave_transm=pars->g_ave;
+      }
+    }
   }
   printf("\nParameters for the log+1 group distribution:\n");
   printf("g_ave:\t%22.15e\n",pars->g_ave);
+  printf("g_ave_transm:\t%22.15e\n",pars->g_ave_transm);
   printf("p:\t%22.15e\n",pars->p);
   printf("mu:\t%22.15e\n",pars->mu);
   return 0;
@@ -396,6 +473,11 @@ int model_solve_log_group(model_pars* pars)
   //If g_ave is provided
   if(!isnan(pars->g_ave)) {
 
+    if(pars->popsize!=0) {
+      fprintf(stderr,"%s: Error: Solving for p while providing g_ave an in input with a finite population is not currently supported\n",__func__);
+      return -1;
+    }
+
     if(!(pars->g_ave>=2)) {
       fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
       return -1;
@@ -405,9 +487,13 @@ int model_solve_log_group(model_pars* pars)
     ret=model_solve_log_p_from_mean(pars->g_ave,pars);
 
     if(ret) return ret;
-    pars->mu=-pars->p/((1-pars->p)*log(1-pars->p));
+    const double l1mp=log(1-pars->p);
+    pars->mu=-pars->p/((1-pars->p)*l1mp);
+
+    if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-((pars->p-2)*l1mp-2*pars->p)/((1-pars->p)*(pars->p+l1mp));;
 
   } else {
+    const double l1mp=log(1-pars->p);
 
     //Else if p is provided
     if(!isnan(pars->p)) {
@@ -416,7 +502,7 @@ int model_solve_log_group(model_pars* pars)
 	fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
 	return -1;
       }
-      pars->mu=(pars->p>0?-pars->p/((1-pars->p)*log(1-pars->p)):1);
+      pars->mu=(pars->p>0?-pars->p/((1-pars->p)*l1mp):1);
 
       //Else if it is mu that is provided
     } else {
@@ -431,12 +517,45 @@ int model_solve_log_group(model_pars* pars)
       if(ret) return ret;
     }
 
-    if(pars->p == 0) pars->g_ave=2;
+    if(pars->p == 0) {
+      pars->g_ave_transm=pars->g_ave=2;
 
-    else pars->g_ave=-pars->p*pars->p/((1-pars->p)*(log(1-pars->p)+pars->p));
+    } else {
+
+      if(pars->popsize==0) {
+	pars->g_ave=-pars->p*pars->p/((1-pars->p)*(l1mp+pars->p));
+
+	if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-((pars->p-2)*l1mp-2*pars->p)/((1-pars->p)*(pars->p+l1mp));
+
+	else pars->g_ave_transm=pars->g_ave;
+	
+      } else {
+	double probsum=0;
+	double prob;
+	int k;
+	double mean=0;
+	double var=0;
+
+	for(k=pars->popsize; k>1; --k) {
+	  prob=pow(pars->p,k)/k;
+	  probsum+=prob;
+	  mean+=k*prob;
+	  var+=k*k*prob;
+	}
+	mean/=probsum;
+	var/=probsum;
+	var-=mean*mean;
+	pars->g_ave=mean;
+
+	if(pars->groupinteractions) pars->g_ave_transm=mean+var/mean;
+
+	else pars->g_ave_transm=pars->g_ave;
+      }
+    }
   }
   printf("\nParameters for the log group distribution:\n");
   printf("g_ave:\t%22.15e\n",pars->g_ave);
+  printf("g_ave_transm:\t%22.15e\n",pars->g_ave_transm);
   printf("p:\t%22.15e\n",pars->p);
   printf("mu:\t%22.15e\n",pars->mu);
   return 0;
@@ -444,6 +563,16 @@ int model_solve_log_group(model_pars* pars)
 
 int model_solve_gauss_group(model_pars* pars)
 {
+
+  if(pars->popsize!=0) {
+    fprintf(stderr,"%s: Error: Finite population currently not supported for the Gaussian distribution!\n",__func__);
+    return -1;
+  }
+
+  if(pars->groupinteractions) {
+      fprintf(stderr,"%s: Error: group_interactions currently not supported for the Gaussian distribution!\n",__func__);
+      return -1;
+  }
 
   //If g_ave is provided
   if(!isnan(pars->g_ave)) {
@@ -694,6 +823,11 @@ int model_pars_check(model_pars const* pars)
   }
 #endif
 
+  if(pars->pinfpri>1 || pars->pinfpri<=0) {
+    fprintf(stderr,"%s: Error: pinfpri's value must be in the interval ]0,1]\n",__func__);
+    ret-=1;
+  }
+
   if(pars->lambdap<=0) {
     fprintf(stderr,"%s: Error: If defined, lambdap must be greater than 0\n",__func__);
     ret-=1;
@@ -701,6 +835,24 @@ int model_pars_check(model_pars const* pars)
   } else if(pars->lambdap>0 && pars->popsize==0) {
     fprintf(stderr,"%s: Error: lambdap cannot be used with an infinite population\n",__func__);
     ret-=2;
+  }
+
+  if(pars->popsize>0) {
+
+    if(pars->nstart > pars->popsize) {
+      fprintf(stderr,"%s: Error: With a finite population, nstart cannot be larger than popsize\n",__func__);
+      ret-=2;
+    }
+
+    if(isnan(pars->lambdap) || isnan(pars->lambda)) {
+      fprintf(stderr,"%s: Error: With a finite population, lambdap and lambda parameters cannot be both provided\n",__func__);
+      ret-=4;
+    }
+
+    if(pars->nstart>pars->popsize) {
+      fprintf(stderr,"%s: Error: With a finite population the number of initial infections cannot exceed the size of the population\n",__func__);
+      ret-=8;
+    }
   }
 
   if(pars->pit<0 || pars->pit>1) {
@@ -821,10 +973,31 @@ int model_pars_check(model_pars const* pars)
     ret-=32768;
   }
 
-  if(pars->popsize==0 && (pars->grouptype&ro_group_invitees)) {
-    fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated based on a number of invitees\n",__func__);
-    ret-=65536;
+  if(pars->popsize==0) {
+
+    if(pars->grouptype&ro_group_invitees) {
+      fprintf(stderr,"%s: Error: If modeling an infinite population, the groups of individuals cannot be generated based on a number of invitees\n",__func__);
+      ret-=65536;
+    }
+
+    if(pars->groupinteractions) {
+      fprintf(stderr,"%s: Error: If modeling a finite population, group_interactions is not supported\n",__func__);
+      ret-=262144;
+    }
   }
+
+  if(pars->popsize>0) {
+   
+    if(!(pars->grouptype&ro_group_invitees)) {
+      fprintf(stderr,"%s: Error: If modeling a finite population, only groups of individuals based on a number of invitees are currently supported\n",__func__);
+      ret-=131072;
+    }
+   
+    if(!pars->groupinteractions) {
+      fprintf(stderr,"%s: Error: If modeling a finite population, group_transmissions is not supported\n",__func__);
+      ret-=262144;
+    }
+}
 
   return ret;
 }

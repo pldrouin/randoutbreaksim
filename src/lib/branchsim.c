@@ -10,14 +10,17 @@
 
 void branchsim_init(sim_vars* sv)
 {
-  sv->brsim.iis=(infindividual*)malloc(INIT_N_LAYERS*sizeof(infindividual));
-  sv->brsim.iis[0].commpertype=0;
-  sv->brsim.iis[0].nevents=1;
-  sv->brsim.iis[0].cureventi=0;
-  sv->brsim.iis[0].nattendees=1;
-  sv->brsim.iis[0].ninfections=1;
+  sv->brsim.layers=(inflayer*)malloc(INIT_N_LAYERS*sizeof(inflayer));
+  sv->brsim.layers[0].ii.commpertype=0;
+  sv->brsim.layers[0].ii.nevents=1;
+  sv->brsim.layers[0].cureventi=0;
+  sv->brsim.layers[0].ii.nattendees=1;
+  sv->brsim.layers[0].ii.ninfections=1;
 
-  for(uint32_t i=0; i<INIT_N_LAYERS; ++i) sv->ii_alloc_proc_func(sv->brsim.iis+i);
+  for(uint32_t i=0; i<INIT_N_LAYERS; ++i) {
+    sv->brsim.layers[i].ii.generation=i;
+    sv->ii_alloc_proc_func(&sv->brsim.layers[i].ii);
+  }
   sv->brsim.nlayers=INIT_N_LAYERS;
   ran_log_init(&sv->rl, (rng_stream*)sv->r->state, sv->pars.p);
 
@@ -38,48 +41,51 @@ int branchsim(sim_vars* sv)
   double ct_latent_overlap;
 #endif
   model_pars const* sim=&(sv->pars);
+  brsim_vars* brsim=&sv->brsim;
+  inflayer* curlayer;
+  int32_t nstart;
 
 #ifdef DUAL_PINF
-  const double pinfpinf=sv->pars.ppip*sv->pars.rpinfp/(1+sv->pars.ppip*(sv->pars.rpinfp-1));
+  const double pinfpinf=sim->ppip*sim->rpinfp/(1+sim->ppip*(sim->rpinfp-1));
 #endif
 
   do {
+    nstart=sv->gen_n_pri_inf(sv);
     sv->path_init_proc_func(sv);
-    sv->brsim.iis[0].event_time=sv->brsim.iis[1].event_time=0;
+    sv->event_time=0;
 
-    for(i=sim->nstart-1; i>=0; --i) {
+    for(i=nstart-1; i>=0; --i) {
       DEBUG_PRINTF("initial individual %i\n",i);
 
       #ifdef DUAL_PINF
       if(gsl_rng_uniform(sv->r) < pinfpinf) {
         #ifdef SEC_INF_TIMELINES
-        sv->brsim.iis[0].ninfectionsf=0;
-        sv->brsim.iis[0].ninfectionsp=1;
+        brsim->layers[0].ii.ninfectionsf=0;
+        brsim->layers[0].ii.ninfectionsp=1;
         #endif
-	sv->brsim.iis[1].inftypep=true;
-	sv->brsim.iis[1].q=sv->pars.qp;
-	sv->brsim.iis[1].pinf=sv->pars.pinf*sv->pars.rpshedp;
+	brsim->layers[1].ii.inftypep=true;
+	brsim->layers[1].ii.q=sim->qp;
+	brsim->layers[1].ii.pinf=sim->pinf*sim->rpshedp;
 
       } else {
         #ifdef SEC_INF_TIMELINES
-        sv->brsim.iis[0].ninfectionsf=1;
-        sv->brsim.iis[0].ninfectionsp=0;
+        brsim->layers[0].ii.ninfectionsf=1;
+        brsim->layers[0].ii.ninfectionsp=0;
         #endif
-	sv->brsim.iis[1].inftypep=false;
-	sv->brsim.iis[1].q=sv->pars.q;
-	sv->brsim.iis[1].pinf=sv->pars.pinf;
+	brsim->layers[1].ii.inftypep=false;
+	brsim->layers[1].ii.q=sim->q;
+	brsim->layers[1].ii.pinf=sim->pinf;
       }
       #endif
       //Generate the communicable period appropriately
-      sv->gen_pri_time_periods_func(sv, sv->brsim.iis+1, sv->brsim.iis, 0);
+      sv->gen_pri_time_periods_func(sv, &brsim->layers[1].ii, &brsim->layers[0].ii, 0);
 
-      sv->gen_time_origin_func(sv);
-      DEBUG_PRINTF("Latent period is %f, comm period is %f, type is %u, end comm is %f\n",sv->brsim.iis[1].latent_period,sv->brsim.iis[1].comm_period,sv->brsim.iis[1].commpertype,sv->brsim.iis[1].end_comm_period);
+      sv->gen_time_origin_func(sv, &brsim->layers[1].ii);
+      DEBUG_PRINTF("Latent period is %f, comm period is %f, type is %u, end comm is %f\n",brsim->layers[1].ii.latent_period,brsim->layers[1].ii.comm_period,brsim->layers[1].ii.commpertype,brsim->layers[1].ii.end_comm_period);
 
-      sv->curii=sv->brsim.iis;
-      sv->pri_init_proc_func(sv, sv->brsim.iis+1);
-      sv->curii=sv->brsim.iis+1;
-      DEBUG_PRINTF("Move to primary layer (%li)\n",sv->curii-sv->brsim.iis);
+      sv->pri_init_proc_func(sv, &brsim->layers[0].ii, &brsim->layers[1].ii);
+      curlayer=brsim->layers+1;
+      DEBUG_PRINTF("Move to primary layer (%" PRIu32 ")\n",curlayer->ii.generation);
 
 #ifdef CT_OUTPUT
 #define GEN_LATENT_CONTACTS \
@@ -87,220 +93,231 @@ int branchsim(sim_vars* sv)
       \
       /*If the CT window starts before the communicable period, generate */ \
       /*pseudo-events and calculate the number of traced contacts */ \
-      if(sv->curii->comm_period<sim->ctwindow) { \
-	ct_latent_overlap=sim->ctwindow-sv->curii->comm_period; \
+      if(curlayer->ii.comm_period<sim->ctwindow) { \
+	ct_latent_overlap=sim->ctwindow-curlayer->ii.comm_period; \
 	npevents=gsl_ran_poisson(sv->r, sim->lambda*ct_latent_overlap); \
 	DEBUG_PRINTF("Number of pre-events is %u during %f\n",npevents,ct_latent_overlap); \
 	\
 	if(npevents) { \
-	  sv->new_inf_proc_func(sv, sv->curii, sv->curii-1); \
-	  sv->curii->ninfections=0; \
-	  end_latent_per=sv->curii->end_comm_period-sv->curii->comm_period; \
+	  sv->new_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii); \
+	  curlayer->ii.ninfections=0; \
+	  end_latent_per=curlayer->ii.end_comm_period-curlayer->ii.comm_period; \
 	  \
 	  for(e=npevents-1; e>=0; --e) { \
-	    sv->curii->event_time=end_latent_per-ct_latent_overlap*gsl_rng_uniform(sv->r); \
-	    sv->curii->nattendees=sv->gen_att_func(sv); \
-	    sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1); \
-	    DEBUG_PRINTF("%u attendees, %u successfully traced contacts were generated\n",sv->curii->nattendees,sv->curii->ntracednicts); \
-	    sv->new_event_proc_func(sv); \
+	    sv->event_time=end_latent_per-ct_latent_overlap*gsl_rng_uniform(sv->r); \
+	    curlayer->ii.nattendees=sv->gen_att_func(sv); \
+	    curlayer->ii.ntracednicts=gsl_ran_binomial(sv->r, sim->pt, curlayer->ii.nattendees-1); \
+	    DEBUG_PRINTF("%u attendees, %u successfully traced contacts were generated\n",curlayer->ii.nattendees,curlayer->ii.ntracednicts); \
+	    sv->new_event_proc_func(sv, &curlayer->ii); \
 	  } \
 	} \
       }
       GEN_LATENT_CONTACTS;
 #endif
 
-      sv->curii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->curii->comm_period);
-      DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->curii->comm_period, sv->curii->nevents);
+      curlayer->ii.nevents=gsl_ran_poisson(sv->r, sim->lambda*curlayer->ii.comm_period);
+      DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, curlayer->ii.comm_period, curlayer->ii.nevents);
 
       //If no event for the current individual in the primary layer
-      if(!sv->curii->nevents) {
+      if(!curlayer->ii.nevents) {
 #ifdef CT_OUTPUT
-	if(!npevents) sv->new_inf_proc_func_noevent(sv, sv->curii, sv->brsim.iis);
-	else sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
+	if(!npevents) sv->new_inf_proc_func_noevent(sv, &curlayer->ii, &brsim->layers[0].ii);
+	else sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 #else
-	sv->new_inf_proc_func_noevent(sv, sv->curii, sv->brsim.iis);
+	sv->new_inf_proc_func_noevent(sv, &curlayer->ii, &brsim->layers[0].ii);
 #endif
 	continue;
       }
 
 #ifdef CT_OUTPUT
-      if(!npevents) sv->new_inf_proc_func(sv, sv->curii, sv->brsim.iis);
+      if(!npevents) sv->new_inf_proc_func(sv, &curlayer->ii, &brsim->layers[0].ii);
 #else
-      sv->new_inf_proc_func(sv, sv->curii, sv->brsim.iis);
+      sv->new_inf_proc_func(sv, &curlayer->ii, &brsim->layers[0].ii);
 #endif
-      sv->curii->cureventi=0;
+      curlayer->cureventi=0;
 
       for(;;) {
-	sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
-	//sv->curii->event_time=sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
-	DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->curii->event_time);
+	sv->event_time=curlayer->ii.end_comm_period-curlayer->ii.comm_period*gsl_rng_uniform(sv->r);
+	//sv->event_time=curlayer->ii.latent_period+curlayer->ii.comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
+	DEBUG_PRINTF("Event %i/%i at time %f\n",curlayer->cureventi,curlayer->ii.nevents,sv->event_time);
 
-	//sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
-	sv->gen_att_inf_func(sv);
+	//curlayer->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
+	brsim->gen_att_inf_func(sv, &curlayer->ii);
 #ifdef CT_OUTPUT
 #define GEN_CONTACTS_AND_TRACE \
-	if((sv->curii->commpertype&ro_commper_true_positive_test) && sv->curii->event_time>=sv->curii->end_comm_period-sim->ctwindow) { \
-	  sv->curii->ntracednicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->nattendees-1-sv->curii->ninfections); \
+	if((curlayer->ii.commpertype&ro_commper_true_positive_test) && sv->event_time>=curlayer->ii.end_comm_period-sim->ctwindow) { \
+	  curlayer->ii.ntracednicts=gsl_ran_binomial(sv->r, sim->pt, curlayer->ii.nattendees-1-curlayer->ii.ninfections); \
 	  \
-	  if(sv->curii->ninfections) sv->curii->ntracedicts=gsl_ran_binomial(sv->r, sim->pt, sv->curii->ninfections); \
-	  else sv->curii->ntracedicts=0; \
-	  sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func; \
+	  if(curlayer->ii.ninfections) curlayer->ii.ntracedicts=gsl_ran_binomial(sv->r, sim->pt, curlayer->ii.ninfections); \
+	  else curlayer->ii.ntracedicts=0; \
+	  curlayer->ii.gen_ct_time_periods_func=sv->gen_time_periods_func; \
 	  \
 	} else { \
-	  sv->curii->ntracednicts=sv->curii->ntracedicts=0; \
-	  sv->curii->gen_ct_time_periods_func=sv->gen_time_periods_func_no_int; \
+	  curlayer->ii.ntracednicts=curlayer->ii.ntracedicts=0; \
+	  curlayer->ii.gen_ct_time_periods_func=sv->gen_time_periods_func_no_int; \
 	}
 	GEN_CONTACTS_AND_TRACE;
-	DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
+	DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",curlayer->ii.nattendees,curlayer->ii.ninfections,curlayer->ii.ntracednicts,curlayer->ii.ntracedicts,sv->event_time-(curlayer->ii.end_comm_period-sim->ctwindow));
 #else
-	DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
+	DEBUG_PRINTF("%u attendees and %u infections were generated\n",curlayer->ii.nattendees,curlayer->ii.ninfections);
 #endif
 
-	if(!sv->new_event_proc_func(sv)) {
+	if(!sv->new_event_proc_func(sv, &curlayer->ii)) {
 	  DEBUG_PRINTF("New event returned false\n");
 
 	  //If the events have been exhausted, go down another layer
-	  if(sv->curii->cureventi == sv->curii->nevents-1) {
-	    sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
+	  if(curlayer->cureventi == curlayer->ii.nevents-1) {
+	    sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 	    goto done_parsing;
 	  }
 
 	  //Else
 	  //Move to the next event for the individual
-	  ++(sv->curii->cureventi);
+	  ++(curlayer->cureventi);
 
 	} else break;
       }
-      sv->curii->curinfectioni=0;
-      DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfectioni,sv->curii->ninfections);
+      curlayer->curinfectioni=0;
+      DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ii.ninfections);
 
       //Create a new infected individual
       for(;;) {
-	++(sv->curii);
-	DEBUG_PRINTF("Move to next layer (%li)\n",sv->curii-sv->brsim.iis);
+	curlayer->last_event_time=sv->event_time;
+	//printf("Last event recorded time set to %f\n",sv->event_time);
+	++(curlayer);
+	DEBUG_PRINTF("Move to next layer (%" PRIu32 ")\n",curlayer->ii.generation);
 
 	//If reaching the end of the allocated array, increase its size
-	if(sv->curii==sv->brsim.iis+sv->brsim.nlayers) {
-	  sv->brsim.nlayers*=II_ARRAY_GROW_FACT;
-	  DEBUG_PRINTF("Growing layers to %i\n",sv->brsim.nlayers);
-	  uint32_t layer=sv->curii-sv->brsim.iis;
-	  sv->brsim.iis=(infindividual*)realloc(sv->brsim.iis,sv->brsim.nlayers*sizeof(infindividual));
+	if(curlayer->ii.generation==brsim->nlayers-1) {
+	  brsim->nlayers*=II_ARRAY_GROW_FACT;
+	  DEBUG_PRINTF("Growing layers to %i\n",brsim->nlayers);
+	  uint32_t layer=curlayer->ii.generation;
+	  brsim->layers=(inflayer*)realloc(brsim->layers,brsim->nlayers*sizeof(inflayer));
 
-	  for(uint32_t i=sv->brsim.nlayers-1; i>=layer; --i) sv->ii_alloc_proc_func(sv->brsim.iis+i);
-	  sv->curii=sv->brsim.iis+layer;
+	  for(uint32_t i=brsim->nlayers-1; i>=layer; --i) {
+	    brsim->layers[i].ii.generation=i;
+	    sv->ii_alloc_proc_func(&brsim->layers[i].ii);
+	  }
+	  curlayer=brsim->layers+layer;
 	}
 
       #ifdef DUAL_PINF
 	//The number of infections is known, so the infection category must be
 	//randomly assigned based on the counts of remaining individuals for
 	//each category.
-	if(gsl_rng_uniform(sv->r) < ((double)(sv->curii-1)->ninfectionsp) / ((sv->curii-1)->ninfectionsf + (sv->curii-1)->ninfectionsp)) {
-	  --((sv->curii-1)->ninfectionsp);
-	  sv->curii->inftypep=true;
-	  sv->curii->q=sv->pars.qp;
-	  sv->curii->pinf=sv->pars.pinf*sv->pars.rpshedp;
+	if(gsl_rng_uniform(sv->r) < ((double)(curlayer-1)->ii.ninfectionsp) / ((curlayer-1)->ii.ninfectionsf + (curlayer-1)->ii.ninfectionsp)) {
+	  --((curlayer-1)->ii.ninfectionsp);
+	  curlayer->ii.inftypep=true;
+	  curlayer->ii.q=sim->qp;
+	  curlayer->ii.pinf=sim->pinf*sim->rpshedp;
 
 	} else {
-	  --((sv->curii-1)->ninfectionsf);
-	  sv->curii->inftypep=false;
-	  sv->curii->q=sv->pars.q;
-	  sv->curii->pinf=sv->pars.pinf;
+	  --((curlayer-1)->ii.ninfectionsf);
+	  curlayer->ii.inftypep=false;
+	  curlayer->ii.q=sim->q;
+	  curlayer->ii.pinf=sim->pinf;
 	}
         #endif
 	//Generate the communicable period appropriately
 #ifdef CT_OUTPUT
-	(sv->curii-1)->gen_ct_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
+        //We don't need to draw a random number to find which infection indices can be traced since all infections are drawn independently. It is thus possible to compare the infection index to the number of successfully traced infection contacts
+	if((curlayer-1)->curinfectioni < (curlayer-1)->ii.ntracedicts) curlayer->ii.traced=true;
+
+	else curlayer->ii.traced=false;
+
+	(curlayer-1)->ii.gen_ct_time_periods_func(sv, &curlayer->ii, &(curlayer-1)->ii, sv->event_time);
 #else
-	sv->gen_time_periods_func(sv, sv->curii, sv->curii-1, (sv->curii-1)->event_time);
+	sv->gen_time_periods_func(sv, &curlayer->ii, &(curlayer-1)->ii, sv->event_time);
 #endif
-	DEBUG_PRINTF("Event time: %f, latent period is %f, comm period is %f, type is %u, end comm is %f\n",(sv->curii-1)->event_time,sv->curii->latent_period,sv->curii->comm_period,sv->curii->commpertype,sv->curii->end_comm_period);
+	DEBUG_PRINTF("Event time: %f, latent period is %f, comm period is %f, type is %u, end comm is %f\n",sv->event_time,curlayer->ii.latent_period,curlayer->ii.comm_period,curlayer->ii.commpertype,curlayer->ii.end_comm_period);
 
 #ifdef CT_OUTPUT
 	GEN_LATENT_CONTACTS;
 #endif
 
 	//Generate the number of events
-	sv->curii->nevents=gsl_ran_poisson(sv->r, sim->lambda*sv->curii->comm_period);
-	DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, sv->curii->comm_period, sv->curii->nevents);
+	curlayer->ii.nevents=gsl_ran_poisson(sv->r, sim->lambda*curlayer->ii.comm_period);
+	DEBUG_PRINTF("Nevents (%f*%f) is %i\n", sim->lambda, curlayer->ii.comm_period, curlayer->ii.nevents);
 
 	//If the number of events is non-zero
-	if(sv->curii->nevents) {
-	  sv->curii->cureventi=0;
+	if(curlayer->ii.nevents) {
+	  curlayer->cureventi=0;
 
 #ifdef CT_OUTPUT
-	  if(!npevents) sv->new_inf_proc_func(sv, sv->curii, sv->curii-1);
+	  if(!npevents) sv->new_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 #else
-	  sv->new_inf_proc_func(sv, sv->curii, sv->curii-1);
+	  sv->new_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 #endif
 	  //Generate the event time
 gen_event:
-	  sv->curii->event_time=sv->curii->end_comm_period-sv->curii->comm_period*gsl_rng_uniform(sv->r);
-	  //sv->curii->event_time=(sv->curii-1)->event_time+sv->curii->latent_period+sv->curii->comm_period*rng_rand_pu01d((rng_stream*)sv->r->state);
-	  DEBUG_PRINTF("Event %i/%i at time %f\n",sv->curii->cureventi,sv->curii->nevents,sv->curii->event_time);
+	  sv->event_time=curlayer->ii.end_comm_period-curlayer->ii.comm_period*gsl_rng_uniform(sv->r);
+	  DEBUG_PRINTF("Event %i/%i at time %f\n",curlayer->cureventi,curlayer->ii.nevents,sv->event_time);
 
 	  //Generate the number of infections and the associated index for
 	  //the current event
 	  //Move to the next layer
-	  //sv->curii->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
-	  sv->gen_att_inf_func(sv);
+	  //curlayer->ninfections=gsl_ran_logarithmic(sv->r, sim->p);
+	  brsim->gen_att_inf_func(sv, &curlayer->ii);
 #ifdef CT_OUTPUT
 	  GEN_CONTACTS_AND_TRACE;
-	  DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",sv->curii->nattendees,sv->curii->ninfections,sv->curii->ntracednicts,sv->curii->ntracedicts,sv->curii->event_time-(sv->curii->end_comm_period-sim->ctwindow));
+	  DEBUG_PRINTF("%u attendees, %u infections, %u / %u non-infected/infected successfully traced contacts were generated (%f)\n",curlayer->ii.nattendees,curlayer->ii.ninfections,curlayer->ii.ntracednicts,curlayer->ii.ntracedicts,sv->event_time-(curlayer->ii.end_comm_period-sim->ctwindow));
 #else
-	  DEBUG_PRINTF("%u attendees and %u infections were generated\n",sv->curii->nattendees,sv->curii->ninfections);
+	  DEBUG_PRINTF("%u attendees and %u infections were generated\n",curlayer->ii.nattendees,curlayer->ii.ninfections);
 #endif
 
-	  if(sv->new_event_proc_func(sv)) {
-	    sv->curii->curinfectioni=0;
-	    DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfectioni,sv->curii->ninfections);
+	  if(sv->new_event_proc_func(sv, &curlayer->ii)) {
+	    curlayer->curinfectioni=0;
+	    DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ii.ninfections);
 	    continue;
 
 	  } else {
 
 	    //If the events have not been exhausted
-	    if(sv->curii->cureventi < sv->curii->nevents-1) {
+	    if(curlayer->cureventi < curlayer->ii.nevents-1) {
 	      //Move to the next event for the individual
-	      ++(sv->curii->cureventi);
+	      ++(curlayer->cureventi);
 	      goto gen_event;
 	    }
-	    sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
+	    sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 	  }
 
 	} else {
 #ifdef CT_OUTPUT
-	  if(!npevents) sv->new_inf_proc_func_noevent(sv, sv->curii, sv->brsim.iis);
-	  else sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
+	  if(!npevents) sv->new_inf_proc_func_noevent(sv, &curlayer->ii, &brsim->layers[0].ii);
+	  else sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 #else
-	  sv->new_inf_proc_func_noevent(sv, sv->curii, sv->curii-1);
+	  sv->new_inf_proc_func_noevent(sv, &curlayer->ii, &(curlayer-1)->ii);
 #endif
 	}
 
 	//All events for the current individual have been exhausted
 	for(;;) {
 
-	  if(sv->curii == sv->brsim.iis+1) goto done_parsing;
+	  if(curlayer->ii.generation == 1) goto done_parsing;
 	  //Move down one layer
-	  --(sv->curii);
-	  DEBUG_PRINTF("Move to previous layer (%li)\n",sv->curii-sv->brsim.iis);
+	  --(curlayer);
+	  DEBUG_PRINTF("Move to previous layer (%" PRIu32 ")\n",curlayer->ii.generation);
+	  sv->event_time=curlayer->last_event_time;
+	  //printf("Last event recorded time %f is read\n",sv->event_time);
 
 	  //If the infections have been exhausted
-	  if(sv->curii->curinfectioni == sv->curii->ninfections-1) {
+	  if(curlayer->curinfectioni == curlayer->ii.ninfections-1) {
 
 	    //If the events have been exhausted, go down another layer
-	    if(sv->curii->cureventi == sv->curii->nevents-1) {
-	      sv->end_inf_proc_func(sv, sv->curii, sv->curii-1);
+	    if(curlayer->cureventi == curlayer->ii.nevents-1) {
+	      sv->end_inf_proc_func(sv, &curlayer->ii, &(curlayer-1)->ii);
 	      continue;
 	    }
 
 	    //Else
 	    //Move to the next event for the individual
-	    ++(sv->curii->cureventi);
+	    ++(curlayer->cureventi);
 	    goto gen_event;
 	  }
 
 	  //Look at the next infected individual in the current event
-	  ++(sv->curii->curinfectioni);
-	  DEBUG_PRINTF("Infection %i/%i\n",sv->curii->curinfectioni,sv->curii->ninfections);
+	  ++(curlayer->curinfectioni);
+	  DEBUG_PRINTF("Infection %i/%i\n",curlayer->curinfectioni,curlayer->ii.ninfections);
 	  break;
 	}
       }
@@ -317,6 +334,6 @@ done_parsing:
 
 void branchsim_free(sim_vars* sv)
 {
-  for(uint32_t i=0; i<sv->brsim.nlayers; ++i) if(sv->brsim.iis[i].dataptr) free(sv->brsim.iis[i].dataptr);
-  free(sv->brsim.iis);
+  for(uint32_t i=0; i<sv->brsim.nlayers; ++i) if(sv->brsim.layers[i].ii.dataptr) free(sv->brsim.layers[i].ii.dataptr);
+  free(sv->brsim.layers);
 }

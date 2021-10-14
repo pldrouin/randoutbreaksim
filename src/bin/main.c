@@ -106,12 +106,14 @@ int main(const int nargs, const char* args[])
       gsl_rng_free(tdata[t].r);
       tdata[0].commper_mean+=tdata[t].commper_mean;
 #ifdef NUMEVENTSSTATS
-      tdata[0].nevents_mean+=tdata[t].nevents_means;
+      tdata[0].nevents_mean+=tdata[t].nevents_mean;
 #endif
+      tdata[0].nnzpaths+=tdata[t].nnzpaths;
       tdata[0].pe+=tdata[t].pe;
+      tdata[0].penz+=tdata[t].penz;
       tdata[0].pm+=tdata[t].pm;
-      tdata[0].te_mean+=tdata[t].te_mean;
-      tdata[0].te_std+=tdata[t].te_std;
+      tdata[0].tenz_mean+=tdata[t].tenz_mean;
+      tdata[0].tenz_std+=tdata[t].tenz_std;
 
       ndiff=tdata[t].tlppnnpers-tdata[tmaxnpers].tlppnnpers;
       pdiff=(int32_t)tdata[t].tlpptnvpers-tdata[tmaxnpers].tlpptnvpers-ndiff;
@@ -263,9 +265,9 @@ int main(const int nargs, const char* args[])
 
   //printf("R sum is %f\n",tdata[0].r_mean);
   //printf("Total number of infectious is %f\n",ninf);
-#ifdef NUMEVENTSSTATS
-  const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
-#endif
+//#ifdef NUMEVENTSSTATS
+//  const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
+//#endif
   const double nnoe=cp.npaths-tdata[0].pe;
 
   double inf_timeline_mean[tdata[tmaxnpers].tlpptnvpers];
@@ -430,9 +432,10 @@ int main(const int nargs, const char* args[])
 #ifdef NUMEVENTSSTATS
   tdata[0].nevents_mean/=reff_n;
 #endif
-  tdata[0].te_mean/=tdata[0].pe;
-  tdata[0].te_std=sqrt(tdata[0].pe/(tdata[0].pe-1.)*(tdata[0].te_std/tdata[0].pe-tdata[0].te_mean*tdata[0].te_mean));
   tdata[0].pe/=cp.npaths;
+  tdata[0].tenz_mean/=tdata[0].penz;
+  tdata[0].tenz_std=sqrt(tdata[0].penz/(tdata[0].penz-1.)*(tdata[0].tenz_std/tdata[0].penz-tdata[0].tenz_mean*tdata[0].tenz_mean));
+  tdata[0].penz/=tdata[0].nnzpaths;
   tdata[0].pm/=cp.npaths;
 
   printf("\nComputed simulation results:\n");
@@ -443,11 +446,13 @@ int main(const int nargs, const char* args[])
   printf("Communicable period is %22.15e\n",tdata[0].commper_mean);
 #ifdef NUMEVENTSSTATS
   printf("Number of events per infectious individual is %22.15e\n",tdata[0].nevents_mean);
-  printf("Number of infections per event is %22.15e\n",ninf_per_event_mean);
+  //printf("Number of infections per event is %22.15e\n",ninf_per_event_mean);
 #endif
-  printf("Probability of extinction and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
+  printf("Probability of extinction and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].penz,sqrt(tdata[0].penz*(1.-tdata[0].penz)/(tdata[0].nnzpaths-1.)),(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
+  printf("Probability of non outgoing outbreak and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
   printf("Probability of reaching maximum as defined by nimax/npostestmax and its statistical uncertainty: %22.15e +/- %22.15e\n",tdata[0].pm,sqrt(tdata[0].pm*(1.-tdata[0].pm)/(cp.npaths-1.)));
-  printf("Extinction time, if it occurs is %22.15e +/- %22.15e%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
+  printf("Probability of reaching maximum as defined by nimax/npostestmax and its statistical uncertainty: %22.15e +/- %22.15e\n",tdata[0].pm,sqrt(tdata[0].pm*(1.-tdata[0].pm)/(cp.npaths-1.)));
+  printf("Extinction time, if it occurs is %22.15e +/- %22.15e%s\n",tdata[0].tenz_mean,tdata[0].tenz_std,(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
 
   int shift=tdata[tmaxnpers].tlppnnpers;
   printf("\nCurrent infection (non-isolated infected individuals) timeline, for paths with extinction vs no extinction vs overall is:\n");
@@ -564,6 +569,7 @@ void* simthread(void* arg)
 {
   thread_data* data=(thread_data*)arg;
   config_pars const* cp=data->cp;
+  data->nnzpaths=0;
   data->tlppnnpers=0;
   data->tlpptnvpers=data->npers;
   data->commper_mean=0;
@@ -571,9 +577,10 @@ void* simthread(void* arg)
   data->nevents_mean=0;
 #endif
   data->pe=0;
+  data->penz=0;
   data->pm=0;
-  data->te_mean=0;
-  data->te_std=0;
+  data->tenz_mean=0;
+  data->tenz_std=0;
   data->maxedoutmintimeindex=INT32_MAX;
 
   data->inf_timeline_mean_ext=(double*)malloc(data->tlpptnvpers*sizeof(double));
@@ -753,7 +760,16 @@ void* simthread(void* arg)
 
   } else sim_set_new_event_proc_func(&sv, std_stats_new_event_nimax);
 
-  branchsim_init(&sv);
+  int (*simfunc)(sim_vars*);
+
+  if(cp->pars.popsize>0) {
+    finitepopsim_init(&sv);
+    simfunc=finitepopsim;
+
+  } else {
+    branchsim_init(&sv);
+    simfunc=branchsim;
+  }
 
   if(cp->ninfhist) std_stats_init(&sv, cp->nbinsperunit, true);
 
@@ -793,7 +809,7 @@ void* simthread(void* arg)
     //printf("npaths %u\n",npaths);
 
     for(i=npaths-1; i>=0; --i) {
-      branchsim(&sv);
+      simfunc(&sv);
 
       eti=stats.ext_timeline-stats.tlshift;
       data->commper_mean+=eti->commpersum;
@@ -880,8 +896,13 @@ void* simthread(void* arg)
 
       if(stats.extinction) {
 	data->pe+=stats.extinction;
-	data->te_mean+=stats.extinction_time;
-	data->te_std+=stats.extinction_time*stats.extinction_time;
+
+	if(isinf(stats.extinction_time)!=-1) {
+	  data->penz++;
+	  data->nnzpaths++;
+	  data->tenz_mean+=stats.extinction_time;
+	  data->tenz_std+=stats.extinction_time*stats.extinction_time;
+	}
 
 	for(j=stats.tlpptnvpers-1; j>=0; --j) {
 	  k=dshift+j;
@@ -917,6 +938,7 @@ void* simthread(void* arg)
 	}
 
       } else {
+	data->nnzpaths++;
 
 	if(stats.maxedoutmintimeindex < data->maxedoutmintimeindex) data->maxedoutmintimeindex=stats.maxedoutmintimeindex;
 
@@ -989,7 +1011,8 @@ void* simthread(void* arg)
 #endif
 
   std_stats_free(&stats);
-  branchsim_free(&sv);
+  if(cp->pars.popsize>0) finitepopsim_free(&sv);
+  else branchsim_free(&sv);
 
   return NULL;
 }
