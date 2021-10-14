@@ -54,7 +54,8 @@ typedef struct
   double mu;		//!< Parameter for the mean of an unbounded logarithmic distribution (mu=-1/log(1-p)*p/(1-p), mu >= 1) or of an unbounded Gaussian used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
   double sigma;         //!< Parameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
   double rsigma;        //!< Parameter for the relative standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.
-  double g_ave;		//!< Parameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees.
+  double g_ave;		//!< Parameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees, and their definition also depends on the usage of group_interactions or group_transmission
+  double g_ave_transm;	//!< Parameter for the average group size for one transmission event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees, and with one infectious individual. Equal to g_ave_transm if group_transmission is used
   double lambda;	//!< Rate of events for a given individual. Events are defined to include at least two invitees.
   double lambda_uncut;  //!< Rate of events for a given individual, including events of one invitee.
   double lambdap;	//!< Total rate of events for a finite population. Events are defined to include at least two invitees
@@ -109,6 +110,7 @@ typedef struct
   uint8_t grouptype;   	//!< Group type bit field (composed using ro_group_model_flags)
   uint8_t timetype;     //!< Recorded time origin (value set using ro_time_model)
   uint8_t pathtype;        //!< Indicate which type of path, observable or not, should be included in the simulation results (value set using ro_path_model)
+  bool groupinteractions;
 } model_pars;
 
 /**

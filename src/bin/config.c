@@ -84,6 +84,12 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "group_invitees")) {
 	cp->pars.grouptype=(cp->pars.grouptype&ro_group_dist_mask)|ro_group_invitees;
 
+      } else if(!argsdiffer(pbuf, "group_interactions")) {
+	cp->pars.groupinteractions=true;
+
+      } else if(!argsdiffer(pbuf, "group_transmissions")) {
+	cp->pars.groupinteractions=false;
+
       } else if(!argsdiffer(pbuf, "group_log_plus_1")) {
 	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_log_plus_1;
 
@@ -364,7 +370,10 @@ void printusage(const char* name)
   printf("Stochastic simulation of outbreaks, using gamma distributions for the different time periods and a Poisson distribution for the number of interaction events where transmission can occur.\n");
   printf("\n\nBASIC REPRODUCTION PARAMETERS:\n\n");
   printf("\tThe basic reproduction number R0 is defined by the expression\n");
-  printf("\t\tR0 = lambda * tbar * (g_ave - 1) * pinf.\n");
+  printf("\t\tR0 = lambda * tbar * (g_ave - 1) * pinf,\n");
+  printf("\tif group_transmissions is used, and\n");
+  printf("\t\tR0 = lambda * tbar * (g_ave - 1 + g_sigma^2/g_ave) * pinf\n");
+  printf("\tif group_interaction is used instead. R0 assumes an infinite population of susceptible individuals with a single infectious individual.\n");
   printf("\n\tA sufficient number of input parameters must be provided to determine, without overdetermining, the above expression.\n");
   printf("\tmu and p parameters are alternate parameters that can be provided instead of g_ave.\n");
   printf("\tmu is the mean of an unbounded logarithmic distribution with parameter p (mu = -p / ((1 - p) * log(1 - p))).\n");
@@ -399,10 +408,12 @@ void printusage(const char* name)
   printf("\t--lambdap VALUE\t\t\tTotal rate of events for a finite population. Events are defined to include at least two invitees.\n");
   printf("\t--group_attendees\t\tThe group distributions are applicable to the number of attendees (default).\n");
   printf("\t--group_invitees\t\tThe group distributions are applicable to the number of invitees.\n");
+  printf("\t--group_interactions\t\tThe group distribution is applicable to any interactions (no infectious individual required). This option is required for a finite population.\n");
+  printf("\t--group_transmissions\t\tThe group distribution is applicable to interactions involving one infectious individual (default).\n");
   printf("\t--group_log_plus_1\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
   printf("\t--group_log\t\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
   printf("\t--group_gauss\t\t\tNumber of invitees/attendees in an event to be distributed as a Gaussian-distributed variable truncated below 2.\n");
-  printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. Events are defined to include at least two invitees (g_ave>=2).\n");
+  printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. The average group size for transmission events will be higher if group_interactions is used. Events are defined to include at least two invitees (g_ave>=2).\n");
   printf("\t--p VALUE\t\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).\n");
   printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution (mu >= 1) or of an unbounded Gaussian distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--sigma VALUE\t\t\tParameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");

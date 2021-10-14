@@ -2,6 +2,10 @@ AllExecs: AllLibs
 
 CFLAGS ?= -O3 -march=native -mieee-fp -pipe -Wall -Wcast-align
 
+ifdef NUMEVENTSSTATS
+  CFLAGS += -DNUMEVENTSSTATS
+endif
+
 ifdef CT_OUTPUT
   CFLAGS += -DCT_OUTPUT
 endif

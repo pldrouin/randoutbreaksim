@@ -21,6 +21,7 @@ void sim_pars_init(model_pars* pars)
   pars->sigma=NAN;
   pars->rsigma=NAN;
   pars->g_ave=NAN;
+  pars->g_ave_transm=NAN;
   pars->lambda=NAN;
   pars->lambda_uncut=NAN;
   pars->lambdap=NAN;
@@ -63,6 +64,7 @@ void sim_pars_init(model_pars* pars)
   pars->grouptype=ro_group_log_plus_1;
   pars->timetype=ro_time_pri_created;
   pars->pathtype=ro_all_paths;
+  pars->groupinteractions=false;
 }
 
 void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)

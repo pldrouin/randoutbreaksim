@@ -106,7 +106,7 @@ int main(const int nargs, const char* args[])
       gsl_rng_free(tdata[t].r);
       tdata[0].commper_mean+=tdata[t].commper_mean;
 #ifdef NUMEVENTSSTATS
-      tdata[0].nevents_mean+=tdata[t].nevents_means;
+      tdata[0].nevents_mean+=tdata[t].nevents_mean;
 #endif
       tdata[0].pe+=tdata[t].pe;
       tdata[0].pm+=tdata[t].pm;
@@ -263,9 +263,9 @@ int main(const int nargs, const char* args[])
 
   //printf("R sum is %f\n",tdata[0].r_mean);
   //printf("Total number of infectious is %f\n",ninf);
-#ifdef NUMEVENTSSTATS
-  const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
-#endif
+//#ifdef NUMEVENTSSTATS
+//  const double ninf_per_event_mean=tdata[0].r_mean/tdata[0].nevents_mean;
+//#endif
   const double nnoe=cp.npaths-tdata[0].pe;
 
   double inf_timeline_mean[tdata[tmaxnpers].tlpptnvpers];
@@ -443,7 +443,7 @@ int main(const int nargs, const char* args[])
   printf("Communicable period is %22.15e\n",tdata[0].commper_mean);
 #ifdef NUMEVENTSSTATS
   printf("Number of events per infectious individual is %22.15e\n",tdata[0].nevents_mean);
-  printf("Number of infections per event is %22.15e\n",ninf_per_event_mean);
+  //printf("Number of infections per event is %22.15e\n",ninf_per_event_mean);
 #endif
   printf("Probability of extinction and its statistical uncertainty: %22.15e +/- %22.15e%s\n",tdata[0].pe,sqrt(tdata[0].pe*(1.-tdata[0].pe)/(cp.npaths-1.)),(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
   printf("Probability of reaching maximum as defined by nimax/npostestmax and its statistical uncertainty: %22.15e +/- %22.15e\n",tdata[0].pm,sqrt(tdata[0].pm*(1.-tdata[0].pm)/(cp.npaths-1.)));
