@@ -1,7 +1,7 @@
 EDIR	=	src/bin
 
 EINCLUDEDIRS	=	-I$(RNGSDIR) -Iinclude
-ELIBS	=	-Llib -lbranchoutbreak -lpthread -lgsl -lm
+ELIBS	=	-Llib -lrandoutbreak -lpthread -lgsl -lm
 ESLIBS		= $(RNGSDIR)/librngstream.a
 
 ECFLAGS	=	$(LCFLAGS) $(EINCLUDEDIRS)
@@ -12,7 +12,7 @@ EOBJS	=	$(ESRCS:.c=.o)
 EHDS	=	$(ESRCS:.c=.h)
 EDEPS	=	$(EOBJS:.o=.d)
 
-EXEC	=	bin/branchoutbreaksim
+EXEC	=	bin/randoutbreaksim
 
 AllExecs: $(EXEC)
 
