@@ -50,8 +50,6 @@ typedef struct {
   double pe;
   double penz;
   double pm;
-  double te_mean;
-  double te_std;
   double tenz_mean;
   double tenz_std;
   double* inf_timeline_mean_ext;

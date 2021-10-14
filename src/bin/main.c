@@ -112,8 +112,6 @@ int main(const int nargs, const char* args[])
       tdata[0].pe+=tdata[t].pe;
       tdata[0].penz+=tdata[t].penz;
       tdata[0].pm+=tdata[t].pm;
-      tdata[0].te_mean+=tdata[t].te_mean;
-      tdata[0].te_std+=tdata[t].te_std;
       tdata[0].tenz_mean+=tdata[t].tenz_mean;
       tdata[0].tenz_std+=tdata[t].tenz_std;
 
@@ -434,8 +432,6 @@ int main(const int nargs, const char* args[])
 #ifdef NUMEVENTSSTATS
   tdata[0].nevents_mean/=reff_n;
 #endif
-  tdata[0].te_mean/=tdata[0].pe;
-  tdata[0].te_std=sqrt(tdata[0].pe/(tdata[0].pe-1.)*(tdata[0].te_std/tdata[0].pe-tdata[0].te_mean*tdata[0].te_mean));
   tdata[0].pe/=cp.npaths;
   tdata[0].tenz_mean/=tdata[0].penz;
   tdata[0].tenz_std=sqrt(tdata[0].penz/(tdata[0].penz-1.)*(tdata[0].tenz_std/tdata[0].penz-tdata[0].tenz_mean*tdata[0].tenz_mean));
@@ -457,7 +453,6 @@ int main(const int nargs, const char* args[])
   printf("Probability of reaching maximum as defined by nimax/npostestmax and its statistical uncertainty: %22.15e +/- %22.15e\n",tdata[0].pm,sqrt(tdata[0].pm*(1.-tdata[0].pm)/(cp.npaths-1.)));
   printf("Probability of reaching maximum as defined by nimax/npostestmax and its statistical uncertainty: %22.15e +/- %22.15e\n",tdata[0].pm,sqrt(tdata[0].pm*(1.-tdata[0].pm)/(cp.npaths-1.)));
   printf("Extinction time, if it occurs is %22.15e +/- %22.15e%s\n",tdata[0].tenz_mean,tdata[0].tenz_std,(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
-  printf("Non ongoing outbreak extinction time (time set to origin if no initial infection) %22.15e +/- %22.15e%s\n",tdata[0].te_mean,tdata[0].te_std,(tdata[0].maxedoutmintimeindex<INT32_MAX?" (max reached, could be biased if simulation cut)":""));
 
   int shift=tdata[tmaxnpers].tlppnnpers;
   printf("\nCurrent infection (non-isolated infected individuals) timeline, for paths with extinction vs no extinction vs overall is:\n");
@@ -584,8 +579,6 @@ void* simthread(void* arg)
   data->pe=0;
   data->penz=0;
   data->pm=0;
-  data->te_mean=0;
-  data->te_std=0;
   data->tenz_mean=0;
   data->tenz_std=0;
   data->maxedoutmintimeindex=INT32_MAX;
@@ -903,8 +896,6 @@ void* simthread(void* arg)
 
       if(stats.extinction) {
 	data->pe+=stats.extinction;
-	data->te_mean+=stats.extinction_time;
-	data->te_std+=stats.extinction_time*stats.extinction_time;
 
 	if(isinf(stats.extinction_time)!=-1) {
 	  data->penz++;
