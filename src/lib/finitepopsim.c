@@ -74,6 +74,7 @@ int finitepopsim(sim_vars* sv)
   do {
     fpsim->nactivated=0;
     nstart=sv->gen_n_pri_inf(sv);
+    sv->path_init_proc_func(sv);
 
     if(nstart>0) {
       nsusceptibles=sim->popsize-nstart;
@@ -88,7 +89,6 @@ int finitepopsim(sim_vars* sv)
 	fpsim->is[i].ii.dataptr=ptr;
       }
 
-      sv->path_init_proc_func(sv);
       sv->event_time=0;
 
       for(i=nstart-1; i>=0; --i) {
