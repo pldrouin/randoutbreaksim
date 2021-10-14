@@ -744,6 +744,11 @@ int model_pars_check(model_pars const* pars)
   }
 #endif
 
+  if(pars->pinfpri>1 || pars->pinfpri<=0) {
+    fprintf(stderr,"%s: Error: pinfpri's value must be in the interval ]0,1]\n",__func__);
+    ret-=1;
+  }
+
   if(pars->lambdap<=0) {
     fprintf(stderr,"%s: Error: If defined, lambdap must be greater than 0\n",__func__);
     ret-=1;
@@ -754,6 +759,11 @@ int model_pars_check(model_pars const* pars)
   }
 
   if(pars->popsize>0) {
+
+    if(pars->nstart > pars->popsize) {
+      fprintf(stderr,"%s: Error: With a finite population, nstart cannot be larger than popsize\n",__func__);
+      ret-=2;
+    }
 
     if(isnan(pars->lambdap) || isnan(pars->lambda)) {
       fprintf(stderr,"%s: Error: With a finite population, lambdap and lambda parameters cannot be both provided\n",__func__);

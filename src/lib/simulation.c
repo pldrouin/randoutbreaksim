@@ -15,6 +15,7 @@ int __ro_debug=1;
 
 void sim_pars_init(model_pars* pars)
 {
+  pars->pinfpri=1;
   pars->tbar=NAN;
   pars->p=NAN;
   pars->mu=NAN;
@@ -71,6 +72,9 @@ void sim_init(sim_vars* sv, model_pars const* pars, const gsl_rng* r)
 {
   sv->pars=*pars;
   sv->r=r;
+
+  if(pars->pinfpri==1) sv->gen_n_pri_inf=gen_n_pri_inf_nstart;
+  else sv->gen_n_pri_inf=gen_n_pri_inf_binom_pinfpri_nstart;
 
   switch(pars->timetype) {
     case ro_time_pri_created:

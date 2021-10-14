@@ -54,6 +54,10 @@ int config(config_pars* cp, const int nargs, const char* args[])
 	}
 	dup2(cp->eout,STDERR_FILENO);
 
+      } else if(!argsdiffer(pbuf, "pinfpri")) {
+	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
+	sscanf(pbuf,"%lf",&cp->pars.pinfpri);
+
       } else if(!argsdiffer(pbuf, "tbar")) {
 	safegetnextparam(fptra,&fptri,true,nargs,args,&parc,pbuf);
 	sscanf(pbuf,"%lf",&cp->pars.tbar);
@@ -463,7 +467,8 @@ void printusage(const char* name)
   printf("\t--observable_paths_only\t\tIndicate that only observable paths should be included in the simulation results.\n");
   printf("\t--non-observable_paths_only\tIndicate that only non-observable paths should be included in the simulation results.\n");
   printf("\t--tmax VALUE\t\t\tMaximum simulation time used to instantiate new infectious individuals (default value of INFINITY).\n");
-  printf("\t--nstart VALUE\t\t\tInitial number of infectious individuals (default value of 1).\n");
+  printf("\t--nstart VALUE\t\t\tInitial number of individuals (default value of 1).\n");
+  printf("\t--pinfpri VALUE\t\t\tProbability that an initial individual be infectious (default value of 1).\n");
   printf("\t--lmax VALUE\t\t\tMaximum number of layers (generations) for the simulation (value of 1 signifies only primary individuals, default value of UINT32_MAX).\n");
   printf("\t--nbinsperunit VALUE\t\tNumber of timeline bins per unit of time.\n");
   printf("\t--nimax VALUE\t\t\tMaximum number of infectious individuals for a given time integer interval (default value of UINT32_MAX). This option makes a model diverge from a branching process, but does not affect the expected effective reproduction number value.\n");

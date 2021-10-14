@@ -59,6 +59,7 @@ typedef struct
   double lambda;	//!< Rate of events for a given individual. Events are defined to include at least two invitees.
   double lambda_uncut;  //!< Rate of events for a given individual, including events of one invitee.
   double lambdap;	//!< Total rate of events for a finite population. Events are defined to include at least two invitees
+  double pinfpri;       //!< Probability that a primary individual be infections.
   double pinf;		//!< Probability that a given susceptible individual gets infected when exposed to one infectious individual during one event.
 #ifdef DUAL_PINF
   double ppip;          //!< Probability that a given susceptible individual be in the second infection probability category.
@@ -104,7 +105,7 @@ typedef struct
   double mtpr;		//!< True positive rate (= 1 - false negative rate) for the testing of a parent, whose communicable period is the alternate period, for which a positive test would allow for the interruption of a child's communicable period
   double tdeltat;	//!< Time delay between the end of the applicable communicable period and test results.
   int32_t tmax;		//!< Maximum simulation time units used to instantiate new infectious individuals
-  uint32_t nstart;	//!< Initial number of infectious individuals
+  uint32_t nstart;	//!< Initial number of individuals
   uint32_t popsize;     //!< Population size (finite population simulation)
   uint8_t pricommpertype;	//!< Primary individual communicable period type bit field (composed using ro_pricommper_model_flags) 
   uint8_t grouptype;   	//!< Group type bit field (composed using ro_group_model_flags)

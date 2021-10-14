@@ -51,6 +51,7 @@ typedef struct sim_vars_
   gsl_rng const* r;		//!< Pointer to GSL random number generator
   double event_time;            //!< Start time for the current iteration event
   void* dataptr;		//!< Simulation-level data pointer for user-defined functions
+  uint32_t (*gen_n_pri_inf)(struct sim_vars_*);	//!<Pointer to the function used to generate a number of primary infectious individuals
   void (*gen_time_origin_func)(struct sim_vars_*, infindividual* ii);	//!<Pointer to the function used to apply a time shift
   void (*gen_pri_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given primary infectious individual
   void (*gen_time_periods_func)(struct sim_vars_*, infindividual* ii, infindividual* iiparent, const double inf_start);	//!< Pointer to the function used to generate time periods for a given infectious individual
@@ -426,6 +427,24 @@ GEN_PERS_MAIN(2,2)
  * configuration of the model parameters.
  */
 #define PER_COND if(isnan(sv->pars.tdeltat)) {PER_COND_LATENT(0)} else if(sv->pars.mtpr==1) {PER_COND_LATENT(1)} else {PER_COND_LATENT(2)};
+
+/**
+ * @brief Returns a number of primary infectious individuals equal to nstart.
+ *
+ * @param sv: Pointer to the simulation variables.
+ * @return the number of primary infectious individuals.
+ */
+inline static uint32_t gen_n_pri_inf_nstart(sim_vars* sv){return sv->pars.nstart;}
+
+/**
+ * @brief Returns a number of primary infectious individuals distributed
+ * according to a binomial distribution with probability pinfpri and a number of
+ * trials nstart.
+ *
+ * @param sv: Pointer to the simulation variables.
+ * @return the number of primary infectious individuals.
+ */
+inline static uint32_t gen_n_pri_inf_binom_pinfpri_nstart(sim_vars* sv){return gsl_ran_binomial(sv->r, sv->pars.pinfpri, sv->pars.nstart);}
 
 /**
  * @brief Default processing function that is called when a new transmission event is created.

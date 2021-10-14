@@ -43,16 +43,18 @@ int branchsim(sim_vars* sv)
   model_pars const* sim=&(sv->pars);
   brsim_vars* brsim=&sv->brsim;
   inflayer* curlayer;
+  int32_t nstart;
 
 #ifdef DUAL_PINF
   const double pinfpinf=sim->ppip*sim->rpinfp/(1+sim->ppip*(sim->rpinfp-1));
 #endif
 
   do {
+    nstart=sv->gen_n_pri_inf(sv);
     sv->path_init_proc_func(sv);
     sv->event_time=0;
 
-    for(i=sim->nstart-1; i>=0; --i) {
+    for(i=nstart-1; i>=0; --i) {
       DEBUG_PRINTF("initial individual %i\n",i);
 
       #ifdef DUAL_PINF
