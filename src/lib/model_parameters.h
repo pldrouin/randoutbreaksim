@@ -25,7 +25,7 @@
 /**
  * Primary individual communicable period model type. Flags used to specify the model.
  **/
-enum ro_pricommper_model_flags {ro_pricommper_main=1, ro_pricommper_alt=2, ro_pricommper_alt_use_tpr=4};
+enum ro_pricommper_model_flags {ro_pricommper_main=1, ro_pricommper_alt=2, ro_pricommper_alt_use_tpr=4, ro_pricommper_first_cat=8, ro_pricommper_second_cat=16};
 
 /**
  * Time model type.

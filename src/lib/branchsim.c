@@ -47,6 +47,8 @@ int branchsim(sim_vars* sv)
 
 #ifdef DUAL_PINF
   const double pinfpinf=sim->ppip*sim->rpinfp/(1+sim->ppip*(sim->rpinfp-1));
+  const bool pri_first_cat=sim->pricommpertype&ro_pricommper_first_cat;
+  const bool pri_second_cat=sim->pricommpertype&ro_pricommper_second_cat;
 #endif
 
   do {
@@ -58,20 +60,20 @@ int branchsim(sim_vars* sv)
       DEBUG_PRINTF("initial individual %i\n",i);
 
       #ifdef DUAL_PINF
-      if(gsl_rng_uniform(sv->r) < pinfpinf) {
-        #ifdef SEC_INF_TIMELINES
-        brsim->layers[0].ii.ninfectionsf=0;
-        brsim->layers[0].ii.ninfectionsp=1;
-        #endif
+      if(pri_second_cat || (!pri_first_cat && gsl_rng_uniform(sv->r) < pinfpinf)) {
+	#ifdef SEC_INF_TIMELINES
+	brsim->layers[0].ii.ninfectionsf=0;
+	brsim->layers[0].ii.ninfectionsp=1;
+	#endif
 	brsim->layers[1].ii.inftypep=true;
 	brsim->layers[1].ii.q=sim->qp;
 	brsim->layers[1].ii.pinf=sim->pinf*sim->rpshedp;
 
       } else {
-        #ifdef SEC_INF_TIMELINES
-        brsim->layers[0].ii.ninfectionsf=1;
-        brsim->layers[0].ii.ninfectionsp=0;
-        #endif
+	#ifdef SEC_INF_TIMELINES
+	brsim->layers[0].ii.ninfectionsf=1;
+	brsim->layers[0].ii.ninfectionsp=0;
+	#endif
 	brsim->layers[1].ii.inftypep=false;
 	brsim->layers[1].ii.q=sim->q;
 	brsim->layers[1].ii.pinf=sim->pinf;

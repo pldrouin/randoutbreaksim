@@ -63,6 +63,9 @@ int finitepopsim(sim_vars* sv)
   const double pinfpinf=sim->ppip*sim->rpinfp/(1+sim->ppip*(sim->rpinfp-1));
   int32_t nstart;
   bool initsus;
+  const bool pri_first_cat=sim->pricommpertype&ro_pricommper_first_cat;
+  const bool pri_second_cat=sim->pricommpertype&ro_pricommper_second_cat;
+
 #else
   uint32_t neinfections;  //Total number of infections at the event
 #endif
@@ -95,7 +98,7 @@ int finitepopsim(sim_vars* sv)
 	DEBUG_PRINTF("initial individual %i is %p\n",i,fpsim->is+i);
 
 #ifdef DUAL_PINF
-	if(gsl_rng_uniform(sv->r) < pinfpinf) {
+	if(pri_second_cat || (!pri_first_cat && gsl_rng_uniform(sv->r) < pinfpinf)) {
 #ifdef SEC_INF_TIMELINES
 	  fpsim->rooti.ii.ninfectionsf=0;
 	  fpsim->rooti.ii.ninfectionsp=1;

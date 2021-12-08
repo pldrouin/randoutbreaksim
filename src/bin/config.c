@@ -244,6 +244,14 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "pri_no_alt_test_fnr")) {
 	cp->pars.pricommpertype&=~ro_pricommper_alt_use_tpr;
 
+#ifdef DUAL_PINF
+      } else if(!argsdiffer(pbuf, "pri_first_category_only")) {
+	cp->pars.pricommpertype=(cp->pars.pricommpertype|ro_pricommper_first_cat) - (cp->pars.pricommpertype&ro_pricommper_second_cat);
+
+      } else if(!argsdiffer(pbuf, "pri_second_category_only")) {
+	cp->pars.pricommpertype=(cp->pars.pricommpertype|ro_pricommper_second_cat) - (cp->pars.pricommpertype&ro_pricommper_first_cat);
+#endif
+
       } else if(!argsdiffer(pbuf, "time_rel_pri_created")) {
 	cp->pars.timetype=ro_time_pri_created;
 
@@ -456,6 +464,10 @@ void printusage(const char* name)
   printf("\t--pri_no_main_period\t\tThe communicable period for a primary infectious individual cannot be the main period. This option makes a model diverge from a branching process.\n");
   printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period. This option makes a model diverge from a branching process.\n");
   printf("\t--pri_no_alt_test_fnr\t\tThe alternate communicable period for a primary infectious individual cannot result in a false negative test. This option makes a model diverge from a branching process.\n");
+#ifdef DUAL_PINF
+  printf("\t--pri_first_category_only\t\tA primary infectious individual can only be part of the first category (disables pri_second_category_only).\n");
+  printf("\t--pri_second_category_only\t\tA primary infectious individual can only be part of the second category (disables pri_first_category_only).\n");
+#endif
 
   printf("\t--time_rel_pri_created\t\tRecorded event time is relative to the time the primary individuals are generated.\n");
   printf("\t--time_rel_pri_infectious\tRecorded event time is relative to the time the generated primary individuals become infectious.\n");
