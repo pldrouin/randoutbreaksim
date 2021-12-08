@@ -465,8 +465,8 @@ void printusage(const char* name)
   printf("\t--pri_no_alt_period\t\tThe communicable period for a primary infectious individual cannot be the alternate period. This option makes a model diverge from a branching process.\n");
   printf("\t--pri_no_alt_test_fnr\t\tThe alternate communicable period for a primary infectious individual cannot result in a false negative test. This option makes a model diverge from a branching process.\n");
 #ifdef DUAL_PINF
-  printf("\t--pri_first_category_only\t\tA primary infectious individual can only be part of the first category (disables pri_second_category_only).\n");
-  printf("\t--pri_second_category_only\t\tA primary infectious individual can only be part of the second category (disables pri_first_category_only).\n");
+  printf("\t--pri_first_category_only\t\tA primary infectious individual can only be part of the first category. This option makes a model diverge from a branching process. (disables pri_second_category_only).\n");
+  printf("\t--pri_second_category_only\t\tA primary infectious individual can only be part of the second category. This option makes a model diverge from a branching process. (disables pri_first_category_only).\n");
 #endif
 
   printf("\t--time_rel_pri_created\t\tRecorded event time is relative to the time the primary individuals are generated.\n");
