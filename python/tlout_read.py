@@ -18,6 +18,7 @@ def read(filename, callback):
 
     hasreltime = not((hbf&7)==1)
     postestresults = ((hbf&8)==8)
+    seccathegory = ((hbf&16)==16)
 
     tltype=np.dtype('<u4')
 
@@ -47,18 +48,38 @@ def read(filename, callback):
 
         if(postestresults):
 
-            while(rechdr.size):
-                nbins, maxed_out_time, extinction_time = rechdr[0]
-                ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),3)
-                callback(ret, 0, maxed_out_time, extinction_time)
-                rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+            if(seccathegory):
+
+                while(rechdr.size):
+                    nbins, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),6)
+                    callback(ret, 0, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+
+            else:
+
+                while(rechdr.size):
+                    nbins, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),3)
+                    callback(ret, 0, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
         else:
 
-            while(rechdr.size):
-                nbins, maxed_out_time, extinction_time = rechdr[0]
-                ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),2)
-                callback(ret, 0, maxed_out_time, extinction_time)
-                rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+            if(seccathegory):
+
+                while(rechdr.size):
+                    nbins, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),4)
+                    callback(ret, 0, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+
+            else:
+
+                while(rechdr.size):
+                    nbins, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),2)
+                    callback(ret, 0, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
     f.close()
