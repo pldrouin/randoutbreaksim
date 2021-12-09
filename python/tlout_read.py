@@ -28,19 +28,39 @@ def read(filename, callback):
 
         if(postestresults):
 
-            while(rechdr.size):
-                nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
-                ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),3)
-                callback(ret, t0index, maxed_out_time, extinction_time)
-                rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+            if(seccathegory):
+
+                while(rechdr.size):
+                    nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=6*nbins),6)
+                    callback(ret, t0index, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+
+            else:
+
+                while(rechdr.size):
+                    nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),3)
+                    callback(ret, t0index, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
         else:
 
-            while(rechdr.size):
-                nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
-                ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),2)
-                callback(ret, t0index, maxed_out_time, extinction_time)
-                rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+            if(seccathegory):
+
+                while(rechdr.size):
+                    nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=4*nbins),4)
+                    callback(ret, t0index, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
+
+            else:
+
+                while(rechdr.size):
+                    nbins, t0index, maxed_out_time, extinction_time = rechdr[0]
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),2)
+                    callback(ret, t0index, maxed_out_time, extinction_time)
+                    rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
     else:
         rechdrtype = np.dtype('<u4, i4, i4')
@@ -52,7 +72,7 @@ def read(filename, callback):
 
                 while(rechdr.size):
                     nbins, maxed_out_time, extinction_time = rechdr[0]
-                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=3*nbins),6)
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=6*nbins),6)
                     callback(ret, 0, maxed_out_time, extinction_time)
                     rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
@@ -70,7 +90,7 @@ def read(filename, callback):
 
                 while(rechdr.size):
                     nbins, maxed_out_time, extinction_time = rechdr[0]
-                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=2*nbins),4)
+                    ret = np.array_split(np.fromfile(f, dtype=tltype, count=4*nbins),4)
                     callback(ret, 0, maxed_out_time, extinction_time)
                     rechdr = np.fromfile(f, dtype=rechdrtype, count=1)
 
