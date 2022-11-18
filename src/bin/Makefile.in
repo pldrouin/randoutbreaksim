@@ -26,6 +26,7 @@ $(EDEPS): %.d: %.c %.h $(ALLINCS)
 include $(EDEPS)
 
 $(EXEC): $(EOBJS) $(ESLIBS) $(LIB)
+	mkdir -p bin
 	$(CC) $(ECFLAGS) -o $@ $(EOBJS) $(ESLIBS) $(ELDFLAGS)
 
 $(EOBJS): %.o: %.c

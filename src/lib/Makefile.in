@@ -29,6 +29,7 @@ $(ALLINCS): include/%: $(LDIR)/%
 	cp $^ $@
 
 $(LIB): $(LOBJS)
+	mkdir -p lib
 	$(CC) $(LCFLAGS) -fPIC -shared $(LDFLAGS) -o $@ $^ $(LLIBS)
 
 $(LOBJS): %.o: %.c

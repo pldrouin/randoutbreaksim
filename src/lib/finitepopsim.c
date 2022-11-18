@@ -48,6 +48,7 @@ int finitepopsim(sim_vars* sv)
   uint32_t nepainvitees; //Number of potentially activated invitees at the event
   uint32_t nsusceptibles=UINT32_MAX; //Total number of remaining susceptible individuals within the whole population
   uint32_t nesusceptibles; //Total number of susceptible individuals at the event
+  int32_t nstart;
 #ifdef DUAL_PINF
   uint32_t nsusceptiblesf=UINT32_MAX; //Number of remaining susceptible individuals of the first category within the whole population
   uint32_t nsusceptiblesp=UINT32_MAX; //Number of remaining susceptible individuals of the second category within the whole population
@@ -61,7 +62,6 @@ int finitepopsim(sim_vars* sv)
 
   const double ppinf=sim->pinf*sim->rpshedp;
   const double pinfpinf=sim->ppip*sim->rpinfp/(1+sim->ppip*(sim->rpinfp-1));
-  int32_t nstart;
   bool initsus;
   const bool pri_first_cat=sim->pricommpertype&ro_pricommper_first_cat;
   const bool pri_second_cat=sim->pricommpertype&ro_pricommper_second_cat;
