@@ -1,0 +1,28 @@
+# randoutbreaksim
+This project depends on very few libaries, and as such, a simple set of Makefiles is provided
+to compile it. The code depends on librngstream from the same author, on libgsl (tested with
+version 2.7) and on libpthread. The Makefiles expect the librngstream header files and library
+to be located in the directory pointed to by the RNGSDIR environment variable. In order to compile
+the project, GNU Make, a C compiler and linker, as well as GNU sed are required.
+Additionally, the project supports doxygen to generate code documentation.
+
+The following make variables can be togled (deactivated by default) to enable extra features
+for the library and executable:
+
+NUMEVENTSSTATS: Statistics regarding the number of events
+
+CT_OUTPUT: Contact tracing support
+
+OBSREFF_OUTPUT: Output regarding an observed (detected) effective reproduction number in addition to
+                the simulated effective reproduction number
+
+DUAL_PINF: Model includes support for a second class of individuals that has a different probability of infection and transmission (e.g. vaccinated individuals)
+
+SEC_INF_TIMELINES (requires DUAL_PINF): Generate timeline statistics as well for the second class of individuals described above.
+
+The Makefiles define the following targets:
+AllExecs (default target): Compile library and executable
+AllLibs: Compile library
+doc: Generate code documentation using doxygen
+clean: Delete the intermediate files of the compiling process
+clear: Delete both the intermediate and output files of the compiling process
