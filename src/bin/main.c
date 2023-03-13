@@ -829,7 +829,7 @@ void* simthread(void* arg)
       dshift=stats.tlshifta-stats.tlshift;
 
       if(cp->tlout) {
-	maxwrite=16+binsize*stats.tlppnnpers;
+	maxwrite=16+binsize*stats.tlpptnvpers;
 
 	if(tlobsize+maxwrite > tlobasize) {
 
