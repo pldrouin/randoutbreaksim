@@ -392,7 +392,9 @@ int model_solve_log_plus_1_group(model_pars* pars)
 
     if(ret) return ret;
 
-    if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-(1+log(1-pars->p)/pars->p)*pow(pars->g_ave-1,2)/pars->g_ave;
+    if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-(1+log(1-pars->p)/pars->p)*pars->mu*pars->mu/pars->g_ave;
+
+    else pars->g_ave_transm=pars->g_ave;
 
   } else {
     const double l1mp=log(1-pars->p);
