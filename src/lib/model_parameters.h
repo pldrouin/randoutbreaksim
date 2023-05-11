@@ -256,7 +256,18 @@ int model_solve_log_p_from_mu(model_pars* pars);
  * @return 0 if the parameters could be determined, and a non-zero value
  * otherwise.
  */
-int model_solve_log_p_from_mean(const double mean, model_pars* pars);
+int model_solve_trunc_log_p_from_mean(const double mean, model_pars* pars);
+
+/**
+ * @brief Solve for the value of the p parameter of the logarithmic plus 1
+ * distribution, given the mean for the transmission events.
+ *
+ * @param mean: Mean of invitees for the transmission events.
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+int model_solve_log_p_plus_1_from_transm_mean(model_pars* pars);
 
 /**
  * @brief Solve for gamma distribution related simulation parameters.
@@ -295,6 +306,29 @@ int model_pars_check(model_pars const* pars);
  * @param params: Pointer to mu parameter (input)
  */
 inline static void logroot(double* x, double* diff, void* params){const double omx=1-*x; const double l=log(omx); *diff=*(double*)params+ *x/(omx*l); *x-=*diff*l*omx*omx/(*x/l+1); *diff/=*(double*)params;} 
+
+/**
+ * @brief Computes p (logarithmic distribution) from the mean of the
+ * transmission events when a logarithmic distribution plus one is used for
+ * all group interaction events, using Newton's method.
+ *
+ * @param x: Current value for p (input/output).
+ * @param diff: transmission event mean value discrepancy (output).
+ * @param params: Pointer to transmission mean parameter (input)
+ */
+inline static void gilogp1root(double* x, double* diff, void* params){
+  const double omx=1-*x;
+  const double l=log(omx);
+  const double xpl=*x+l;
+  const double omxl=omx*l;
+  const double omxlmx=omxl-*x;
+  const double xpldomxlmx=xpl/omxlmx;
+  const double opxpldomxlmx = 1 + xpldomxlmx;
+  const double mean=-*x/omxl * opxpldomxlmx;
+  *diff=mean - *(double*)params + 1;
+  *x-=*diff * omxl / (-opxpldomxlmx + mean*(1+l) + *x / omxlmx * (*x / omx + xpldomxlmx * (l+2)));
+  *diff/=*(double*)params - 1;
+} 
 
 /**
  * @brief Computes p (truncated logarithmic distribution) from the mean using Newton's method.

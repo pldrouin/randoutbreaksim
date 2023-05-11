@@ -4,6 +4,7 @@
  * @author <Pierre-Luc.Drouin@drdc-rddc.gc.ca>, Defence Research and Development Canada Ottawa Research Centre.
  */
 
+#include <assert.h>
 #include "model_parameters.h"
 
 int model_solve_pars(model_pars* pars)
@@ -396,6 +397,27 @@ int model_solve_log_plus_1_group(model_pars* pars)
 
     else pars->g_ave_transm=pars->g_ave;
 
+    //Else if g_ave_transm is provided
+  } else if(!isnan(pars->g_ave_transm)) {
+    assert(pars->groupinteractions);
+
+    if(!(pars->g_ave_transm>=2)) {
+      fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
+      return -1;
+    }
+
+    //Solve for p numerically from mu
+    ret=model_solve_log_p_plus_1_from_transm_mean(pars);
+
+    if(ret) return ret;
+
+    const double omx=1-pars->p;
+    const double l=log(omx);
+    const double xpl=pars->p+l;
+    const double omxl=omx*l;
+    const double omxlmx=omxl-pars->p;
+    pars->g_ave=pars->g_ave_transm + pars->p/omxl * xpl/omxlmx;
+
   } else {
     const double l1mp=log(1-pars->p);
 
@@ -486,7 +508,7 @@ int model_solve_log_group(model_pars* pars)
     }
 
     //Solve for p numerically from g_ave
-    ret=model_solve_log_p_from_mean(pars->g_ave,pars);
+    ret=model_solve_trunc_log_p_from_mean(pars->g_ave,pars);
 
     if(ret) return ret;
     const double l1mp=log(1-pars->p);
@@ -688,12 +710,41 @@ int model_solve_log_p_from_mu(model_pars* pars)
   return 0;
 }
 
-int model_solve_log_p_from_mean(const double mean, model_pars* pars)
+int model_solve_trunc_log_p_from_mean(const double mean, model_pars* pars)
 {
   if(mean==2) pars->p=0;
 
   else {
     root_finder* rf=root_finder_init(loggt1root, (void*)&mean);
+    pars->p=0.999;
+    double diff;
+
+    int ret=root_finder_find(rf, RF_P_EPSF, 100, RF_P_EPSF, 1-RF_P_EPSF, &pars->p, &diff);
+
+    root_finder_free(rf);
+
+    if(ret) {
+
+      if(ret==-3) fprintf(stderr,"%s: Warning: Convergence seems to have been reached, but the root discrepancy (%22.15e) is larger than required (%22.15e)!\n",__func__,diff,RF_P_EPSF);
+
+      else if(ret==-2) {
+	fprintf(stderr,"%s: Error: Root could not be found!\n",__func__);
+	return ret;
+      }
+    }
+  }
+
+  return 0;
+}
+
+int model_solve_log_p_plus_1_from_transm_mean(model_pars* pars)
+{
+  if(pars->g_ave_transm==2) {
+    pars->g_ave=pars->g_ave_transm;
+    pars->p=0;
+
+  } else {
+    root_finder* rf=root_finder_init(gilogp1root, (void*)&pars->g_ave_transm);
     pars->p=0.999;
     double diff;
 
