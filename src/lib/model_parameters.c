@@ -417,6 +417,7 @@ int model_solve_log_plus_1_group(model_pars* pars)
     const double omxl=omx*l;
     const double omxlmx=omxl-pars->p;
     pars->g_ave=pars->g_ave_transm + pars->p/omxl * xpl/omxlmx;
+    pars->mu=pars->g_ave-1;
 
   } else {
     const double l1mp=log(1-pars->p);
