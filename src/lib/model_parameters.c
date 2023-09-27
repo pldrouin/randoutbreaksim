@@ -1035,7 +1035,7 @@ int model_pars_check(model_pars const* pars)
     }
 
     if(pars->groupinteractions) {
-      fprintf(stderr,"%s: Error: If modeling a finite population, group_interactions is not supported\n",__func__);
+      fprintf(stderr,"%s: Error: If modeling an infinite population, group_interactions is not supported\n",__func__);
       ret-=262144;
     }
   }
