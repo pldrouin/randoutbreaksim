@@ -100,6 +100,9 @@ int config(config_pars* cp, const int nargs, const char* args[])
       } else if(!argsdiffer(pbuf, "group_log")) {
 	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_log;
 
+      } else if(!argsdiffer(pbuf, "group_geom")) {
+	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_geom;
+
       } else if(!argsdiffer(pbuf, "group_gauss")) {
 	cp->pars.grouptype=(cp->pars.grouptype&~ro_group_dist_mask)|ro_group_gauss;
 
@@ -396,6 +399,9 @@ void printusage(const char* name)
 
   printf("\n\t--group_log indicates that the number of invitees/attendees in an event is to be distributed according to a logarithmically-distributed variable (truncated below 2). In this case, it is the distribution of the number of individuals in a group that is motivated from empirical evidence, instead of the distribution for the total number of infections from a given infectious individual. When using group_attendees, the expression for g_ave with this distribution is\n");
   printf("\t\tg_ave = -p * p / ((1 - p) * (log(1 - p) + p)).\n");
+  printf("\n\t--group_geom indicates that the number of invitees/attendees in an event is to be distributed according to a geometrically-distributed variable (truncated below 2). When a logarithmic distribution is the proper distribution to be used for events that may or may not contain infectious individuals (e.g. in the finite population model), a geometric distribution is the corresponding distribution for events in the branching model where an infectious individuals is present. When using group_geom, the expression for g_ave with this distribution is\n");
+  printf("\t\tg_ave = (2 - p) / (1 - p).\n");
+  printf("\t\tP(k) = (1 - p) * p ^ (k - 2), k >= 2\t* Non-standard form\n");
 
   printf("\n\nBRANCHING PROCESS EFFECTIVE REPRODUCTION NUMBER:\n\n");
   printf("\tIf an alternate communicable period of average duration mbar is defined, and if there is a probability q that an individual's communicable period be the alternate communicable instead of the main communicable period, then an effective reproduction number can be expressed as\n");
@@ -424,10 +430,11 @@ void printusage(const char* name)
   printf("\t--group_transmissions\t\tThe group distribution is applicable to interactions involving one infectious individual (default).\n");
   printf("\t--group_log_plus_1\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable plus 1 (default).\n");
   printf("\t--group_log\t\t\tNumber of invitees/attendees in an event to be distributed as a logarithmically-distributed variable truncated below 2.\n");
+  printf("\t--group_geom\t\t\tNumber of invitees/attendees in an event to be distributed as a geometrically-distributed variable truncated below 2. A geometric distribution for events in a branching model is the proper distribution when events that may or may not include infectious individuals intiniteare logarithmically distributed.\n");
   printf("\t--group_gauss\t\t\tNumber of invitees/attendees in an event to be distributed as a Gaussian-distributed variable truncated below 2.\n");
   printf("\t--g_ave VALUE\t\t\tParameter for the average group size for one event. These individuals can correspond to invitees or attendees depending on the choice of group type. The average group size for transmission events will be higher if group_interactions is used. Events are defined to include at least two invitees (g_ave>=2).\n");
   printf("\t--p VALUE\t\t\tParameter for the logarithmic distribution used to draw the number of individuals during one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type (0 <= p < 1).\n");
-  printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution (mu >= 1) or of an unbounded Gaussian distribution used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
+  printf("\t--mu VALUE\t\t\tParameter for the mean of an unbounded logarithmic distribution (mu >= 1), of an unbounded Gaussian distribution, or of an unbounded geometric distribution with mu=1/p, used to draw number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--sigma VALUE\t\t\tParameter for the standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--rsigma VALUE\t\t\tParameter for the relative standard deviation of an unbounded Gaussian used to draw the number of individuals for one event. These individuals can correspond to invitees, attendees or infected individuals depending on the choice of group type.\n");
   printf("\t--pinf VALUE\t\t\tProbability that a given susceptible individual gets infected when exposed to one infectious individual during one event.\n");

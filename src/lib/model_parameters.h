@@ -37,7 +37,7 @@ enum ro_time_model{ro_time_pri_created=1, ro_time_pri_flat_comm=2, ro_time_pri_i
  * ro_log_group_invitees_plus_1, ro_log_attendees and ro_log_invitees are mutually
  * exclusive options that indicate how the number of individuals at events are distributed.  
  **/
-enum ro_group_model_flags {ro_group_invitees=1, ro_group_log_plus_1=2, ro_group_log=4, ro_group_gauss=8, ro_group_dist_mask=ro_group_log_plus_1|ro_group_log|ro_group_gauss};
+enum ro_group_model_flags {ro_group_invitees=1, ro_group_log_plus_1=2, ro_group_log=4, ro_group_gauss=8, ro_group_geom=16, ro_group_dist_mask=ro_group_log_plus_1|ro_group_log|ro_group_gauss|ro_group_geom};
 
 /**
  * Path model.
@@ -159,6 +159,16 @@ int model_solve_log_plus_1_group(model_pars* pars);
 int model_solve_log_group(model_pars* pars);
 
 /**
+ * @brief Solve for the value of the p, mu and g_ave parameters of the
+ * geometric distribution, given one of the parameters.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+int model_solve_geom_group(model_pars* pars);
+
+/**
  * @brief Solve for the value of the mu, sigma and g_ave parameters of the
  * Gaussian distribution, given two of the parameters.
  *
@@ -187,6 +197,16 @@ inline static int model_solve_log_plus_1_lambda_uncut_from_lambda(model_pars* pa
  * otherwise.
  */
 inline static int model_solve_log_lambda_uncut_from_lambda(model_pars* pars){const double l1mp=log(1-pars->p); pars->lambda_uncut=(pars->p==0?INFINITY:l1mp/(l1mp+pars->p)*pars->lambda); return 0;}
+
+/**
+ * @brief Solve for the value of lambda uncut, given lambda, for the geometric
+ * distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_geom_lambda_uncut_from_lambda(model_pars* pars) { pars->lambda_uncut = (pars->p > 0 ? pars->lambda / pars->p : INFINITY); return 0; }
 
 /**
  * @brief Solve for the value of lambda uncut, given lambda, for the Gaussian
@@ -226,6 +246,16 @@ inline static int model_solve_log_lambda_from_lambda_uncut(model_pars* pars){
   pars->lambda=(l1mp+pars->p)/l1mp*pars->lambda_uncut;
   return 0;
 }
+
+/**
+ * @brief Solve for the value of lambda, given lambda uncut, for the geometric
+ * distribution.
+ *
+ * @param pars: Simulation parameters.
+ * @return 0 if the parameters could be determined, and a non-zero value
+ * otherwise.
+ */
+inline static int model_solve_geom_lambda_from_lambda_uncut(model_pars* pars) {pars->lambda = pars->lambda_uncut * pars->p; return 0;}
 
 /**
  * @brief Solve for the value of lambda, given lambda uncut, for the Gaussian

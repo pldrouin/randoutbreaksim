@@ -269,6 +269,14 @@ int model_solve_R0_group(model_pars* pars)
     return -3;
   }
 
+  if(pars->grouptype&ro_group_geom) {
+    
+    if(pars->groupinteractions) {
+      fprintf(stderr,"%s: Error: group_geom is not supported for group_interactions.\n",__func__);
+      return -4;
+    }
+  }
+
   if(!(pars->grouptype&ro_group_gauss)) {
 
     if(!isnan(pars->sigma) && !isnan(pars->rsigma)) {
@@ -298,6 +306,8 @@ int model_solve_R0_group(model_pars* pars)
 
     else if(pars->grouptype&ro_group_log) ret=model_solve_log_group(pars);
 
+    else if(pars->grouptype&ro_group_geom) ret=model_solve_geom_group(pars);
+
     //ro_group_gauss
     else ret=model_solve_gauss_group(pars);
 
@@ -313,6 +323,8 @@ int model_solve_R0_group(model_pars* pars)
 	if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
 
 	else if(pars->grouptype&ro_group_log) ret=model_solve_log_lambda_uncut_from_lambda(pars);
+
+        else if(pars->grouptype&ro_group_geom) ret=model_solve_geom_lambda_uncut_from_lambda(pars);
 	
 	//ro_group_gauss
 	else ret=model_solve_gauss_lambda_uncut_from_lambda(pars);
@@ -321,12 +333,16 @@ int model_solve_R0_group(model_pars* pars)
 
       else if(pars->grouptype&ro_group_log) ret=model_solve_log_lambda_from_lambda_uncut(pars);
 
+      else if(pars->grouptype&ro_group_geom) ret=model_solve_geom_lambda_from_lambda_uncut(pars);
+
       //ro_group_gauss
       else ret=model_solve_gauss_lambda_from_lambda_uncut(pars);
 
     } else if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_lambda_uncut_from_lambda(pars);
 
     else if(pars->grouptype&ro_group_log)  ret=model_solve_log_lambda_uncut_from_lambda(pars);
+
+    else if(pars->grouptype&ro_group_geom)  ret=model_solve_geom_lambda_uncut_from_lambda(pars);
 
     //ro_group_gauss
     else ret=model_solve_gauss_lambda_uncut_from_lambda(pars);
@@ -355,6 +371,8 @@ int model_solve_R0_group(model_pars* pars)
     if(pars->grouptype&ro_group_log_plus_1) ret=model_solve_log_plus_1_group(pars);
 
     else if(pars->grouptype&ro_group_log) ret=model_solve_log_group(pars);
+
+    else if(pars->grouptype&ro_group_geom) ret=model_solve_geom_group(pars);
 
     //ro_group_gauss
     else ret=model_solve_gauss_group(pars);
@@ -515,7 +533,7 @@ int model_solve_log_group(model_pars* pars)
     const double l1mp=log(1-pars->p);
     pars->mu=-pars->p/((1-pars->p)*l1mp);
 
-    if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-((pars->p-2)*l1mp-2*pars->p)/((1-pars->p)*(pars->p+l1mp));;
+    if(pars->groupinteractions) pars->g_ave_transm=pars->g_ave-((pars->p-2)*l1mp-2*pars->p)/((1-pars->p)*(pars->p+l1mp));
 
   } else {
     const double l1mp=log(1-pars->p);
@@ -577,6 +595,59 @@ int model_solve_log_group(model_pars* pars)
 	else pars->g_ave_transm=pars->g_ave;
       }
     }
+  }
+  printf("\nParameters for the log group distribution:\n");
+  printf("g_ave:\t%22.15e\n",pars->g_ave);
+  printf("g_ave_transm:\t%22.15e\n",pars->g_ave_transm);
+  printf("p:\t%22.15e\n",pars->p);
+  printf("mu:\t%22.15e\n",pars->mu);
+  return 0;
+}
+
+int model_solve_geom_group(model_pars* pars)
+{
+  //If g_ave is provided
+  if(!isnan(pars->g_ave)) {
+
+    if(pars->popsize!=0) {
+      fprintf(stderr,"%s: Error: Solving for p while providing g_ave an in input with a finite population is not currently supported\n",__func__);
+      return -1;
+    }
+
+    if(!(pars->g_ave>=2)) {
+      fprintf(stderr,"%s: Error: g_ave must be greater than or equal to 2\n",__func__);
+      return -1;
+    }
+
+    pars->p = (pars->g_ave - 2) / (1 + pars->g_ave);
+
+    pars->mu=1 / (1 - pars->p);
+
+    pars->g_ave_transm=pars->g_ave;
+
+  } else {
+
+    //Else if p is provided
+    if(!isnan(pars->p)) {
+
+      if(!(pars->p>=0) || !(pars->p<1)) {
+	fprintf(stderr,"%s: Error: p must be non-negative and smaller than 1\n",__func__);
+	return -1;
+      }
+      pars->mu=1 / (1 - pars->p);
+
+      //Else if it is mu that is provided
+    } else {
+
+      if(!(pars->mu>=1)) {
+	fprintf(stderr,"%s: Error: mu must be greater than or equal to 1\n",__func__);
+	return -1;
+      }
+      pars->p= 1 - 1/pars->mu;
+    }
+
+    pars->g_ave=(2 - pars->p) / (1 - pars->p);
+    pars->g_ave_transm=pars->g_ave;
   }
   printf("\nParameters for the log group distribution:\n");
   printf("g_ave:\t%22.15e\n",pars->g_ave);
