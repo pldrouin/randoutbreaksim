@@ -383,7 +383,7 @@ int main(const int nargs, const char* args[])
     tdata[tmaxnpers].newinf_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].newinf_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].newinf_timeline_mean_noext[j]*tdata[tmaxnpers].newinf_timeline_mean_noext[j]));
     tdata[tmaxnpers].newpostest_timeline_mean_noext[j]/=nnoe;
     tdata[tmaxnpers].newpostest_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].newpostest_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].newpostest_timeline_mean_noext[j]*tdata[tmaxnpers].newpostest_timeline_mean_noext[j]));
-    #ifdef OBSREFF_OUTPUT
+    #ifdef SEC_INF_TIMELINES
     tdata[tmaxnpers].secinf_timeline_mean_noext[j]/=nnoe;
     tdata[tmaxnpers].secinf_timeline_std_noext[j]=sqrt(nnoe/(nnoe-1.)*(tdata[tmaxnpers].secinf_timeline_std_noext[j]/nnoe-tdata[tmaxnpers].secinf_timeline_mean_noext[j]*tdata[tmaxnpers].secinf_timeline_mean_noext[j]));
     tdata[tmaxnpers].newsecinf_timeline_mean_noext[j]/=nnoe;
