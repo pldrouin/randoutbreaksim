@@ -17,10 +17,10 @@
 
 #include "root_finder.h"
 
-#define RF_P_EPSF (1e-15)	//!< EPS for the mu and g_ave discrepancy
-#define RF_GPERC_EPSF (1e-15)	//!< EPS for the x95 CDF discrepancy
-#define RF_GKAPPA_EPSF (1e-15)  //!< EPS for the kappa CDF discrepancy
-#define RF_GAUSSMU_EPSF (1e-15)  //!< EPS for the Gaussian mu mean discrepancy
+#define RF_P_EPSF (2e-15)	//!< EPS for the mu and g_ave discrepancy
+#define RF_GPERC_EPSF (2e-15)	//!< EPS for the x95 CDF discrepancy
+#define RF_GKAPPA_EPSF (2e-15)  //!< EPS for the kappa CDF discrepancy
+#define RF_GAUSSMU_EPSF (2e-15)  //!< EPS for the Gaussian mu mean discrepancy
 
 /**
  * Primary individual communicable period model type. Flags used to specify the model.
